@@ -11,5 +11,23 @@ endif()
 
 project ("GFXEngine")
 
+include(FetchContent)
+
+# LibGFX von GitHub laden
+FetchContent_Declare(
+    LibGFX
+    GIT_REPOSITORY https://github.com/Andy16823/LibGFX.git
+    GIT_TAG master
+)
+
+FetchContent_Declare(
+    GLM
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG master
+)
+
+# LibGFX verfügbar machen
+FetchContent_MakeAvailable(LibGFX GLM)
+
 # Schließen Sie Unterprojekte ein.
 add_subdirectory ("GFXEngine")
