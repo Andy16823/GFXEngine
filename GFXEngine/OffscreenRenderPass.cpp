@@ -81,5 +81,8 @@ bool OffscreenRenderPass::create(VkDevice device, VkFormat swapchainImageFormat,
 
 void OffscreenRenderPass::destroy(VkDevice device)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	if (m_renderPass != VK_NULL_HANDLE) {
+		vkDestroyRenderPass(device, m_renderPass, nullptr);
+		m_renderPass = VK_NULL_HANDLE;
+	}
 }
