@@ -11,11 +11,6 @@ namespace GFX {
 	namespace Graphics {
 		class Renderer
 		{
-		public:
-			Renderer();
-			~Renderer();
-			void Init(GLFWwindow* window);
-			void DrawFrame();
 		private:
 			std::unique_ptr<LibGFX::VkContext> m_context;
 			SwapchainInfo m_swapchainInfo;
@@ -23,6 +18,13 @@ namespace GFX {
 			LibGFX::DepthBuffer m_depthBuffer;
 			std::unique_ptr<LibGFX::Presets::DefaultRenderPass> m_renderPass;
 			std::unique_ptr<OffscreenRenderPass> m_offscreenRenderPass;
+
+		public:
+			Renderer() = default;
+			~Renderer() = default;
+			void init(GLFWwindow* window);
+			void drawFrame();
+			void dispose();
 		};
 	}
 }

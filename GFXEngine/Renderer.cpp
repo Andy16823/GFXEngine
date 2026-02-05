@@ -4,7 +4,7 @@
 using namespace std;
 using namespace GFX::Graphics;
 
-void Renderer::Init(GLFWwindow* window)
+void Renderer::init(GLFWwindow* window)
 {
 	// Create Vulkan context
 	m_context = LibGFX::GFX::createContext(window);
@@ -26,4 +26,15 @@ void Renderer::Init(GLFWwindow* window)
 	if (!m_offscreenRenderPass->create(m_context->getDevice(), m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
 		throw std::runtime_error("Failed to create offscreen render pass");
 	}
+}
+
+void Renderer::drawFrame()
+{
+
+}
+
+void Renderer::dispose()
+{
+	m_context->waitIdle();
+	m_context->dispose();
 }
