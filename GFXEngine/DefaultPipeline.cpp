@@ -223,6 +223,16 @@ void GFXEngine::Graphics::DefaultPipeline::destroy(VkContext& context)
 		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
 		m_pipelineLayout = VK_NULL_HANDLE;
 	}
+
+	if (m_uniformsLayout != VK_NULL_HANDLE) {
+		context.destroyDescriptorSetLayout(m_uniformsLayout);
+		m_uniformsLayout = VK_NULL_HANDLE;
+	}
+
+	if (m_textureLayout != VK_NULL_HANDLE) {
+		context.destroyDescriptorSetLayout(m_textureLayout);
+		m_textureLayout = VK_NULL_HANDLE;
+	}
 }
 
 VkPipeline GFXEngine::Graphics::DefaultPipeline::getPipeline() const

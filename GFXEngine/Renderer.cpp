@@ -65,6 +65,8 @@ void Renderer::dispose()
 	m_context->destroySemaphores(m_renderFinishedSemaphores);
 	m_context->destroyFences(m_inFlightFences);
 
+	m_context->destroyCommandPool(m_commandPool);
+
 	// Clean up resources
 	for (auto framebuffer : m_framebuffers) {
 		vkDestroyFramebuffer(m_context->getDevice(), framebuffer, nullptr);
