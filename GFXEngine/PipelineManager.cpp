@@ -26,6 +26,7 @@ void GFX::Graphics::PipelineManager::disposePipelines(LibGFX::VkContext& context
 	for (auto& [name, pipeline] : m_pipelines) {
 		pipeline->destroy(context);
 	}
+	m_pipelines.clear();
 }
 
 void GFX::Graphics::PipelineManager::addPipeline(const std::string& name, std::unique_ptr<LibGFX::Pipeline> pipeline, LibGFX::VkContext& context)
