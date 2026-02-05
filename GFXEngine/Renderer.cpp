@@ -71,7 +71,7 @@ void Renderer::dispose()
 	}
 	pipelineManager->disposePipelines(*m_context);
 	m_renderPass->destroy(*m_context);
-	m_offscreenRenderPass->destroy(*m_context);
+	//m_offscreenRenderPass->destroy(*m_context); TODO: Uncomment when offscreen render pass is implemented
 	m_context->destroyDepthBuffer(m_depthBuffer);
 	m_context->destroySwapChain(m_swapchainInfo);
 	m_context->dispose();
