@@ -35,6 +35,11 @@ void Renderer::drawFrame()
 
 void Renderer::dispose()
 {
+	m_renderPass->destroy(m_context->getDevice());
+	m_offscreenRenderPass->destroy(m_context->getDevice());
+	m_context->destroyDepthBuffer(m_depthBuffer);
+	m_context->destroySwapChain(m_swapchainInfo);
+
 	m_context->waitIdle();
 	m_context->dispose();
 }
