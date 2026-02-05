@@ -41,6 +41,7 @@ void Renderer::init(GLFWwindow* window)
 	defaultPipeline->setViewport(viewport);
 	defaultPipeline->setScissor(scissor);
 	this->pipelineManager->addPipeline(DEFAULT_PIPELINE, std::move(defaultPipeline));
+	this->pipelineManager->createPipelines(*m_context);
 
 	// Create framebuffers for each swapchain image
 	m_framebuffers = m_context->createFramebuffers(*m_renderPass, m_swapchainInfo, m_depthBuffer);
