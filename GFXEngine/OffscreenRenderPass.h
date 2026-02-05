@@ -2,6 +2,7 @@
 #include "LibGFX.h"
 #include "RenderPass.h"
 #include <array>
+#include "VkContext.h"
 
 namespace GFX {
 	namespace Graphics {
@@ -11,8 +12,8 @@ namespace GFX {
 			OffscreenRenderPass() = default;
 			VkRenderPass getRenderPass() const override;
 			std::span<const VkClearValue> getClearValues() const override;
-			bool create(VkDevice device, VkFormat swapchainImageFormat, VkFormat depthFormat) override;
-			void destroy(VkDevice device) override;
+			bool create(LibGFX::VkContext& context, VkFormat swapchainImageFormat, VkFormat depthFormat) override;
+			void destroy(LibGFX::VkContext& context) override;
 		private:
 			VkRenderPass m_renderPass;
 			std::array<VkClearValue, 2> m_clearValues;

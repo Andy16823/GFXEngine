@@ -15,7 +15,7 @@ std::span<const VkClearValue> OffscreenRenderPass::getClearValues() const
 	return m_clearValues;
 }
 
-bool OffscreenRenderPass::create(VkDevice device, VkFormat swapchainImageFormat, VkFormat depthFormat)
+bool OffscreenRenderPass::create(LibGFX::VkContext& context, VkFormat swapchainImageFormat, VkFormat depthFormat)
 {
 	// Clear values for color and depth attachments
 	m_clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
@@ -74,15 +74,15 @@ bool OffscreenRenderPass::create(VkDevice device, VkFormat swapchainImageFormat,
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(context.getDevice(), &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create offscreen render pass");
 	}
 }
 
-void OffscreenRenderPass::destroy(VkDevice device)
+void OffscreenRenderPass::destroy(LibGFX::VkContext& context)
 {
 	if (m_renderPass != VK_NULL_HANDLE) {
-		vkDestroyRenderPass(device, m_renderPass, nullptr);
+		vkDestroyRenderPass(context.getDevice(), m_renderPass, nullptr);
 		m_renderPass = VK_NULL_HANDLE;
 	}
 }

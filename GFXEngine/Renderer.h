@@ -4,6 +4,7 @@
 #include "SwapchainInfo.h"
 #include "DefaultRenderPass.h"
 #include "OffscreenRenderPass.h"
+#include "PipelineManager.h"
 #include <GLFW/glfw3.h>
 #include <memory>
 
@@ -20,6 +21,8 @@ namespace GFX {
 			std::unique_ptr<OffscreenRenderPass> m_offscreenRenderPass;
 
 		public:
+			std::unique_ptr<PipelineManager> pipelineManager;
+
 			Renderer() = default;
 			~Renderer() = default;
 			void init(GLFWwindow* window);

@@ -17,15 +17,17 @@ void Renderer::init(GLFWwindow* window)
 
 	// Create screespace render pass
 	m_renderPass = std::make_unique<LibGFX::Presets::DefaultRenderPass>();
-	if (!m_renderPass->create(m_context->getDevice(), m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
+	if (!m_renderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
 		throw std::runtime_error("Failed to create render pass");
 	}
 
 	// Create offscreen render pass
 	m_offscreenRenderPass = std::make_unique<OffscreenRenderPass>();
-	if (!m_offscreenRenderPass->create(m_context->getDevice(), m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
+	if (!m_offscreenRenderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
 		throw std::runtime_error("Failed to create offscreen render pass");
 	}
+
+
 }
 
 void Renderer::drawFrame()
@@ -35,8 +37,8 @@ void Renderer::drawFrame()
 
 void Renderer::dispose()
 {
-	m_renderPass->destroy(m_context->getDevice());
-	m_offscreenRenderPass->destroy(m_context->getDevice());
+	m_renderPass->destroy(*m_context);
+	m_offscreenRenderPass->destroy(*m_context);
 	m_context->destroyDepthBuffer(m_depthBuffer);
 	m_context->destroySwapChain(m_swapchainInfo);
 
