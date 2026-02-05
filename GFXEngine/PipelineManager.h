@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-namespace GFX {
+namespace GFXEngine {
 	namespace Graphics {
 		class PipelineManager
 		{

@@ -4,7 +4,7 @@
 #include <array>
 #include "VkContext.h"
 
-namespace GFX {
+namespace GFXEngine {
 	namespace Graphics {
 		class OffscreenRenderPass : public LibGFX::RenderPass
 		{

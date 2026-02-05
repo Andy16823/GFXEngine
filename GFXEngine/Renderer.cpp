@@ -1,8 +1,11 @@
 #include "Renderer.h"
 #include <stdexcept>
+#include "RenderShader.h"
+#include "DefaultPipeline.h"
+
 
 using namespace std;
-using namespace GFX::Graphics;
+using namespace GFXEngine::Graphics;
 
 void Renderer::init(GLFWwindow* window)
 {
@@ -21,13 +24,30 @@ void Renderer::init(GLFWwindow* window)
 		throw std::runtime_error("Failed to create render pass");
 	}
 
-	// Create offscreen render pass
-	m_offscreenRenderPass = std::make_unique<OffscreenRenderPass>();
-	if (!m_offscreenRenderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
-		throw std::runtime_error("Failed to create offscreen render pass");
-	}
+	// Viewport & Scissor
+	auto viewport = m_context->createViewport(0.0f, 0.0f, m_swapchainInfo.extent);
+	auto scissor = m_context->createScissorRect(0, 0, m_swapchainInfo.extent);
 
+	// TODO: Create offscreen render pass for shadow mapping, post-processing, etc.
 
+	// Create pipeline manager and pipelines
+	this->pipelineManager = std::make_unique<PipelineManager>();
+
+	// Default Pipeline
+	RenderShader defaultShader = RenderShader::fromFiles("C:\\Users\\andy1\\source\\repos\\LibGFXTest\\Shader\\vert.spv", "C:\\Users\\andy1\\source\\repos\\LibGFXTest\\Shader\\frag.spv");
+	auto defaultPipeline = std::make_unique<DefaultPipeline>();
+	defaultPipeline->setRenderPass(m_renderPass->getRenderPass());
+	defaultPipeline->setShader(defaultShader);
+	defaultPipeline->setViewport(viewport);
+	defaultPipeline->setScissor(scissor);
+	this->pipelineManager->addPipeline(DEFAULT_PIPELINE, std::move(defaultPipeline));
+
+	// Create framebuffers for each swapchain image
+	m_framebuffers = m_context->createFramebuffers(*m_renderPass, m_swapchainInfo, m_depthBuffer);
+
+	m_queueFamilyIndices = m_context->getQueueFamilyIndices(m_context->getPhysicalDevice());
+	m_commandPool = m_context->createCommandPool(m_queueFamilyIndices.graphicsFamily, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+	m_commandBuffers = m_context->allocateCommandBuffers(m_commandPool, static_cast<uint32_t>(m_framebuffers.size()));
 }
 
 void Renderer::drawFrame()
@@ -37,11 +57,95 @@ void Renderer::drawFrame()
 
 void Renderer::dispose()
 {
+	// Wait for idle
+	m_context->waitIdle();
+
+	m_context->destroySemaphores(m_imageAvailableSemaphores);
+	m_context->destroySemaphores(m_renderFinishedSemaphores);
+	m_context->destroyFences(m_inFlightFences);
+
+	// Clean up resources
+	for (auto framebuffer : m_framebuffers) {
+		vkDestroyFramebuffer(m_context->getDevice(), framebuffer, nullptr);
+	}
+	pipelineManager->disposePipelines(*m_context);
 	m_renderPass->destroy(*m_context);
 	m_offscreenRenderPass->destroy(*m_context);
 	m_context->destroyDepthBuffer(m_depthBuffer);
 	m_context->destroySwapChain(m_swapchainInfo);
-
-	m_context->waitIdle();
 	m_context->dispose();
+}
+
+void Renderer::createSyncObjects()
+{
+	m_maxFramesInFlight = static_cast<int>(m_framebuffers.size());
+	m_imagesInFlight = std::vector<VkFence>(m_maxFramesInFlight, VK_NULL_HANDLE);
+	m_inFlightFences = m_context->createFences(m_maxFramesInFlight, VK_FENCE_CREATE_SIGNALED_BIT);
+	m_imageAvailableSemaphores = m_context->createSemaphores(m_maxFramesInFlight);
+	m_renderFinishedSemaphores = m_context->createSemaphores(m_maxFramesInFlight);
+}
+
+uint32_t Renderer::nextImage()
+{
+	// Wait for the previous frame to finish
+	m_context->waitForFence(m_inFlightFences[m_currentImage]);
+
+	uint32_t imageIndex;
+	m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
+
+	if(m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
+		m_context->waitForFence(m_imagesInFlight[imageIndex]);
+	} 
+	m_imagesInFlight[imageIndex] = m_inFlightFences[m_currentImage];
+	m_context->resetFence(m_inFlightFences[m_currentImage]);
+
+	return imageIndex;
+}
+
+void Renderer::beginFrame(uint32_t imageIndex)
+{
+	m_context->beginCommandBuffer(m_commandBuffers[imageIndex]);
+	m_context->beginRenderPass(m_commandBuffers[imageIndex], *m_renderPass.get(), m_framebuffers[imageIndex], m_swapchainInfo.extent);
+	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineManager->getPipeline(DEFAULT_PIPELINE));
+}
+
+void Renderer::endFrame(uint32_t imageIndex)
+{
+	m_context->endRenderPass(m_commandBuffers[imageIndex]);
+	m_context->endCommandBuffer(m_commandBuffers[imageIndex]);
+}
+
+void Renderer::submitFrame(uint32_t imageIndex)
+{
+	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+	VkSubmitInfo submitInfo = {
+		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		.waitSemaphoreCount = 1,
+		.pWaitSemaphores = &m_imageAvailableSemaphores[m_currentImage],
+		.pWaitDstStageMask = waitStages,
+		.commandBufferCount = 1,
+		.pCommandBuffers = &m_commandBuffers[imageIndex],
+		.signalSemaphoreCount = 1,
+		.pSignalSemaphores = &m_renderFinishedSemaphores[m_currentImage]
+	};
+	m_context->submitCommandBuffer(submitInfo, m_inFlightFences[m_currentImage]);
+}
+
+void Renderer::presentFrame(uint32_t imageIndex)
+{
+	VkPresentInfoKHR presentInfo = {
+		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+		.waitSemaphoreCount = 1,
+		.pWaitSemaphores = &m_renderFinishedSemaphores[m_currentImage],
+		.swapchainCount = 1,
+		.pSwapchains = &m_swapchainInfo.swapchain,
+		.pImageIndices = &imageIndex
+	};
+	m_context->queuePresent(presentInfo);
+}
+
+void Renderer::advanceFrame()
+{
+	m_currentImage = (m_currentImage + 1) % m_maxFramesInFlight;
 }

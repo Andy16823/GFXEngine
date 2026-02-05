@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 using namespace std;
-using namespace GFX::Graphics;
+using namespace GFXEngine::Graphics;
 
 VkRenderPass OffscreenRenderPass::getRenderPass() const
 {
