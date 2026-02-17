@@ -189,3 +189,19 @@ void Renderer::usePipeline(LibGFX::Pipeline& pipeline, uint32_t imageIndex)
 {
 	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }
+
+LibGFX::Buffer Renderer::createVertexBuffer(const std::vector<EngineTypes::Vertex3D>& vertices)
+{
+	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	LibGFX::Buffer buffer = m_context->createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	m_context->updateBuffer(buffer, vertices.data(), bufferSize);
+	return buffer;
+}
+
+LibGFX::Buffer Renderer::createIndexBuffer(const std::vector<uint32_t>& indices)
+{
+	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	LibGFX::Buffer buffer = m_context->createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	m_context->updateBuffer(buffer, indices.data(), bufferSize);
+	return buffer;
+}

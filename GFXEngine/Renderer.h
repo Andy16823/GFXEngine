@@ -1,6 +1,8 @@
 #pragma once
 #include "VkContext.h"
+#include "DataTypes.h"
 #include "LibGFX.h"
+#include "Buffer.h"
 #include "SwapchainInfo.h"
 #include "DefaultRenderPass.h"
 #include "OffscreenRenderPass.h"
@@ -70,7 +72,8 @@ namespace GFXEngine {
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
 			void waitIdle() { m_context->waitIdle(); }
-
+			LibGFX::Buffer createVertexBuffer(const std::vector<EngineTypes::Vertex3D>& vertices);
+			LibGFX::Buffer createIndexBuffer(const std::vector<uint32_t>& indices);
 			// Getters and Setters
 			VkRect2D getScissor() const { return m_scissor; }
 			VkViewport getViewport() const { return m_viewport; }

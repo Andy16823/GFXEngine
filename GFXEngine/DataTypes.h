@@ -39,5 +39,15 @@ namespace GFXEngine {
 			glm::ivec4 boneIDs;
 			glm::vec4 weights;
 		};
+
+		/// <summary>
+		/// Uniform buffer object for camera data, containing view and projection matrices, as well as the camera position for lighting calculations.
+		/// </summary>
+		struct CameraBufferObject
+		{
+			glm::mat4 view;
+			glm::mat4 proj;
+			glm::vec3 cameraPos;
+		};
 	}
 }
