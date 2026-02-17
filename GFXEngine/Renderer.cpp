@@ -45,6 +45,13 @@ void Renderer::init(GLFWwindow* window)
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, TEXTURE_SAMPLER_DESCRIPTOR_COUNT);
 	descriptorPoolBuilder.setMaxSets(TEXTURE_SAMPLER_MAX_SETS);
 	m_textureDescriptorPool = descriptorPoolBuilder.build(*m_context);
+	descriptorPoolBuilder.clear();
+
+	// Create descriptor pool for uniform buffers
+	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UNIFORM_BUFFER_DESCRIPTOR_COUNT);
+	descriptorPoolBuilder.setMaxSets(UNIFORM_BUFFER_MAX_SETS);
+	m_uniformBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
+	descriptorPoolBuilder.clear();
 }
 
 void Renderer::drawFrame()
@@ -62,6 +69,7 @@ void Renderer::dispose()
 	m_context->destroyFences(m_inFlightFences);
 	m_context->destroySampler(m_textureSampler);
 	m_context->destroyDescriptorSetPool(m_textureDescriptorPool);
+	m_context->destroyDescriptorSetPool(m_uniformBufferDescriptorPool);
 	m_context->destroyCommandPool(m_commandPool);
 
 	// Clean up resources
@@ -190,18 +198,33 @@ void Renderer::usePipeline(LibGFX::Pipeline& pipeline, uint32_t imageIndex)
 	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }
 
-LibGFX::Buffer Renderer::createVertexBuffer(const std::vector<EngineTypes::Vertex3D>& vertices)
+//LibGFX::Buffer Renderer::createVertexBuffer(const std::vector<EngineTypes::Vertex3D>& vertices)
+//{
+//	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+//	LibGFX::Buffer buffer = m_context->createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+//	m_context->updateBuffer(buffer, vertices.data(), bufferSize);
+//	return buffer;
+//}
+//
+//LibGFX::Buffer Renderer::createIndexBuffer(const std::vector<uint32_t>& indices)
+//{
+//	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+//	LibGFX::Buffer buffer = m_context->createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+//	m_context->updateBuffer(buffer, indices.data(), bufferSize);
+//	return buffer;
+//}
+
+LibGFX::Buffer Renderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
 {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-	LibGFX::Buffer buffer = m_context->createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	m_context->updateBuffer(buffer, vertices.data(), bufferSize);
-	return buffer;
+	return m_context->createBuffer(size, usage, properties);
 }
 
-LibGFX::Buffer Renderer::createIndexBuffer(const std::vector<uint32_t>& indices)
+VkDescriptorSet Renderer::allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout)
 {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-	LibGFX::Buffer buffer = m_context->createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	m_context->updateBuffer(buffer, indices.data(), bufferSize);
-	return buffer;
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_uniformBufferDescriptorPool, layout);
+	LibGFX::DescriptorSetWriter writer;
+	writer.addBufferInfo(buffer.buffer, 0, buffer.size)
+		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+		.clear();
+	return descriptorSet;
 }

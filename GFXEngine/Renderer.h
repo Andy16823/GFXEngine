@@ -14,6 +14,8 @@
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
+const uint32_t UNIFORM_BUFFER_DESCRIPTOR_COUNT = 16;
+const uint32_t UNIFORM_BUFFER_MAX_SETS = 512;
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -45,10 +47,10 @@ namespace GFXEngine {
 			VkDescriptorPool m_textureDescriptorPool;
 			VkSampler m_textureSampler;
 
+			// Uniforms
+			VkDescriptorPool m_uniformBufferDescriptorPool;
 
 			// Descriptor pools
-			
-
 			VkCommandPool m_commandPool;
 
 		public:
@@ -69,15 +71,24 @@ namespace GFXEngine {
 			void disposeTexture(LibGFX::Image& image);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
+			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
+			void freeUniformBufferDescriptorSet(VkDescriptorSet descriptorSet);	
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
 			void waitIdle() { m_context->waitIdle(); }
-			LibGFX::Buffer createVertexBuffer(const std::vector<EngineTypes::Vertex3D>& vertices);
-			LibGFX::Buffer createIndexBuffer(const std::vector<uint32_t>& indices);
+			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			// Getters and Setters
 			VkRect2D getScissor() const { return m_scissor; }
 			VkViewport getViewport() const { return m_viewport; }
 			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }
+
+			template<typename T>
+			void updateBuffer(const LibGFX::Buffer& buffer, const T& data) {
+				void* mappedData;
+				vkMapMemory(m_context->getDevice(), buffer.memory, 0, buffer.size, 0, &mappedData);
+				memcpy(mappedData, &data, sizeof(T));
+				vkUnmapMemory(m_context->getDevice(), buffer.memory);
+			}
 		};
 	}
 }
