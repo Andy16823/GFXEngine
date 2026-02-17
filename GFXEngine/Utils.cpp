@@ -1,6 +1,5 @@
 #include "Utils.h"
 #include "stb_image.h"
-#include <algorithm>
 #include <stdexcept>
 
 LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath)
