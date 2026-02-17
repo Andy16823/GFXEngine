@@ -238,3 +238,30 @@ void Renderer::destroyBuffer(LibGFX::Buffer& buffer)
 {
 	m_context->destroyBuffer(buffer);
 }
+
+void Renderer::bindDescriptorSets(const std::vector<VkDescriptorSet>& descriptorSets, VkPipelineLayout pipelineLayout, uint32_t imageIndex)
+{
+	VkCommandBuffer commandBuffer = this->getCommandBuffer(imageIndex);
+	vkCmdBindDescriptorSets(
+		commandBuffer,
+		VK_PIPELINE_BIND_POINT_GRAPHICS,
+		pipelineLayout,
+		0,
+		static_cast<uint32_t>(descriptorSets.size()),
+		descriptorSets.data(),
+		0,
+		nullptr
+	);
+}
+
+void Renderer::drawBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buffer& indexBuffer, uint32_t indexCount, uint32_t imageIndex, uint32_t instanceCount /*= 1*/)
+{
+	VkCommandBuffer commandBuffer = this->getCommandBuffer(imageIndex);
+	VkBuffer vertexBuffers[] = { vertexBuffer.buffer };
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+	VkBuffer indexBuffers[] = { indexBuffer.buffer };
+	vkCmdBindIndexBuffer(commandBuffer, indexBuffers[0], 0, VK_INDEX_TYPE_UINT32);
+	vkCmdDrawIndexed(commandBuffer, indexCount, instanceCount, 0, 0, 0);
+}

@@ -72,6 +72,8 @@ namespace GFXEngine {
 			void submitFrame(uint32_t imageIndex);
 			void presentFrame(uint32_t imageIndex);
 			void advanceFrame();
+			void bindDescriptorSets(const std::vector<VkDescriptorSet>& descriptorSets, VkPipelineLayout pipelineLayout, uint32_t imageIndex);
+			void drawBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buffer& indexBuffer, uint32_t indexCount, uint32_t imageIndex, uint32_t instanceCount = 1);
 			void drawFrame();
 			void waitIdle() { m_context->waitIdle(); }
 			void dispose();
@@ -103,6 +105,7 @@ namespace GFXEngine {
 
 
 			// GETTERS
+			VkCommandBuffer getCommandBuffer(uint32_t imageIndex) const { return m_commandBuffers[imageIndex]; }
 			size_t getSwapchainImageCount() const { return m_swapchainInfo.imageViews.size(); }
 			size_t getFramebufferCount() const { return m_framebuffers.size(); }
 			VkRect2D getScissor() const { return m_scissor; }
