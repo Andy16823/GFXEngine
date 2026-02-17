@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "RenderShader.h"
 #include "DefaultPipeline.h"
+#include "DescriptorPoolBuilder.h"
 
 
 using namespace std;
@@ -49,6 +50,15 @@ void Renderer::init(GLFWwindow* window)
 	m_queueFamilyIndices = m_context->getQueueFamilyIndices(m_context->getPhysicalDevice());
 	m_commandPool = m_context->createCommandPool(m_queueFamilyIndices.graphicsFamily, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 	m_commandBuffers = m_context->allocateCommandBuffers(m_commandPool, static_cast<uint32_t>(m_framebuffers.size()));
+
+	// Texture sampler
+	m_textureSampler = m_context->createTextureSampler();
+	LibGFX::DescriptorPoolBuilder descriptorPoolBuilder;
+
+	// Create descriptor pool for texture samplers
+	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, TEXTURE_SAMPLER_DESCRIPTOR_COUNT);
+	descriptorPoolBuilder.setMaxSets(TEXTURE_SAMPLER_MAX_SETS);
+	m_textureDescriptorPool = descriptorPoolBuilder.build(*m_context);
 }
 
 void Renderer::drawFrame()
@@ -64,7 +74,8 @@ void Renderer::dispose()
 	m_context->destroySemaphores(m_imageAvailableSemaphores);
 	m_context->destroySemaphores(m_renderFinishedSemaphores);
 	m_context->destroyFences(m_inFlightFences);
-
+	m_context->destroySampler(m_textureSampler);
+	m_context->destroyDescriptorSetPool(m_textureDescriptorPool);
 	m_context->destroyCommandPool(m_commandPool);
 
 	// Clean up resources
@@ -151,4 +162,15 @@ void Renderer::presentFrame(uint32_t imageIndex)
 void Renderer::advanceFrame()
 {
 	m_currentImage = (m_currentImage + 1) % m_maxFramesInFlight;
+}
+
+LibGFX::Image Renderer::loadTexture(const LibGFX::ImageData& imageData)
+{
+	LibGFX::Image textureImage = m_context->createImage(imageData, m_commandPool);
+	return textureImage;
+}
+
+void Renderer::disposeTexture(LibGFX::Image& image)
+{
+	m_context->destroyImage(image);
 }

@@ -8,6 +8,10 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 #include "QueueFamilyIndices.h"
+#include "LibGFX/Imaging.h"
+
+const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
+const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -32,6 +36,11 @@ namespace GFXEngine {
 			LibGFX::QueueFamilyIndices m_queueFamilyIndices;
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
+			// Texture samplers
+			VkDescriptorPool m_textureDescriptorPool;
+			VkSampler m_textureSampler;
+
+
 			// Descriptor pools
 			
 
@@ -54,6 +63,8 @@ namespace GFXEngine {
 			void advanceFrame();
 			void drawFrame();
 			void dispose();
+			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
+			void disposeTexture(LibGFX::Image& image);
 		};
 	}
 }
