@@ -23,6 +23,8 @@ namespace GFXEngine
 			void destroy(LibGFX::VkContext& context) override;
 			VkPipeline getPipeline() const override;
 			VkPipelineLayout getPipelineLayout() const override;
+			VkDescriptorSetLayout getUniformsDescriptorSetLayout() const { return m_uniformsLayout; }
+			VkDescriptorSetLayout getTextureDescriptorSetLayout() const { return m_textureLayout; }
 
 			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }
 			void setViewport(VkViewport viewport) { m_viewport = viewport; }
