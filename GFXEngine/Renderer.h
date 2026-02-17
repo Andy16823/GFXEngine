@@ -18,6 +18,9 @@ namespace GFXEngine {
 		class Renderer
 		{
 		private:
+			VkRect2D m_scissor;
+			VkViewport m_viewport;
+
 			// Synchronization objects
 			int m_currentImage = 0;
 			int m_maxFramesInFlight = 2;
@@ -47,16 +50,13 @@ namespace GFXEngine {
 			VkCommandPool m_commandPool;
 
 		public:
-			const std::string DEFAULT_PIPELINE = "pipeline.default";
-
-			std::unique_ptr<PipelineManager> pipelineManager;
-
 			Renderer() = default;
 			~Renderer() = default;
 			void init(GLFWwindow* window);
 			void createSyncObjects();
 			uint32_t nextImage();
 			void beginFrame(uint32_t imageIndex);
+			void usePipeline(LibGFX::Pipeline& pipeline, uint32_t imageIndex);
 			void endFrame(uint32_t imageIndex);
 			void submitFrame(uint32_t imageIndex);
 			void presentFrame(uint32_t imageIndex);
@@ -67,6 +67,12 @@ namespace GFXEngine {
 			void disposeTexture(LibGFX::Image& image);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
+			void createPipeline(LibGFX::Pipeline& pipeline);
+			void destroyPipeline(LibGFX::Pipeline& pipeline);
+
+			// Getters and Setters
+			VkRect2D getScissor() const { return m_scissor; }
+			VkViewport getViewport() const { return m_viewport; }
 		};
 	}
 }

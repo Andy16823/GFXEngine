@@ -27,23 +27,8 @@ void Renderer::init(GLFWwindow* window)
 	}
 
 	// Viewport & Scissor
-	auto viewport = m_context->createViewport(0.0f, 0.0f, m_swapchainInfo.extent);
-	auto scissor = m_context->createScissorRect(0, 0, m_swapchainInfo.extent);
-
-	// TODO: Create offscreen render pass for shadow mapping, post-processing, etc.
-
-	// Create pipeline manager and pipelines
-	this->pipelineManager = std::make_unique<PipelineManager>();
-
-	// Default Pipeline
-	RenderShader defaultShader = RenderShader::fromFiles("C:\\Users\\andy1\\source\\repos\\LibGFXTest\\Shader\\vert.spv", "C:\\Users\\andy1\\source\\repos\\LibGFXTest\\Shader\\frag.spv");
-	auto defaultPipeline = std::make_unique<DefaultPipeline>();
-	defaultPipeline->setRenderPass(m_renderPass->getRenderPass());
-	defaultPipeline->setShader(defaultShader);
-	defaultPipeline->setViewport(viewport);
-	defaultPipeline->setScissor(scissor);
-	this->pipelineManager->addPipeline(DEFAULT_PIPELINE, std::move(defaultPipeline));
-	this->pipelineManager->createPipelines(*m_context);
+	m_viewport = m_context->createViewport(0.0f, 0.0f, m_swapchainInfo.extent);
+	m_scissor = m_context->createScissorRect(0, 0, m_swapchainInfo.extent);
 
 	// Create framebuffers for each swapchain image
 	m_framebuffers = m_context->createFramebuffers(*m_renderPass, m_swapchainInfo, m_depthBuffer);
@@ -83,7 +68,6 @@ void Renderer::dispose()
 	for (auto framebuffer : m_framebuffers) {
 		vkDestroyFramebuffer(m_context->getDevice(), framebuffer, nullptr);
 	}
-	pipelineManager->disposePipelines(*m_context);
 	m_renderPass->destroy(*m_context);
 	//m_offscreenRenderPass->destroy(*m_context); TODO: Uncomment when offscreen render pass is implemented
 	m_context->destroyDepthBuffer(m_depthBuffer);
@@ -121,7 +105,6 @@ void Renderer::beginFrame(uint32_t imageIndex)
 {
 	m_context->beginCommandBuffer(m_commandBuffers[imageIndex]);
 	m_context->beginRenderPass(m_commandBuffers[imageIndex], *m_renderPass.get(), m_framebuffers[imageIndex], m_swapchainInfo.extent);
-	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineManager->getPipeline(DEFAULT_PIPELINE));
 }
 
 void Renderer::endFrame(uint32_t imageIndex)
@@ -190,4 +173,19 @@ VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& imag
 void Renderer::freeTextureDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_context->freeDescriptorSet(m_textureDescriptorPool, descriptorSet);
+}
+
+void Renderer::createPipeline(LibGFX::Pipeline& pipeline)
+{
+	pipeline.create(*m_context);
+}
+
+void Renderer::destroyPipeline(LibGFX::Pipeline& pipeline)
+{
+	pipeline.destroy(*m_context);
+}
+
+void Renderer::usePipeline(LibGFX::Pipeline& pipeline, uint32_t imageIndex)
+{
+	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }
