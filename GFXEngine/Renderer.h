@@ -22,10 +22,12 @@ namespace GFXEngine {
 		class Renderer
 		{
 		private:
+			// BASIC RENDERING RESOURCES
+			std::unique_ptr<LibGFX::VkContext> m_context;
 			VkRect2D m_scissor;
 			VkViewport m_viewport;
 
-			// Synchronization objects
+			// SYNC OBJECTS
 			int m_currentImage = 0;
 			int m_maxFramesInFlight = 2;
 			std::vector<VkFence> m_imagesInFlight; // Track which fence is currently using each swapchain image
@@ -33,29 +35,34 @@ namespace GFXEngine {
 			std::vector<VkSemaphore> m_imageAvailableSemaphores;
 			std::vector<VkSemaphore> m_renderFinishedSemaphores;
 
-			std::unique_ptr<LibGFX::VkContext> m_context;
+			// SWAPCHAIN & RENDER PASS
 			SwapchainInfo m_swapchainInfo;
 			VkFormat m_depthFormat;
 			LibGFX::DepthBuffer m_depthBuffer;
 			std::unique_ptr<LibGFX::Presets::DefaultRenderPass> m_renderPass;
 			std::unique_ptr<OffscreenRenderPass> m_offscreenRenderPass;
+
+			// FRAMEBUFFERS & COMMAND BUFFERS
 			std::vector<VkFramebuffer> m_framebuffers;
 			LibGFX::QueueFamilyIndices m_queueFamilyIndices;
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
-			// Texture samplers
+			// TEXTURE SAMPLERS
 			VkDescriptorPool m_textureDescriptorPool;
 			VkSampler m_textureSampler;
 
-			// Uniforms
+			// UNIFORM BUFFER DESCRIPTOR POOL
 			VkDescriptorPool m_uniformBufferDescriptorPool;
 
-			// Descriptor pools
+			// COMMAND POOL
 			VkCommandPool m_commandPool;
 
 		public:
+			// CONSTRUCTORS & DESTRUCTORS
 			Renderer() = default;
 			~Renderer() = default;
+
+			// MAIN LOOP FUNCTIONS
 			void init(GLFWwindow* window);
 			void createSyncObjects();
 			uint32_t nextImage();
@@ -66,27 +73,25 @@ namespace GFXEngine {
 			void presentFrame(uint32_t imageIndex);
 			void advanceFrame();
 			void drawFrame();
+			void waitIdle() { m_context->waitIdle(); }
 			void dispose();
+
+			// TEXTURES
 			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
 			void disposeTexture(LibGFX::Image& image);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
+
+			// UNIFORM BUFFERS
 			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeUniformBufferDescriptorSet(VkDescriptorSet descriptorSet);	
+
+			// PIPELINES
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
-			void waitIdle() { m_context->waitIdle(); }
+
+			// BUFFERS
 			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
-			// Getters and Setters
-			size_t getSwapchainImageCount() const { return m_swapchainInfo.imageViews.size(); }
-			size_t getFramebufferCount() const { return m_framebuffers.size(); }
-			VkRect2D getScissor() const { return m_scissor; }
-			VkViewport getViewport() const { return m_viewport; }
-			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }
-
-
-
-			// Template function to update buffer data
 			template<typename T>
 			void updateBuffer(const LibGFX::Buffer& buffer, const T& data) {
 				void* mappedData;
@@ -94,6 +99,15 @@ namespace GFXEngine {
 				memcpy(mappedData, &data, sizeof(T));
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
+			void destroyBuffer(LibGFX::Buffer& buffer);
+
+
+			// GETTERS
+			size_t getSwapchainImageCount() const { return m_swapchainInfo.imageViews.size(); }
+			size_t getFramebufferCount() const { return m_framebuffers.size(); }
+			VkRect2D getScissor() const { return m_scissor; }
+			VkViewport getViewport() const { return m_viewport; }
+			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }			
 		};
 	}
 }

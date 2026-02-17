@@ -228,3 +228,13 @@ VkDescriptorSet Renderer::allocateUniformBufferDescriptorSet(const LibGFX::Buffe
 		.clear();
 	return descriptorSet;
 }
+
+void Renderer::freeUniformBufferDescriptorSet(VkDescriptorSet descriptorSet)
+{
+	m_context->freeDescriptorSet(m_uniformBufferDescriptorPool, descriptorSet);
+}
+
+void Renderer::destroyBuffer(LibGFX::Buffer& buffer)
+{
+	m_context->destroyBuffer(buffer);
+}
