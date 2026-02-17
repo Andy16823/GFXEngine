@@ -3,6 +3,7 @@
 #include "RenderShader.h"
 #include "DefaultPipeline.h"
 #include "DescriptorPoolBuilder.h"
+#include "DescriptorSetWriter.h"
 
 
 using namespace std;
@@ -173,4 +174,20 @@ LibGFX::Image Renderer::loadTexture(const LibGFX::ImageData& imageData)
 void Renderer::disposeTexture(LibGFX::Image& image)
 {
 	m_context->destroyImage(image);
+}
+
+VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout)
+{
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_textureDescriptorPool, layout);
+	LibGFX::DescriptorSetWriter writer;
+	writer.addImageInfo(image.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		.clear();
+
+	return descriptorSet;
+}
+
+void Renderer::freeTextureDescriptorSet(VkDescriptorSet descriptorSet)
+{
+	m_context->freeDescriptorSet(m_textureDescriptorPool, descriptorSet);
 }

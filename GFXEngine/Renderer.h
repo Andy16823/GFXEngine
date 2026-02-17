@@ -65,6 +65,8 @@ namespace GFXEngine {
 			void dispose();
 			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
 			void disposeTexture(LibGFX::Image& image);
+			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
+			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
 		};
 	}
 }
