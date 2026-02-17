@@ -69,6 +69,7 @@ namespace GFXEngine {
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
+			void waitIdle() { m_context->waitIdle(); }
 
 			// Getters and Setters
 			VkRect2D getScissor() const { return m_scissor; }
