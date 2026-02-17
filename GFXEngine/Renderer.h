@@ -95,14 +95,14 @@ namespace GFXEngine {
 			// BUFFERS
 			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			template<typename T>
-			void updateBuffer(const LibGFX::Buffer& buffer, const T& data) {
+			void updateBuffer(const LibGFX::Buffer& buffer, const T* data, size_t count) {
 				void* mappedData;
+
 				vkMapMemory(m_context->getDevice(), buffer.memory, 0, buffer.size, 0, &mappedData);
-				memcpy(mappedData, &data, sizeof(T));
+				memcpy(mappedData, data, sizeof(T) * count);
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
 			void destroyBuffer(LibGFX::Buffer& buffer);
-
 
 			// GETTERS
 			VkCommandBuffer getCommandBuffer(uint32_t imageIndex) const { return m_commandBuffers[imageIndex]; }
