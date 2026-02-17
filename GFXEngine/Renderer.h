@@ -73,6 +73,7 @@ namespace GFXEngine {
 			// Getters and Setters
 			VkRect2D getScissor() const { return m_scissor; }
 			VkViewport getViewport() const { return m_viewport; }
+			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }
 		};
 	}
 }
