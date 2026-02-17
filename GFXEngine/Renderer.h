@@ -78,10 +78,15 @@ namespace GFXEngine {
 			void waitIdle() { m_context->waitIdle(); }
 			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			// Getters and Setters
+			size_t getSwapchainImageCount() const { return m_swapchainInfo.imageViews.size(); }
+			size_t getFramebufferCount() const { return m_framebuffers.size(); }
 			VkRect2D getScissor() const { return m_scissor; }
 			VkViewport getViewport() const { return m_viewport; }
 			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }
 
+
+
+			// Template function to update buffer data
 			template<typename T>
 			void updateBuffer(const LibGFX::Buffer& buffer, const T& data) {
 				void* mappedData;
