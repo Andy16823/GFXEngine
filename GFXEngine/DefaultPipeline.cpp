@@ -4,6 +4,7 @@
 #include <array>
 #include <glm/glm.hpp>
 #include <stdexcept>
+#include "DataTypes.h"
 
 // TODO: Implement the default pipeline for onscreen rendering, including shader stages, vertex input state, input assembly state, viewport and scissor state, rasterization state, multisample state, depth stencil state, color blend state, and dynamic state as needed.
 using namespace LibGFX;
@@ -24,10 +25,6 @@ void GFXEngine::Graphics::DefaultPipeline::create(VkContext& context)
 		.build(context);
 	descriptorSetLayoutBuilder.clear();
 
-	//auto vertexShaderCode = LibGFX::GFX::readFile("C:\\Users\\andy1\\source\\repos\\LibGFXTest\\Shader\\vert.spv");
-	//auto fragmentShaderCode = LibGFX::GFX::readFile("C:\\Users\\andy1\\source\\repos\\LibGFXTest\\Shader\\frag.spv");
-	
-
 	// Shader Stage
 	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
@@ -45,64 +42,35 @@ void GFXEngine::Graphics::DefaultPipeline::create(VkContext& context)
 
 	std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = { vertShaderStageInfo, fragShaderStageInfo };
 
-
-	// Vertex single 
-	std::array<VkVertexInputBindingDescription, 4> bindings = {};
-	// Position
-	bindings[0] = {
-		.binding = 0,
-		.stride = sizeof(glm::vec3),
-		.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
-	};
-	// Color
-	bindings[1] = {
-		.binding = 1,
-		.stride = sizeof(glm::vec3),
-		.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
-	};
-	// Normals
-	bindings[2] = {
-		.binding = 2,
-		.stride = sizeof(glm::vec3),
-		.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
-	};
-	// Texture Coordinates
-	bindings[3] = {
-		.binding = 3,
-		.stride = sizeof(glm::vec2),
-		.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
-	};
+	VkVertexInputBindingDescription bindingDescription = {};
+	bindingDescription.binding = 0;
+	bindingDescription.stride = sizeof(EngineTypes::Vertex3D);
 
 	std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions = {};
-	attributeDescriptions[0] = {
-		.location = 0,	
-		.binding = 0,
-		.format = VK_FORMAT_R32G32B32_SFLOAT,
-		.offset = 0
-	};
-	attributeDescriptions[1] = {
-		.location = 1,
-		.binding = 1,
-		.format = VK_FORMAT_R32G32B32_SFLOAT,
-		.offset = 0
-	};
-	attributeDescriptions[2] = {
-		.location = 2,
-		.binding = 2,
-		.format = VK_FORMAT_R32G32B32_SFLOAT,
-		.offset = 0
-	};
-	attributeDescriptions[3] = {
-		.location = 3,
-		.binding = 3,
-		.format = VK_FORMAT_R32G32_SFLOAT,
-		.offset = 0
-	};
+	attributeDescriptions[0].binding = 0;
+	attributeDescriptions[0].location = 0;
+	attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+	attributeDescriptions[0].offset = offsetof(EngineTypes::Vertex3D, pos);
+
+	attributeDescriptions[1].binding = 0;
+	attributeDescriptions[1].location = 1;
+	attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+	attributeDescriptions[1].offset = offsetof(EngineTypes::Vertex3D, color);
+
+	attributeDescriptions[2].binding = 0;
+	attributeDescriptions[2].location = 2;
+	attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+	attributeDescriptions[2].offset = offsetof(EngineTypes::Vertex3D, texCoord);
+
+	attributeDescriptions[3].binding = 0;
+	attributeDescriptions[3].location = 3;
+	attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+	attributeDescriptions[3].offset = offsetof(EngineTypes::Vertex3D, normal);
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindings.size());
-	vertexInputInfo.pVertexBindingDescriptions = bindings.data();
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
