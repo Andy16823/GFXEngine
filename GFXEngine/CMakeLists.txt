@@ -3,7 +3,7 @@
 #
 
 # Fügen Sie der ausführbaren Datei dieses Projekts eine Quelle hinzu.
-add_library(GFXEngine STATIC "GFXEngine.cpp" "GFXEngine.h" "Renderer.h" "Renderer.cpp" "OffscreenRenderPass.h" "OffscreenRenderPass.cpp" "PipelineManager.h" "PipelineManager.cpp" "DefaultPipeline.h" "DefaultPipeline.cpp" "RenderShader.h" "RenderShader.cpp" "DataTypes.h")
+add_library(GFXEngine STATIC "GFXEngine.cpp" "GFXEngine.h" "Renderer.h" "Renderer.cpp" "OffscreenRenderPass.h" "OffscreenRenderPass.cpp" "PipelineManager.h" "PipelineManager.cpp" "DefaultPipeline.h" "DefaultPipeline.cpp" "RenderShader.h" "RenderShader.cpp" "DataTypes.h" "Utils.h" "Utils.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GFXEngine PROPERTY CXX_STANDARD 20)
@@ -14,6 +14,7 @@ endif()
 target_link_libraries(GFXEngine 
     PRIVATE LibGFX
     PRIVATE glm::glm
+    PRIVATE stb_image
 )
 
 # Include-Verzeichnisse (falls nötig)

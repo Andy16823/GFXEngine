@@ -26,7 +26,19 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
-# LibGFX verfügbar machen
+# stb (stb_image) als Header-only Bibliothek hinzufügen
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+)
+# Nur die Quellen herunterladen/auspacken (kein add_subdirectory, da kein CMake-Projekt vorhanden)
+FetchContent_Populate(stb)
+# Erstelle ein INTERFACE-Target, damit andere Targets es mit target_link_libraries verwenden können
+add_library(stb_image INTERFACE)
+target_include_directories(stb_image INTERFACE ${stb_SOURCE_DIR})
+
+# LibGFX und GLM verfügbar machen
 FetchContent_MakeAvailable(LibGFX GLM)
 
 # Schließen Sie Unterprojekte ein.
