@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 #include "QueueFamilyIndices.h"
-#include "LibGFX/Imaging.h"
+#include "Imaging.h"
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
