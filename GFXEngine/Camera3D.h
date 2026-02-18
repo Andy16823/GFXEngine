@@ -20,6 +20,7 @@ namespace GFXEngine{
 			GFXEngine::EngineTypes::CameraBufferObject getCameraBufferObject() const;
 			glm::mat4 getViewMatrix() const;
 			glm::mat4 getProjectionMatrix() const;
+			glm::vec3 getPosition() const { return m_transform.position; }
 		};
 	}
 }
