@@ -20,6 +20,9 @@ namespace GFXEngine {
 			glm::mat4 getModelMatrix() const;
 			void setRotationFromEuler(const glm::vec3& rot);
 			void rotateByEuler(float pitch, float yaw, float roll);
+			void translate(const glm::vec3& delta);
+			void setPosition(const glm::vec3& newPos);
+			void setScale(const glm::vec3& newScale);
 			glm::vec3 getEulerRotation() const;
 			glm::vec3 getForward() const;
 			glm::vec3 getRight() const;

@@ -17,11 +17,11 @@ namespace GFXEngine{
 		public:
 			Camera3D(glm::vec3 position, float aspect, float near, float far);
 			~Camera3D() = default;
-			GFXEngine::EngineTypes::CameraBufferObject getCameraBufferObject() const;
 			glm::mat4 getViewMatrix() const;
 			glm::mat4 getProjectionMatrix() const;
 			glm::vec3 getPosition() const { return m_transform.position; }
 			GFXEngine::Math::Transform& getTransform() { return m_transform; }
+			GFXEngine::EngineTypes::CameraBufferObject getCameraBufferObject() const;
 		};
 	}
 }

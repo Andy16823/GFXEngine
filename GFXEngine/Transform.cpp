@@ -31,6 +31,21 @@ void GFXEngine::Math::Transform::rotateByEuler(float pitch, float yaw, float rol
 	rotation = rotation * (qYaw * qPitch * qRoll);
 }
 
+void GFXEngine::Math::Transform::translate(const glm::vec3& delta)
+{
+	position += delta;
+}
+
+void GFXEngine::Math::Transform::setPosition(const glm::vec3& newPos)
+{
+	position = newPos;
+}
+
+void GFXEngine::Math::Transform::setScale(const glm::vec3& newScale)
+{
+	scale = newScale;
+}
+
 glm::vec3 GFXEngine::Math::Transform::getEulerRotation() const
 {
 	glm::vec3 euler = glm::eulerAngles(rotation);
