@@ -17,3 +17,17 @@ LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath)
 	imageData.format = VK_FORMAT_R8G8B8A8_UNORM;
 	return imageData;
 }
+
+std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> GFXEngine::Utils::createCameraUniformBuffers(Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera3D& camera, VkDescriptorSetLayout descriptorSetLayout)
+{
+	size_t swapchainImageCount = renderer.getSwapchainImageCount();
+	std::vector<LibGFX::Buffer> uniformBuffers(swapchainImageCount);
+	std::vector<VkDescriptorSet> descriptorSets(swapchainImageCount);
+	size_t bufferSize = sizeof(GFXEngine::EngineTypes::CameraBufferObject);
+
+	for (size_t i = 0; i < swapchainImageCount; i++) {
+		uniformBuffers[i] = renderer.createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		descriptorSets[i] = renderer.allocateUniformBufferDescriptorSet(uniformBuffers[i], 0, descriptorSetLayout);
+	}
+	return { uniformBuffers, descriptorSets };
+}
