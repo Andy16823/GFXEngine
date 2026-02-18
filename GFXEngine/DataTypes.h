@@ -47,7 +47,7 @@ namespace GFXEngine {
 		{
 			glm::mat4 view;
 			glm::mat4 proj;
-			glm::vec3 cameraPos;
+			glm::vec4 cameraPos;
 		};
 	}
 }

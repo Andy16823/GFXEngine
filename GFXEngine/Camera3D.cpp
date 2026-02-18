@@ -17,7 +17,7 @@ GFXEngine::EngineTypes::CameraBufferObject GFXEngine::Graphics::Camera3D::getCam
 	EngineTypes::CameraBufferObject bufferObject;
 	bufferObject.view = getViewMatrix();
 	bufferObject.proj = getProjectionMatrix();
-	bufferObject.cameraPos = m_transform.position;
+	bufferObject.cameraPos = glm::vec4(m_transform.position, 1.0f);
 	return bufferObject;
 }
 
