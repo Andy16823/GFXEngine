@@ -23,9 +23,11 @@ GFXEngine::EngineTypes::CameraBufferObject GFXEngine::Graphics::Camera3D::getCam
 
 glm::mat4 GFXEngine::Graphics::Camera3D::getViewMatrix() const
 {
-	auto target = m_transform.position + m_transform.getForward();
-	auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-	return glm::lookAt(m_transform.position, target, up);
+	return glm::lookAt(
+		glm::vec3(0.0f, 0.0f, 5.0f),   // Kamera Position
+		glm::vec3(0.0f, 0.0f, 0.0f),   // Schaue auf Origin
+		glm::vec3(0.0f, 1.0f, 0.0f)    // Up vector
+	);
 }
 
 glm::mat4 GFXEngine::Graphics::Camera3D::getProjectionMatrix() const
