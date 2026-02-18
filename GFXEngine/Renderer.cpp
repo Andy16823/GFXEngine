@@ -265,3 +265,24 @@ void Renderer::drawBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buf
 	vkCmdBindIndexBuffer(commandBuffer, indexBuffers[0], 0, VK_INDEX_TYPE_UINT32);
 	vkCmdDrawIndexed(commandBuffer, indexCount, instanceCount, 0, 0, 0);
 }
+
+void Renderer::bindPushConstants(const void* data, size_t size, VkPipelineLayout pipelineLayout, uint32_t imageIndex)
+{
+	VkCommandBuffer commandBuffer = this->getCommandBuffer(imageIndex);
+	vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, static_cast<uint32_t>(size), data);
+}
+
+void Renderer::bindDescriptorSet(const VkDescriptorSet& descriptorSet, VkPipelineLayout pipelineLayout, uint32_t firstSet, uint32_t imageIndex)
+{
+	VkCommandBuffer commandBuffer = this->getCommandBuffer(imageIndex);
+	vkCmdBindDescriptorSets(
+		commandBuffer,
+		VK_PIPELINE_BIND_POINT_GRAPHICS,
+		pipelineLayout,
+		firstSet,
+		1,
+		&descriptorSet,
+		0,
+		nullptr
+	);
+}
