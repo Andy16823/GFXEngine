@@ -1,15 +1,15 @@
 #pragma once
 #include "DataTypes.h"
 #include "glm/glm.hpp"
+#include "Transform.h"
 
 namespace GFXEngine{
 	namespace Graphics {
+
 		class Camera3D
 		{
 		private:
-			glm::vec3 m_position;
-			glm::vec3 m_target;
-			glm::vec3 m_up;
+			GFXEngine::Math::Transform m_transform;
 			float m_fov;
 			float m_aspectRatio;
 			float m_nearPlane;
@@ -18,6 +18,8 @@ namespace GFXEngine{
 			Camera3D(glm::vec3 position, float aspect, float near, float far);
 			~Camera3D() = default;
 			GFXEngine::EngineTypes::CameraBufferObject getCameraBufferObject() const;
+			glm::mat4 getViewMatrix() const;
+			glm::mat4 getProjectionMatrix() const;
 		};
 	}
 }

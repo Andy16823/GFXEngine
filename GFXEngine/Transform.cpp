@@ -22,3 +22,24 @@ void GFXEngine::Math::Transform::setRotationFromEuler(const glm::vec3& rot)
 	glm::quat qRoll = glm::angleAxis(glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	rotation = qYaw * qPitch * qRoll;
 }
+
+glm::vec3 GFXEngine::Math::Transform::getEulerRotation() const
+{
+	glm::vec3 euler = glm::eulerAngles(rotation);
+	return glm::degrees(euler);
+}
+
+glm::vec3 GFXEngine::Math::Transform::getForward() const
+{
+	return rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+}
+
+glm::vec3 GFXEngine::Math::Transform::getRight() const
+{
+	return rotation * glm::vec3(1.0f, 0.0f, 0.0f);
+}
+
+glm::vec3 GFXEngine::Math::Transform::getUp()
+{
+	return rotation * glm::vec3(0.0f, 1.0f, 0.0f);
+}

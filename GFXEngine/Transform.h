@@ -19,10 +19,10 @@ namespace GFXEngine {
 
 			glm::mat4 getModelMatrix() const;
 			void setRotationFromEuler(const glm::vec3& rot);
-			glm::vec3 getEulerRotation() const {
-				glm::vec3 euler = glm::eulerAngles(rotation);
-				return glm::degrees(euler);
-			}
+			glm::vec3 getEulerRotation() const;
+			glm::vec3 getForward() const;
+			glm::vec3 getRight() const;
+			glm::vec3 getUp();
 		};
 	}
 }
