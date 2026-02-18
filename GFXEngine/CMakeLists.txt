@@ -5,6 +5,10 @@
 # Fügen Sie der ausführbaren Datei dieses Projekts eine Quelle hinzu.
 add_library(GFXEngine STATIC "GFXEngine.cpp" "GFXEngine.h" "Renderer.h" "Renderer.cpp" "OffscreenRenderPass.h" "OffscreenRenderPass.cpp" "PipelineManager.h" "PipelineManager.cpp" "DefaultPipeline.h" "DefaultPipeline.cpp" "RenderShader.h" "RenderShader.cpp" "DataTypes.h" "Utils.h" "Utils.cpp" "Shapes.h" "Shapes.cpp" "Camera3D.h" "Camera3D.cpp" "Transform.h" "Transform.cpp")
 
+target_compile_definitions(GFXEngine PRIVATE
+    GLM_FORCE_DEPTH_ZERO_TO_ONE
+)
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GFXEngine PROPERTY CXX_STANDARD 20)
 endif()
