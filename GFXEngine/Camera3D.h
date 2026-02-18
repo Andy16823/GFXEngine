@@ -21,6 +21,7 @@ namespace GFXEngine{
 			glm::mat4 getViewMatrix() const;
 			glm::mat4 getProjectionMatrix() const;
 			glm::vec3 getPosition() const { return m_transform.position; }
+			GFXEngine::Math::Transform& getTransform() { return m_transform; }
 		};
 	}
 }
