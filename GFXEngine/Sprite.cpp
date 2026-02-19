@@ -30,18 +30,15 @@ void GFXEngine::Core::Sprite::update(float deltaTime)
 
 void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D& camera, uint32_t imageIndex)
 {
-	if (m_pipeline) 
-	{
-		glm::mat4 model = transform.getModelMatrix();
-		std::vector<VkDescriptorSet> descriptorSets = {
-			camera.getDescriptorSet(imageIndex),
-			m_textureDescriptorSet
-		};
-		renderer.usePipeline(*m_pipeline, imageIndex);
-		renderer.bindDescriptorSets(descriptorSets, m_pipeline->getPipelineLayout(), imageIndex);
-		renderer.bindPushConstants(&model, sizeof(glm::mat4), m_pipeline->getPipelineLayout(), imageIndex);
-		renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, static_cast<uint32_t>(m_indices.size()), imageIndex);
-	}
+	glm::mat4 model = transform.getModelMatrix();
+	std::vector<VkDescriptorSet> descriptorSets = {
+		camera.getDescriptorSet(imageIndex),
+		m_textureDescriptorSet
+	};
+	renderer.usePipeline(m_pipeline, imageIndex);
+	renderer.bindDescriptorSets(descriptorSets, m_pipeline.getPipelineLayout(), imageIndex);
+	renderer.bindPushConstants(&model, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
+	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, static_cast<uint32_t>(m_indices.size()), imageIndex);
 }
 
 void GFXEngine::Core::Sprite::destroy(GFXEngine::Graphics::Renderer& renderer)
@@ -51,8 +48,7 @@ void GFXEngine::Core::Sprite::destroy(GFXEngine::Graphics::Renderer& renderer)
 	renderer.destroyBuffer(m_indexBuffer);
 }
 
-void Sprite::createDescriptorSet(GFXEngine::Graphics::Renderer& renderer, LibGFX::Pipeline* pipline, VkDescriptorSetLayout descriptorSetLayout)
+void Sprite::createDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSetLayout descriptorSetLayout)
 {
-	m_pipeline = pipline;
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, descriptorSetLayout);
 }

@@ -20,9 +20,9 @@ namespace GFXEngine {
 			std::vector<EngineTypes::Vertex3D> m_vertices;
 			std::vector<uint32_t> m_indices;
 
-			LibGFX::Pipeline* m_pipeline = nullptr;
+			LibGFX::Pipeline& m_pipeline;
 		public:
-			Sprite(const std::string& texturePath) : m_texturePath(texturePath) {
+			Sprite(const std::string& texturePath, LibGFX::Pipeline& pipeline) : m_texturePath(texturePath), m_pipeline(pipeline) {
 				this->transform.position = glm::vec3(0.0f);
 				this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 				this->transform.scale = glm::vec3(1.0f);
@@ -34,7 +34,7 @@ namespace GFXEngine {
 			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D& camera, uint32_t imageIndex) override;
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) override;
 
-			void createDescriptorSet(GFXEngine::Graphics::Renderer& renderer, LibGFX::Pipeline* pipline, VkDescriptorSetLayout descriptorSetLayout);
+			void createDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSetLayout descriptorSetLayout);
 		};
 	}
 }
