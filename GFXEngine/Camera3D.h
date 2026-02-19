@@ -2,6 +2,10 @@
 #include "DataTypes.h"
 #include "glm/glm.hpp"
 #include "Transform.h"
+#include <vector>
+#include "LibGFX.h"
+#include "Buffer.h"
+#include "Renderer.h"
 
 namespace GFXEngine{
 	namespace Graphics {
@@ -14,6 +18,9 @@ namespace GFXEngine{
 			float m_aspectRatio;
 			float m_nearPlane;
 			float m_farPlane;
+
+			std::vector<LibGFX::Buffer> m_cameraBuffers;
+			std::vector<VkDescriptorSet> m_descriptorSets;
 		public:
 			Camera3D(glm::vec3 position, float aspect, float near, float far);
 			~Camera3D() = default;
@@ -22,6 +29,10 @@ namespace GFXEngine{
 			glm::vec3 getPosition() const { return m_transform.position; }
 			GFXEngine::Math::Transform& getTransform() { return m_transform; }
 			GFXEngine::EngineTypes::CameraBufferObject getCameraBufferObject() const;
+
+			void createDescriptorSets(Renderer& renderer, VkDescriptorSetLayout descriptorSetLayout);
+			void updateCameraBuffers(Renderer& renderer, uint32_t imageIndex);
+			VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const { return m_descriptorSets[imageIndex]; }
 		};
 	}
 }

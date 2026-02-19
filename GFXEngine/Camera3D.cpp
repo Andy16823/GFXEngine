@@ -1,6 +1,7 @@
 #include "Camera3D.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Utils.h"
 
 GFXEngine::Graphics::Camera3D::Camera3D(glm::vec3 position, float aspect, float near, float far)
 {
@@ -19,6 +20,20 @@ GFXEngine::EngineTypes::CameraBufferObject GFXEngine::Graphics::Camera3D::getCam
 	bufferObject.proj = getProjectionMatrix();
 	bufferObject.cameraPos = glm::vec4(m_transform.position, 1.0f);
 	return bufferObject;
+}
+
+void GFXEngine::Graphics::Camera3D::createDescriptorSets(Renderer& renderer, VkDescriptorSetLayout descriptorSetLayout)
+{
+	auto [cameraBuffers, cameraDescriptorSets] = GFXEngine::Utils::createCameraUniformBuffers(renderer, *this, descriptorSetLayout);
+	m_cameraBuffers = cameraBuffers;
+	m_descriptorSets = cameraDescriptorSets;
+}
+
+void GFXEngine::Graphics::Camera3D::updateCameraBuffers(Renderer& renderer, uint32_t imageIndex)
+{
+	auto bufferData = getCameraBufferObject();
+	LibGFX::Buffer& buffer = m_cameraBuffers[imageIndex];
+	renderer.updateBuffer(buffer, &bufferData, 1);
 }
 
 glm::mat4 GFXEngine::Graphics::Camera3D::getViewMatrix() const
