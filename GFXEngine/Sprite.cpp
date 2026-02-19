@@ -32,7 +32,7 @@ void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GF
 {
 	if (m_pipeline) 
 	{
-		glm::mat4 model = transform.getModelMatrix();
+		glm::mat4 model = glm::mat4(1);
 		std::vector<VkDescriptorSet> descriptorSets = {
 			camera.getDescriptorSet(imageIndex),
 			m_textureDescriptorSet
