@@ -32,6 +32,7 @@ namespace GFXEngine{
 
 			void createDescriptorSets(Renderer& renderer, VkDescriptorSetLayout descriptorSetLayout);
 			void updateCameraBuffers(Renderer& renderer, uint32_t imageIndex);
+			void destroyDescriptorSets(Renderer& renderer);
 			VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const { return m_descriptorSets[imageIndex]; }
 		};
 	}

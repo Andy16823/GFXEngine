@@ -36,6 +36,15 @@ void GFXEngine::Graphics::Camera3D::updateCameraBuffers(Renderer& renderer, uint
 	renderer.updateBuffer(buffer, &bufferData, 1);
 }
 
+void GFXEngine::Graphics::Camera3D::destroyDescriptorSets(Renderer& renderer)
+{
+	for (size_t i = 0; i < m_cameraBuffers.size(); ++i) {
+		renderer.destroyBuffer(m_cameraBuffers[i]);
+	}
+	m_descriptorSets.clear();
+	m_cameraBuffers.clear();
+}
+
 glm::mat4 GFXEngine::Graphics::Camera3D::getViewMatrix() const
 {
 	auto target = m_transform.position + m_transform.getForward();
