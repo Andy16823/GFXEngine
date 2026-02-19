@@ -22,7 +22,11 @@ namespace GFXEngine {
 
 			LibGFX::Pipeline* m_pipeline = nullptr;
 		public:
-			Sprite(const std::string& texturePath) : m_texturePath(texturePath) {}
+			Sprite(const std::string& texturePath) : m_texturePath(texturePath) {
+				this->transform.position = glm::vec3(0.0f);
+				this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+				this->transform.scale = glm::vec3(1.0f);
+			}
 			virtual ~Sprite() = default;
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;
