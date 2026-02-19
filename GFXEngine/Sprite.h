@@ -26,9 +26,9 @@ namespace GFXEngine {
 			virtual ~Sprite() = default;
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;
-			virtual void Update(float deltaTime) override;
-			virtual void Render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D camera, uint32_t imageIndex) override;
-			virtual void Destroy(GFXEngine::Graphics::Renderer& renderer) override;
+			virtual void update(float deltaTime) override;
+			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D& camera, uint32_t imageIndex) override;
+			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) override;
 
 			void createDescriptorSet(GFXEngine::Graphics::Renderer& renderer, LibGFX::Pipeline* pipline, VkDescriptorSetLayout descriptorSetLayout);
 		};

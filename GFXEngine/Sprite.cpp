@@ -23,12 +23,12 @@ void GFXEngine::Core::Sprite::init(GFXEngine::Graphics::Renderer& renderer)
 	renderer.updateBuffer(m_indexBuffer, m_indices.data(), m_indices.size());
 }
 
-void GFXEngine::Core::Sprite::Update(float deltaTime)
+void GFXEngine::Core::Sprite::update(float deltaTime)
 {
 
 }
 
-void GFXEngine::Core::Sprite::Render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D camera, uint32_t imageIndex)
+void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D& camera, uint32_t imageIndex)
 {
 	if (m_pipeline) 
 	{
@@ -44,7 +44,7 @@ void GFXEngine::Core::Sprite::Render(GFXEngine::Graphics::Renderer& renderer, GF
 	}
 }
 
-void GFXEngine::Core::Sprite::Destroy(GFXEngine::Graphics::Renderer& renderer)
+void GFXEngine::Core::Sprite::destroy(GFXEngine::Graphics::Renderer& renderer)
 {
 	renderer.disposeTexture(m_texture);
 	renderer.destroyBuffer(m_vertexBuffer);
