@@ -323,3 +323,8 @@ LibGFX::DepthBuffer Renderer::createDepthBuffer(VkExtent2D extent, VkFormat form
 {
 	return m_context->createDepthBuffer(extent, format);
 }
+
+void Renderer::destroyDepthBuffer(LibGFX::DepthBuffer& depthBuffer)
+{
+	m_context->destroyDepthBuffer(depthBuffer);
+}

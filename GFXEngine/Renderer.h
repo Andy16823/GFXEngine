@@ -97,6 +97,7 @@ namespace GFXEngine {
 
 			// Framebuffers
 			LibGFX::DepthBuffer createDepthBuffer(VkExtent2D extent, VkFormat format);
+			void destroyDepthBuffer(LibGFX::DepthBuffer& depthBuffer);
 
 			// BUFFERS
 			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
