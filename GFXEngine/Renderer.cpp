@@ -193,7 +193,7 @@ void Renderer::destroyPipeline(LibGFX::Pipeline& pipeline)
 	pipeline.destroy(*m_context);
 }
 
-void Renderer::usePipeline(LibGFX::Pipeline& pipeline, uint32_t imageIndex)
+void Renderer::usePipeline(const LibGFX::Pipeline& pipeline, uint32_t imageIndex)
 {
 	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }

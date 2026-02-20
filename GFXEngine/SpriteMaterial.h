@@ -8,7 +8,7 @@ namespace GFXEngine {
 	namespace Graphics {
 		class SpriteMaterial : public Material {
 		private:
-			DefaultPipeline m_pipeline;
+			const DefaultPipeline& m_pipeline;
 			std::string m_texturePath;
 			LibGFX::Image m_texture;
 			VkDescriptorSet m_textureDescriptorSet;
