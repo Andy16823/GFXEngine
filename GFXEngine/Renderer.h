@@ -81,6 +81,7 @@ namespace GFXEngine {
 			void dispose();
 
 			// TEXTURES
+			LibGFX::Image createImage(VkExtent2D extent, VkFormat format, VkImageUsageFlags usage, VkMemoryPropertyFlags properties);
 			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
 			void disposeTexture(LibGFX::Image& image);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
@@ -93,6 +94,9 @@ namespace GFXEngine {
 			// PIPELINES
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
+
+			// Framebuffers
+			LibGFX::DepthBuffer createDepthBuffer(VkExtent2D extent, VkFormat format);
 
 			// BUFFERS
 			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
@@ -112,7 +116,10 @@ namespace GFXEngine {
 			size_t getFramebufferCount() const { return m_framebuffers.size(); }
 			VkRect2D getScissor() const { return m_scissor; }
 			VkViewport getViewport() const { return m_viewport; }
-			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }			
+			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }	
+			SwapchainInfo& getSwapchainInfo() { return m_swapchainInfo; }
+			VkFormat getDepthFormat() const { return m_depthFormat; }
+			LibGFX::VkContext& getContext() { return *m_context; }
 		};
 	}
 }

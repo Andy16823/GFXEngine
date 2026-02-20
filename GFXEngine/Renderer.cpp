@@ -286,3 +286,40 @@ void Renderer::bindDescriptorSet(const VkDescriptorSet& descriptorSet, VkPipelin
 		nullptr
 	);
 }
+
+LibGFX::Image Renderer::createImage(VkExtent2D extent, VkFormat format, VkImageUsageFlags usage, VkMemoryPropertyFlags properties)
+{
+	VkDeviceMemory imageMemory;
+
+	VkImage image = m_context->createVkImage(
+		m_context->getPhysicalDevice(),
+		m_context->getDevice(),
+		extent.width,
+		extent.height,
+		format,
+		VK_IMAGE_TILING_OPTIMAL,
+		usage,
+		properties,
+		&imageMemory);
+
+	VkImageView imageView = m_context->createImageView(
+		m_context->getDevice(), 
+		image, 
+		format, 
+		VK_IMAGE_ASPECT_COLOR_BIT);
+
+	LibGFX::Image result = {};
+	result.image = image;
+	result.imageView = imageView;
+	result.memory = imageMemory;
+	result.format = format;
+	result.width = extent.width;
+	result.height = extent.height;
+
+	return result;
+}
+
+LibGFX::DepthBuffer Renderer::createDepthBuffer(VkExtent2D extent, VkFormat format)
+{
+	return m_context->createDepthBuffer(extent, format);
+}
