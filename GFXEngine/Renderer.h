@@ -118,6 +118,7 @@ namespace GFXEngine {
 			VkRect2D getScissor() const { return m_scissor; }
 			VkViewport getViewport() const { return m_viewport; }
 			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }	
+			LibGFX::RenderPass& getOffscreenRenderPass() const { return *m_offscreenRenderPass; }
 			SwapchainInfo& getSwapchainInfo() { return m_swapchainInfo; }
 			VkFormat getDepthFormat() const { return m_depthFormat; }
 			LibGFX::VkContext& getContext() { return *m_context; }

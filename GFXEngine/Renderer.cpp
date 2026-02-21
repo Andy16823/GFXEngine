@@ -26,6 +26,12 @@ void Renderer::init(GLFWwindow* window)
 		throw std::runtime_error("Failed to create render pass");
 	}
 
+	// Offscreen render pass
+	m_offscreenRenderPass = std::make_unique<OffscreenRenderPass>();
+	if (!m_offscreenRenderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format)) {
+		throw std::runtime_error("Failed to create offscreen render pass");
+	}
+
 	// Viewport & Scissor
 	m_viewport = m_context->createViewport(0.0f, 0.0f, m_swapchainInfo.extent);
 	m_scissor = m_context->createScissorRect(0, 0, m_swapchainInfo.extent);
@@ -77,7 +83,7 @@ void Renderer::dispose()
 		vkDestroyFramebuffer(m_context->getDevice(), framebuffer, nullptr);
 	}
 	m_renderPass->destroy(*m_context);
-	//m_offscreenRenderPass->destroy(*m_context); TODO: Uncomment when offscreen render pass is implemented
+	m_offscreenRenderPass->destroy(*m_context);
 	m_context->destroyDepthBuffer(m_depthBuffer);
 	m_context->destroySwapChain(m_swapchainInfo);
 	m_context->dispose();

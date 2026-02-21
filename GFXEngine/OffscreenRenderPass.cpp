@@ -18,7 +18,7 @@ std::span<const VkClearValue> OffscreenRenderPass::getClearValues() const
 bool OffscreenRenderPass::create(LibGFX::VkContext& context, VkFormat swapchainImageFormat, VkFormat depthFormat)
 {
 	// Clear values for color and depth attachments
-	m_clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+	m_clearValues[0].color = { {0.0f, 0.0f, 0.0f, 0.0f} };
 	m_clearValues[1].depthStencil = { 1.0f, 0 };
 
 	VkAttachmentDescription colorAttachment = {};
