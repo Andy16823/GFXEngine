@@ -9,6 +9,12 @@
 
 namespace GFXEngine {
 	namespace Core {
+
+		/// <summary>
+		/// Sprite entity that represents a 2D textured quad in the scene. 
+		/// It uses a SpriteMaterial for rendering and contains 
+		/// vertex and index buffers for the quad geometry.
+		/// </summary>
 		class Sprite : public Entity
 		{
 		private:

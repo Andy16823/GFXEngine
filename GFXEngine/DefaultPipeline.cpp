@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include "DataTypes.h"
 
-// TODO: Implement the default pipeline for onscreen rendering, including shader stages, vertex input state, input assembly state, viewport and scissor state, rasterization state, multisample state, depth stencil state, color blend state, and dynamic state as needed.
 using namespace LibGFX;
 
 void GFXEngine::Graphics::DefaultPipeline::create(VkContext& context)

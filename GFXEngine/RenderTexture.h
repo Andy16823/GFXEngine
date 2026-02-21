@@ -6,6 +6,12 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// ´RenderTexture´ represents a render target that renders to an offscreen texture instead of the swapchain. 
+		/// It encapsulates the color and depth attachments, framebuffer, and necessary resources for rendering to a texture. 
+		/// This can be used for post-processing effects, shadow mapping, or any scenario where rendering to a texture is required.
+		/// </summary>
 		class RenderTexture : public RenderTarget
 		{
 		private:
@@ -24,11 +30,9 @@ namespace GFXEngine {
 			virtual VkExtent2D getExtent() const override;
 			virtual std::span<const VkClearValue> getClearValues() const override;
 			virtual void create(Renderer& renderer, VkExtent2D extend, const LibGFX::RenderPass& renderpass) override;
-			virtual void destroy(Renderer& renderer) override;
-
-			// Geerbt über RenderTarget
 			void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) override;
 			void draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex) override;
+			virtual void destroy(Renderer& renderer) override;
 		};
 	}
 }

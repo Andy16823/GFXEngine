@@ -18,6 +18,9 @@ namespace GFXEngine
 			RenderShader m_shader;
 
 		public:
+			DefaultPipeline(const RenderShader& shader) : m_shader(shader), m_pipeline(VK_NULL_HANDLE), m_pipelineLayout(VK_NULL_HANDLE), m_textureLayout(VK_NULL_HANDLE) {}
+			~DefaultPipeline() = default;
+
 			void create(LibGFX::VkContext& context) override;
 			void destroy(LibGFX::VkContext& context) override;
 			VkPipeline getPipeline() const override;
@@ -27,7 +30,6 @@ namespace GFXEngine
 			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }
 			void setViewport(VkViewport viewport) { m_viewport = viewport; }
 			void setScissor(VkRect2D scissor) { m_scissor = scissor; }
-			void setShader(const RenderShader& shader) { m_shader = shader; }
 		};
 	}
 }
