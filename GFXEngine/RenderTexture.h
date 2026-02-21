@@ -30,7 +30,7 @@ namespace GFXEngine {
 
 			// Geerbt über RenderTarget
 			void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) override;
-			void draw(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex) override;
+			void draw(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex) override; // TODO: Pipeline should probably be an LibGFX::Pipeline reference instead of just the layout
 		};
 	}
 }

@@ -60,6 +60,8 @@ void GFXEngine::Graphics::RenderTexture::create(Renderer& renderer, VkExtent2D e
 
 void GFXEngine::Graphics::RenderTexture::destroy(Renderer& renderer)
 {
+	renderer.destroyBuffer(m_vertexBuffer);
+	renderer.destroyBuffer(m_indexBuffer);
 	renderer.disposeTexture(m_colorAttachment);
 	renderer.destroyDepthBuffer(m_depthAttachment);
 	vkDestroyFramebuffer(renderer.getContext().getDevice(), m_framebuffer, nullptr);
@@ -73,8 +75,6 @@ void GFXEngine::Graphics::RenderTexture::createDescriptorSet(Renderer& renderer,
 
 void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex)
 {
-	// Bind the descriptor set for the color attachment
 	renderer.bindDescriptorSet(m_descriptorSet, pipelineLayout, 0, imageIndex);
-	// Draw a full-screen quad using the vertex and index buffers
 	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, 6, imageIndex);
 }
