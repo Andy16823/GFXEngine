@@ -25,12 +25,10 @@ namespace GFXEngine {
 			virtual std::span<const VkClearValue> getClearValues() const override;
 			virtual void create(Renderer& renderer, VkExtent2D extend, const LibGFX::RenderPass& renderpass) override;
 			virtual void destroy(Renderer& renderer) override;
-			virtual LibGFX::Buffer& getVertexBuffer() override { return m_vertexBuffer; }
-			virtual LibGFX::Buffer& getIndexBuffer() override { return m_indexBuffer; }
 
 			// Geerbt über RenderTarget
 			void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) override;
-			void draw(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex) override; // TODO: Pipeline should probably be an LibGFX::Pipeline reference instead of just the layout
+			void draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex) override;
 		};
 	}
 }
