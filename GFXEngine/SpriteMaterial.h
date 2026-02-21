@@ -6,6 +6,11 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// SpriteMaterial is a concrete implementation of the Material interface for rendering textured sprites. 
+		/// It manages its own texture resource and descriptor set for binding the texture to the shader.
+		/// </summary>
 		class SpriteMaterial : public Material {
 		private:
 			const GeometryPipeline& m_pipeline;
