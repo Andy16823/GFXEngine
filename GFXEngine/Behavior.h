@@ -5,16 +5,16 @@
 namespace GFXEngine {
 	namespace Core {
 
-		// Forward declaration of Entity to avoid circular dependency with Behavior
-		class Entity;
-
+		/// <summary>
+		/// Abstract base class for behaviors that can be attached to entities.
+		/// </summary>
 		class Behavior {
 		protected:
-			Entity* m_entity;
+			class Entity* m_entity;
 
 		public:
 			virtual ~Behavior() = default;
-			void setEntity(Entity* entity) { m_entity = entity; }
+			void setEntity(class Entity* entity) { m_entity = entity; }
 			virtual void init(Graphics::Renderer& renderer) = 0;
 			virtual void update(float deltaTime) = 0;
 			virtual void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) = 0;
