@@ -9,6 +9,7 @@ using namespace GFXEngine::Math;
 
 void GFXEngine::Core::Sprite::init(GFXEngine::Graphics::Renderer& renderer)
 {
+	Entity::init(renderer);
 	Shapes::createSprite(m_vertices, m_indices);
 
 	size_t vertexBufferSize = m_vertices.size() * sizeof(EngineTypes::Vertex3D);
@@ -22,11 +23,15 @@ void GFXEngine::Core::Sprite::init(GFXEngine::Graphics::Renderer& renderer)
 
 void GFXEngine::Core::Sprite::update(float deltaTime)
 {
-
+	Entity::update(deltaTime);
 }
 
-void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D& camera, uint32_t imageIndex)
+void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
+	if (!isVisible())
+		return;
+
+	Entity::render(renderer, camera, imageIndex);
 	glm::mat4 model = transform.getModelMatrix();
 	m_material.bind(renderer, camera, imageIndex);
 	renderer.bindPushConstants(&model, sizeof(glm::mat4), m_material.getPipelineLayout(), imageIndex);
@@ -35,6 +40,7 @@ void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GF
 
 void GFXEngine::Core::Sprite::destroy(GFXEngine::Graphics::Renderer& renderer)
 {
+	Entity::destroy(renderer);
 	renderer.destroyBuffer(m_vertexBuffer);
 	renderer.destroyBuffer(m_indexBuffer);
 }

@@ -21,7 +21,7 @@ namespace GFXEngine {
 		public:
 			SpriteMaterial(const std::string& texturePath, const GeometryPipeline& pipeline) : m_texturePath(texturePath), m_pipeline(pipeline) {}
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, Camera3D& camera, uint32_t imageIndex) override;
+			void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) override;
 			void destroy(Renderer& renderer) override;
 			VkPipelineLayout getPipelineLayout() const override { return m_pipeline.getPipelineLayout(); }
 		};

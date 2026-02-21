@@ -34,7 +34,7 @@ namespace GFXEngine {
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;
 			virtual void update(float deltaTime) override;
-			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera3D& camera, uint32_t imageIndex) override;
+			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) override;
 		};
 	}
