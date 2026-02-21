@@ -7,6 +7,13 @@ using namespace GFXEngine::Graphics;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Math;
 
+Sprite::Sprite(Graphics::SpriteMaterial& material) : m_material(material)
+{
+	this->transform.position = glm::vec3(0.0f);
+	this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	this->transform.scale = glm::vec3(1.0f);
+}
+
 void GFXEngine::Core::Sprite::init(GFXEngine::Graphics::Renderer& renderer)
 {
 	Entity::init(renderer);

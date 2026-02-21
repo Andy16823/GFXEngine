@@ -25,11 +25,7 @@ namespace GFXEngine {
 			std::vector<EngineTypes::Vertex3D> m_vertices;
 			std::vector<uint32_t> m_indices;
 		public:
-			Sprite(Graphics::SpriteMaterial& material) : m_material(material) {
-				this->transform.position = glm::vec3(0.0f);
-				this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-				this->transform.scale = glm::vec3(1.0f);
-			}
+			Sprite(Graphics::SpriteMaterial& material);
 			virtual ~Sprite() = default;
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;
