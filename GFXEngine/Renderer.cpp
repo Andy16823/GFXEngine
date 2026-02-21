@@ -125,6 +125,10 @@ void Renderer::beginRenderPass(const LibGFX::RenderPass& renderPass, uint32_t im
 	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderPass, m_framebuffers[imageIndex], m_swapchainInfo.extent);
 }
 
+void Renderer::beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, uint32_t imageIndex)
+{
+	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderpass, framebuffer, m_swapchainInfo.extent);
+}
 
 void Renderer::endRenderPass(uint32_t imageIndex)
 {
