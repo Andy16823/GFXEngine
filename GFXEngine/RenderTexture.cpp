@@ -1,5 +1,6 @@
 #include "RenderTexture.h"
 #include <iostream>
+#include "Shapes.h"
 
 VkFramebuffer GFXEngine::Graphics::RenderTexture::getFramebuffer() const
 {
@@ -46,16 +47,15 @@ void GFXEngine::Graphics::RenderTexture::create(Renderer& renderer, VkExtent2D e
 		throw std::runtime_error("Failed to create framebuffer for render texture");
 	}
 	std::cout << "Created render texture with extent: " << m_extent.width << "x" << m_extent.height << std::endl;
-}
 
-void GFXEngine::Graphics::RenderTexture::useAsColorAttachment(Renderer& renderer, uint32_t imageIndex, uint32_t attachmentIndex) const
-{
+	auto [vertices, indices] = Shapes::createFramebufferQuad();
+	size_t vertexBufferSize = vertices.size() * sizeof(EngineTypes::Vertex3D);
+	m_vertexBuffer = renderer.createBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	renderer.updateBuffer(m_vertexBuffer, vertices.data(), vertices.size());
 
-}
-
-void GFXEngine::Graphics::RenderTexture::useAsDepthAttachment(Renderer& renderer, uint32_t imageIndex) const
-{
-
+	size_t indexBufferSize = indices.size() * sizeof(uint32_t);
+	m_indexBuffer = renderer.createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	renderer.updateBuffer(m_indexBuffer, indices.data(), indices.size());
 }
 
 void GFXEngine::Graphics::RenderTexture::destroy(Renderer& renderer)
@@ -63,4 +63,18 @@ void GFXEngine::Graphics::RenderTexture::destroy(Renderer& renderer)
 	renderer.disposeTexture(m_colorAttachment);
 	renderer.destroyDepthBuffer(m_depthAttachment);
 	vkDestroyFramebuffer(renderer.getContext().getDevice(), m_framebuffer, nullptr);
+}
+
+void GFXEngine::Graphics::RenderTexture::createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout)
+{
+	// Create descriptor set for the color attachment
+	m_descriptorSet = renderer.allocateTextureDescriptorSet(m_colorAttachment, binding, layout);
+}
+
+void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex)
+{
+	// Bind the descriptor set for the color attachment
+	renderer.bindDescriptorSet(m_descriptorSet, pipelineLayout, 0, imageIndex);
+	// Draw a full-screen quad using the vertex and index buffers
+	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, 6, imageIndex);
 }

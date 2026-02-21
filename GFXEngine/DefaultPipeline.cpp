@@ -14,13 +14,8 @@ void GFXEngine::Graphics::DefaultPipeline::create(VkContext& context)
 	// Get the Vulkan device from the context
 	VkDevice device = context.getDevice();
 
-	// Descriptor Set Layout for Matrix Uniforms
+	// Descriptor Set Layout for texture sampler
 	LibGFX::DescriptorSetLayoutBuilder descriptorSetLayoutBuilder;
-	m_uniformsLayout = descriptorSetLayoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 1)
-		.build(context);
-	descriptorSetLayoutBuilder.clear();
-
-	// Descriptor Set Layout for Texture Sampler
 	m_textureLayout = descriptorSetLayoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1)
 		.build(context);
 	descriptorSetLayoutBuilder.clear();
@@ -136,18 +131,13 @@ void GFXEngine::Graphics::DefaultPipeline::create(VkContext& context)
 	colorBlending.pAttachments = &colorBlendAttachment;
 
 	// Pipeline Layout
-	VkPushConstantRange pushConstantRange = {};	
-	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-	pushConstantRange.offset = 0;
-	pushConstantRange.size = sizeof(glm::mat4);
-
-	std::array<VkDescriptorSetLayout, 2> layouts = { m_uniformsLayout, m_textureLayout };
+	std::array<VkDescriptorSetLayout, 1> layouts = { m_textureLayout };
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
 	pipelineLayoutInfo.pSetLayouts = layouts.data();
-	pipelineLayoutInfo.pushConstantRangeCount = 1;
-	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+	pipelineLayoutInfo.pushConstantRangeCount = 0;
+	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
 	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
@@ -197,11 +187,6 @@ void GFXEngine::Graphics::DefaultPipeline::destroy(VkContext& context)
 	if (m_pipelineLayout != VK_NULL_HANDLE) {
 		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
 		m_pipelineLayout = VK_NULL_HANDLE;
-	}
-
-	if (m_uniformsLayout != VK_NULL_HANDLE) {
-		context.destroyDescriptorSetLayout(m_uniformsLayout);
-		m_uniformsLayout = VK_NULL_HANDLE;
 	}
 
 	if (m_textureLayout != VK_NULL_HANDLE) {

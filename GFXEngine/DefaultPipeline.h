@@ -12,7 +12,6 @@ namespace GFXEngine
 			VkPipelineLayout m_pipelineLayout;
 			VkPipeline m_pipeline;
 			VkRenderPass m_renderPass;
-			VkDescriptorSetLayout m_uniformsLayout;
 			VkDescriptorSetLayout m_textureLayout;
 			VkViewport m_viewport;
 			VkRect2D m_scissor;
@@ -23,7 +22,6 @@ namespace GFXEngine
 			void destroy(LibGFX::VkContext& context) override;
 			VkPipeline getPipeline() const override;
 			VkPipelineLayout getPipelineLayout() const override;
-			VkDescriptorSetLayout getUniformsDescriptorSetLayout() const { return m_uniformsLayout; }
 			VkDescriptorSetLayout getTextureDescriptorSetLayout() const { return m_textureLayout; }
 
 			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }

@@ -15,6 +15,7 @@ namespace GFXEngine {
 			LibGFX::Buffer m_indexBuffer;
 			VkFramebuffer m_framebuffer;
 			VkExtent2D m_extent;
+			VkDescriptorSet m_descriptorSet;
 
 		public:
 			RenderTexture() = default;
@@ -23,9 +24,13 @@ namespace GFXEngine {
 			virtual VkExtent2D getExtent() const override;
 			virtual std::span<const VkClearValue> getClearValues() const override;
 			virtual void create(Renderer& renderer, VkExtent2D extend, const LibGFX::RenderPass& renderpass) override;
-			virtual void useAsColorAttachment(Renderer& renderer, uint32_t imageIndex, uint32_t attachmentIndex) const override;
-			virtual void useAsDepthAttachment(Renderer& renderer, uint32_t imageIndex) const override;
 			virtual void destroy(Renderer& renderer) override;
+			virtual LibGFX::Buffer& getVertexBuffer() override { return m_vertexBuffer; }
+			virtual LibGFX::Buffer& getIndexBuffer() override { return m_indexBuffer; }
+
+			// Geerbt über RenderTarget
+			void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) override;
+			void draw(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex) override;
 		};
 	}
 }
