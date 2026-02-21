@@ -6,7 +6,7 @@
 namespace GFXEngine
 {
 	namespace Graphics {
-		class DefaultPipeline : public LibGFX::Pipeline
+		class PresentPipeline : public LibGFX::Pipeline
 		{
 		private:
 			VkPipelineLayout m_pipelineLayout;
@@ -18,8 +18,8 @@ namespace GFXEngine
 			RenderShader m_shader;
 
 		public:
-			DefaultPipeline(const RenderShader& shader) : m_shader(shader), m_pipeline(VK_NULL_HANDLE), m_pipelineLayout(VK_NULL_HANDLE), m_textureLayout(VK_NULL_HANDLE) {}
-			~DefaultPipeline() = default;
+			PresentPipeline(const RenderShader& shader) : m_shader(shader), m_pipeline(VK_NULL_HANDLE), m_pipelineLayout(VK_NULL_HANDLE), m_textureLayout(VK_NULL_HANDLE) {}
+			~PresentPipeline() = default;
 
 			void create(LibGFX::VkContext& context) override;
 			void destroy(LibGFX::VkContext& context) override;

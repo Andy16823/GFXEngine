@@ -1,25 +1,25 @@
-#include "MeshPipeline.h"
+#include "PresentPipeline.h"
 #include "DescriptorSetLayoutBuilder.h"
+#include "LibGFX.h"
 #include <array>
 #include <glm/glm.hpp>
 #include <stdexcept>
+#include "DataTypes.h"
 
-void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
+using namespace LibGFX;
+
+void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 {
+	// Get the Vulkan device from the context
 	VkDevice device = context.getDevice();
 
-	// Layout for camera matrix uniforms
-	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
-	m_uniformsLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+	// Descriptor Set Layout for texture sampler
+	LibGFX::DescriptorSetLayoutBuilder descriptorSetLayoutBuilder;
+	m_textureLayout = descriptorSetLayoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1)
 		.build(context);
-	layoutBuilder.clear();
+	descriptorSetLayoutBuilder.clear();
 
-	// Layout for texture sampler
-	m_textureLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-		.build(context);
-	layoutBuilder.clear();
-
-	// Vertex shader
+	// Shader Stage
 	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -27,7 +27,6 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 	vertShaderStageInfo.module = vertexShaderModule;
 	vertShaderStageInfo.pName = "main";
 
-	// Fragment shader
 	auto fragmentShaderModule = context.createShaderModule(m_shader.fragCode);
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -37,7 +36,6 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 
 	std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = { vertShaderStageInfo, fragShaderStageInfo };
 
-	// Vertex input state
 	VkVertexInputBindingDescription bindingDescription = {};
 	bindingDescription.binding = 0;
 	bindingDescription.stride = sizeof(EngineTypes::Vertex3D);
@@ -70,13 +68,13 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
-	// Input assembly state
+	// Input Assembly
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	// Viewport and scissor
+	// Viewport and Scissor
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = 1;
@@ -84,31 +82,37 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 	viewportState.scissorCount = 1;
 	viewportState.pScissors = &m_scissor;
 
-	// Dynamic state
-	std::array<VkDynamicState, 2> dynamicStates = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
-	VkPipelineDynamicStateCreateInfo dynamicStateInfo = {};
-	dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
-	dynamicStateInfo.pDynamicStates = dynamicStates.data();
+	// Dynamic State
+	std::array<VkDynamicState, 2> dynamicStates = {
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_SCISSOR
+	};
+	VkPipelineDynamicStateCreateInfo dynamicState = {};
+	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	dynamicState.pDynamicStates = dynamicStates.data();
 
-	// Rasterizer state
+	// Rasterizer
 	VkPipelineRasterizationStateCreateInfo rasterizer = {};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-	rasterizer.cullMode = VK_CULL_MODE_NONE;
-	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.lineWidth = 1.0f;
+	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizer.depthBiasEnable = VK_FALSE;
+	rasterizer.depthBiasConstantFactor = 0.0f;
+	rasterizer.depthBiasClamp = 0.0f;
+	rasterizer.depthBiasSlopeFactor = 0.0f;
 
-	// Multisampling state
+	// Multisampling
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	multisampling.sampleShadingEnable = VK_FALSE;
 	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
-	// Color blending state
+	// Color Blending
 	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 	colorBlendAttachment.blendEnable = VK_TRUE;
@@ -117,33 +121,27 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 	colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
 	colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 	colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-	colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-	
+	//colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
 	VkPipelineColorBlendStateCreateInfo colorBlending = {};
 	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 	colorBlending.logicOpEnable = VK_FALSE;
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
 
-	// Pipeline layout
-	VkPushConstantRange pushConstantRange = {};
-	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-	pushConstantRange.offset = 0;
-	pushConstantRange.size = sizeof(glm::mat4);
-
-	std::array<VkDescriptorSetLayout, 2> descriptorSetLayouts = { m_uniformsLayout, m_textureLayout };
+	// Pipeline Layout
+	std::array<VkDescriptorSetLayout, 1> layouts = { m_textureLayout };
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
-	pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
-	pipelineLayoutInfo.pushConstantRangeCount = 1;
-	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
+	pipelineLayoutInfo.pSetLayouts = layouts.data();
+	pipelineLayoutInfo.pushConstantRangeCount = 0;
+	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
 	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
-	// Depth stencil state
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 	depthStencil.depthTestEnable = VK_TRUE;
@@ -152,7 +150,7 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 	depthStencil.depthBoundsTestEnable = VK_FALSE;
 	depthStencil.stencilTestEnable = VK_FALSE;
 
-	// Pipeline creation info
+	// Pipeline Create Info
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
@@ -160,7 +158,7 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
-	pipelineInfo.pDynamicState = nullptr; // TODO: Consider using dynamic state for viewport and scissor
+	pipelineInfo.pDynamicState = nullptr;
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
@@ -173,11 +171,12 @@ void GFXEngine::Graphics::MeshPipeline::create(LibGFX::VkContext& context)
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
+	// Clean up shader modules
 	vkDestroyShaderModule(device, vertexShaderModule, nullptr);
 	vkDestroyShaderModule(device, fragmentShaderModule, nullptr);
 }
 
-void GFXEngine::Graphics::MeshPipeline::destroy(LibGFX::VkContext& context)
+void GFXEngine::Graphics::PresentPipeline::destroy(VkContext& context)
 {
 	if (m_pipeline != VK_NULL_HANDLE) {
 		vkDestroyPipeline(context.getDevice(), m_pipeline, nullptr);
@@ -189,23 +188,18 @@ void GFXEngine::Graphics::MeshPipeline::destroy(LibGFX::VkContext& context)
 		m_pipelineLayout = VK_NULL_HANDLE;
 	}
 
-	if (m_uniformsLayout != VK_NULL_HANDLE) {
-		context.destroyDescriptorSetLayout(m_uniformsLayout);
-		m_uniformsLayout = VK_NULL_HANDLE;
-	}
-
 	if (m_textureLayout != VK_NULL_HANDLE) {
 		context.destroyDescriptorSetLayout(m_textureLayout);
 		m_textureLayout = VK_NULL_HANDLE;
 	}
 }
 
-VkPipeline GFXEngine::Graphics::MeshPipeline::getPipeline() const
+VkPipeline GFXEngine::Graphics::PresentPipeline::getPipeline() const
 {
 	return m_pipeline;
 }
 
-VkPipelineLayout GFXEngine::Graphics::MeshPipeline::getPipelineLayout() const
+VkPipelineLayout GFXEngine::Graphics::PresentPipeline::getPipelineLayout() const
 {
 	return m_pipelineLayout;
 }

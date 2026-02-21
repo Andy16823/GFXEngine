@@ -7,10 +7,10 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class MeshPipeline : public LibGFX::Pipeline
+		class GeometryPipeline : public LibGFX::Pipeline
 		{
 		public:
-			MeshPipeline(const RenderShader& shader) : m_shader(shader) {}
+			GeometryPipeline(const RenderShader& shader) : m_shader(shader) {}
 			void create(LibGFX::VkContext& context) override;
 			void destroy(LibGFX::VkContext& context) override;
 			void setViewport(VkViewport viewport) { m_viewport = viewport; }

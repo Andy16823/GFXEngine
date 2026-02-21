@@ -1,7 +1,5 @@
 #include "Renderer.h"
 #include <stdexcept>
-#include "RenderShader.h"
-#include "DefaultPipeline.h"
 #include "DescriptorPoolBuilder.h"
 #include "DescriptorSetWriter.h"
 
