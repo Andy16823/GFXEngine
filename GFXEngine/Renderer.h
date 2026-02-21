@@ -67,7 +67,9 @@ namespace GFXEngine {
 			void createSyncObjects();
 			uint32_t nextImage();
 			void beginFrame(uint32_t imageIndex);
+			void beginRenderPass(const LibGFX::RenderPass& renderpass, uint32_t imageIndex);
 			void usePipeline(const LibGFX::Pipeline& pipeline, uint32_t imageIndex);
+			void endRenderPass(uint32_t imageIndex);
 			void endFrame(uint32_t imageIndex);
 			void submitFrame(uint32_t imageIndex);
 			void presentFrame(uint32_t imageIndex);

@@ -118,12 +118,21 @@ uint32_t Renderer::nextImage()
 void Renderer::beginFrame(uint32_t imageIndex)
 {
 	m_context->beginCommandBuffer(m_commandBuffers[imageIndex]);
-	m_context->beginRenderPass(m_commandBuffers[imageIndex], *m_renderPass.get(), m_framebuffers[imageIndex], m_swapchainInfo.extent);
+}
+
+void Renderer::beginRenderPass(const LibGFX::RenderPass& renderPass, uint32_t imageIndex)
+{
+	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderPass, m_framebuffers[imageIndex], m_swapchainInfo.extent);
+}
+
+
+void Renderer::endRenderPass(uint32_t imageIndex)
+{
+	m_context->endRenderPass(m_commandBuffers[imageIndex]);
 }
 
 void Renderer::endFrame(uint32_t imageIndex)
 {
-	m_context->endRenderPass(m_commandBuffers[imageIndex]);
 	m_context->endCommandBuffer(m_commandBuffers[imageIndex]);
 }
 
