@@ -18,6 +18,8 @@ namespace GFXEngine {
 			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }
 			VkPipeline getPipeline() const override;
 			VkPipelineLayout getPipelineLayout() const override;
+			VkDescriptorSetLayout getUniformsDescriptorSetLayout() const { return m_uniformsLayout; }
+			VkDescriptorSetLayout getTextureDescriptorSetLayout() const { return m_textureLayout; }
 
 		private:
 			VkPipelineLayout m_pipelineLayout;
