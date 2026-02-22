@@ -25,8 +25,3 @@ void GFXEngine::Graphics::UnlitMaterial::destroy(Renderer& renderer)
 {
 	renderer.disposeTexture(m_texture);
 }
-
-VkPipelineLayout GFXEngine::Graphics::UnlitMaterial::getPipelineLayout() const
-{
-	return m_pipeline.getPipelineLayout();
-}
