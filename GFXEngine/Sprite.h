@@ -6,6 +6,7 @@
 #include <vector>
 #include "Pipeline.h"
 #include "SpriteMaterial.h"
+#include "Mesh.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -19,13 +20,10 @@ namespace GFXEngine {
 		{
 		private:
 			Graphics::SpriteMaterial& m_material;
+			const Graphics::Mesh& m_mesh;
 
-			LibGFX::Buffer m_vertexBuffer;
-			LibGFX::Buffer m_indexBuffer;
-			std::vector<EngineTypes::Vertex3D> m_vertices;
-			std::vector<uint32_t> m_indices;
 		public:
-			Sprite(Graphics::SpriteMaterial& material);
+			Sprite(Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh);
 			virtual ~Sprite() = default;
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;
