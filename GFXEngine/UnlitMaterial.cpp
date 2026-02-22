@@ -5,7 +5,7 @@
 void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 {
 	std::cout << "Initializing UnlitMaterial with texture: " << m_texturePath << std::endl;
-	LibGFX::ImageData imageData = GFXEngine::Utils::loadImage(m_texturePath);
+	LibGFX::ImageData imageData = GFXEngine::Utils::loadImage(m_texturePath, false);
 	m_texture = renderer.loadTexture(imageData);
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, m_pipeline.getTextureDescriptorSetLayout());
 	std::cout << "UnlitMaterial initialized successfully." << std::endl;

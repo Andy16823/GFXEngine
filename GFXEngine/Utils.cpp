@@ -7,9 +7,9 @@
 #include "assimp/scene.h"
 #include <iostream>
 
-LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath)
+LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath, bool flipVertically)
 {
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(flipVertically);
 	int texWidth, texHeight, texChannels;
 	stbi_uc* pixels = stbi_load(filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 	if (!pixels) {
