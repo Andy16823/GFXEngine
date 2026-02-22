@@ -80,6 +80,7 @@ std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(cons
 
 std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsFromFile(const std::string& filePath, const GFXEngine::Graphics::GeometryPipeline& pipeline)
 {
+	auto basePath = getBasePath(filePath);
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -90,10 +91,38 @@ std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsF
 		auto aiMaterial = scene->mMaterials[i];
 		aiString texturePath;
 		if (aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
-			materials.emplace_back(texturePath.C_Str(), pipeline);
+			std::string fullPath = basePath + texturePath.C_Str();
+			materials.emplace_back(fullPath, pipeline);
 		} else {
 			std::cerr << "Warning: Material " << i << " does not have a diffuse texture. Skipping." << std::endl;
 		}
 	}
 	return materials;
+}
+
+std::string GFXEngine::Utils::getBasePath(const std::string& filePath)
+{
+	size_t lastSlashPos = filePath.find_last_of("/\\");
+	if (lastSlashPos == std::string::npos) {
+		return ""; // No directory part in the path
+	}
+	return filePath.substr(0, lastSlashPos + 1);
+}
+
+std::string GFXEngine::Utils::getFileName(const std::string& filePath)
+{
+	size_t lastSlashPos = filePath.find_last_of("/\\");
+	if (lastSlashPos == std::string::npos) {
+		return filePath; // The entire path is the file name
+	}
+	return filePath.substr(lastSlashPos + 1);
+}
+
+bool GFXEngine::Utils::isAbsolutePath(const std::string& filePath)
+{
+#ifdef _WIN32
+	return !filePath.empty() && (filePath[0] == '\\' || filePath[0] == '/' || (filePath.size() > 1 && filePath[1] == ':'));
+#else
+	return !filePath.empty() && filePath[0] == '/';
+#endif
 }
