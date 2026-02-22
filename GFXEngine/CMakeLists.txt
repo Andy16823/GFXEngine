@@ -3,7 +3,7 @@
 #
 
 # Fügen Sie der ausführbaren Datei dieses Projekts eine Quelle hinzu.
-add_library(GFXEngine STATIC "GFXEngine.cpp" "GFXEngine.h" "Renderer.h" "Renderer.cpp" "OffscreenRenderPass.h" "OffscreenRenderPass.cpp" "PipelineManager.h" "PipelineManager.cpp" "PresentPipeline.h" "PresentPipeline.cpp" "RenderShader.h" "RenderShader.cpp" "DataTypes.h" "Utils.h" "Utils.cpp" "Shapes.h" "Shapes.cpp" "Camera3D.h" "Camera3D.cpp" "Transform.h" "Transform.cpp" "Entity.h" "Entity.cpp" "Sprite.h" "Sprite.cpp" "Material.h" "SpriteMaterial.h" "SpriteMaterial.cpp" "RenderTarget.h"  "RenderTexture.h" "RenderTexture.cpp" "GeometryPipeline.h" "GeometryPipeline.cpp" "Camera.h" "Behavior.h" "Mesh.h" "Mesh.cpp")
+add_library(GFXEngine STATIC "GFXEngine.cpp" "GFXEngine.h" "Renderer.h" "Renderer.cpp" "OffscreenRenderPass.h" "OffscreenRenderPass.cpp" "PipelineManager.h" "PipelineManager.cpp" "PresentPipeline.h" "PresentPipeline.cpp" "RenderShader.h" "RenderShader.cpp" "DataTypes.h" "Utils.h" "Utils.cpp" "Shapes.h" "Shapes.cpp" "Camera3D.h" "Camera3D.cpp" "Transform.h" "Transform.cpp" "Entity.h" "Entity.cpp" "Sprite.h" "Sprite.cpp" "Material.h" "SpriteMaterial.h" "SpriteMaterial.cpp" "RenderTarget.h"  "RenderTexture.h" "RenderTexture.cpp" "GeometryPipeline.h" "GeometryPipeline.cpp" "Camera.h" "Behavior.h" "Mesh.h" "Mesh.cpp" "MeshModel.h" "StaticMeshModel.h" "StaticMeshModel.cpp" "UnlitMaterial.h" "UnlitMaterial.cpp")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
@@ -16,6 +16,7 @@ target_link_libraries(GFXEngine
     PRIVATE LibGFX
     PRIVATE glm::glm
     PRIVATE stb_image
+    PRIVATE assimp::assimp
 )
 
 # Include-Verzeichnisse (falls nötig)

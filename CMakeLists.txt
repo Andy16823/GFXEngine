@@ -20,6 +20,7 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
+# GLM von GitHub laden
 FetchContent_Declare(
     GLM
     GIT_REPOSITORY https://github.com/g-truc/glm.git
@@ -32,6 +33,14 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/nothings/stb.git
     GIT_TAG master
 )
+
+# Assimp von GitHub laden
+FetchContent_Declare(
+    assimp
+    GIT_REPOSITORY https://github.com/assimp/assimp.git
+    GIT_TAG master
+)
+
 # Nur die Quellen herunterladen/auspacken (kein add_subdirectory, da kein CMake-Projekt vorhanden)
 FetchContent_Populate(stb)
 # Erstelle ein INTERFACE-Target, damit andere Targets es mit target_link_libraries verwenden können
@@ -39,7 +48,7 @@ add_library(stb_image INTERFACE)
 target_include_directories(stb_image INTERFACE ${stb_SOURCE_DIR})
 
 # LibGFX und GLM verfügbar machen
-FetchContent_MakeAvailable(LibGFX GLM)
+FetchContent_MakeAvailable(LibGFX GLM Assimp)
 
 # Schließen Sie Unterprojekte ein.
 add_subdirectory ("GFXEngine")

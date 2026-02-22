@@ -5,6 +5,9 @@
 #include "Camera3D.h"
 #include <vector>
 #include <utility>
+#include "Mesh.h"
+#include "UnlitMaterial.h"
+#include "GeometryPipeline.h"
 
 namespace GFXEngine {
 	class Utils
@@ -12,5 +15,7 @@ namespace GFXEngine {
 	public:
 		static LibGFX::ImageData loadImage(const std::string& filePath);
 		static std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> createCameraUniformBuffers(Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera3D& camera, VkDescriptorSetLayout descriptorSetLayout);
+		static std::vector<GFXEngine::Graphics::Mesh> loadMeshesFromFile(const std::string& filePath);
+		static std::vector<GFXEngine::Graphics::UnlitMaterial> loadMaterialsFromFile(const std::string& filePath, const GFXEngine::Graphics::GeometryPipeline& pipeline);
 	};
 }
