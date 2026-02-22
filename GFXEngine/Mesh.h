@@ -16,6 +16,11 @@ namespace GFXEngine {
 		public:
 			Mesh() = default;
 			virtual ~Mesh() = default;
+			Mesh(const Mesh&) = delete; // Disable copy semantics
+			Mesh& operator=(const Mesh&) = delete; // Disable copy semantics
+			Mesh(Mesh&&) = default; // Allow move semantics
+			Mesh& operator=(Mesh&&) = default; // Allow move semantics
+
 			void init(Renderer& renderer);
 			void draw(Renderer& renderer, uint32_t imageIndex) const;
 			void destroy(Renderer& renderer);
