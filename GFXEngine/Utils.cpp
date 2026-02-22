@@ -5,6 +5,7 @@
 
 LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath)
 {
+	stbi_set_flip_vertically_on_load(true);
 	int texWidth, texHeight, texChannels;
 	stbi_uc* pixels = stbi_load(filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 	if (!pixels) {
