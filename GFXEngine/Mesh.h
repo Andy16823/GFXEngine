@@ -6,6 +6,11 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// Mesh class that encapsulates vertex and index data, along with Vulkan buffers for rendering. 
+		/// It provides methods to initialize the mesh, draw it using a renderer, and clean up resources when done.
+		/// </summary>
 		class Mesh {
 		private:
 			std::vector<EngineTypes::Vertex3D> m_vertices;
@@ -16,6 +21,7 @@ namespace GFXEngine {
 		public:
 			Mesh() = default;
 			virtual ~Mesh() = default;
+
 			Mesh(const Mesh&) = delete; // Disable copy semantics
 			Mesh& operator=(const Mesh&) = delete; // Disable copy semantics
 			Mesh(Mesh&&) = default; // Allow move semantics

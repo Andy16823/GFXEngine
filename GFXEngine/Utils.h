@@ -10,6 +10,10 @@
 #include "GeometryPipeline.h"
 
 namespace GFXEngine {
+
+	/// <summary>
+	/// Utility class that provides static functions for common tasks such as loading images, creating solid color textures, creating uniform buffers for cameras, and loading meshes and materials from files.
+	/// </summary>
 	class Utils
 	{
 	public:

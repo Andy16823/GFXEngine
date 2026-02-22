@@ -7,6 +7,10 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// StaticMeshModel is a concrete implementation of the MeshModel interface for rendering static 3D models loaded from files.
+		/// </summary>
 		class StaticMeshModel : public MeshModel {
 		private:
 			std::vector<UnlitMaterial> m_materials;

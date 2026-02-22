@@ -4,6 +4,7 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
 		/// <summary>
 		/// Base class for materials.
 		/// </summary>
@@ -12,10 +13,10 @@ namespace GFXEngine {
 			Material() = default;
 			virtual ~Material() = default;
 
-			Material(const Material&) = delete; // Disable copy semantics
-			Material& operator=(const Material&) = delete; // Disable copy semantics
-			Material(Material&&) = default; // Allow move semantics
-			Material& operator=(Material&&) = default; // Allow move semantics
+			Material(const Material&) = delete;
+			Material& operator=(const Material&) = delete;
+			Material(Material&&) = default;
+			Material& operator=(Material&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
 			virtual void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const = 0;

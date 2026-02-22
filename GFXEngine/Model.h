@@ -4,6 +4,10 @@
 
 namespace GFXEngine {
 	namespace Core {
+
+		/// <summary>
+		/// Model entity that represents a 3D mesh model in the scene.
+		/// </summary>
 		class Model : public Entity
 		{
 		private:

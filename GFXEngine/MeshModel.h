@@ -6,6 +6,10 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// Abstract base class representing a 3D model composed of one or more meshes and materials.
+		/// </summary>
 		class MeshModel {
 		public:
 			MeshModel() = default;

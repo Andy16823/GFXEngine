@@ -9,6 +9,14 @@
 
 namespace GFXEngine {
 	namespace Core {
+
+		/// <summary>
+		/// Basic entity class that can have multiple behaviors attached to it. 
+		/// Each behavior can define its own logic for initialization, updating, 
+		/// rendering, and destruction. The entity itself holds a transform 
+		/// for position, rotation, and scale, and a visibility flag. 
+		/// Behaviors can be added and retrieved using template functions that ensure type safety.
+		/// </summary>
 		class Entity
 		{
 		private:
@@ -20,6 +28,11 @@ namespace GFXEngine {
 
 			Entity() = default;
 			virtual ~Entity() = default;
+
+			Entity(const Entity&) = delete; // Disable copy semantics
+			Entity& operator=(const Entity&) = delete; // Disable copy semantics
+			Entity(Entity&&) = default; // Allow move semantics
+			Entity& operator=(Entity&&) = default; // Allow move semantics
 
 			virtual void init(GFXEngine::Graphics::Renderer& renderer);
 			virtual void update(float deltaTime);

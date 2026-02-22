@@ -6,6 +6,10 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// UnlitMaterial is a simple material that renders textured geometry without any lighting calculations.
+		/// </summary>
 		class UnlitMaterial : public Material {
 		private:
 			const GeometryPipeline& m_pipeline;
@@ -15,6 +19,7 @@ namespace GFXEngine {
 
 		public:
 			UnlitMaterial(const std::string& texturePath, const GeometryPipeline& pipeline) : m_texturePath(texturePath), m_pipeline(pipeline) {}
+
 			void init(Renderer& renderer) override;
 			void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;

@@ -3,6 +3,10 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// Factory class for creating common shapes like planes, sprites, and quads. This helps to avoid redundant code when generating vertex and index data for these frequently used shapes.
+		/// </summary>
 		class Shapes
 		{
 		public:
