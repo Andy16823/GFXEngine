@@ -345,3 +345,21 @@ void Renderer::destroyDepthBuffer(LibGFX::DepthBuffer& depthBuffer)
 {
 	m_context->destroyDepthBuffer(depthBuffer);
 }
+
+void Renderer::copyBuffer(const LibGFX::Buffer& srcBuffer, const LibGFX::Buffer& dstBuffer, VkDeviceSize size)
+{
+	if (size > srcBuffer.size || size > dstBuffer.size) {
+		throw std::runtime_error("Buffer copy size exceeds buffer size");
+	}
+	m_context->copyBuffer(m_commandPool, srcBuffer, dstBuffer, size);
+}
+
+void Renderer::resizeBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
+{
+	m_context->resizeBuffer(m_commandPool, buffer, newSize, usage, properties);
+}
+
+void Renderer::recreateBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
+{
+	m_context->recreateBuffer(buffer, newSize, usage, properties);
+}
