@@ -21,6 +21,7 @@ namespace GFXEngine {
 			virtual void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
 			virtual VkPipelineLayout getPipelineLayout() const = 0;
+			virtual const LibGFX::Pipeline& getPipeline() const = 0;
 		};
 	}
 }

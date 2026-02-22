@@ -14,7 +14,7 @@ namespace GFXEngine {
 		public:
 			void loadFromFile(const std::string& filePath, const GeometryPipeline& pipeline);
 			void init(Renderer& renderer) override;
-			void draw(Renderer& renderer, Camera& camera, uint32_t imageIndex, std::function<void(Renderer& renderer, Camera& camera, uint32_t imageIndex)> callback) const override;
+			void draw(Renderer& renderer, Camera& camera, uint32_t imageIndex, std::function<void(Renderer& renderer, Camera& camera, uint32_t imageIndex, const LibGFX::Pipeline& pipeline, uint32_t meshIndex)> callback) const override;
 			void destroy(Renderer& renderer) override;
 		};
 	}

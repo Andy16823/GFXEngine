@@ -24,6 +24,7 @@ namespace GFXEngine {
 			void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;
 			VkPipelineLayout getPipelineLayout() const override { return m_pipeline.getPipelineLayout(); }
+			const LibGFX::Pipeline& getPipeline() const override { return m_pipeline; }
 		};
 	}
 }
