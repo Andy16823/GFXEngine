@@ -16,6 +16,8 @@ const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
 const uint32_t UNIFORM_BUFFER_DESCRIPTOR_COUNT = 16;
 const uint32_t UNIFORM_BUFFER_MAX_SETS = 512;
+const uint32_t STORAGE_BUFFER_DESCRIPTOR_COUNT = 16;
+const uint32_t STORAGE_BUFFER_MAX_SETS = 512;
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -53,6 +55,9 @@ namespace GFXEngine {
 
 			// UNIFORM BUFFER DESCRIPTOR POOL
 			VkDescriptorPool m_uniformBufferDescriptorPool;
+
+			// STORAGE BUFFER DESCRIPTOR POOL
+			VkDescriptorPool m_storageBufferDescriptorPool;
 
 			// COMMAND POOL
 			VkCommandPool m_commandPool;
@@ -93,6 +98,10 @@ namespace GFXEngine {
 			// UNIFORM BUFFERS
 			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeUniformBufferDescriptorSet(VkDescriptorSet descriptorSet);	
+
+			// SSBO's
+			VkDescriptorSet allocateStorageBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
+			void freeStorageBufferDescriptorSet(VkDescriptorSet descriptorSet);
 
 			// PIPELINES
 			void createPipeline(LibGFX::Pipeline& pipeline);

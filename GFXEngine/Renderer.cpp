@@ -56,6 +56,12 @@ void Renderer::init(GLFWwindow* window)
 	descriptorPoolBuilder.setMaxSets(UNIFORM_BUFFER_MAX_SETS);
 	m_uniformBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
+
+	// Create descriptor pool for storage buffers
+	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, STORAGE_BUFFER_DESCRIPTOR_COUNT);
+	descriptorPoolBuilder.setMaxSets(STORAGE_BUFFER_MAX_SETS);
+	m_storageBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
+	descriptorPoolBuilder.clear();
 }
 
 void Renderer::drawFrame()
@@ -74,6 +80,7 @@ void Renderer::dispose()
 	m_context->destroySampler(m_textureSampler);
 	m_context->destroyDescriptorSetPool(m_textureDescriptorPool);
 	m_context->destroyDescriptorSetPool(m_uniformBufferDescriptorPool);
+	m_context->destroyDescriptorSetPool(m_storageBufferDescriptorPool);
 	m_context->destroyCommandPool(m_commandPool);
 
 	// Clean up resources
@@ -362,4 +369,19 @@ void Renderer::resizeBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBuff
 void Renderer::recreateBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
 {
 	m_context->recreateBuffer(buffer, newSize, usage, properties);
+}
+
+VkDescriptorSet Renderer::allocateStorageBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout)
+{
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_storageBufferDescriptorPool, layout);
+	LibGFX::DescriptorSetWriter writer;
+	writer.addBufferInfo(buffer.buffer, 0, buffer.size)
+		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
+		.clear();
+	return descriptorSet;
+}
+
+void Renderer::freeStorageBufferDescriptorSet(VkDescriptorSet descriptorSet)
+{
+	m_context->freeDescriptorSet(m_storageBufferDescriptorPool, descriptorSet);
 }
