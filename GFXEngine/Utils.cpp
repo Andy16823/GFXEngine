@@ -23,6 +23,23 @@ LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath)
 	return imageData;
 }
 
+LibGFX::ImageData GFXEngine::Utils::createSolidColorImage(uint32_t width, uint32_t height, const glm::vec4& color)
+{
+	std::vector<uint8_t> pixels(width * height * 4);
+	for (size_t i = 0; i < width * height; i++) {
+		pixels[i * 4 + 0] = static_cast<uint8_t>(color.r * 255);
+		pixels[i * 4 + 1] = static_cast<uint8_t>(color.g * 255);
+		pixels[i * 4 + 2] = static_cast<uint8_t>(color.b * 255);
+		pixels[i * 4 + 3] = static_cast<uint8_t>(color.a * 255);
+	}
+	LibGFX::ImageData imageData;
+	imageData.pixels = pixels.data();
+	imageData.width = width;
+	imageData.height = height;
+	imageData.format = VK_FORMAT_R8G8B8A8_UNORM;
+	return imageData;
+}
+
 std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> GFXEngine::Utils::createCameraUniformBuffers(Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera3D& camera, VkDescriptorSetLayout descriptorSetLayout)
 {
 	size_t swapchainImageCount = renderer.getSwapchainImageCount();
