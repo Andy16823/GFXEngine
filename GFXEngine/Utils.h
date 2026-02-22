@@ -25,5 +25,6 @@ namespace GFXEngine {
 		static std::string getBasePath(const std::string& filePath);
 		static std::string getFileName(const std::string& filePath);
 		static bool isAbsolutePath(const std::string& filePath);
+		static void log(const std::string& service, const std::string& message);
 	};
 }

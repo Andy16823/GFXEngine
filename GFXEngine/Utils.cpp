@@ -143,3 +143,8 @@ bool GFXEngine::Utils::isAbsolutePath(const std::string& filePath)
 	return !filePath.empty() && filePath[0] == '/';
 #endif
 }
+
+void GFXEngine::Utils::log(const std::string& service, const std::string& message)
+{
+	std::cout << "[" << service << "] " << message << std::endl;
+}
