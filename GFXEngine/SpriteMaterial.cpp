@@ -8,7 +8,7 @@ void GFXEngine::Graphics::SpriteMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, m_pipeline.getTextureDescriptorSetLayout());
 }
 
-void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, Camera& camera, uint32_t imageIndex)
+void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const
 {
 	renderer.usePipeline(m_pipeline, imageIndex);
 	std::vector<VkDescriptorSet> descriptorSets = {

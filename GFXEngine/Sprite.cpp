@@ -7,7 +7,7 @@ using namespace GFXEngine::Graphics;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Math;
 
-Sprite::Sprite(Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh) : m_material(material), m_mesh(mesh)
+Sprite::Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh) : m_material(material), m_mesh(mesh)
 {
 	this->transform.position = glm::vec3(0.0f);
 	this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);

@@ -11,8 +11,14 @@ namespace GFXEngine {
 		public:
 			Material() = default;
 			virtual ~Material() = default;
+
+			Material(const Material&) = delete; // Disable copy semantics
+			Material& operator=(const Material&) = delete; // Disable copy semantics
+			Material(Material&&) = default; // Allow move semantics
+			Material& operator=(Material&&) = default; // Allow move semantics
+
 			virtual void init(Renderer& renderer) = 0;
-			virtual void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) = 0;
+			virtual void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
 			virtual VkPipelineLayout getPipelineLayout() const = 0;
 		};

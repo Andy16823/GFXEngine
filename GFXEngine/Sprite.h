@@ -19,11 +19,11 @@ namespace GFXEngine {
 		class Sprite : public Entity
 		{
 		private:
-			Graphics::SpriteMaterial& m_material;
+			const Graphics::SpriteMaterial& m_material;
 			const Graphics::Mesh& m_mesh;
 
 		public:
-			Sprite(Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh);
+			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh);
 			virtual ~Sprite() = default;
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;
