@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "DescriptorPoolBuilder.h"
 #include "DescriptorSetWriter.h"
+#include "DescriptorSetLayoutBuilder.h"
 
 
 using namespace std;
@@ -384,4 +385,11 @@ VkDescriptorSet Renderer::allocateStorageBufferDescriptorSet(const LibGFX::Buffe
 void Renderer::freeStorageBufferDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_context->freeDescriptorSet(m_storageBufferDescriptorPool, descriptorSet);
+}
+
+VkDescriptorSetLayout Renderer::createDescriptorSetLayout(uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags)
+{
+	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
+	layoutBuilder.addBinding(binding, type, stageFlags);
+	return layoutBuilder.build(*m_context);
 }
