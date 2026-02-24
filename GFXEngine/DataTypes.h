@@ -49,5 +49,14 @@ namespace GFXEngine {
 			glm::mat4 proj;
 			glm::vec4 cameraPos;
 		};
+#
+		/// <summary>
+		/// Instance data structure for instanced rendering, containing a model matrix for transforming each instance and an extras vector for any additional per-instance data.
+		/// </summary>
+		struct InstanceData
+		{
+			glm::mat4 model;
+			glm::vec4 extras;
+		};	
 	}
 }
