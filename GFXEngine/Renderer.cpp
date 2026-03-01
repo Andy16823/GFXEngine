@@ -393,3 +393,8 @@ VkDescriptorSetLayout Renderer::createDescriptorSetLayout(uint32_t binding, VkDe
 	layoutBuilder.addBinding(binding, type, stageFlags);
 	return layoutBuilder.build(*m_context);
 }
+
+void Renderer::destroyDescriptorSetLayout(VkDescriptorSetLayout layout)
+{
+	m_context->destroyDescriptorSetLayout(layout);
+}

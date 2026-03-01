@@ -90,6 +90,7 @@ namespace GFXEngine {
 
 			// DESCRIPTOR SET LAYOUTS
 			VkDescriptorSetLayout createDescriptorSetLayout(uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags);
+			void destroyDescriptorSetLayout(VkDescriptorSetLayout layout);
 
 			// TEXTURES
 			LibGFX::Image createImage(VkExtent2D extent, VkFormat format, VkImageUsageFlags usage, VkMemoryPropertyFlags properties);

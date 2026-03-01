@@ -21,12 +21,6 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 		throw std::runtime_error("Texture descriptor set layout must be set before creating the pipeline!");
 	}
 
-	// Descriptor Set Layout for texture sampler
-	//LibGFX::DescriptorSetLayoutBuilder descriptorSetLayoutBuilder;
-	//m_textureLayout = descriptorSetLayoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1)
-	//	.build(context);
-	//descriptorSetLayoutBuilder.clear();
-
 	// Shader Stage
 	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
@@ -194,11 +188,6 @@ void GFXEngine::Graphics::PresentPipeline::destroy(VkContext& context)
 	if (m_pipelineLayout != VK_NULL_HANDLE) {
 		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
 		m_pipelineLayout = VK_NULL_HANDLE;
-	}
-
-	if (m_textureLayout != VK_NULL_HANDLE) {
-		context.destroyDescriptorSetLayout(m_textureLayout);
-		m_textureLayout = VK_NULL_HANDLE;
 	}
 }
 
