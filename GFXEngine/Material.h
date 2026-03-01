@@ -19,10 +19,8 @@ namespace GFXEngine {
 			Material& operator=(Material&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
-			virtual void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const = 0;
+			virtual void bind(Renderer& renderer, VkPipelineLayout layout, uint32_t imageIndex, uint32_t firstSet) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
-			virtual VkPipelineLayout getPipelineLayout() const = 0;
-			virtual const LibGFX::Pipeline& getPipeline() const = 0;
 		};
 	}
 }

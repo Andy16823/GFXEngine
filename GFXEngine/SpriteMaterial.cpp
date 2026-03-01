@@ -5,17 +5,12 @@ void GFXEngine::Graphics::SpriteMaterial::init(Renderer& renderer)
 {
 	LibGFX::ImageData image = GFXEngine::Utils::loadImage(m_texturePath);
 	m_texture = renderer.loadTexture(image);
-	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, m_pipeline.getTextureDescriptorSetLayout());
+	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
 }
 
-void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const
+void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t firstSet) const
 {
-	renderer.usePipeline(m_pipeline, imageIndex);
-	std::vector<VkDescriptorSet> descriptorSets = {
-		camera.getDescriptorSet(imageIndex),
-		m_textureDescriptorSet
-	};
-	renderer.bindDescriptorSets(descriptorSets, m_pipeline.getPipelineLayout(), imageIndex);
+	renderer.bindDescriptorSet(m_textureDescriptorSet, pipelineLayout, firstSet, imageIndex);
 }
 
 void GFXEngine::Graphics::SpriteMaterial::destroy(Renderer& renderer)

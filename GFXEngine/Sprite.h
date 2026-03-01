@@ -1,12 +1,11 @@
 #pragma once
 #include "DataTypes.h"
 #include "Entity.h"
-#include "Imaging.h"
-#include "Buffer.h"
 #include <vector>
 #include "Pipeline.h"
 #include "SpriteMaterial.h"
 #include "Mesh.h"
+
 
 namespace GFXEngine {
 	namespace Core {
@@ -21,9 +20,15 @@ namespace GFXEngine {
 		private:
 			const Graphics::SpriteMaterial& m_material;
 			const Graphics::Mesh& m_mesh;
+			const LibGFX::Pipeline& m_pipeline;
 
 		public:
-			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh);
+			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh, const LibGFX::Pipeline& pipeline)
+				: m_material(material), m_mesh(mesh), m_pipeline(pipeline) {
+				this->transform.position = glm::vec3(0.0f);
+				this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+				this->transform.scale = glm::vec3(1.0f);
+			}
 			virtual ~Sprite() = default;
 			
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) override;

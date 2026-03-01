@@ -95,25 +95,28 @@ std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(cons
 	return meshes;
 }
 
-std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsFromFile(const std::string& filePath, const GFXEngine::Graphics::GeometryPipeline& pipeline)
+std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsFromFile(const std::string& filePath)
 {
 	auto basePath = getBasePath(filePath);
+
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		throw std::runtime_error("ERROR::ASSIMP::" + std::string(importer.GetErrorString()));
 	}
+
 	std::vector<GFXEngine::Graphics::UnlitMaterial> materials;
 	for (size_t i = 0; i < scene->mNumMaterials; i++) {
 		auto aiMaterial = scene->mMaterials[i];
 		aiString texturePath;
 		if (aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
 			std::string fullPath = basePath + texturePath.C_Str();
-			materials.emplace_back(fullPath, pipeline);
+			materials.emplace_back(fullPath);
 		} else {
 			std::cerr << "Warning: Material " << i << " does not have a diffuse texture. Skipping." << std::endl;
 		}
 	}
+
 	return materials;
 }
 

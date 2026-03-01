@@ -7,13 +7,6 @@ using namespace GFXEngine::Graphics;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Math;
 
-Sprite::Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh) : m_material(material), m_mesh(mesh)
-{
-	this->transform.position = glm::vec3(0.0f);
-	this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	this->transform.scale = glm::vec3(1.0f);
-}
-
 void GFXEngine::Core::Sprite::init(GFXEngine::Graphics::Renderer& renderer)
 {
 	Entity::init(renderer);
@@ -29,10 +22,22 @@ void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GF
 	if (!isVisible())
 		return;
 
+	// Call base render to handle any common rendering setup
 	Entity::render(renderer, camera, imageIndex);
+
+	// Bind pipeline to use for rendering the sprite
+	renderer.usePipeline(m_pipeline, imageIndex);
+
+	// Bind uniform buffers for camera data
+	VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
+	renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
+
+	// Bind material descriptor sets
+	m_material.bind(renderer, m_pipeline.getPipelineLayout(), imageIndex, 1);
 	glm::mat4 model = transform.getModelMatrix();
-	m_material.bind(renderer, camera, imageIndex);
-	renderer.bindPushConstants(&model, sizeof(glm::mat4), m_material.getPipelineLayout(), imageIndex);
+
+	// Bind push constants for the model matrix
+	renderer.bindPushConstants(&model, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
 	m_mesh.draw(renderer, imageIndex);
 }
 

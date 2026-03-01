@@ -63,6 +63,20 @@ void Renderer::init(GLFWwindow* window)
 	descriptorPoolBuilder.setMaxSets(STORAGE_BUFFER_MAX_SETS);
 	m_storageBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
+
+	// Descriptor set layouts
+	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
+	m_samplerLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+		.build(*m_context);
+	layoutBuilder.clear();
+
+	m_uniformBuffferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+		.build(*m_context);
+	layoutBuilder.clear();
+
+	m_storageBufferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+		.build(*m_context);
+	layoutBuilder.clear();
 }
 
 void Renderer::drawFrame()
@@ -74,6 +88,10 @@ void Renderer::dispose()
 {
 	// Wait for idle
 	m_context->waitIdle();
+
+	m_context->destroyDescriptorSetLayout(m_samplerLayout);
+	m_context->destroyDescriptorSetLayout(m_uniformBuffferLayout);
+	m_context->destroyDescriptorSetLayout(m_storageBufferLayout);
 
 	m_context->destroySemaphores(m_imageAvailableSemaphores);
 	m_context->destroySemaphores(m_renderFinishedSemaphores);

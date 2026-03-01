@@ -12,20 +12,17 @@ namespace GFXEngine {
 		/// </summary>
 		class UnlitMaterial : public Material {
 		private:
-			const GeometryPipeline& m_pipeline;
 			LibGFX::Image m_texture;
-			VkDescriptorSet m_textureDescriptorSet = VK_NULL_HANDLE;
 			std::string m_texturePath;
+			VkDescriptorSet m_textureDescriptorSet = VK_NULL_HANDLE;
 
 		public:
-			UnlitMaterial(const std::string& texturePath, const GeometryPipeline& pipeline) : m_texturePath(texturePath), m_pipeline(pipeline) {}
+			UnlitMaterial(const std::string& texturePath) 
+				: m_texturePath(texturePath) {}
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const override;
+			void bind(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t firstSet) const override;
 			void destroy(Renderer& renderer) override;
-
-			VkPipelineLayout getPipelineLayout() const override { return m_pipeline.getPipelineLayout(); }
-			const LibGFX::Pipeline& getPipeline() const override { return m_pipeline; }
 		};
 	}
 }

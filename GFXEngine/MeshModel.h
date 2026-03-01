@@ -21,7 +21,7 @@ namespace GFXEngine {
 			MeshModel& operator=(MeshModel&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
-			virtual void draw(Renderer& renderer, Camera& camera, uint32_t imageIndex, std::function<void(Renderer& renderer, Camera& camera, uint32_t imageIndex, const LibGFX::Pipeline& pipeline, uint32_t meshIndex)> callback) const = 0;
+			virtual void draw(Renderer& renderer, uint32_t imageIndex, VkPipelineLayout pipelineLayout, std::function<void(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t meshIndex)> callback) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
 		};
 	}

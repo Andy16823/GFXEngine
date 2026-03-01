@@ -62,6 +62,11 @@ namespace GFXEngine {
 			// COMMAND POOL
 			VkCommandPool m_commandPool;
 
+			// Descriptor set layouts
+			VkDescriptorSetLayout m_samplerLayout;
+			VkDescriptorSetLayout m_uniformBuffferLayout;
+			VkDescriptorSetLayout m_storageBufferLayout;
+
 		public:
 			// CONSTRUCTORS & DESTRUCTORS
 			Renderer() = default;
@@ -142,6 +147,9 @@ namespace GFXEngine {
 			SwapchainInfo& getSwapchainInfo() { return m_swapchainInfo; }
 			VkFormat getDepthFormat() const { return m_depthFormat; }
 			LibGFX::VkContext& getContext() { return *m_context; }
+			VkDescriptorSetLayout getSamplerLayout() const { return m_samplerLayout; }
+			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }
+			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
 		};
 	}
 }

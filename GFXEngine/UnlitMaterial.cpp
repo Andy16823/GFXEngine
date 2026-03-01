@@ -4,21 +4,17 @@
 
 void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 {
-	std::cout << "Initializing UnlitMaterial with texture: " << m_texturePath << std::endl;
+	// Load image data and create texture
 	LibGFX::ImageData imageData = GFXEngine::Utils::loadImage(m_texturePath, false);
 	m_texture = renderer.loadTexture(imageData);
-	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, m_pipeline.getTextureDescriptorSetLayout());
-	std::cout << "UnlitMaterial initialized successfully." << std::endl;
+
+	// Allocate descriptor set for the texture
+	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
 }
 
-void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, Camera& camera, uint32_t imageIndex) const
+void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t firstSet) const
 {
-	renderer.usePipeline(m_pipeline, imageIndex);
-	std::vector<VkDescriptorSet> descriptorSets = {
-		camera.getDescriptorSet(imageIndex),
-		m_textureDescriptorSet
-	};
-	renderer.bindDescriptorSets(descriptorSets, m_pipeline.getPipelineLayout(), imageIndex);
+	renderer.bindDescriptorSet(m_textureDescriptorSet, pipelineLayout, firstSet, imageIndex);
 }
 
 void GFXEngine::Graphics::UnlitMaterial::destroy(Renderer& renderer)
