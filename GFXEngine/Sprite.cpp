@@ -32,9 +32,9 @@ void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GF
 
 	// Bind uniform buffers for camera data
 	VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-	renderer.bindDescriptorSet(cameraDescriptorSet, pipeline.getPipelineLayout(), 0, imageIndex);
+	renderer.bindDescriptorSet(cameraDescriptorSet, pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
 	// Bind material descriptor sets
-	m_material.bind(renderer, imageIndex, 1);
+	m_material.bind(renderer, imageIndex, MATERIAL_UBO_BINDING);
 	glm::mat4 model = transform.getModelMatrix();
 
 	// Bind push constants for the model matrix

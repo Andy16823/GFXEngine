@@ -16,7 +16,7 @@ void GFXEngine::Core::Model::render(GFXEngine::Graphics::Renderer& renderer, GFX
 	auto callback = [&modelMatrix, cameraDescriptorSet](const GFXEngine::Graphics::MeshModel& meshModel, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex, uint32_t meshIndex) {
 		const auto& material = meshModel.getMeshMaterial(meshIndex);
 		const auto& pipeline = material.getPipeline();
-		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline.getPipelineLayout(), 0, imageIndex);
+		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
 		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline.getPipelineLayout(), imageIndex);
 		};
 

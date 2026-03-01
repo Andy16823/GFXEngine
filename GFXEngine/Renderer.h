@@ -19,6 +19,10 @@ const uint32_t UNIFORM_BUFFER_MAX_SETS = 512;
 const uint32_t STORAGE_BUFFER_DESCRIPTOR_COUNT = 16;
 const uint32_t STORAGE_BUFFER_MAX_SETS = 512;
 
+const uint32_t CAMERA_UBO_BINDING = 0;
+const uint32_t MATERIAL_UBO_BINDING = 1;
+const uint32_t INSTANCE_SSBO_BINDING = 0;
+
 namespace GFXEngine {
 	namespace Graphics {
 		class Renderer

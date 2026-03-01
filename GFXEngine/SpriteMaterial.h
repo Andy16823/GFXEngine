@@ -8,8 +8,9 @@ namespace GFXEngine {
 	namespace Graphics {
 
 		/// <summary>
-		/// SpriteMaterial is a concrete implementation of the Material interface for rendering textured sprites. 
-		/// It manages its own texture resource and descriptor set for binding the texture to the shader.
+		/// Material class specifically designed for rendering sprites. 
+		/// It manages a texture and its associated descriptor set, 
+		/// and uses a geometry pipeline for rendering.
 		/// </summary>
 		class SpriteMaterial : public Material {
 		private:
@@ -19,10 +20,13 @@ namespace GFXEngine {
 			const GeometryPipeline& m_pipeline;
 
 		public:
-			SpriteMaterial(const GeometryPipeline& pipeline, const std::string& texturePath) : m_pipeline(pipeline), m_texturePath(texturePath) {}
+			SpriteMaterial(const std::string& texturePath, const GeometryPipeline& pipeline) 
+				: m_texturePath(texturePath), m_pipeline(pipeline) {}
+
 			void init(Renderer& renderer) override;
 			void bind(Renderer& renderer, uint32_t imageIndex, uint32_t firstSet) const override;
 			void destroy(Renderer& renderer) override;
+			
 			const LibGFX::Pipeline& getPipeline() const override { return m_pipeline; }
 		};
 	}
