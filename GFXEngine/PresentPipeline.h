@@ -9,13 +9,13 @@ namespace GFXEngine
 		class PresentPipeline : public LibGFX::Pipeline
 		{
 		private:
-			VkPipelineLayout m_pipelineLayout;
-			VkPipeline m_pipeline;
-			VkRenderPass m_renderPass;
-			VkDescriptorSetLayout m_textureLayout;
+			VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
+			VkPipeline m_pipeline = VK_NULL_HANDLE;
+			VkRenderPass m_renderPass = VK_NULL_HANDLE;
+			VkDescriptorSetLayout m_textureLayout = VK_NULL_HANDLE;
 			VkViewport m_viewport;
 			VkRect2D m_scissor;
-			RenderShader m_shader;
+			const RenderShader& m_shader;
 
 		public:
 			PresentPipeline(const RenderShader& shader) : m_shader(shader), m_pipeline(VK_NULL_HANDLE), m_pipelineLayout(VK_NULL_HANDLE), m_textureLayout(VK_NULL_HANDLE) {}
@@ -25,6 +25,8 @@ namespace GFXEngine
 			void destroy(LibGFX::VkContext& context) override;
 			VkPipeline getPipeline() const override;
 			VkPipelineLayout getPipelineLayout() const override;
+
+			void setTextureDescriptorSetLayout(VkDescriptorSetLayout layout) { m_textureLayout = layout; }
 			VkDescriptorSetLayout getTextureDescriptorSetLayout() const { return m_textureLayout; }
 
 			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }

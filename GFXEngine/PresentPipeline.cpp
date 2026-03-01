@@ -13,11 +13,19 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 	// Get the Vulkan device from the context
 	VkDevice device = context.getDevice();
 
+	if (m_renderPass == VK_NULL_HANDLE) {
+		throw std::runtime_error("Render pass must be set before creating the pipeline!");
+	}
+
+	if (m_textureLayout == VK_NULL_HANDLE) {
+		throw std::runtime_error("Texture descriptor set layout must be set before creating the pipeline!");
+	}
+
 	// Descriptor Set Layout for texture sampler
-	LibGFX::DescriptorSetLayoutBuilder descriptorSetLayoutBuilder;
-	m_textureLayout = descriptorSetLayoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1)
-		.build(context);
-	descriptorSetLayoutBuilder.clear();
+	//LibGFX::DescriptorSetLayoutBuilder descriptorSetLayoutBuilder;
+	//m_textureLayout = descriptorSetLayoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1)
+	//	.build(context);
+	//descriptorSetLayoutBuilder.clear();
 
 	// Shader Stage
 	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
