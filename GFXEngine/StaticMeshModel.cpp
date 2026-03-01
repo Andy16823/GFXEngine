@@ -1,10 +1,9 @@
 #include "StaticMeshModel.h"
 #include "Utils.h"
 
-void GFXEngine::Graphics::StaticMeshModel::loadFromFile(const std::string& filePath, const GeometryPipeline& pipeline)
+GFXEngine::Graphics::StaticMeshModel::StaticMeshModel(const std::string& filePath, const GeometryPipeline& pipeline)
 {
-	m_meshes = GFXEngine::Utils::loadMeshesFromFile(filePath);
-	m_materials = GFXEngine::Utils::loadMaterialsFromFile(filePath, pipeline);
+	this->loadFromFile(filePath, pipeline);
 }
 
 void GFXEngine::Graphics::StaticMeshModel::init(Renderer& renderer)
@@ -46,4 +45,10 @@ void GFXEngine::Graphics::StaticMeshModel::destroy(Renderer& renderer)
 	for (auto& mesh : m_meshes) {
 		mesh.destroy(renderer);
 	}
+}
+
+void GFXEngine::Graphics::StaticMeshModel::loadFromFile(const std::string& filePath, const GeometryPipeline& pipeline)
+{
+	m_meshes = GFXEngine::Utils::loadMeshesFromFile(filePath);
+	m_materials = GFXEngine::Utils::loadMaterialsFromFile(filePath, pipeline);
 }
