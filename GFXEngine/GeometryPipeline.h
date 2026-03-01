@@ -15,7 +15,9 @@ namespace GFXEngine {
 		class GeometryPipeline : public LibGFX::Pipeline
 		{
 		public:
-			GeometryPipeline(const RenderShader& shader) : m_shader(shader) {}
+			GeometryPipeline(const RenderShader& shader, VkDescriptorSetLayout uniformLayout, VkDescriptorSetLayout textureLayout) 
+				: m_shader(shader), m_uniformsLayout(uniformLayout), m_textureLayout(textureLayout) {}
+
 			void create(LibGFX::VkContext& context) override;
 			void destroy(LibGFX::VkContext& context) override;
 			void setViewport(VkViewport viewport) { m_viewport = viewport; }

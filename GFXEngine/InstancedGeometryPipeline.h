@@ -8,7 +8,8 @@ namespace GFXEngine {
 		class InstancedGeometryPipeline : public LibGFX::Pipeline
 		{
 		public:
-			InstancedGeometryPipeline(const RenderShader& shader) : m_shader(shader) {}
+			InstancedGeometryPipeline(const RenderShader& shader, VkDescriptorSetLayout uniformLayout, VkDescriptorSetLayout textureLayout, VkDescriptorSetLayout instanceDataLayout) 
+				: m_shader(shader), m_uniformsLayout(uniformLayout), m_textureLayout(textureLayout), m_instanceDataLayout(instanceDataLayout) {}
 			void create(LibGFX::VkContext& context) override;
 			void destroy(LibGFX::VkContext& context) override;
 			void setViewport(VkViewport viewport) { m_viewport = viewport; }
