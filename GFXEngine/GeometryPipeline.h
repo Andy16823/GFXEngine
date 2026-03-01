@@ -27,14 +27,14 @@ namespace GFXEngine {
 			VkDescriptorSetLayout getTextureDescriptorSetLayout() const { return m_textureLayout; }
 
 		private:
-			VkPipelineLayout m_pipelineLayout;
-			VkDescriptorSetLayout m_uniformsLayout;
-			VkDescriptorSetLayout m_textureLayout;
+			VkRenderPass m_renderPass = VK_NULL_HANDLE;
+			VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
+			VkDescriptorSetLayout m_uniformsLayout = VK_NULL_HANDLE;
+			VkDescriptorSetLayout m_textureLayout = VK_NULL_HANDLE;
+			VkPipeline m_pipeline = VK_NULL_HANDLE;
 			const RenderShader& m_shader;
 			VkViewport m_viewport;
 			VkRect2D m_scissor;
-			VkRenderPass m_renderPass;
-			VkPipeline m_pipeline;
 		};
 	}
 }
