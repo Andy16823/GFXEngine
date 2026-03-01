@@ -16,12 +16,14 @@ namespace GFXEngine {
 			std::string m_texturePath;
 			LibGFX::Image m_texture;
 			VkDescriptorSet m_textureDescriptorSet = VK_NULL_HANDLE;
+			const GeometryPipeline& m_pipeline;
 
 		public:
-			SpriteMaterial(const std::string& texturePath) : m_texturePath(texturePath) {}
+			SpriteMaterial(const GeometryPipeline& pipeline, const std::string& texturePath) : m_pipeline(pipeline), m_texturePath(texturePath) {}
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t firstSet) const override;
+			void bind(Renderer& renderer, uint32_t imageIndex, uint32_t firstSet) const override;
 			void destroy(Renderer& renderer) override;
+			const LibGFX::Pipeline& getPipeline() const override { return m_pipeline; }
 		};
 	}
 }

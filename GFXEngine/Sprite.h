@@ -20,11 +20,10 @@ namespace GFXEngine {
 		private:
 			const Graphics::SpriteMaterial& m_material;
 			const Graphics::Mesh& m_mesh;
-			const LibGFX::Pipeline& m_pipeline;
 
 		public:
-			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh, const LibGFX::Pipeline& pipeline)
-				: m_material(material), m_mesh(mesh), m_pipeline(pipeline) {
+			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh)
+				: m_material(material), m_mesh(mesh) {
 				this->transform.position = glm::vec3(0.0f);
 				this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 				this->transform.scale = glm::vec3(1.0f);

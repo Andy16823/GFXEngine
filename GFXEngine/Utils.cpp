@@ -95,7 +95,7 @@ std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(cons
 	return meshes;
 }
 
-std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsFromFile(const std::string& filePath)
+std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsFromFile(const std::string& filePath, const GFXEngine::Graphics::GeometryPipeline& pipeline)
 {
 	auto basePath = getBasePath(filePath);
 
@@ -111,7 +111,7 @@ std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsF
 		aiString texturePath;
 		if (aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
 			std::string fullPath = basePath + texturePath.C_Str();
-			materials.emplace_back(fullPath);
+			materials.emplace_back(fullPath, pipeline);
 		} else {
 			std::cerr << "Warning: Material " << i << " does not have a diffuse texture. Skipping." << std::endl;
 		}

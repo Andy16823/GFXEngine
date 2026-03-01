@@ -12,9 +12,9 @@ void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
 }
 
-void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t firstSet) const
+void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, uint32_t imageIndex, uint32_t firstSet) const
 {
-	renderer.bindDescriptorSet(m_textureDescriptorSet, pipelineLayout, firstSet, imageIndex);
+	renderer.bindDescriptorSet(m_textureDescriptorSet, m_pipeline.getPipelineLayout(), firstSet, imageIndex);
 }
 
 void GFXEngine::Graphics::UnlitMaterial::destroy(Renderer& renderer)

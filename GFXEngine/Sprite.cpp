@@ -22,22 +22,23 @@ void GFXEngine::Core::Sprite::render(GFXEngine::Graphics::Renderer& renderer, GF
 	if (!isVisible())
 		return;
 
+	const LibGFX::Pipeline& pipeline = m_material.getPipeline();
+
 	// Call base render to handle any common rendering setup
 	Entity::render(renderer, camera, imageIndex);
 
 	// Bind pipeline to use for rendering the sprite
-	renderer.usePipeline(m_pipeline, imageIndex);
+	renderer.usePipeline(pipeline, imageIndex);
 
 	// Bind uniform buffers for camera data
 	VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-	renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
-
+	renderer.bindDescriptorSet(cameraDescriptorSet, pipeline.getPipelineLayout(), 0, imageIndex);
 	// Bind material descriptor sets
-	m_material.bind(renderer, m_pipeline.getPipelineLayout(), imageIndex, 1);
+	m_material.bind(renderer, imageIndex, 1);
 	glm::mat4 model = transform.getModelMatrix();
 
 	// Bind push constants for the model matrix
-	renderer.bindPushConstants(&model, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
+	renderer.bindPushConstants(&model, sizeof(glm::mat4), pipeline.getPipelineLayout(), imageIndex);
 	m_mesh.draw(renderer, imageIndex);
 }
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "Renderer.h"
 #include "Functional"
-#include "Camera.h"
-#include "Pipeline.h"
+#include "Material.h"
+#include "Mesh.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -21,8 +21,12 @@ namespace GFXEngine {
 			MeshModel& operator=(MeshModel&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
-			virtual void draw(Renderer& renderer, uint32_t imageIndex, VkPipelineLayout pipelineLayout, std::function<void(Renderer& renderer, VkPipelineLayout pipelineLayout, uint32_t imageIndex, uint32_t meshIndex)> callback) const = 0;
+			virtual void draw(Renderer& renderer, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, uint32_t imageIndex, uint32_t meshIndex)> callback) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
+
+			virtual const Mesh& getMesh(size_t index) const = 0;
+			virtual const Material& getMeshMaterial(size_t index) const = 0;
+
 		};
 	}
 }
