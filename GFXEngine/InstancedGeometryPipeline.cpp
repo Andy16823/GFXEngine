@@ -9,21 +9,21 @@ void GFXEngine::Graphics::InstancedGeometryPipeline::create(LibGFX::VkContext& c
 {
 	auto device = context.getDevice();
 
-	// Layout for camera matrix uniforms
-	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
-	m_uniformsLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
-		.build(context);
-	layoutBuilder.clear();
+	if (m_renderPass == VK_NULL_HANDLE) {
+		throw std::runtime_error("Render pass must be set before creating the pipeline!");
+	}
 
-	// Layout for texture sampler
-	m_textureLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-		.build(context);
-	layoutBuilder.clear();
+	if (m_uniformsLayout == VK_NULL_HANDLE) {
+		throw std::runtime_error("Uniforms descriptor set layout must be set before creating the pipeline!");
+	}
 
-	// Layout for instance data
-	m_instanceDataLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-		.build(context);
-	layoutBuilder.clear();
+	if (m_textureLayout == VK_NULL_HANDLE) {
+		throw std::runtime_error("Texture descriptor set layout must be set before creating the pipeline!");
+	}
+
+	if (m_instanceDataLayout == VK_NULL_HANDLE) {
+		throw std::runtime_error("Instance data descriptor set layout must be set before creating the pipeline!");
+	}
 
 	// Vertex shader
 	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
@@ -188,21 +188,6 @@ void GFXEngine::Graphics::InstancedGeometryPipeline::destroy(LibGFX::VkContext& 
 	if(m_pipelineLayout != VK_NULL_HANDLE) {
 		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
 		m_pipelineLayout = VK_NULL_HANDLE;
-	}
-
-	if(m_uniformsLayout != VK_NULL_HANDLE) {
-		context.destroyDescriptorSetLayout(m_uniformsLayout);
-		m_uniformsLayout = VK_NULL_HANDLE;
-	}
-
-	if(m_textureLayout != VK_NULL_HANDLE) {
-		context.destroyDescriptorSetLayout(m_textureLayout);
-		m_textureLayout = VK_NULL_HANDLE;
-	}
-
-	if(m_instanceDataLayout != VK_NULL_HANDLE) {
-		context.destroyDescriptorSetLayout(m_instanceDataLayout);
-		m_instanceDataLayout = VK_NULL_HANDLE;
 	}
 }
 
