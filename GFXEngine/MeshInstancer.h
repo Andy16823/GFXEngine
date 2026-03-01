@@ -10,7 +10,8 @@ namespace GFXEngine {
 		class MeshInstancer : public Entity
 		{
 		public:
-			MeshInstancer(const Graphics::Mesh& mesh, const Graphics::UnlitMaterial& material, size_t instances) : m_mesh(mesh), m_material(material), m_numInstances(instances) {}
+			MeshInstancer(const Graphics::Mesh& mesh, const Graphics::UnlitMaterial& material, size_t instances)
+				: m_mesh(mesh), m_material(material), m_numInstances(instances) {}
 			void init(GFXEngine::Graphics::Renderer& renderer) override;
 			void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 
