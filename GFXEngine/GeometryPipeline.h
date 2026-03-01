@@ -23,7 +23,9 @@ namespace GFXEngine {
 			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }
 			VkPipeline getPipeline() const override;
 			VkPipelineLayout getPipelineLayout() const override;
+			void setUniformsDescriptorSetLayout(VkDescriptorSetLayout layout) { m_uniformsLayout = layout; }
 			VkDescriptorSetLayout getUniformsDescriptorSetLayout() const { return m_uniformsLayout; }
+			void setTextureDescriptorSetLayout(VkDescriptorSetLayout layout) { m_textureLayout = layout; }
 			VkDescriptorSetLayout getTextureDescriptorSetLayout() const { return m_textureLayout; }
 
 		private:
