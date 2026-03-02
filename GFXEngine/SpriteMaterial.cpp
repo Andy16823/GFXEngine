@@ -8,9 +8,11 @@ void GFXEngine::Graphics::SpriteMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
 }
 
-void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, uint32_t imageIndex, uint32_t firstSet) const
+void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, const Camera& camera, uint32_t imageIndex) const
 {
-	renderer.bindDescriptorSet(m_textureDescriptorSet, m_pipeline.getPipelineLayout(), firstSet, imageIndex);
+	auto cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
+	renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
+	renderer.bindDescriptorSet(m_textureDescriptorSet, m_pipeline.getPipelineLayout(), MATERIAL_UBO_BINDING, imageIndex);
 }
 
 void GFXEngine::Graphics::SpriteMaterial::destroy(Renderer& renderer)

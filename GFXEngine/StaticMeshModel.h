@@ -15,7 +15,7 @@ namespace GFXEngine {
 		public:
 			StaticMeshModel(const std::string& filePath, const GeometryPipeline& pipeline);
 			void init(Renderer& renderer) override;
-			void draw(Renderer& renderer, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, uint32_t imageIndex, uint32_t meshIndex)> callback) const override;
+			void draw(Renderer& renderer, const Camera& camera, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, const Camera& camera, uint32_t imageIndex, uint32_t meshIndex)> callback) const override;
 			void destroy(Renderer& renderer) override;
 
 			const Mesh& getMesh(size_t index) const override { return m_meshes.at(index); }

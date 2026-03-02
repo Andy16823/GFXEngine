@@ -19,7 +19,7 @@ void GFXEngine::Graphics::StaticMeshModel::init(Renderer& renderer)
 	}
 }
 
-void GFXEngine::Graphics::StaticMeshModel::draw(Renderer& renderer, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, uint32_t imageIndex, uint32_t meshIndex)> callback) const
+void GFXEngine::Graphics::StaticMeshModel::draw(Renderer& renderer, const Camera& camera, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, const Camera& camera, uint32_t imageIndex, uint32_t meshIndex)> callback) const
 {
 	// Draw each mesh with its corresponding material
 	for (size_t i = 0; i < m_meshes.size(); i++) {
@@ -27,10 +27,10 @@ void GFXEngine::Graphics::StaticMeshModel::draw(Renderer& renderer, uint32_t ima
 		const auto& pipeline = material.getPipeline();
 
 		renderer.usePipeline(pipeline, imageIndex);
-		material.bind(renderer, imageIndex, MATERIAL_UBO_BINDING);
+		material.bind(renderer, camera, imageIndex);
 
 		if (callback) {
-			callback(*this, renderer, imageIndex, static_cast<uint32_t>(i));
+			callback(*this, renderer, camera, imageIndex, static_cast<uint32_t>(i));
 		}
 
 		m_meshes[i].draw(renderer, imageIndex);

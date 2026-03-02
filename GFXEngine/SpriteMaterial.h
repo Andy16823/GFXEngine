@@ -24,7 +24,7 @@ namespace GFXEngine {
 				: m_texturePath(texturePath), m_pipeline(pipeline) {}
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, uint32_t imageIndex, uint32_t firstSet) const override;
+			void bind(Renderer& renderer, const Camera& camera, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;
 			
 			const LibGFX::Pipeline& getPipeline() const override { return m_pipeline; }
