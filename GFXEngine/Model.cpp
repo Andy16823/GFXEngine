@@ -2,21 +2,20 @@
 
 void GFXEngine::Core::Model::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
-	if (!isVisible())
-		return;
+	if (isVisible()) {
+		Entity::render(renderer, camera, imageIndex);
+	}
+}
 
-	// Call base render to handle any common rendering setup
-	Entity::render(renderer, camera, imageIndex);
+size_t GFXEngine::Core::Model::getMeshCount() const
+{
+	return m_meshModel.getMeshCount();
+}
 
-	const glm::mat4 modelMatrix = transform.getModelMatrix();
-
-	// Invoke the draw function of the mesh model, passing a callback to bind push constants for each mesh
-	auto callback = [&modelMatrix](const GFXEngine::Graphics::MeshModel& meshModel, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, uint32_t meshIndex) {
-		const auto& material = meshModel.getMeshMaterial(meshIndex);
-		const auto& pipeline = material.getPipeline();
-		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline.getPipelineLayout(), imageIndex);
-		};
-
-	// Draw the mesh model, passing the callback to bind push constants for each mesh
-	m_meshModel.draw(renderer, camera, imageIndex, callback);
+std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
+{
+	if (index >= m_meshModel.getMeshCount()) {
+		throw std::out_of_range("Mesh index out of range");
+	}
+	return { m_meshModel.getMesh(index), m_meshModel.getMeshMaterial(index) };
 }

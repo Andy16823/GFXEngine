@@ -6,6 +6,10 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
+#include <utility>
+#include "Material.h"
+#include "Mesh.h"
+#include "Pipeline.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -38,6 +42,9 @@ namespace GFXEngine {
 			virtual void update(float deltaTime);
 			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer);
+
+			virtual size_t getMeshCount() const = 0;
+			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
 
 			template<typename T>
 			T& addBehavior(std::unique_ptr<T> behavior) {

@@ -20,10 +20,8 @@ namespace GFXEngine {
 			Material& operator=(Material&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
-			virtual void bind(Renderer& renderer, const Camera& camera, uint32_t imageIndex) const = 0;
+			virtual void bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
-
-			virtual const LibGFX::Pipeline& getPipeline() const = 0;
 		};
 	}
 }

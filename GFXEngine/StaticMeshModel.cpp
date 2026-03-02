@@ -1,9 +1,9 @@
 #include "StaticMeshModel.h"
 #include "Utils.h"
 
-GFXEngine::Graphics::StaticMeshModel::StaticMeshModel(const std::string& filePath, const GeometryPipeline& pipeline)
+GFXEngine::Graphics::StaticMeshModel::StaticMeshModel(const std::string& filePath)
 {
-	this->loadFromFile(filePath, pipeline);
+	this->loadFromFile(filePath);
 }
 
 void GFXEngine::Graphics::StaticMeshModel::init(Renderer& renderer)
@@ -19,36 +19,21 @@ void GFXEngine::Graphics::StaticMeshModel::init(Renderer& renderer)
 	}
 }
 
-void GFXEngine::Graphics::StaticMeshModel::draw(Renderer& renderer, const Camera& camera, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, const Camera& camera, uint32_t imageIndex, uint32_t meshIndex)> callback) const
-{
-	// Draw each mesh with its corresponding material
-	for (size_t i = 0; i < m_meshes.size(); i++) {
-		const auto& material = m_materials[i % m_materials.size()];
-		const auto& pipeline = material.getPipeline();
-
-		renderer.usePipeline(pipeline, imageIndex);
-		material.bind(renderer, camera, imageIndex);
-
-		if (callback) {
-			callback(*this, renderer, camera, imageIndex, static_cast<uint32_t>(i));
-		}
-
-		m_meshes[i].draw(renderer, imageIndex);
-	}
-}
-
 void GFXEngine::Graphics::StaticMeshModel::destroy(Renderer& renderer)
 {
+	// Destroy materials
 	for (auto& material : m_materials) {
 		material.destroy(renderer);
 	}
+
+	// Destroy meshes
 	for (auto& mesh : m_meshes) {
 		mesh.destroy(renderer);
 	}
 }
 
-void GFXEngine::Graphics::StaticMeshModel::loadFromFile(const std::string& filePath, const GeometryPipeline& pipeline)
+void GFXEngine::Graphics::StaticMeshModel::loadFromFile(const std::string& filePath)
 {
 	m_meshes = GFXEngine::Utils::loadMeshesFromFile(filePath);
-	m_materials = GFXEngine::Utils::loadMaterialsFromFile(filePath, pipeline);
+	m_materials = GFXEngine::Utils::loadMaterialsFromFile(filePath);
 }

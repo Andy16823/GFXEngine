@@ -19,6 +19,8 @@ namespace GFXEngine {
 			virtual void update(float deltaTime) = 0;
 			virtual void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) = 0;
 			virtual void destroy(Graphics::Renderer& renderer) = 0;
+
+			Entity* getEntity() const { return m_entity; }
 		};
 	}
 }

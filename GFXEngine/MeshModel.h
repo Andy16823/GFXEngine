@@ -21,9 +21,9 @@ namespace GFXEngine {
 			MeshModel& operator=(MeshModel&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
-			virtual void draw(Renderer& renderer, const Camera& camera, uint32_t imageIndex, std::function<void(const MeshModel& meshModel, Renderer& renderer, const Camera& camera, uint32_t imageIndex, uint32_t meshIndex)> callback) const = 0;
 			virtual void destroy(Renderer& renderer) = 0;
 
+			virtual size_t getMeshCount() const = 0;
 			virtual const Mesh& getMesh(size_t index) const = 0;
 			virtual const Material& getMeshMaterial(size_t index) const = 0;
 

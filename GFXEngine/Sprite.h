@@ -34,6 +34,9 @@ namespace GFXEngine {
 			virtual void update(float deltaTime) override;
 			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) override;
+
+			virtual size_t getMeshCount() const override { return 1; }
+			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 		};
 	}
 }

@@ -18,7 +18,12 @@ namespace GFXEngine {
 				: m_meshModel(meshModel){}
 
 			void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
+
+			size_t getMeshCount() const override;
+			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+
 			const Graphics::MeshModel& getMeshModel() const { return m_meshModel; }
+
 		};
 	}
 }
