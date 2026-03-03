@@ -58,9 +58,14 @@ void GFXEngine::Core::InstancedRenderBehavior::updateInstanceData(Graphics::Rend
 
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRenderBehavior::bakeInstanceData() const
 {
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 model = translation * rotation * scale;
+
 	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);
 	for (size_t i = 0; i < m_instanceCount; ++i) {
-		instanceData[i].model = glm::mat4(2.0f);
+		instanceData[i].model = model;
 		instanceData[i].extras = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	}
 	return instanceData;
