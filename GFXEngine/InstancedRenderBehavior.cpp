@@ -55,12 +55,12 @@ void GFXEngine::Core::InstancedRenderBehavior::destroy(Graphics::Renderer& rende
 
 void GFXEngine::Core::InstancedRenderBehavior::updateInstanceData(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index)
 {
-	//if (index >= m_instanceCount) {
-	//	throw std::out_of_range("Instance index out of range");
-	//}
-	//auto size = sizeof(EngineTypes::InstanceData);
-	//auto offset = index * size;
-	//renderer.updateBuffer(m_instanceDataBuffer, instanceData, offset);
+	if (index >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	auto size = sizeof(EngineTypes::InstanceData);
+	auto offset = index * size;
+	renderer.updateBufferRange(m_instanceDataBuffer, &instanceData, offset);
 }
 
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRenderBehavior::bakeInstanceData() const
@@ -72,7 +72,7 @@ std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRend
 
 	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);
 	for (size_t i = 0; i < m_instanceCount; ++i) {
-		instanceData[i].model = glm::mat4(1);
+		instanceData[i].model = model;
 		instanceData[i].extras = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	}
 	return instanceData;
