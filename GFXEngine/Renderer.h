@@ -11,6 +11,8 @@
 #include <memory>
 #include "QueueFamilyIndices.h"
 #include "Imaging.h"
+#include <vector>
+#
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
@@ -129,6 +131,8 @@ namespace GFXEngine {
 			void copyBuffer(const LibGFX::Buffer& srcBuffer, const LibGFX::Buffer& dstBuffer, VkDeviceSize size);
 			void resizeBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			void recreateBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
+			void flushBuffer(const LibGFX::Buffer& buffer);
+			void destroyBuffer(LibGFX::Buffer& buffer);
 
 			template<typename T>
 			void updateBuffer(const LibGFX::Buffer& buffer, const T* data, size_t count) {
@@ -147,7 +151,25 @@ namespace GFXEngine {
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
 
-			void destroyBuffer(LibGFX::Buffer& buffer);
+			// Persitent mapping functions for dynamic buffers
+			void* mapBuffer(const LibGFX::Buffer& buffer);
+			void unmapBuffer(const LibGFX::Buffer& buffer);
+
+			template<typename T>
+			void updateMappedBuffer(void* mappedData, size_t bufferSize, const T* data, size_t count) {
+				size_t totalSize = sizeof(T) * count;
+				assert(totalSize <= bufferSize, "Buffer update size exceeds buffer size");
+				memcpy(mappedData, data, totalSize);
+			}
+
+			template<typename T>
+			void updateMappedBufferRange(void* mappedData, size_t bufferSize, const T* data, size_t count, size_t elementOffset) {
+				size_t byteOffset = elementOffset * sizeof(T);
+				size_t totalSize = sizeof(T) * count;
+				assert(byteOffset + totalSize <= bufferSize, "Buffer update range exceeds buffer size");
+				auto dest = static_cast<char*>(mappedData) + byteOffset;
+				memcpy(dest, data, totalSize);
+			}
 
 			// GETTERS
 			VkCommandBuffer getCommandBuffer(uint32_t imageIndex) const { return m_commandBuffers[imageIndex]; }

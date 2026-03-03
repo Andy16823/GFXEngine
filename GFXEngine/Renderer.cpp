@@ -416,3 +416,25 @@ void Renderer::destroyDescriptorSetLayout(VkDescriptorSetLayout layout)
 {
 	m_context->destroyDescriptorSetLayout(layout);
 }
+
+void* Renderer::mapBuffer(const LibGFX::Buffer& buffer)
+{
+	void* mappedData;
+	vkMapMemory(m_context->getDevice(), buffer.memory, 0, buffer.size, 0, &mappedData);
+	return mappedData;
+}
+
+void Renderer::unmapBuffer(const LibGFX::Buffer& buffer)
+{
+	vkUnmapMemory(m_context->getDevice(), buffer.memory);
+}
+
+void Renderer::flushBuffer(const LibGFX::Buffer& buffer)
+{
+	VkMappedMemoryRange memoryRange = {};
+	memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+	memoryRange.memory = buffer.memory;
+	memoryRange.offset = 0;
+	memoryRange.size = buffer.size;
+	vkFlushMappedMemoryRanges(m_context->getDevice(), 1, &memoryRange);
+}

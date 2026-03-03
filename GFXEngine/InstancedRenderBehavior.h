@@ -18,14 +18,14 @@ namespace GFXEngine {
 			void update(float deltaTime) override;
 			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Graphics::Renderer& renderer) override;
-
-			void updateInstanceData(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index);
+			void updateInstance(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index);
 
 		private:
 			const Graphics::InstancedGeometryPipeline& m_pipeline;
 			size_t m_instanceCount;
 			LibGFX::Buffer m_instanceDataBuffer;
 			VkDescriptorSet m_instanceDataDescriptorSet;
+			void* m_mappedInstanceData = nullptr;
 
 			std::vector<EngineTypes::InstanceData> bakeInstanceData() const;
 		};

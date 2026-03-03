@@ -6,24 +6,23 @@
 
 void GFXEngine::Core::InstancedRenderBehavior::init(Graphics::Renderer& renderer)
 {
-	std::cout << "Initializing InstancedRenderBehavior with " << m_instanceCount << " instances." << std::endl;
+	// Create the ssbo for instance data
 	auto bufferSize = m_instanceCount * sizeof(EngineTypes::InstanceData);
 	m_instanceDataBuffer = renderer.createBuffer(
 		bufferSize,
 		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 	);
-	auto instanceData = bakeInstanceData();
-	renderer.updateBuffer(m_instanceDataBuffer, instanceData.data(), m_instanceCount);
 
+	// Allocate descriptor set for instance data buffer
 	m_instanceDataDescriptorSet = renderer.allocateStorageBufferDescriptorSet(m_instanceDataBuffer, 0, renderer.getStorageBufferLayout());
-	if (m_instanceDataBuffer.memory == VK_NULL_HANDLE) {
-		throw std::runtime_error("Failed to create instance data buffer");
-	}
 
-	if (m_instanceDataDescriptorSet == VK_NULL_HANDLE) {
-		throw std::runtime_error("Failed to allocate instance data descriptor set");
-	}	
+	// Bake initial instance data
+	auto instanceData = bakeInstanceData();
+
+	// Persistently map the buffer for easy updates
+	m_mappedInstanceData = renderer.mapBuffer(m_instanceDataBuffer);
+	renderer.updateMappedBuffer(m_mappedInstanceData, bufferSize, instanceData.data(), m_instanceCount);
 }
 
 void GFXEngine::Core::InstancedRenderBehavior::update(float deltaTime)
@@ -50,17 +49,19 @@ void GFXEngine::Core::InstancedRenderBehavior::render(Graphics::Renderer& render
 
 void GFXEngine::Core::InstancedRenderBehavior::destroy(Graphics::Renderer& renderer)
 {
+	renderer.unmapBuffer(m_instanceDataBuffer);
 	renderer.destroyBuffer(m_instanceDataBuffer);
 }
 
-void GFXEngine::Core::InstancedRenderBehavior::updateInstanceData(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index)
+void GFXEngine::Core::InstancedRenderBehavior::updateInstance(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index)
 {
 	if (index >= m_instanceCount) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	auto size = sizeof(EngineTypes::InstanceData);
-	auto offset = index * size;
-	renderer.updateBufferRange(m_instanceDataBuffer, &instanceData, offset);
+	//auto size = sizeof(EngineTypes::InstanceData);
+	//auto offset = index * size;
+	//renderer.updateBufferRange(m_instanceDataBuffer, &instanceData, offset);
+	renderer.updateMappedBufferRange(m_mappedInstanceData, m_instanceDataBuffer.size, &instanceData, 1, index);
 }
 
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRenderBehavior::bakeInstanceData() const
