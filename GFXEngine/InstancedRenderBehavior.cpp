@@ -60,7 +60,7 @@ std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRend
 {
 	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);
 	for (size_t i = 0; i < m_instanceCount; ++i) {
-		instanceData[i].model = glm::mat4(1.0f);
+		instanceData[i].model = glm::mat4(2.0f);
 		instanceData[i].extras = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	}
 	return instanceData;
