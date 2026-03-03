@@ -138,6 +138,25 @@ namespace GFXEngine {
 				memcpy(mappedData, data, sizeof(T) * count);
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
+
+			template<typename T>
+			void updateBuffer(const LibGFX::Buffer& buffer, const std::vector<T>& data) {
+				updateBuffer(buffer, data.data(), data.size());
+			}
+
+			template<typename T>
+			void updateBuffer(const LibGFX::Buffer& buffer, const std::span<const T>& data) {
+				updateBuffer(buffer, data.data(), data.size());
+			}
+
+			template<typename T>
+			void updateBuffer(const LibGFX::Buffer& buffer, const T& data, size_t offset, size_t size) {
+				void* mappedData;
+				vkMapMemory(m_context->getDevice(), buffer.memory, offset, size, 0, &mappedData);
+				memcpy(mappedData, &data, size);
+				vkUnmapMemory(m_context->getDevice(), buffer.memory);
+			}
+
 			void destroyBuffer(LibGFX::Buffer& buffer);
 
 			// GETTERS

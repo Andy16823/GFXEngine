@@ -19,6 +19,8 @@ namespace GFXEngine {
 			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Graphics::Renderer& renderer) override;
 
+			void updateInstanceData(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index);
+
 		private:
 			const Graphics::InstancedGeometryPipeline& m_pipeline;
 			size_t m_instanceCount;
