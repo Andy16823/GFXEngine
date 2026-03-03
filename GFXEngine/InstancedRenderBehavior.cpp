@@ -1,8 +1,12 @@
 #include "InstancedRenderBehavior.h"
 #include "Entity.h"
+#include "Renderer.h"
+#include <stdexcept>
+#include <iostream>
 
 void GFXEngine::Core::InstancedRenderBehavior::init(Graphics::Renderer& renderer)
 {
+	std::cout << "Initializing InstancedRenderBehavior with " << m_instanceCount << " instances." << std::endl;
 	auto bufferSize = m_instanceCount * sizeof(EngineTypes::InstanceData);
 	m_instanceDataBuffer = renderer.createBuffer(
 		bufferSize,
