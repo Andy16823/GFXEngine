@@ -150,10 +150,10 @@ namespace GFXEngine {
 			}
 
 			template<typename T>
-			void updateBuffer(const LibGFX::Buffer& buffer, const T& data, size_t offset, size_t size) {
+			void updateBuffer(const LibGFX::Buffer& buffer, const T& data, size_t offset) {
 				void* mappedData;
-				vkMapMemory(m_context->getDevice(), buffer.memory, offset, size, 0, &mappedData);
-				memcpy(mappedData, &data, size);
+				vkMapMemory(m_context->getDevice(), buffer.memory, offset, sizeof(T), 0, &mappedData);
+				memcpy(mappedData, &data, sizeof(T));
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
 

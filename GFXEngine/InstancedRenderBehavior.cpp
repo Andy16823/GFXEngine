@@ -53,7 +53,7 @@ void GFXEngine::Core::InstancedRenderBehavior::updateInstanceData(Graphics::Rend
 	}
 	auto size = sizeof(EngineTypes::InstanceData);
 	auto offset = index * size;
-	renderer.updateBuffer(m_instanceDataBuffer, &instanceData, offset, size);
+	renderer.updateBuffer(m_instanceDataBuffer, instanceData, offset);
 }
 
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRenderBehavior::bakeInstanceData() const
