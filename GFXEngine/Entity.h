@@ -47,19 +47,19 @@ namespace GFXEngine {
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
 
 			template<typename T>
-			T& addBehavior(std::unique_ptr<T> behavior) {
+			T* addBehavior(std::unique_ptr<T> behavior) {
 				static_assert(std::is_base_of<Behavior, T>::value, "T must be a subclass of Behavior");
 				behavior->setEntity(this);
 				m_behaviors.push_back(std::move(behavior));
-				return static_cast<T&>(*m_behaviors.back());
+				return static_cast<T*>(m_behaviors.back().get());
 			}
 
 			template<typename T>
-			T& getBehavior() {
+			T* getBehavior() {
 				static_assert(std::is_base_of<Behavior, T>::value, "T must be a subclass of Behavior");
 				for (auto& behavior : m_behaviors) {
 					if (auto casted = dynamic_cast<T*>(behavior.get())) {
-						return *casted;
+						return casted;
 					}
 				}
 				throw std::runtime_error("Behavior not found");
