@@ -17,6 +17,13 @@ void GFXEngine::Core::InstancedRenderBehavior::init(Graphics::Renderer& renderer
 	renderer.updateBuffer(m_instanceDataBuffer, instanceData.data(), m_instanceCount);
 
 	m_instanceDataDescriptorSet = renderer.allocateStorageBufferDescriptorSet(m_instanceDataBuffer, 0, renderer.getStorageBufferLayout());
+	if (m_instanceDataBuffer.memory == VK_NULL_HANDLE) {
+		throw std::runtime_error("Failed to create instance data buffer");
+	}
+
+	if (m_instanceDataDescriptorSet == VK_NULL_HANDLE) {
+		throw std::runtime_error("Failed to allocate instance data descriptor set");
+	}	
 }
 
 void GFXEngine::Core::InstancedRenderBehavior::update(float deltaTime)
@@ -59,7 +66,7 @@ void GFXEngine::Core::InstancedRenderBehavior::updateInstanceData(Graphics::Rend
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRenderBehavior::bakeInstanceData() const
 {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 model = translation * rotation * scale;
 
