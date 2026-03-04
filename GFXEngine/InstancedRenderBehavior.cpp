@@ -64,6 +64,15 @@ void GFXEngine::Core::InstancedRenderBehavior::updateInstance(Graphics::Renderer
 	renderer.updateMappedBufferRange(m_mappedInstanceData, m_instanceDataBuffer.size, &instanceData, 1, index);
 }
 
+void GFXEngine::Core::InstancedRenderBehavior::updateInstanceRange(Graphics::Renderer& renderer, const std::span<EngineTypes::InstanceData>& instanceData, size_t offset)
+{
+	size_t count = instanceData.size();
+	if (offset + count > m_instanceCount) {
+		throw std::out_of_range("Instance range out of range");
+	}
+	renderer.updateMappedBufferRange(m_mappedInstanceData, m_instanceDataBuffer.size, instanceData.data(), count, offset);
+}
+
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedRenderBehavior::bakeInstanceData() const
 {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));

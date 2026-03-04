@@ -3,6 +3,7 @@
 #include "InstancedGeometryPipeline.h"
 #include "Buffer.h"
 #include "DataTypes.h"
+#include <span>
 
 namespace GFXEngine {
 	namespace Core {
@@ -19,6 +20,7 @@ namespace GFXEngine {
 			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Graphics::Renderer& renderer) override;
 			void updateInstance(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index);
+			void updateInstanceRange(Graphics::Renderer& renderer, const std::span<EngineTypes::InstanceData>& instanceData, size_t offset);
 
 		private:
 			const Graphics::InstancedGeometryPipeline& m_pipeline;
