@@ -9,7 +9,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Abstract base class for cameras in the engine. Defines the interface for getting view and projection matrices, as well as managing descriptor sets for camera data.
 		/// </summary>
-		class Camera
+		class Camera : public std::enable_shared_from_this<Camera>
 		{
 		public:
 			virtual ~Camera() = default;
@@ -28,6 +28,10 @@ namespace GFXEngine {
 
 			static std::shared_ptr<Camera> getActiveCamera() {
 				return s_activeCamera.lock();
+			}
+
+			void makeActive() {
+				setActiveCamera(shared_from_this());
 			}
 
 		private:
