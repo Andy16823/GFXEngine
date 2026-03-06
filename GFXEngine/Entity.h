@@ -23,9 +23,6 @@ namespace GFXEngine {
 		/// </summary>
 		class Entity
 		{
-		private:
-			std::vector<std::unique_ptr<Behavior>> m_behaviors;
-			bool m_visible = true;
 
 		public:
 			GFXEngine::Math::Transform transform;
@@ -67,6 +64,10 @@ namespace GFXEngine {
 
 			bool isVisible() const { return m_visible; }
 			void setVisible(bool visible) { m_visible = visible; }
+
+		private:
+			std::vector<std::unique_ptr<Behavior>> m_behaviors;
+			bool m_visible = true;
 		};
 	}
 }

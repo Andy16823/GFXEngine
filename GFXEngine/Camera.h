@@ -1,6 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "Renderer.h"
+#include <memory>
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -20,6 +21,17 @@ namespace GFXEngine {
 			virtual void updateCameraBuffers(Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void destroyDescriptorSets(Renderer& renderer) = 0;
 			virtual VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const = 0;
+
+			static void setActiveCamera(std::shared_ptr<Camera> camera) {
+				s_activeCamera = camera;
+			}
+
+			static std::shared_ptr<Camera> getActiveCamera() {
+				return s_activeCamera.lock();
+			}
+
+		private:
+			static std::weak_ptr<Camera> s_activeCamera; // Weak pointer to the currently active camera
 		};
 	}
 }
