@@ -35,7 +35,7 @@ namespace GFXEngine {
 			}
 
 		private:
-			static std::weak_ptr<Camera> s_activeCamera; // Weak pointer to the currently active camera
+			static inline std::weak_ptr<Camera> s_activeCamera; // Weak pointer to the currently active camera
 		};
 	}
 }
