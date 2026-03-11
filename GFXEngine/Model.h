@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "MeshModel.h"
+#include "GeometryPipeline.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -12,10 +13,11 @@ namespace GFXEngine {
 		{
 		private:
 			const Graphics::MeshModel& m_meshModel;
+			const Graphics::GeometryPipeline& m_pipeline;	
 
 		public:
-			Model(const Graphics::MeshModel& meshModel) 
-				: m_meshModel(meshModel){}
+			Model(const Graphics::MeshModel& meshModel, const Graphics::GeometryPipeline& pipeline) 
+				: m_meshModel(meshModel), m_pipeline(pipeline) {}
 
 			void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 
