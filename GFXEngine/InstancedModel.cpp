@@ -60,7 +60,7 @@ std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedMode
 	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);
 	for (size_t i = 0; i < m_instanceCount; ++i) {
 		instanceData[i].model = this->transform.getModelMatrix();
-		instanceData[i].extras = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f); // You can use this for additional per-instance data if needed
+		instanceData[i].extras = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f); // You can use this for additional per-instance data if needed
 	}
 	return instanceData;
 }
