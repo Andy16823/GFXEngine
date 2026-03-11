@@ -1,5 +1,5 @@
 #pragma once
-#include "DefaultRenderPipeline.h"
+#include "Pipeline.h"
 #include "VkContext.h"
 #include "LibGFX.h"
 #include "DataTypes.h"
@@ -12,7 +12,7 @@ namespace GFXEngine {
 		/// GeometryPipeline class that encapsulates the Vulkan graphics pipeline for rendering geometry.
 		/// It provides methods to create and destroy the pipeline, set viewport and scissor, and access pipeline layouts and descriptor sets.
 		/// </summary>
-		class GeometryPipeline : public DefaultRenderPipeline
+		class GeometryPipeline : public LibGFX::Pipeline
 		{
 		public:
 			GeometryPipeline(const RenderShader& shader, VkDescriptorSetLayout uniformLayout, VkDescriptorSetLayout textureLayout) 
