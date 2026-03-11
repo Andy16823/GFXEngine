@@ -1,11 +1,11 @@
 #pragma once
-#include "Pipeline.h"
+#include "InstancedRenderPipeline.h"
 #include "VkContext.h"
 #include "RenderShader.h"
 
 namespace GFXEngine {
 	namespace Graphics {
-		class InstancedGeometryPipeline : public LibGFX::Pipeline
+		class InstancedGeometryPipeline : public InstancedRenderPipeline
 		{
 		public:
 			InstancedGeometryPipeline(const RenderShader& shader, VkDescriptorSetLayout uniformLayout, VkDescriptorSetLayout textureLayout, VkDescriptorSetLayout instanceDataLayout) 
