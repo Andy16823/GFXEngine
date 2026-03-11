@@ -5,21 +5,21 @@ void GFXEngine::Core::Model::render(GFXEngine::Graphics::Renderer& renderer, GFX
 	if (isVisible()) {
 		Entity::render(renderer, camera, imageIndex);
 
-		// Get related camera descriptor set
-		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-		glm::mat4 modelMatrix = this->transform.getModelMatrix();
+		//// Get related camera descriptor set
+		//VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
+		//glm::mat4 modelMatrix = this->transform.getModelMatrix();
 
-		// Bind pipeline and camera descriptor set
-		renderer.usePipeline(m_pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
-		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
+		//// Bind pipeline and camera descriptor set
+		//renderer.usePipeline(m_pipeline, imageIndex);
+		//renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
+		//renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
 
-		// Render each mesh of the entity
-		for (size_t i = 0; i < this->getMeshCount(); ++i) {
-			auto [mesh, material] = this->getMeshAndMaterial(i);
-			material.bind(renderer, camera, m_pipeline, imageIndex);
-			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex);
-		}
+		//// Render each mesh of the entity
+		//for (size_t i = 0; i < this->getMeshCount(); ++i) {
+		//	auto [mesh, material] = this->getMeshAndMaterial(i);
+		//	material.bind(renderer, camera, m_pipeline, imageIndex);
+		//	renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex);
+		//}
 	}
 }
 
