@@ -78,7 +78,7 @@ void GFXEngine::Core::InstancedModel::updateInstance(Graphics::Renderer& rendere
 	if (index >= m_instanceCount) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceDataBuffer.size, &instanceData, 1);
+	renderer.updateMappedBufferRange(m_mappedInstanceData, m_instanceDataBuffer.size, &instanceData, 1, index);
 }
 
 void GFXEngine::Core::InstancedModel::updateInstanceRange(Graphics::Renderer& renderer, const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex)
@@ -87,5 +87,5 @@ void GFXEngine::Core::InstancedModel::updateInstanceRange(Graphics::Renderer& re
 	if (total > m_instanceCount) {
 		throw std::out_of_range("Instance range out of range");
 	}
-	renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceDataBuffer.size, instanceData.data(), instanceData.size());
+	renderer.updateMappedBufferRange(m_mappedInstanceData, m_instanceDataBuffer.size, instanceData.data(), instanceData.size(), startIndex);
 }
