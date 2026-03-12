@@ -34,6 +34,7 @@ namespace GFXEngine {
 			std::unique_ptr<LibGFX::VkContext> m_context;
 			VkRect2D m_scissor;
 			VkViewport m_viewport;
+			bool m_enableValidationLayers = true;
 
 			// SYNC OBJECTS
 			int m_currentImage = 0;
@@ -185,6 +186,10 @@ namespace GFXEngine {
 			VkDescriptorSetLayout getSamplerLayout() const { return m_samplerLayout; }
 			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }
 			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
+			bool isValidationEnabled() const { return m_enableValidationLayers; }
+
+			// SETTERS
+			void setValidationEnabled(bool enabled) { m_enableValidationLayers = enabled; }
 		};
 	}
 }

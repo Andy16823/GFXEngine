@@ -12,7 +12,7 @@ void Renderer::init(GLFWwindow* window)
 {
 	// Create Vulkan context
 	m_context = LibGFX::GFX::createContext(window);
-	m_context->initialize(LibGFX::VkContext::defaultAppInfo());
+	m_context->initialize(LibGFX::VkContext::defaultAppInfo(), m_enableValidationLayers);
 
 	// Create swapchain and depth buffer
 	m_swapchainInfo = m_context->createSwapChain(VK_PRESENT_MODE_MAILBOX_KHR);
