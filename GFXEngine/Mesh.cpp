@@ -4,13 +4,11 @@ void GFXEngine::Graphics::Mesh::init(Renderer& renderer)
 {
 	size_t vertexBufferSize = m_vertices.size() * sizeof(EngineTypes::Vertex3D);
 	m_vertexBuffer = renderer.createBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_vertexBuffer, m_vertices.data(), m_vertices.size());
-	renderer.flushBuffer(m_vertexBuffer);
+	renderer.updateBuffer(m_vertexBuffer, m_vertices.data(), m_vertices.size(), true);
 
 	size_t indexBufferSize = m_indices.size() * sizeof(uint32_t);
 	m_indexBuffer = renderer.createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_indexBuffer, m_indices.data(), m_indices.size());
-	renderer.flushBuffer(m_indexBuffer);
+	renderer.updateBuffer(m_indexBuffer, m_indices.data(), m_indices.size(), true);
 }
 
 void GFXEngine::Graphics::Mesh::draw(Renderer& renderer, uint32_t imageIndex) const
