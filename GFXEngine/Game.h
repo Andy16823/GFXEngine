@@ -1,0 +1,28 @@
+#pragma once
+#include "Renderer.h"
+#include "Camera.h"
+#include "LibGFX.h"
+
+
+namespace GFXEngine {
+	namespace Core {
+		class Game
+		{
+		public:
+
+			Game() = default;
+			~Game() = default;
+
+			void start(uint32_t width, uint32_t height, const std::string& title = "My Game", bool validationLayers = true);
+
+			virtual void onInit(Graphics::Renderer& renderer) = 0;
+			virtual void onUpdate(Graphics::Renderer& renderer, uint32_t imageIndex, float deltaTime) = 0;
+			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
+			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
+
+		private:
+			GLFWwindow* m_window = nullptr;
+			std::unique_ptr<Graphics::Renderer> m_renderer;
+		};
+	}
+}
