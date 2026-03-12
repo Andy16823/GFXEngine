@@ -7,7 +7,7 @@ void GFXEngine::Core::InstancedModel::init(GFXEngine::Graphics::Renderer& render
 	auto bufferSize = m_instanceCount * sizeof(EngineTypes::InstanceData);
 	m_instanceDataBuffer = renderer.createBuffer(
 		bufferSize,
-		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 	);
 
