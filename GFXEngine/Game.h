@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "LibGFX.h"
 
-
 namespace GFXEngine {
 	namespace Core {
 		class Game
@@ -20,9 +19,12 @@ namespace GFXEngine {
 			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
 
+			glm::vec2 getWindowSize() const { return m_windowSize; }
+
 		private:
 			GLFWwindow* m_window = nullptr;
 			std::unique_ptr<Graphics::Renderer> m_renderer;
+			glm::vec2 m_windowSize = { 800.0f, 600.0f };
 		};
 	}
 }
