@@ -57,3 +57,10 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	this->onDestroy(*m_renderer);
 	m_renderer->dispose();
 }
+
+glm::vec2 GFXEngine::Core::Game::getCursorPos() const
+{
+	double x, y;
+	glfwGetCursorPos(m_window, &x, &y);
+	return { static_cast<float>(x), static_cast<float>(y) };
+}
