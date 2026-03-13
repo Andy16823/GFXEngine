@@ -51,6 +51,16 @@ void GFXEngine::Math::Transform::forward(float distance)
 	position += getForward() * distance;
 }
 
+void GFXEngine::Math::Transform::right(float distance)
+{
+	position += getRight() * distance;
+}
+
+void GFXEngine::Math::Transform::up(float distance)
+{
+	position += getUp() * distance;
+}
+
 glm::vec3 GFXEngine::Math::Transform::getEulerRotation() const
 {
 	glm::vec3 euler = glm::eulerAngles(rotation);

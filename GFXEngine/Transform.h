@@ -23,6 +23,8 @@ namespace GFXEngine {
 			void setPosition(const glm::vec3& newPos);
 			void setScale(const glm::vec3& newScale);
 			void forward(float distance);
+			void right(float distance);
+			void up(float distance);
 
 			glm::mat4 getModelMatrix() const;
 			glm::vec3 getEulerRotation() const;
