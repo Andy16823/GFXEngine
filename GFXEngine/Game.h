@@ -24,7 +24,7 @@ namespace GFXEngine {
 		private:
 			GLFWwindow* m_window = nullptr;
 			std::unique_ptr<Graphics::Renderer> m_renderer;
-			glm::vec2 m_windowSize = { 800.0f, 600.0f };
+			glm::ivec2 m_windowSize = { 800, 600 };
 		};
 	}
 }

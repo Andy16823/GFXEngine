@@ -2,7 +2,7 @@
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& title /*= "My Game"*/, bool validationLayers /*= true*/)
 {
-	m_windowSize = { static_cast<float>(width), static_cast<float>(height) };
+	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
 
 	// Create window and renderer
 	m_window = LibGFX::GFX::createWindow(width, height, title.c_str());
