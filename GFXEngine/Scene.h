@@ -9,11 +9,11 @@ namespace GFXEngine {
 		public:
 			Scene() = default;
 			virtual ~Scene() = default;
-			virtual void onInit(GFXEngine::Graphics::Renderer& renderer) = 0;
-			virtual void onUpdate(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) = 0;
-			virtual void onRender(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
-			virtual void onDestroy(GFXEngine::Graphics::Renderer& renderer) = 0;
-			virtual void onInput(int key, int mods, int action) = 0;
+			virtual void init(GFXEngine::Graphics::Renderer& renderer) = 0;
+			virtual void update(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) = 0;
+			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
+			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) = 0;
+			virtual void input(int key, int mods, int action) = 0;
 		};
 	}
 }

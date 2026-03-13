@@ -23,6 +23,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	// Call user-defined initialization
 	this->onInit(*m_renderer);
 
+	// Call user-defined start
+	this->onStart(*m_renderer);
+
 	// Main loop
 	m_renderer->createSyncObjects();
 	while (!glfwWindowShouldClose(m_window))

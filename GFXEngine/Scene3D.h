@@ -10,11 +10,11 @@ namespace GFXEngine {
 		public:
 			Scene3D() = default;
 			virtual ~Scene3D() = default;
-			void onInit(Graphics::Renderer& renderer) override;
-			void onUpdate(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) override;
-			void onRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
-			void onDestroy(Graphics::Renderer& renderer) override;
-			void onInput(int key, int mods, int action) override;
+			void init(Graphics::Renderer& renderer) override;
+			void update(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) override;
+			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
+			void destroy(Graphics::Renderer& renderer) override;
+			void input(int key, int mods, int action) override;
 
 			void addEntity(std::unique_ptr<Entity> entity) {
 				m_entities.push_back(std::move(entity));
