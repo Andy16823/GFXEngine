@@ -10,6 +10,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Pipeline.h"
+#include <vector>
 
 namespace GFXEngine {
 	namespace Core {
@@ -62,12 +63,42 @@ namespace GFXEngine {
 				throw std::runtime_error("Behavior not found");
 			}
 
-			bool isVisible() const { return m_visible; }
-			void setVisible(bool visible) { m_visible = visible; }
+			bool isVisible() const { 
+				return m_visible; 
+			}
+
+			void setVisible(bool visible) { 
+				m_visible = visible; 
+			}
+
+			const std::string& getName() const { 
+				return m_name; 
+			}
+
+			void setName(const std::string& name) { 
+				m_name = name; 
+			}
+
+			bool hasTag(const std::string& tag) const {
+				for (const auto& t : m_tags) {
+					if (t == tag) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			void addTag(const std::string& tag) {
+				if (!hasTag(tag)) {
+					m_tags.push_back(tag);
+				}
+			}
 
 		private:
+			std::vector<std::string> m_tags;
 			std::vector<std::unique_ptr<Behavior>> m_behaviors;
 			bool m_visible = true;
+			std::string m_name;
 		};
 	}
 }
