@@ -22,6 +22,7 @@ namespace GFXEngine {
 			virtual void onKeyUp(int key, int mods) = 0;
 
 			glm::ivec2 getWindowSize() const { return m_windowSize; }
+			GLFWwindow* getWindow() const { return m_window; }
 
 		private:
 			GLFWwindow* m_window = nullptr;
