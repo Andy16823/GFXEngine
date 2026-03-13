@@ -12,12 +12,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) {
-			if (action == GLFW_PRESS) {
-				game->onKeyDown(key, mods);
-			}
-			else if (action == GLFW_RELEASE) {
-				game->onKeyUp(key, mods);
-			}
+			game->onInput(key, mods, action);
 		}
 	});
 
