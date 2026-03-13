@@ -18,6 +18,8 @@ namespace GFXEngine {
 			virtual void onUpdate(Graphics::Renderer& renderer, uint32_t imageIndex, float deltaTime) = 0;
 			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
+			virtual void onKeyDown(int key, int mods) = 0;
+			virtual void onKeyUp(int key, int mods) = 0;
 
 			glm::ivec2 getWindowSize() const { return m_windowSize; }
 

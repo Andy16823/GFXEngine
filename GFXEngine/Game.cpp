@@ -6,6 +6,21 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 
 	// Create window and renderer
 	m_window = LibGFX::GFX::createWindow(width, height, title.c_str());
+	glfwSetWindowUserPointer(m_window, this);
+
+	// Input callback
+	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) {
+			if (action == GLFW_PRESS) {
+				game->onKeyDown(key, mods);
+			}
+			else if (action == GLFW_RELEASE) {
+				game->onKeyUp(key, mods);
+			}
+		}
+	});
+
 	m_renderer = std::make_unique<Graphics::Renderer>();
 	m_renderer->setValidationEnabled(validationLayers);
 	m_renderer->init(m_window);
