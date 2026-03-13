@@ -1,9 +1,9 @@
 #include "Model.h"
 
-void GFXEngine::Core::Model::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
 	if (isVisible()) {
-		Entity::render(renderer, camera, imageIndex);
+		Entity::render(scene, renderer, camera, imageIndex);
 
 		// Get related camera descriptor set
 		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);

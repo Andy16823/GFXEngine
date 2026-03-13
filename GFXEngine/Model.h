@@ -19,7 +19,7 @@ namespace GFXEngine {
 			Model(const Graphics::MeshModel& meshModel, const Graphics::GeometryPipeline& pipeline) 
 				: m_meshModel(meshModel), m_pipeline(pipeline) {}
 
-			void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
+			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 
 			size_t getMeshCount() const override;
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;

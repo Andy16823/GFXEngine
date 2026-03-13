@@ -15,9 +15,9 @@ namespace GFXEngine {
 				: m_meshModel(meshModel), m_pipeline(pipeline), m_instanceCount(instanceCount) {
 			}
 
-			void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
-			void init(GFXEngine::Graphics::Renderer& renderer) override;
-			void destroy(GFXEngine::Graphics::Renderer& renderer) override;
+			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
+			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
+			void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void updateInstance(Graphics::Renderer& renderer, const EngineTypes::InstanceData& instanceData, size_t index);
 			void updateInstanceRange(Graphics::Renderer& renderer, const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex);
 

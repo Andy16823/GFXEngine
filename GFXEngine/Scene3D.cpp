@@ -4,7 +4,7 @@ void GFXEngine::Core::Scene3D::init(Graphics::Renderer& renderer)
 {
 	for (auto& entity : m_entities)
 	{
-		entity->init(renderer);
+		entity->init(*this, renderer);
 	}
 }
 
@@ -12,7 +12,7 @@ void GFXEngine::Core::Scene3D::update(Graphics::Renderer& renderer, Graphics::Ca
 {
 	for (auto& entity : m_entities)
 	{
-		entity->update(deltaTime);
+		entity->update(*this, deltaTime);
 	}
 }
 
@@ -21,7 +21,7 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 	for (auto& entity : m_entities)
 	{
 		if (entity->isVisible()) {
-			entity->render(renderer, camera, imageIndex);
+			entity->render(*this, renderer, camera, imageIndex);
 		}
 	}
 }
@@ -30,7 +30,7 @@ void GFXEngine::Core::Scene3D::destroy(Graphics::Renderer& renderer)
 {
 	for (auto& entity : m_entities)
 	{
-		entity->destroy(renderer);
+		entity->destroy(*this, renderer);
 	}
 	m_entities.clear();
 }

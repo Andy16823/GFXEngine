@@ -2,6 +2,7 @@
 
 void GFXEngine::Graphics::Mesh::init(Renderer& renderer)
 {
+	// TODO: Currently using rebar buffers for simplicity, but we should eventually switch to staging buffers for fallback support on devices that don't support rebar buffers
 	size_t vertexBufferSize = m_vertices.size() * sizeof(EngineTypes::Vertex3D);
 	m_vertexBuffer = renderer.createBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	renderer.updateBuffer(m_vertexBuffer, m_vertices.data(), m_vertices.size(), true);

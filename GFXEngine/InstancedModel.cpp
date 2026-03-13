@@ -1,8 +1,11 @@
 #include "InstancedModel.h"
 
 
-void GFXEngine::Core::InstancedModel::init(GFXEngine::Graphics::Renderer& renderer)
+void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
+	// Call base entity initialization to initialize behaviors
+	Entity::init(scene, renderer);
+
 	// Create storage buffer for instance data
 	auto bufferSize = m_instanceCount * sizeof(EngineTypes::InstanceData);
 	m_instanceDataBuffer = renderer.createBuffer(
@@ -22,10 +25,10 @@ void GFXEngine::Core::InstancedModel::init(GFXEngine::Graphics::Renderer& render
 	renderer.updateMappedBuffer(m_mappedInstanceData, bufferSize, instanceData.data(), m_instanceCount);
 }
 
-void GFXEngine::Core::InstancedModel::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
 	if (this->isVisible()) {
-		Entity::render(renderer, camera, imageIndex);
+		Entity::render(scene, renderer, camera, imageIndex);
 
 		auto meshCount = this->getMeshCount();
 
@@ -67,8 +70,9 @@ std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedMode
 
 
 
-void GFXEngine::Core::InstancedModel::destroy(GFXEngine::Graphics::Renderer& renderer)
+void GFXEngine::Core::InstancedModel::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
+	Entity::destroy(scene, renderer);
 	renderer.unmapBuffer(m_instanceDataBuffer);
 	renderer.destroyBuffer(m_instanceDataBuffer);
 }

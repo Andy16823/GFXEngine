@@ -11,6 +11,7 @@
 #include "Mesh.h"
 #include "Pipeline.h"
 #include <vector>
+#include "Scene.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -36,10 +37,10 @@ namespace GFXEngine {
 			Entity(Entity&&) = default; // Allow move semantics
 			Entity& operator=(Entity&&) = default; // Allow move semantics
 
-			virtual void init(GFXEngine::Graphics::Renderer& renderer);
-			virtual void update(float deltaTime);
-			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
-			virtual void destroy(GFXEngine::Graphics::Renderer& renderer);
+			virtual void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
+			virtual void update(Scene& scene, float deltaTime);
+			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
+			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;

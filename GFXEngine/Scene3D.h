@@ -1,10 +1,15 @@
 #include "Scene.h"
 #include <vector>
 #include "Entity.h"
+#include <span>
 
 #pragma once
 namespace GFXEngine {
 	namespace Core {
+
+		/// <summary>
+		/// Default 3D scene implementation that manages a collection of entities.
+		/// </summary>
 		class Scene3D : public Scene
 		{
 		public:
@@ -34,6 +39,16 @@ namespace GFXEngine {
 					}
 				}
 				return nullptr;
+			}
+
+			std::span<Entity*> findEntitiesByTag(const std::string& tag) {
+				std::vector<Entity*> taggedEntities;
+				for (auto& entity : m_entities) {
+					if (entity->hasTag(tag)) {
+						taggedEntities.push_back(entity.get());
+					}
+				}
+				return taggedEntities;
 			}
 
 		private:
