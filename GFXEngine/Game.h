@@ -19,7 +19,7 @@ namespace GFXEngine {
 			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
 
-			glm::vec2 getWindowSize() const { return m_windowSize; }
+			glm::ivec2 getWindowSize() const { return m_windowSize; }
 
 		private:
 			GLFWwindow* m_window = nullptr;
