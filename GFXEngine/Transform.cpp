@@ -46,6 +46,11 @@ void GFXEngine::Math::Transform::setScale(const glm::vec3& newScale)
 	scale = newScale;
 }
 
+void GFXEngine::Math::Transform::forward(float distance)
+{
+	position += getForward() * distance;
+}
+
 glm::vec3 GFXEngine::Math::Transform::getEulerRotation() const
 {
 	glm::vec3 euler = glm::eulerAngles(rotation);
