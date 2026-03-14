@@ -2,6 +2,7 @@
 #include <vector>
 #include "Entity.h"
 #include <span>
+#include "EnviromentMap.h"
 
 #pragma once
 namespace GFXEngine {
@@ -51,8 +52,13 @@ namespace GFXEngine {
 				return taggedEntities;
 			}
 
+			void setEnviromentMap(std::unique_ptr<Graphics::EnviromentMap> enviromentMap) {
+				m_enviromentMap = std::move(enviromentMap);
+			}
+
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
+			std::unique_ptr<Graphics::EnviromentMap> m_enviromentMap;
 		};
 	}
 }

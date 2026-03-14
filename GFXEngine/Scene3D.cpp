@@ -24,6 +24,9 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 			entity->render(*this, renderer, camera, imageIndex);
 		}
 	}
+	if(m_enviromentMap) {
+		m_enviromentMap->render(renderer, camera, imageIndex);
+	}
 }
 
 void GFXEngine::Core::Scene3D::destroy(Graphics::Renderer& renderer)
