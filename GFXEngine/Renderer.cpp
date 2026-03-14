@@ -52,7 +52,7 @@ void Renderer::init(GLFWwindow* window)
 	// Create descriptor pool for texture samplers
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, TEXTURE_SAMPLER_DESCRIPTOR_COUNT);
 	descriptorPoolBuilder.setMaxSets(TEXTURE_SAMPLER_MAX_SETS);
-	m_textureDescriptorPool = descriptorPoolBuilder.build(*m_context);
+	m_samplerDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
 
 	// Create descriptor pool for uniform buffers
@@ -111,7 +111,7 @@ void Renderer::dispose()
 	m_context->destroyFences(m_inFlightFences);
 	m_context->destroySampler(m_textureSampler);
 	m_context->destroySampler(m_cubemapSampler);
-	m_context->destroyDescriptorSetPool(m_textureDescriptorPool);
+	m_context->destroyDescriptorSetPool(m_samplerDescriptorPool);
 	m_context->destroyDescriptorSetPool(m_uniformBufferDescriptorPool);
 	m_context->destroyDescriptorSetPool(m_storageBufferDescriptorPool);
 	m_context->destroyCommandPool(m_commandPool);
@@ -232,7 +232,7 @@ void Renderer::disposeTexture(LibGFX::Image& image)
 
 VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout)
 {
-	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_textureDescriptorPool, layout);
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
 	LibGFX::DescriptorSetWriter writer;
 	writer.addImageInfo(image.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
@@ -243,7 +243,7 @@ VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& imag
 
 VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout)
 {
-	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_textureDescriptorPool, layout);
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
 	LibGFX::DescriptorSetWriter writer;
 	writer.addImageInfo(cubemap.imageView, m_cubemapSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
@@ -253,12 +253,12 @@ VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cu
 
 void Renderer::freeTextureDescriptorSet(VkDescriptorSet descriptorSet)
 {
-	m_context->freeDescriptorSet(m_textureDescriptorPool, descriptorSet);
+	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
 }
 
 void Renderer::freeCubemapDescriptorSet(VkDescriptorSet descriptorSet)
 {
-	m_context->freeDescriptorSet(m_textureDescriptorPool, descriptorSet);
+	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
 }
 
 void Renderer::createPipeline(LibGFX::Pipeline& pipeline)

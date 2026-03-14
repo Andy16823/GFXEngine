@@ -57,7 +57,7 @@ namespace GFXEngine {
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
 			// TEXTURE SAMPLERS
-			VkDescriptorPool m_textureDescriptorPool;
+			VkDescriptorPool m_samplerDescriptorPool;
 			VkSampler m_textureSampler;
 			VkSampler m_cubemapSampler;
 
