@@ -9,12 +9,12 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 	auto [vertices, indices] = Graphics::Shapes::createSkybox();
 	
 	VkDeviceSize vertexBufferSize = vertices.size() * sizeof(EngineTypes::PositionVertex);
-	m_vertexBuffer = renderer.createBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_vertexBuffer, vertices.data(), vertices.size(), true);
+	m_vertexBuffer = renderer.createBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	renderer.updateBuffer(m_vertexBuffer, vertices.data(), vertices.size(), false);
 
 	VkDeviceSize indexBufferSize = indices.size() * sizeof(uint32_t);
-	m_indexBuffer = renderer.createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_indexBuffer, indices.data(), indices.size(), true);
+	m_indexBuffer = renderer.createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	renderer.updateBuffer(m_indexBuffer, indices.data(), indices.size(), false);
 
 	m_cubemapDescriptorSet = renderer.allocateCubemapDescriptorSet(m_cubemap, 0, renderer.getCubemapSamplerLayout());
 }
