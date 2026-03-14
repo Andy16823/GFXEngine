@@ -59,6 +59,7 @@ namespace GFXEngine {
 			// TEXTURE SAMPLERS
 			VkDescriptorPool m_textureDescriptorPool;
 			VkSampler m_textureSampler;
+			VkSampler m_cubemapSampler;
 
 			// UNIFORM BUFFER DESCRIPTOR POOL
 			VkDescriptorPool m_uniformBufferDescriptorPool;
@@ -110,7 +111,9 @@ namespace GFXEngine {
 			LibGFX::Cubemap loadCubemap(const LibGFX::CubemapData& cubemapData);
 			void disposeTexture(LibGFX::Image& image);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
+			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
+			void freeCubemapDescriptorSet(VkDescriptorSet descriptorSet);
 
 			// UNIFORM BUFFERS
 			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
