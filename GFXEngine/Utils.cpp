@@ -40,6 +40,28 @@ LibGFX::ImageData GFXEngine::Utils::createSolidColorImage(uint32_t width, uint32
 	return imageData;
 }
 
+LibGFX::CubemapData GFXEngine::Utils::loadCubemap(const std::vector<std::string>& filePaths, bool flipVertically /*= true*/)
+{
+	if (filePaths.size() != 6) {
+		throw std::runtime_error("Cubemap requires exactly 6 images!");
+	}
+
+	LibGFX::CubemapData cubemapData;
+	for (size_t i = 0; i < 6; i++) {
+		stbi_set_flip_vertically_on_load(flipVertically);
+		int texWidth, texHeight, texChannels;
+		stbi_uc* pixels = stbi_load(filePaths[i].c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+		if (!pixels) {
+			throw std::runtime_error("Failed to load cubemap image: " + filePaths[i]);
+		}
+		cubemapData.pixels[i] = pixels;
+		cubemapData.width = static_cast<uint32_t>(texWidth);
+		cubemapData.height = static_cast<uint32_t>(texHeight);
+		cubemapData.format = VK_FORMAT_R8G8B8A8_UNORM;
+	}
+	return cubemapData;
+}
+
 std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> GFXEngine::Utils::createCameraUniformBuffers(Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera3D& camera, VkDescriptorSetLayout descriptorSetLayout)
 {
 	size_t swapchainImageCount = renderer.getSwapchainImageCount();
