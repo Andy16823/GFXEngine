@@ -21,15 +21,11 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 
 void EnviromentMap::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
-	if (m_pipeline == nullptr) {
-		throw std::runtime_error("Pipeline must be set before rendering the environment map!");
-	}
-
 	VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
 
-	renderer.usePipeline(*m_pipeline, imageIndex);
-	renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline->getPipelineLayout(), 0, imageIndex);
-	renderer.bindDescriptorSet(m_cubemapDescriptorSet, m_pipeline->getPipelineLayout(), 1, imageIndex);
+	renderer.usePipeline(m_pipeline, imageIndex);
+	renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
+	renderer.bindDescriptorSet(m_cubemapDescriptorSet, m_pipeline.getPipelineLayout(), 1, imageIndex);
 	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, 36, imageIndex);
 }
 

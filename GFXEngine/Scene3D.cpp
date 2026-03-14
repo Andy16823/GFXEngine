@@ -6,10 +6,6 @@ void GFXEngine::Core::Scene3D::init(Graphics::Renderer& renderer)
 	{
 		entity->init(*this, renderer);
 	}
-
-	if (m_enviromentMap) {
-		m_enviromentMap->init(renderer);
-	}
 }
 
 void GFXEngine::Core::Scene3D::update(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime)
@@ -28,6 +24,7 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 			entity->render(*this, renderer, camera, imageIndex);
 		}
 	}
+
 	if(m_enviromentMap) {
 		m_enviromentMap->render(renderer, camera, imageIndex);
 	}
@@ -40,10 +37,6 @@ void GFXEngine::Core::Scene3D::destroy(Graphics::Renderer& renderer)
 		entity->destroy(*this, renderer);
 	}
 	m_entities.clear();
-
-	if (m_enviromentMap) {
-		m_enviromentMap->destroy(renderer);
-	}
 }
 
 void GFXEngine::Core::Scene3D::input(int key, int mods, int action)

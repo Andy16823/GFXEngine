@@ -52,13 +52,13 @@ namespace GFXEngine {
 				return taggedEntities;
 			}
 
-			void setEnviromentMap(std::unique_ptr<Graphics::EnviromentMap> enviromentMap) {
-				m_enviromentMap = std::move(enviromentMap);
+			void setEnviromentMap(Graphics::EnviromentMap& enviromentMap) {
+				m_enviromentMap = &enviromentMap;
 			}
 
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
-			std::unique_ptr<Graphics::EnviromentMap> m_enviromentMap;
+			Graphics::EnviromentMap* m_enviromentMap = nullptr;
 		};
 	}
 }

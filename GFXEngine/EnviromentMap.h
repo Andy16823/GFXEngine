@@ -9,18 +9,15 @@ namespace GFXEngine {
 		class EnviromentMap
 		{
 		public:
-			EnviromentMap(const LibGFX::Cubemap& cubemap)
-				: m_cubemap(cubemap) {}
+			EnviromentMap(const LibGFX::Cubemap& cubemap, const Graphics::EnviromentPipeline& pipeline)
+				: m_cubemap(cubemap), m_pipeline(pipeline) {}
 
 			void init(GFXEngine::Graphics::Renderer& renderer);
 			void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
 			void destroy(GFXEngine::Graphics::Renderer& renderer);
-
-			void usePipeline(const Graphics::EnviromentPipeline& pipeline) { m_pipeline = &pipeline; }
-
 		private:
 			const LibGFX::Cubemap& m_cubemap;
-			const Graphics::EnviromentPipeline* m_pipeline = nullptr;
+			const Graphics::EnviromentPipeline& m_pipeline;
 
 			VkDescriptorSet m_cubemapDescriptorSet;
 			LibGFX::Buffer m_vertexBuffer;
