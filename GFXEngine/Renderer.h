@@ -72,6 +72,7 @@ namespace GFXEngine {
 
 			// Descriptor set layouts
 			VkDescriptorSetLayout m_samplerLayout;
+			VkDescriptorSetLayout m_cubemapSamplerLayout;
 			VkDescriptorSetLayout m_uniformBuffferLayout;
 			VkDescriptorSetLayout m_storageBufferLayout;
 
@@ -195,6 +196,7 @@ namespace GFXEngine {
 			VkFormat getDepthFormat() const { return m_depthFormat; }
 			LibGFX::VkContext& getContext() { return *m_context; }
 			VkDescriptorSetLayout getSamplerLayout() const { return m_samplerLayout; }
+			VkDescriptorSetLayout getCubemapSamplerLayout() const { return m_cubemapSamplerLayout; }
 			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }
 			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
 			bool isValidationEnabled() const { return m_enableValidationLayers; }

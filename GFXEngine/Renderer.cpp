@@ -69,14 +69,23 @@ void Renderer::init(GLFWwindow* window)
 
 	// Descriptor set layouts
 	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
+
+	// Texture sampler layout
 	m_samplerLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
 
+	// Cubemap sampler layout same as texture sampler but for clarity an own layout is created
+	m_cubemapSamplerLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+		.build(*m_context);
+	layoutBuilder.clear();
+
+	// Uniform buffer layout
 	m_uniformBuffferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
 
+	// Storage buffer layout
 	m_storageBufferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
@@ -93,6 +102,7 @@ void Renderer::dispose()
 	m_context->waitIdle();
 
 	m_context->destroyDescriptorSetLayout(m_samplerLayout);
+	m_context->destroyDescriptorSetLayout(m_cubemapSamplerLayout);
 	m_context->destroyDescriptorSetLayout(m_uniformBuffferLayout);
 	m_context->destroyDescriptorSetLayout(m_storageBufferLayout);
 
