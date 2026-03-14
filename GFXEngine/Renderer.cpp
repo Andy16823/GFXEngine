@@ -205,6 +205,12 @@ LibGFX::Image Renderer::loadTexture(const LibGFX::ImageData& imageData)
 	return textureImage;
 }
 
+LibGFX::Cubemap Renderer::loadCubemap(const LibGFX::CubemapData& cubemapData)
+{
+	LibGFX::Cubemap cubemap = m_context->createCubemap(cubemapData, m_commandPool);
+	return cubemap;
+}
+
 void Renderer::disposeTexture(LibGFX::Image& image)
 {
 	m_context->destroyImage(image);
