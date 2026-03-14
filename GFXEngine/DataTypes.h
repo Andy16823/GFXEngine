@@ -41,6 +41,14 @@ namespace GFXEngine {
 		};
 
 		/// <summary>
+		/// Vertex structure for simple position-only vertices, useful for rendering skyboxes or other geometry where only position is needed.
+		/// </summary>
+		struct PositionVertex
+		{
+			glm::vec3 pos;
+		};
+
+		/// <summary>
 		/// Uniform buffer object for camera data, containing view and projection matrices, as well as the camera position for lighting calculations.
 		/// </summary>
 		struct CameraBufferObject
