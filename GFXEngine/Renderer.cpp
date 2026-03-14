@@ -230,6 +230,11 @@ void Renderer::disposeTexture(LibGFX::Image& image)
 	m_context->destroyImage(image);
 }
 
+void Renderer::disposeCubemap(LibGFX::Cubemap& cubemap)
+{
+	m_context->destroyCubemap(cubemap);
+}
+
 VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout)
 {
 	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);

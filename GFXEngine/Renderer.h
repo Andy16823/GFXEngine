@@ -111,6 +111,7 @@ namespace GFXEngine {
 			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
 			LibGFX::Cubemap loadCubemap(const LibGFX::CubemapData& cubemapData);
 			void disposeTexture(LibGFX::Image& image);
+			void disposeCubemap(LibGFX::Cubemap& cubemap);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
 			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout);
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
