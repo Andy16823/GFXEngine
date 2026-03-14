@@ -24,6 +24,7 @@ namespace GFXEngine {
 			VkDescriptorSet m_cubemapDescriptorSet;
 			LibGFX::Buffer m_vertexBuffer;
 			LibGFX::Buffer m_indexBuffer;
+
 		};
 	}
 }
