@@ -48,13 +48,20 @@ void GFXEngine::Graphics::RenderTexture::create(Renderer& renderer, VkExtent2D e
 	}
 	std::cout << "Created render texture with extent: " << m_extent.width << "x" << m_extent.height << std::endl;
 
+	// TODO: Change this to staging buffer properly
 	auto [vertices, indices] = Shapes::createFramebufferQuad();
-	size_t vertexBufferSize = vertices.size() * sizeof(EngineTypes::Vertex3D);
-	m_vertexBuffer = renderer.createBuffer(vertexBufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	size_t vertexBufferSize = vertices.size() * sizeof(EngineTypes::FramebufferVertex);
+	m_vertexBuffer = renderer.createBuffer(
+		vertexBufferSize, 
+		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, 
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	renderer.updateBuffer(m_vertexBuffer, vertices.data(), vertices.size());
 
 	size_t indexBufferSize = indices.size() * sizeof(uint32_t);
-	m_indexBuffer = renderer.createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	m_indexBuffer = renderer.createBuffer(
+		indexBufferSize, 
+		VK_BUFFER_USAGE_INDEX_BUFFER_BIT, 
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	renderer.updateBuffer(m_indexBuffer, indices.data(), indices.size());
 }
 

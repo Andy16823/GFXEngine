@@ -6,6 +6,15 @@ namespace GFXEngine {
 	namespace EngineTypes {
 
 		/// <summary>
+		/// FramebufferVertex is a simple vertex structure used for rendering a full-screen quad, containing position and texture coordinates.
+		/// </summary>
+		struct FramebufferVertex
+		{
+			glm::vec3 pos;
+			glm::vec2 texCoord;
+		};
+
+		/// <summary>
 		/// Simple vertex structure for 3D rendering, containing position, color, texture coordinates, and normal vector.
 		/// </summary>
 		struct Vertex3D
