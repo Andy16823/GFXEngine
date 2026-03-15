@@ -93,12 +93,20 @@ std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(cons
 			auto& aiVertex = aiMesh->mVertices[j];
 			auto& aiNormal = aiMesh->mNormals[j];
 			auto& aiTexCoord = aiMesh->mTextureCoords[0][j];
+			auto& aiTangent = aiMesh->mTangents[j];
+			auto& aiBitangent = aiMesh->mBitangents[j];
+
+			glm::vec3 tangent = glm::vec3(aiTangent.x, aiTangent.y, aiTangent.z);
+			glm::vec3 bitangent = glm::vec3(aiBitangent.x, aiBitangent.y, aiBitangent.z);
+			glm::vec3 normal = glm::vec3(aiNormal.x, aiNormal.y, aiNormal.z);
+			float handness = (glm::dot(glm::cross(normal, tangent), bitangent) < 0.0f) ? -1.0f : 1.0f;
 			
 			EngineTypes::Vertex3D vertex{};
 			vertex.pos = glm::vec3(aiVertex.x, aiVertex.y, aiVertex.z);
-			vertex.normal = glm::vec3(aiNormal.x, aiNormal.y, aiNormal.z);
+			vertex.normal = normal;
 			vertex.texCoord = glm::vec2(aiTexCoord.x, aiTexCoord.y);
-			vertex.color = glm::vec3(1.0f); // Default white color TODO: Load vertex colors if available
+			vertex.tangent = glm::vec4(tangent, handness);
+			vertex.color = glm::vec3(1.0f);
 
 			vertices[j] = vertex;
 		}

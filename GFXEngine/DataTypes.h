@@ -24,6 +24,7 @@ namespace GFXEngine {
 			glm::vec3 color;
 			glm::vec2 texCoord;
 			glm::vec3 normal;
+			glm::vec4 tangent;
 		};
 
 		/// <summary>
@@ -45,6 +46,7 @@ namespace GFXEngine {
 			glm::vec3 color;
 			glm::vec2 texCoord;
 			glm::vec3 normal;
+			glm::vec4 tangent;
 			glm::ivec4 boneIDs;
 			glm::vec4 weights;
 		};

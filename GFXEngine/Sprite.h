@@ -17,10 +17,6 @@ namespace GFXEngine {
 		/// </summary>
 		class Sprite : public Entity
 		{
-		private:
-			const Graphics::SpriteMaterial& m_material;
-			const Graphics::Mesh& m_mesh;
-
 		public:
 			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh& mesh)
 				: m_material(material), m_mesh(mesh) {
@@ -37,6 +33,9 @@ namespace GFXEngine {
 
 			virtual size_t getMeshCount() const override { return 1; }
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+		private:
+			const Graphics::SpriteMaterial& m_material;
+			const Graphics::Mesh& m_mesh;
 		};
 	}
 }
