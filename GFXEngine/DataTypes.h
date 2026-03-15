@@ -77,5 +77,14 @@ namespace GFXEngine {
 			glm::mat4 model;
 			glm::vec4 extras;
 		};	
+
+		/// <summary>
+		/// Light data structure for a directional light, containing the direction of the light and its color (with an optional intensity in the w component).
+		/// </summary>
+		struct DirectionalLightData
+		{
+			glm::vec4 direction; // w component can be used for padding
+			glm::vec4 color;     // w component can be used for intensity
+		};
 	}
 }

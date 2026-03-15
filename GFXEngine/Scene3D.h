@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include <span>
 #include "EnviromentMap.h"
+#include "DirectionalLight.h"
 
 #pragma once
 namespace GFXEngine {
@@ -14,8 +15,11 @@ namespace GFXEngine {
 		class Scene3D : public Scene
 		{
 		public:
+			Graphics::DirectionalLight directionalLight;
+
 			Scene3D() = default;
 			virtual ~Scene3D() = default;
+
 			void init(Graphics::Renderer& renderer) override;
 			void update(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) override;
 			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
