@@ -15,7 +15,7 @@ namespace GFXEngine {
 			static std::pair<std::vector<GFXEngine::EngineTypes::Vertex3D>, std::vector<uint32_t>> createSprite();
 			static std::pair<std::vector<GFXEngine::EngineTypes::PositionVertex>, std::vector<uint32_t>> createSkybox();
 			static void createSprite(std::vector<GFXEngine::EngineTypes::Vertex3D>& vertices, std::vector<uint32_t>& indices);
-			static std::pair<std::vector<GFXEngine::EngineTypes::Vertex3D>, std::vector<uint32_t>> createFramebufferQuad();
+			static std::pair<std::vector<GFXEngine::EngineTypes::FramebufferVertex>, std::vector<uint32_t>> createFramebufferQuad();
 		};
 	}
 }
