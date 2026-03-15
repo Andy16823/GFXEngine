@@ -1,9 +1,9 @@
 #pragma once
 #include "Mesh.h"
-#include "UnlitMaterial.h"
 #include "MeshModel.h"
 #include <vector>
-#include "GeometryPipeline.h"
+#include "PBRMaterial.h"
+
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -22,7 +22,7 @@ namespace GFXEngine {
 			size_t getMeshCount() const override { return m_meshes.size(); }
 
 		private:
-			std::vector<UnlitMaterial> m_materials;
+			std::vector<PBRMaterial> m_materials;
 			std::vector<Mesh> m_meshes;
 
 			void loadFromFile(const std::string& filePath);

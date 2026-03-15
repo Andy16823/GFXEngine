@@ -35,5 +35,5 @@ void GFXEngine::Graphics::StaticMeshModel::destroy(Renderer& renderer)
 void GFXEngine::Graphics::StaticMeshModel::loadFromFile(const std::string& filePath)
 {
 	m_meshes = GFXEngine::Utils::loadMeshesFromFile(filePath);
-	m_materials = GFXEngine::Utils::loadMaterialsFromFile(filePath);
+	m_materials = GFXEngine::Utils::loadPBRMaterialsFromFile(filePath);
 }

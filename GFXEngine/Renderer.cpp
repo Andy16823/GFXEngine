@@ -110,6 +110,7 @@ void Renderer::dispose()
 	m_context->destroyDescriptorSetLayout(m_cubemapSamplerLayout);
 	m_context->destroyDescriptorSetLayout(m_uniformBuffferLayout);
 	m_context->destroyDescriptorSetLayout(m_storageBufferLayout);
+	m_context->destroyDescriptorSetLayout(m_pbrMaterialLayout);
 
 	m_context->destroySemaphores(m_imageAvailableSemaphores);
 	m_context->destroySemaphores(m_renderFinishedSemaphores);
