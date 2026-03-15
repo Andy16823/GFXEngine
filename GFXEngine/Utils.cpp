@@ -161,28 +161,29 @@ std::vector<GFXEngine::Graphics::PBRMaterial> GFXEngine::Utils::loadPBRMaterials
 		LibGFX::ImageData albedoData, normalData, metallicRoughnessData, aoData;
 
 		if (aiMaterial->GetTexture(aiTextureType_BASE_COLOR, 0, &albedoPath) == AI_SUCCESS) {
-			albedoData = loadImage(basePath + albedoPath.C_Str());
+			albedoData = loadImage(basePath + albedoPath.C_Str(), false);
 		}
 		else {
 			albedoData = createSolidColorImage(1, 1, glm::vec4(1.0f));
 		}
 
 		if(aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &normalPath) == AI_SUCCESS) {
-			normalData = loadImage(basePath + normalPath.C_Str());
+			normalData = loadImage(basePath + normalPath.C_Str(), false);
 		}
 		else {
 			normalData = createSolidColorImage(1, 1, glm::vec4(0.5f, 0.5f, 1.0f, 1.0f)); // Default normal map color
 		}
 
 		if (aiMaterial->GetTexture(aiTextureType_METALNESS, 0, &metallicRoughnessPath) == AI_SUCCESS) {
-			metallicRoughnessData = loadImage(basePath + metallicRoughnessPath.C_Str());
+			metallicRoughnessData = loadImage(basePath + metallicRoughnessPath.C_Str(), false);
+
 		}
 		else {
 			metallicRoughnessData = createSolidColorImage(1, 1, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)); // Default metallic-roughness map color
 		}
 
 		if (aiMaterial->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &aoPath) == AI_SUCCESS) {
-			aoData = loadImage(basePath + aoPath.C_Str());
+			aoData = loadImage(basePath + aoPath.C_Str(), false);
 		}
 		else {
 			aoData = createSolidColorImage(1, 1, glm::vec4(1.0f)); // Default AO map color

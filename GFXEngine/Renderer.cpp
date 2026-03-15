@@ -266,12 +266,23 @@ VkDescriptorSet Renderer::allocatePBRMaterialDescriptorSet(const LibGFX::Image& 
 {
 	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
 	LibGFX::DescriptorSetWriter writer;
+
 	writer.addImageInfo(albedo.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-		.addImageInfo(normal.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-		.addImageInfo(metallicRoughness.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-		.addImageInfo(ao.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		.write(*m_context, descriptorSet, 0, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 		.clear();
+
+	writer.addImageInfo(normal.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.write(*m_context, descriptorSet, 1, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		.clear();
+
+	writer.addImageInfo(metallicRoughness.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.write(*m_context, descriptorSet, 2, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		.clear();
+
+	writer.addImageInfo(ao.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.write(*m_context, descriptorSet, 3, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		.clear();
+
 	return descriptorSet;
 }
 
