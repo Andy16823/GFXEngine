@@ -153,21 +153,46 @@ std::vector<GFXEngine::Graphics::PBRMaterial> GFXEngine::Utils::loadPBRMaterials
 	}
 
 	std::vector<GFXEngine::Graphics::PBRMaterial> materials;
+	materials.reserve(scene->mNumMaterials);
+
 	for (size_t i = 0; i < scene->mNumMaterials; i++) {
 		auto aiMaterial = scene->mMaterials[i];
 		aiString albedoPath, normalPath, metallicRoughnessPath, aoPath;
-		if (aiMaterial->GetTexture(aiTextureType_BASE_COLOR, 0, &albedoPath) != AI_SUCCESS ||
-			aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &normalPath) != AI_SUCCESS ||
-			aiMaterial->GetTexture(aiTextureType_METALNESS, 0, &metallicRoughnessPath) != AI_SUCCESS ||
-			aiMaterial->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &aoPath) != AI_SUCCESS) {
-			std::cerr << "Warning: Material " << i << " is missing one or more PBR textures. Skipping." << std::endl;
-			continue;
+		LibGFX::ImageData albedoData, normalData, metallicRoughnessData, aoData;
+
+		if (aiMaterial->GetTexture(aiTextureType_BASE_COLOR, 0, &albedoPath) == AI_SUCCESS) {
+			albedoData = loadImage(basePath + albedoPath.C_Str());
 		}
-		std::string albedoFullPath = basePath + albedoPath.C_Str();
-		std::string normalFullPath = basePath + normalPath.C_Str();
-		std::string metallicRoughnessFullPath = basePath + metallicRoughnessPath.C_Str();
-		std::string aoFullPath = basePath + aoPath.C_Str();
-		materials.emplace_back(albedoFullPath, normalFullPath, metallicRoughnessFullPath, aoFullPath);
+		else {
+			albedoData = createSolidColorImage(1, 1, glm::vec4(1.0f));
+		}
+
+		if(aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &normalPath) == AI_SUCCESS) {
+			normalData = loadImage(basePath + normalPath.C_Str());
+		}
+		else {
+			normalData = createSolidColorImage(1, 1, glm::vec4(0.5f, 0.5f, 1.0f, 1.0f)); // Default normal map color
+		}
+
+		if (aiMaterial->GetTexture(aiTextureType_METALNESS, 0, &metallicRoughnessPath) == AI_SUCCESS) {
+			metallicRoughnessData = loadImage(basePath + metallicRoughnessPath.C_Str());
+		}
+		else {
+			metallicRoughnessData = createSolidColorImage(1, 1, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)); // Default metallic-roughness map color
+		}
+
+		if (aiMaterial->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &aoPath) == AI_SUCCESS) {
+			aoData = loadImage(basePath + aoPath.C_Str());
+		}
+		else {
+			aoData = createSolidColorImage(1, 1, glm::vec4(1.0f)); // Default AO map color
+		}
+
+		auto& pbrMaterial = materials.emplace_back();
+		pbrMaterial.setAlbedoTexture(std::move(albedoData));
+		pbrMaterial.setNormalTexture(std::move(normalData));
+		pbrMaterial.setMetallicRoughnessTexture(std::move(metallicRoughnessData));
+		pbrMaterial.setAOTexture(std::move(aoData));
 	}
 
 	return materials;

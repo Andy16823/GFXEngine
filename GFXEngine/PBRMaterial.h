@@ -8,17 +8,22 @@ namespace GFXEngine {
 		class PBRMaterial : public Material
 		{
 		public:
-			PBRMaterial(const std::string& albedoPath, const std::string& normalPath, const std::string& metallicRoughnessPath, const std::string& aoPath)
-				: m_albedoPath(albedoPath), m_normalPath(normalPath), m_metallicRoughnessPath(metallicRoughnessPath), m_aoPath(aoPath) {}
+			PBRMaterial() = default;
 
 			void init(Renderer& renderer) override;
 			void bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;
+
+			void setAlbedoTexture(LibGFX::ImageData albedoData) { m_albedoData = std::move(albedoData); }
+			void setNormalTexture(LibGFX::ImageData normalData) { m_normalData = std::move(normalData); }
+			void setMetallicRoughnessTexture(LibGFX::ImageData metallicRoughnessData) { m_metallicRoughnessData = std::move(metallicRoughnessData); }
+			void setAOTexture(LibGFX::ImageData aoData) { m_aoData = std::move(aoData); }
+
 		private:
-			const std::string m_albedoPath;
-			const std::string m_normalPath;
-			const std::string m_metallicRoughnessPath;
-			const std::string m_aoPath;
+			LibGFX::ImageData m_albedoData;
+			LibGFX::ImageData m_normalData;
+			LibGFX::ImageData m_metallicRoughnessData;
+			LibGFX::ImageData m_aoData;
 
 			LibGFX::Image m_albedo;
 			LibGFX::Image m_normal;
@@ -26,7 +31,6 @@ namespace GFXEngine {
 			LibGFX::Image m_ao;
 
 			VkDescriptorSet m_descriptorSet = VK_NULL_HANDLE;
-
 		};
 	}
 }

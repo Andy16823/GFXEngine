@@ -3,15 +3,10 @@
 
 void GFXEngine::Graphics::PBRMaterial::init(Renderer& renderer)
 {
-	auto albedoData = Utils::loadImage(m_albedoPath);
-	auto normalData = Utils::loadImage(m_normalPath);
-	auto metallicRoughnessData = Utils::loadImage(m_metallicRoughnessPath);
-	auto aoData = Utils::loadImage(m_aoPath);
-
-	m_albedo = renderer.loadTexture(albedoData);
-	m_normal = renderer.loadTexture(normalData);
-	m_metallicRoughness = renderer.loadTexture(metallicRoughnessData);
-	m_ao = renderer.loadTexture(aoData);
+	m_albedo = renderer.loadTexture(m_albedoData);
+	m_normal = renderer.loadTexture(m_normalData);	
+	m_metallicRoughness = renderer.loadTexture(m_metallicRoughnessData);
+	m_ao = renderer.loadTexture(m_aoData);
 
 	m_descriptorSet = renderer.allocatePBRMaterialDescriptorSet(m_albedo, m_normal, m_metallicRoughness, m_ao, 0, renderer.getPBRMaterialLayout());
 }
