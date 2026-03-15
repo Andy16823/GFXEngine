@@ -1,17 +1,13 @@
 #include "UnlitMaterial.h"
 #include "Utils.h"
 #include <iostream>
-#include <array>
 
 void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 {
 	// Load texture image data and create Vulkan texture and descriptor set
 	LibGFX::ImageData imageData = GFXEngine::Utils::loadImage(m_texturePath, false);
 	m_texture = renderer.loadTexture(imageData);
-
-	std::array < const LibGFX::Image*, 1> textures = { &m_texture };
-	m_textureDescriptorSet = renderer.allocateBindlessSamplerDescriptorSet(textures, 0, renderer.getBindlessSamplerLayout());
-	//m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
+	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
 }
 
 void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const

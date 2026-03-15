@@ -67,12 +67,6 @@ void Renderer::init(GLFWwindow* window)
 	m_storageBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
 
-	// Create descriptor pool for bindless samplers
-	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, BINDLESS_SAMPLER_DESCRIPTOR_COUNT * BINDLESS_SAMPLER_MAX_SETS);
-	descriptorPoolBuilder.setMaxSets(BINDLESS_SAMPLER_MAX_SETS);
-	m_bindlessSamplerDescriptorPool = descriptorPoolBuilder.build(*m_context);
-	descriptorPoolBuilder.clear();
-
 	// Descriptor set layouts
 	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
 
@@ -95,10 +89,6 @@ void Renderer::init(GLFWwindow* window)
 	m_storageBufferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
-
-	m_bindlessSamplerLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, BINDLESS_SAMPLER_DESCRIPTOR_COUNT)
-		.build(*m_context);
-	layoutBuilder.clear();
 }
 
 void Renderer::drawFrame()
@@ -115,7 +105,6 @@ void Renderer::dispose()
 	m_context->destroyDescriptorSetLayout(m_cubemapSamplerLayout);
 	m_context->destroyDescriptorSetLayout(m_uniformBuffferLayout);
 	m_context->destroyDescriptorSetLayout(m_storageBufferLayout);
-	m_context->destroyDescriptorSetLayout(m_bindlessSamplerLayout);
 
 	m_context->destroySemaphores(m_imageAvailableSemaphores);
 	m_context->destroySemaphores(m_renderFinishedSemaphores);
@@ -125,7 +114,6 @@ void Renderer::dispose()
 	m_context->destroyDescriptorSetPool(m_samplerDescriptorPool);
 	m_context->destroyDescriptorSetPool(m_uniformBufferDescriptorPool);
 	m_context->destroyDescriptorSetPool(m_storageBufferDescriptorPool);
-	m_context->destroyDescriptorSetPool(m_bindlessSamplerDescriptorPool);
 	m_context->destroyCommandPool(m_commandPool);
 
 	// Clean up resources
@@ -268,18 +256,6 @@ VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cu
 	return descriptorSet;
 }
 
-VkDescriptorSet Renderer::allocateBindlessSamplerDescriptorSet(const std::span<const LibGFX::Image*> textures, uint32_t binding, VkDescriptorSetLayout layout)
-{
-	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_bindlessSamplerDescriptorPool, layout);
-	LibGFX::DescriptorSetWriter writer;
-	for (const auto& texture : textures) {
-		writer = writer.addImageInfo(texture->imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-	}
-	writer.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-		.clear();
-	return descriptorSet;
-}
-
 void Renderer::freeTextureDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
@@ -288,11 +264,6 @@ void Renderer::freeTextureDescriptorSet(VkDescriptorSet descriptorSet)
 void Renderer::freeCubemapDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
-}
-
-void Renderer::freeBindlessSamplerDescriptorSet(VkDescriptorSet descriptorSet)
-{
-	m_context->freeDescriptorSet(m_bindlessSamplerDescriptorPool, descriptorSet);
 }
 
 void Renderer::createPipeline(LibGFX::Pipeline& pipeline)
