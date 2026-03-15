@@ -71,22 +71,26 @@ void Renderer::init(GLFWwindow* window)
 	LibGFX::DescriptorSetLayoutBuilder layoutBuilder;
 
 	// Texture sampler layout
-	m_samplerLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+	m_samplerLayout = layoutBuilder
+		.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
 
 	// Cubemap sampler layout same as texture sampler but for clarity an own layout is created
-	m_cubemapSamplerLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+	m_cubemapSamplerLayout = layoutBuilder
+		.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
 
 	// Uniform buffer layout
-	m_uniformBuffferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+	m_uniformBuffferLayout = layoutBuilder
+		.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
 
 	// Storage buffer layout
-	m_storageBufferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+	m_storageBufferLayout = layoutBuilder
+		.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
 
@@ -245,9 +249,9 @@ void Renderer::disposeCubemap(LibGFX::Cubemap& cubemap)
 	m_context->destroyCubemap(cubemap);
 }
 
-VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout)
+VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding)
 {
-	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, m_samplerLayout);
 	LibGFX::DescriptorSetWriter writer;
 	writer.addImageInfo(image.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
@@ -256,9 +260,9 @@ VkDescriptorSet Renderer::allocateTextureDescriptorSet(const LibGFX::Image& imag
 	return descriptorSet;
 }
 
-VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout)
+VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding)
 {
-	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, m_cubemapSamplerLayout);
 	LibGFX::DescriptorSetWriter writer;
 	writer.addImageInfo(cubemap.imageView, m_cubemapSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
@@ -266,9 +270,9 @@ VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cu
 	return descriptorSet;
 }
 
-VkDescriptorSet Renderer::allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding, VkDescriptorSetLayout layout)
+VkDescriptorSet Renderer::allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding)
 {
-	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, m_pbrMaterialLayout);
 	LibGFX::DescriptorSetWriter writer;
 
 	writer.addImageInfo(albedo.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)

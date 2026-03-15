@@ -111,9 +111,9 @@ namespace GFXEngine {
 			LibGFX::Cubemap loadCubemap(const LibGFX::CubemapData& cubemapData);
 			void disposeTexture(LibGFX::Image& image);
 			void disposeCubemap(LibGFX::Cubemap& cubemap);
-			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
-			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout);
-			VkDescriptorSet allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding, VkDescriptorSetLayout layout);
+			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding);
+			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding);
+			VkDescriptorSet allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding);
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
 			void freeCubemapDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
 			void freePBRMaterialDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing

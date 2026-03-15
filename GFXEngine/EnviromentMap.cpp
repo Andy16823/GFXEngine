@@ -16,7 +16,7 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 	m_indexBuffer = renderer.createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	renderer.updateBuffer(m_indexBuffer, indices.data(), indices.size(), false);
 
-	m_cubemapDescriptorSet = renderer.allocateCubemapDescriptorSet(m_cubemap, 0, renderer.getCubemapSamplerLayout());
+	m_cubemapDescriptorSet = renderer.allocateCubemapDescriptorSet(m_cubemap, 0);
 }
 
 void EnviromentMap::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)

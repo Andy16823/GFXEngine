@@ -70,7 +70,7 @@ void GFXEngine::Graphics::RenderTexture::destroy(Renderer& renderer)
 void GFXEngine::Graphics::RenderTexture::createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout)
 {
 	// Create descriptor set for the color attachment
-	m_descriptorSet = renderer.allocateTextureDescriptorSet(m_colorAttachment, binding, layout);
+	m_descriptorSet = renderer.allocateTextureDescriptorSet(m_colorAttachment, binding);
 }
 
 void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex)

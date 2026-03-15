@@ -7,7 +7,7 @@ void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 	// Load texture image data and create Vulkan texture and descriptor set
 	LibGFX::ImageData imageData = GFXEngine::Utils::loadImage(m_texturePath, false);
 	m_texture = renderer.loadTexture(imageData);
-	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0, renderer.getSamplerLayout());
+	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0);
 }
 
 void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const
