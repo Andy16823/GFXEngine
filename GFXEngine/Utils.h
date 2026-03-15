@@ -7,6 +7,7 @@
 #include <utility>
 #include "Mesh.h"
 #include "UnlitMaterial.h"
+#include "PBRMaterial.h"
 #include "GeometryPipeline.h"
 
 namespace GFXEngine {
@@ -23,6 +24,7 @@ namespace GFXEngine {
 		static std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> createCameraUniformBuffers(Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera3D& camera, VkDescriptorSetLayout descriptorSetLayout);
 		static std::vector<GFXEngine::Graphics::Mesh> loadMeshesFromFile(const std::string& filePath);
 		static std::vector<GFXEngine::Graphics::UnlitMaterial> loadMaterialsFromFile(const std::string& filePath);
+		static std::vector<GFXEngine::Graphics::PBRMaterial> loadPBRMaterialsFromFile(const std::string& filePath);
 		static std::string getBasePath(const std::string& filePath);
 		static std::string getFileName(const std::string& filePath);
 		static bool isAbsolutePath(const std::string& filePath);

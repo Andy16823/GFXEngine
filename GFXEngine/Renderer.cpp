@@ -89,6 +89,11 @@ void Renderer::init(GLFWwindow* window)
 	m_storageBufferLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
+
+	// PBR material layout
+	m_pbrMaterialLayout = layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 4)
+		.build(*m_context);
+	layoutBuilder.clear();
 }
 
 void Renderer::drawFrame()
@@ -256,12 +261,31 @@ VkDescriptorSet Renderer::allocateCubemapDescriptorSet(const LibGFX::Cubemap& cu
 	return descriptorSet;
 }
 
+VkDescriptorSet Renderer::allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding, VkDescriptorSetLayout layout)
+{
+	VkDescriptorSet descriptorSet = m_context->allocateDescriptorSet(m_samplerDescriptorPool, layout);
+	LibGFX::DescriptorSetWriter writer;
+	writer.addImageInfo(albedo.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.addImageInfo(normal.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.addImageInfo(metallicRoughness.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.addImageInfo(ao.imageView, m_textureSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		.write(*m_context, descriptorSet, binding, 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		.clear();
+	return descriptorSet;
+}
+
+
 void Renderer::freeTextureDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
 }
 
 void Renderer::freeCubemapDescriptorSet(VkDescriptorSet descriptorSet)
+{
+	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
+}
+
+void Renderer::freePBRMaterialDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
 }

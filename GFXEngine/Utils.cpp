@@ -142,6 +142,37 @@ std::vector<GFXEngine::Graphics::UnlitMaterial> GFXEngine::Utils::loadMaterialsF
 	return materials;
 }
 
+std::vector<GFXEngine::Graphics::PBRMaterial> GFXEngine::Utils::loadPBRMaterialsFromFile(const std::string& filePath)
+{
+	auto basePath = getBasePath(filePath);
+
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		throw std::runtime_error("ERROR::ASSIMP::" + std::string(importer.GetErrorString()));
+	}
+
+	std::vector<GFXEngine::Graphics::PBRMaterial> materials;
+	for (size_t i = 0; i < scene->mNumMaterials; i++) {
+		auto aiMaterial = scene->mMaterials[i];
+		aiString albedoPath, normalPath, metallicRoughnessPath, aoPath;
+		if (aiMaterial->GetTexture(aiTextureType_BASE_COLOR, 0, &albedoPath) != AI_SUCCESS ||
+			aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &normalPath) != AI_SUCCESS ||
+			aiMaterial->GetTexture(aiTextureType_METALNESS, 0, &metallicRoughnessPath) != AI_SUCCESS ||
+			aiMaterial->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &aoPath) != AI_SUCCESS) {
+			std::cerr << "Warning: Material " << i << " is missing one or more PBR textures. Skipping." << std::endl;
+			continue;
+		}
+		std::string albedoFullPath = basePath + albedoPath.C_Str();
+		std::string normalFullPath = basePath + normalPath.C_Str();
+		std::string metallicRoughnessFullPath = basePath + metallicRoughnessPath.C_Str();
+		std::string aoFullPath = basePath + aoPath.C_Str();
+		materials.emplace_back(albedoFullPath, normalFullPath, metallicRoughnessFullPath, aoFullPath);
+	}
+
+	return materials;
+}
+
 std::string GFXEngine::Utils::getBasePath(const std::string& filePath)
 {
 	size_t lastSlashPos = filePath.find_last_of("/\\");

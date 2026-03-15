@@ -56,25 +56,24 @@ namespace GFXEngine {
 			LibGFX::QueueFamilyIndices m_queueFamilyIndices;
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
+			// COMMAND POOL
+			VkCommandPool m_commandPool;
+
 			// TEXTURE SAMPLERS
-			VkDescriptorPool m_samplerDescriptorPool;
 			VkSampler m_textureSampler;
 			VkSampler m_cubemapSampler;
 
-			// UNIFORM BUFFER DESCRIPTOR POOL
+			// DESCRIPTOR POOLS
+			VkDescriptorPool m_samplerDescriptorPool;
 			VkDescriptorPool m_uniformBufferDescriptorPool;
-
-			// STORAGE BUFFER DESCRIPTOR POOL
 			VkDescriptorPool m_storageBufferDescriptorPool;
-
-			// COMMAND POOL
-			VkCommandPool m_commandPool;
 
 			// Descriptor set layouts
 			VkDescriptorSetLayout m_samplerLayout;
 			VkDescriptorSetLayout m_cubemapSamplerLayout;
 			VkDescriptorSetLayout m_uniformBuffferLayout;
 			VkDescriptorSetLayout m_storageBufferLayout;
+			VkDescriptorSetLayout m_pbrMaterialLayout;
 
 		public:
 			// CONSTRUCTORS & DESTRUCTORS
@@ -114,8 +113,10 @@ namespace GFXEngine {
 			void disposeCubemap(LibGFX::Cubemap& cubemap);
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
 			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout);
-			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
-			void freeCubemapDescriptorSet(VkDescriptorSet descriptorSet);
+			VkDescriptorSet allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding, VkDescriptorSetLayout layout);
+			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
+			void freeCubemapDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
+			void freePBRMaterialDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
 
 			// UNIFORM BUFFERS
 			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
@@ -200,6 +201,7 @@ namespace GFXEngine {
 			VkDescriptorSetLayout getCubemapSamplerLayout() const { return m_cubemapSamplerLayout; }
 			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }
 			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
+			VkDescriptorSetLayout getPBRMaterialLayout() const { return m_pbrMaterialLayout; }
 			bool isValidationEnabled() const { return m_enableValidationLayers; }
 
 			// SETTERS
