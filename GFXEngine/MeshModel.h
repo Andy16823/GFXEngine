@@ -7,6 +7,11 @@
 namespace GFXEngine {
 	namespace Graphics {
 
+		enum class MaterialType {
+			Unlit,
+			PBR
+		};
+
 		/// <summary>
 		/// Abstract base class representing a 3D model composed of one or more meshes and materials.
 		/// </summary>

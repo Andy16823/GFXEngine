@@ -13,19 +13,21 @@ namespace GFXEngine {
 		/// </summary>
 		class StaticMeshModel : public MeshModel {
 		public:
-			StaticMeshModel(const std::string& filePath);
+			StaticMeshModel(const std::string& filePath, MaterialType materialType);
 			void init(Renderer& renderer) override;
 			void destroy(Renderer& renderer) override;
 
 			const Mesh& getMesh(size_t index) const override { return m_meshes.at(index); }
-			const Material& getMeshMaterial(size_t index) const override { return m_materials.at(index % m_materials.size()); }
+			const Material& getMeshMaterial(size_t index) const override { return *m_materials.at(index % m_materials.size()); }
 			size_t getMeshCount() const override { return m_meshes.size(); }
 
 		private:
-			std::vector<PBRMaterial> m_materials;
+			std::vector<std::unique_ptr<Material>> m_materials;
 			std::vector<Mesh> m_meshes;
 
-			void loadFromFile(const std::string& filePath);
+			void loadFromFile(const std::string& filePath, MaterialType materialType);
+			void loadAsUnlit(const std::string& filePath);
+			void loadAsPBR(const std::string& filePath);
 		};
 	}
 }
