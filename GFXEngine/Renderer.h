@@ -23,7 +23,8 @@ const uint32_t STORAGE_BUFFER_MAX_SETS = 512;
 
 const uint32_t CAMERA_UBO_BINDING = 0;
 const uint32_t MATERIAL_UBO_BINDING = 1;
-const uint32_t INSTANCE_SSBO_BINDING = 0;
+const uint32_t LIGHTS_UBO_BINDING = 2;
+const uint32_t INSTANCE_SSBO_BINDING = 3;
 
 namespace GFXEngine {
 	namespace Graphics {

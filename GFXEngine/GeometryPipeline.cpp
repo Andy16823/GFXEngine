@@ -12,14 +12,6 @@ void GFXEngine::Graphics::GeometryPipeline::create(LibGFX::VkContext& context)
 		throw std::runtime_error("Render pass must be set before creating the pipeline!");
 	}
 
-	if (m_uniformsLayout == VK_NULL_HANDLE) {
-		throw std::runtime_error("Uniforms descriptor set layout must be set before creating the pipeline!");
-	}
-
-	if (m_textureLayout == VK_NULL_HANDLE) {
-		throw std::runtime_error("Texture descriptor set layout must be set before creating the pipeline!");
-	}
-
 	// Vertex shader
 	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
@@ -137,11 +129,10 @@ void GFXEngine::Graphics::GeometryPipeline::create(LibGFX::VkContext& context)
 	pushConstantRange.offset = 0;
 	pushConstantRange.size = sizeof(glm::mat4);
 
-	std::array<VkDescriptorSetLayout, 2> descriptorSetLayouts = { m_uniformsLayout, m_textureLayout };
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
-	pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
+	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
+	pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
 	pipelineLayoutInfo.pushConstantRangeCount = 1;
 	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 

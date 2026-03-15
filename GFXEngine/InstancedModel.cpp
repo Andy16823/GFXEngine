@@ -1,8 +1,13 @@
 #include "InstancedModel.h"
+#include "Scene3D.h"
 
 
 void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
+	if (dynamic_cast<Scene3D*>(&scene) == nullptr) {
+		throw std::runtime_error("InstancedModel can only be initialized in a Scene3D");
+	}
+
 	// Call base entity initialization to initialize behaviors
 	Entity::init(scene, renderer);
 
@@ -15,7 +20,7 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	);
 
 	// Allocate descriptor set for instance data buffer
-	m_instanceDataDescriptorSet = renderer.allocateStorageBufferDescriptorSet(m_instanceDataBuffer, 0, m_pipeline.getInstanceDataDescriptorSetLayout());
+	m_instanceDataDescriptorSet = renderer.allocateStorageBufferDescriptorSet(m_instanceDataBuffer, 0, renderer.getStorageBufferLayout());
 
 	// Bake initial instance data
 	auto instanceData = bakeInstanceData();
@@ -30,12 +35,15 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 	if (this->isVisible()) {
 		Entity::render(scene, renderer, camera, imageIndex);
 
+		auto& scene3D = static_cast<Scene3D&>(scene);
+
 		auto meshCount = this->getMeshCount();
 
 		auto cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
 		renderer.usePipeline(m_pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
-		renderer.bindDescriptorSet(m_instanceDataDescriptorSet, m_pipeline.getPipelineLayout(), 2, imageIndex);
+		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
+		scene3D.directionalLight.bind(renderer, camera, m_pipeline, LIGHTS_UBO_BINDING, imageIndex);
+		renderer.bindDescriptorSet(m_instanceDataDescriptorSet, m_pipeline.getPipelineLayout(), INSTANCE_SSBO_BINDING, imageIndex);
 
 		for (size_t i = 0; i < meshCount; ++i) {
 			auto [mesh, material] = this->getMeshAndMaterial(i);

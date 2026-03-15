@@ -13,7 +13,7 @@ void GFXEngine::Graphics::PBRMaterial::init(Renderer& renderer)
 
 void GFXEngine::Graphics::PBRMaterial::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const
 {
-	renderer.bindDescriptorSet(m_descriptorSet, pipeline.getPipelineLayout(), 1, imageIndex);
+	renderer.bindDescriptorSet(m_descriptorSet, pipeline.getPipelineLayout(), MATERIAL_UBO_BINDING, imageIndex);
 }
 
 void GFXEngine::Graphics::PBRMaterial::destroy(Renderer& renderer)

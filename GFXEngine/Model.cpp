@@ -1,9 +1,11 @@
 #include "Model.h"
+#include "Scene3D.h"
 
 void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
 	if (isVisible()) {
 		Entity::render(scene, renderer, camera, imageIndex);
+		auto& scene3D = static_cast<Scene3D&>(scene);
 
 		// Get related camera descriptor set
 		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
@@ -11,8 +13,9 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 
 		// Bind pipeline and camera descriptor set
 		renderer.usePipeline(m_pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), 0, imageIndex);
+		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
 		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
+		scene3D.directionalLight.bind(renderer, camera, m_pipeline, LIGHTS_UBO_BINDING, imageIndex);
 
 		// Render each mesh of the entity
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
