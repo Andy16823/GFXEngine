@@ -176,7 +176,6 @@ std::vector<GFXEngine::Graphics::PBRMaterial> GFXEngine::Utils::loadPBRMaterials
 
 		if (aiMaterial->GetTexture(aiTextureType_METALNESS, 0, &metallicRoughnessPath) == AI_SUCCESS) {
 			metallicRoughnessData = loadImage(basePath + metallicRoughnessPath.C_Str(), false);
-
 		}
 		else {
 			metallicRoughnessData = createSolidColorImage(1, 1, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)); // Default metallic-roughness map color

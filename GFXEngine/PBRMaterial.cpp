@@ -8,7 +8,7 @@ void GFXEngine::Graphics::PBRMaterial::init(Renderer& renderer)
 	m_metallicRoughness = renderer.loadTexture(m_metallicRoughnessData);
 	m_ao = renderer.loadTexture(m_aoData);
 
-	m_descriptorSet = renderer.allocatePBRMaterialDescriptorSet(m_albedo, m_normal, m_metallicRoughness, m_ao, 0);
+	m_descriptorSet = renderer.allocatePBRMaterialDescriptorSet(m_albedo, m_normal, m_normal, m_ao, 0);
 }
 
 void GFXEngine::Graphics::PBRMaterial::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const
