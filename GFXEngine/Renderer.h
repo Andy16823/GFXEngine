@@ -20,6 +20,8 @@ const uint32_t UNIFORM_BUFFER_DESCRIPTOR_COUNT = 16;
 const uint32_t UNIFORM_BUFFER_MAX_SETS = 512;
 const uint32_t STORAGE_BUFFER_DESCRIPTOR_COUNT = 16;
 const uint32_t STORAGE_BUFFER_MAX_SETS = 512;
+const uint32_t BINDLESS_SAMPLER_DESCRIPTOR_COUNT = 16;
+const uint32_t BINDLESS_SAMPLER_MAX_SETS = 1024;
 
 const uint32_t CAMERA_UBO_BINDING = 0;
 const uint32_t MATERIAL_UBO_BINDING = 1;
@@ -56,25 +58,25 @@ namespace GFXEngine {
 			LibGFX::QueueFamilyIndices m_queueFamilyIndices;
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
-			// TEXTURE SAMPLERS
-			VkDescriptorPool m_samplerDescriptorPool;
+			// COMMAND POOL
+			VkCommandPool m_commandPool;
+
+			// SAMPLERS
 			VkSampler m_textureSampler;
 			VkSampler m_cubemapSampler;
 
-			// UNIFORM BUFFER DESCRIPTOR POOL
+			// DECRIPTOR POOLS
+			VkDescriptorPool m_samplerDescriptorPool;
 			VkDescriptorPool m_uniformBufferDescriptorPool;
-
-			// STORAGE BUFFER DESCRIPTOR POOL
 			VkDescriptorPool m_storageBufferDescriptorPool;
-
-			// COMMAND POOL
-			VkCommandPool m_commandPool;
+			VkDescriptorPool m_bindlessSamplerDescriptorPool;
 
 			// Descriptor set layouts
 			VkDescriptorSetLayout m_samplerLayout;
 			VkDescriptorSetLayout m_cubemapSamplerLayout;
 			VkDescriptorSetLayout m_uniformBuffferLayout;
 			VkDescriptorSetLayout m_storageBufferLayout;
+			VkDescriptorSetLayout m_bindlessSamplerLayout;
 
 		public:
 			// CONSTRUCTORS & DESTRUCTORS
@@ -112,10 +114,12 @@ namespace GFXEngine {
 			LibGFX::Cubemap loadCubemap(const LibGFX::CubemapData& cubemapData);
 			void disposeTexture(LibGFX::Image& image);
 			void disposeCubemap(LibGFX::Cubemap& cubemap);
-			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout);
-			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout);
+			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding, VkDescriptorSetLayout layout); // TODO: Remove layout parameter and use internal sampler layout ?
+			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding, VkDescriptorSetLayout layout); // TODO: Remove layout parameter and use internal cubemap sampler layout ?
+			VkDescriptorSet allocateBindlessSamplerDescriptorSet(const std::span<const LibGFX::Image*> textures, uint32_t binding, VkDescriptorSetLayout layout); // TODO: Remove layout parameter and use internal bindless sampler layout ?
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet);
 			void freeCubemapDescriptorSet(VkDescriptorSet descriptorSet);
+			void freeBindlessSamplerDescriptorSet(VkDescriptorSet descriptorSet);
 
 			// UNIFORM BUFFERS
 			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
@@ -200,6 +204,7 @@ namespace GFXEngine {
 			VkDescriptorSetLayout getCubemapSamplerLayout() const { return m_cubemapSamplerLayout; }
 			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }
 			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
+			VkDescriptorSetLayout getBindlessSamplerLayout() const { return m_bindlessSamplerLayout; }
 			bool isValidationEnabled() const { return m_enableValidationLayers; }
 
 			// SETTERS
