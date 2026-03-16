@@ -5,6 +5,7 @@
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
+#include "assimp/pbrmaterial.h"
 #include <iostream>
 
 LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath, bool flipVertically)
@@ -182,7 +183,7 @@ std::vector<GFXEngine::Graphics::PBRMaterial> GFXEngine::Utils::loadPBRMaterials
 			normalData = createSolidColorImage(1, 1, glm::vec4(0.5f, 0.5f, 1.0f, 1.0f)); // Default normal map color
 		}
 
-		if (aiMaterial->GetTexture(aiTextureType_METALNESS, 0, &metallicRoughnessPath) == AI_SUCCESS) {
+		if (aiMaterial->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &metallicRoughnessPath) == AI_SUCCESS) {
 			metallicRoughnessData = loadImage(basePath + metallicRoughnessPath.C_Str(), false);
 		}
 		else {
