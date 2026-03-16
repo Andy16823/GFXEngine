@@ -1,29 +1,21 @@
 ﻿#pragma once
 #include "PipelineManager.h"
+#include "ServiceManager.h"
 
 namespace GFXEngine {
 	class Engine
 	{
 	public: 
+		Core::ServiceManager serviceManager;
+		Graphics::PipelineManager pipelineManager;
+
 		static Engine& getInstance()
 		{
 			static Engine instance;
 			return instance;
 		}
 
-		void addPipeline(const std::string& name, std::unique_ptr<LibGFX::Pipeline> pipeline)
-		{
-			m_pipelineManager.addPipeline(name, std::move(pipeline));
-		}
-
-		LibGFX::Pipeline* getPipeline(const std::string& name) const
-		{
-			return m_pipelineManager.getPipeline(name);
-		}
-
 	private:
-		Graphics::PipelineManager m_pipelineManager;
-
 		Engine() = default;
 		~Engine() = default;
 

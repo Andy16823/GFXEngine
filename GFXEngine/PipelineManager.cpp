@@ -1,17 +1,8 @@
 #include "PipelineManager.h"
 
-LibGFX::Pipeline* GFXEngine::Graphics::PipelineManager::getPipeline(const std::string& name) const
+void GFXEngine::Graphics::PipelineManager::addPipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline)
 {
-	auto it = m_pipelines.find(name);
-	if (it != m_pipelines.end()) {
-		return it->second.get();
-	}
-	return nullptr;
-}
-
-void GFXEngine::Graphics::PipelineManager::addPipeline(const std::string& name, std::unique_ptr<LibGFX::Pipeline> pipeline)
-{
-	m_pipelines[name] = std::move(pipeline);
+	m_pipelines[pipelineId] = std::move(pipeline);
 }
 
 void GFXEngine::Graphics::PipelineManager::createPipelines(LibGFX::VkContext& context)
@@ -27,10 +18,4 @@ void GFXEngine::Graphics::PipelineManager::disposePipelines(LibGFX::VkContext& c
 		pipeline->destroy(context);
 	}
 	m_pipelines.clear();
-}
-
-void GFXEngine::Graphics::PipelineManager::addPipeline(const std::string& name, std::unique_ptr<LibGFX::Pipeline> pipeline, LibGFX::VkContext& context)
-{
-	pipeline->create(context);
-	m_pipelines[name] = std::move(pipeline);
 }
