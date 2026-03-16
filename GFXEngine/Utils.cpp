@@ -17,10 +17,15 @@ LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath, bool 
 		throw std::runtime_error("Failed to load texture image!");
 	}
 	LibGFX::ImageData imageData;
-	imageData.pixels = pixels;
 	imageData.width = static_cast<uint32_t>(texWidth);
 	imageData.height = static_cast<uint32_t>(texHeight);
 	imageData.format = VK_FORMAT_R8G8B8A8_UNORM;
+
+	size_t imageSize = static_cast<size_t>(texWidth * texHeight * 4); // 4 bytes per pixel for RGBA
+	imageData.pixels.resize(imageSize);
+	std::memcpy(imageData.pixels.data(), pixels, imageSize);
+	stbi_image_free(pixels);
+
 	return imageData;
 }
 
@@ -34,7 +39,7 @@ LibGFX::ImageData GFXEngine::Utils::createSolidColorImage(uint32_t width, uint32
 		pixels[i * 4 + 3] = static_cast<uint8_t>(color.a * 255);
 	}
 	LibGFX::ImageData imageData;
-	imageData.pixels = pixels.data();
+	imageData.pixels = std::move(pixels);
 	imageData.width = width;
 	imageData.height = height;
 	imageData.format = VK_FORMAT_R8G8B8A8_UNORM;
