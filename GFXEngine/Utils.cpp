@@ -52,18 +52,23 @@ LibGFX::CubemapData GFXEngine::Utils::loadCubemap(const std::vector<std::string>
 		throw std::runtime_error("Cubemap requires exactly 6 images!");
 	}
 
+	stbi_set_flip_vertically_on_load(flipVertically);
+
 	LibGFX::CubemapData cubemapData;
 	for (size_t i = 0; i < 6; i++) {
-		stbi_set_flip_vertically_on_load(flipVertically);
 		int texWidth, texHeight, texChannels;
 		stbi_uc* pixels = stbi_load(filePaths[i].c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		if (!pixels) {
 			throw std::runtime_error("Failed to load cubemap image: " + filePaths[i]);
 		}
-		cubemapData.pixels[i] = pixels;
 		cubemapData.width = static_cast<uint32_t>(texWidth);
 		cubemapData.height = static_cast<uint32_t>(texHeight);
 		cubemapData.format = VK_FORMAT_R8G8B8A8_UNORM;
+
+		size_t imageSize = static_cast<size_t>(texWidth * texHeight * 4); // 4 bytes per pixel for RGBA
+		cubemapData.pixels[i].resize(imageSize);
+		std::memcpy(cubemapData.pixels[i].data(), pixels, imageSize);
+		stbi_image_free(pixels);
 	}
 	return cubemapData;
 }
