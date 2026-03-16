@@ -3,6 +3,10 @@
 
 namespace GFXEngine {
 	namespace Core {
+
+		/// <summary>
+		/// ServiceManager is a simple class that allows registering and retrieving services by a unique char identifier. 
+		/// </summary>
 		class ServiceManager {
 
 		public:
@@ -15,7 +19,6 @@ namespace GFXEngine {
 			}
 
 			void registerService(char serviceId, void* service);
-
 		private:
 			std::map<char, void*> m_services;
 		};
