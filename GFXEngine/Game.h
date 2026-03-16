@@ -29,11 +29,15 @@ namespace GFXEngine {
 			float getDeltaTime() const { return m_deltaTime; }
 			float getTime() const { return m_lastFrameTime; }
 			float getFPS() const { return (m_deltaTime > 0.0f) ? (1.0f / m_deltaTime) : 0.0f; }
+			float getTargetFPS() const { return m_targetFPS; }
+
+			void setTargetFPS(float fps) { m_targetFPS = fps; }
 
 		private:
 			GLFWwindow* m_window = nullptr;
 			std::unique_ptr<Graphics::Renderer> m_renderer;
 			glm::ivec2 m_windowSize = { 800, 600 };
+			float m_targetFPS = 120.0f;
 			float m_lastFrameTime = 0.0f;
 			float m_deltaTime = 0.0f;
 		};

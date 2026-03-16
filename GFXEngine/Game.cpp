@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <thread>
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& title /*= "My Game"*/, bool validationLayers /*= true*/)
 {
@@ -36,9 +37,21 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		// Poll for window events and acquire next image from the swapchain
 		glfwPollEvents();
 
+		// Calculate delta time for the current frame
 		float currentTime = static_cast<float>(glfwGetTime());
 		m_deltaTime = currentTime - m_lastFrameTime;
 		m_lastFrameTime = currentTime;
+
+		// Cap the frame rate if target FPS is set
+		if (m_targetFPS > 0.0f) {
+			float frameTime = 1.0f / m_targetFPS;
+			if (m_deltaTime < frameTime) {
+				std::this_thread::sleep_for(std::chrono::duration<float>(frameTime - m_deltaTime));
+				currentTime = static_cast<float>(glfwGetTime());
+				m_deltaTime = currentTime - m_lastFrameTime;
+				m_lastFrameTime = currentTime;
+			}
+		}
 
 		auto imageIndex = m_renderer->nextImage();
 
