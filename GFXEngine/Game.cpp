@@ -26,16 +26,24 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	// Call user-defined start
 	this->onStart(*m_renderer);
 
+	// Set up timing for frame updates
+	m_lastFrameTime = static_cast<float>(glfwGetTime());
+
 	// Main loop
 	m_renderer->createSyncObjects();
 	while (!glfwWindowShouldClose(m_window))
 	{
 		// Poll for window events and acquire next image from the swapchain
 		glfwPollEvents();
+
+		float currentTime = static_cast<float>(glfwGetTime());
+		m_deltaTime = currentTime - m_lastFrameTime;
+		m_lastFrameTime = currentTime;
+
 		auto imageIndex = m_renderer->nextImage();
 
 		// Call user-defined update
-		this->onUpdate(*m_renderer, imageIndex, 0.01f);
+		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);
 
 		// Start recording commands for the current frame
 		m_renderer->beginFrame(imageIndex);

@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "LibGFX.h"
+#include "DataTypes.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -25,11 +26,16 @@ namespace GFXEngine {
 			glm::ivec2 getWindowSize() const { return m_windowSize; }
 			glm::vec2 getCursorPos() const;
 			GLFWwindow* getWindow() const { return m_window; }
+			float getDeltaTime() const { return m_deltaTime; }
+			float getTime() const { return m_lastFrameTime; }
+			float getFPS() const { return (m_deltaTime > 0.0f) ? (1.0f / m_deltaTime) : 0.0f; }
 
 		private:
 			GLFWwindow* m_window = nullptr;
 			std::unique_ptr<Graphics::Renderer> m_renderer;
 			glm::ivec2 m_windowSize = { 800, 600 };
+			float m_lastFrameTime = 0.0f;
+			float m_deltaTime = 0.0f;
 		};
 	}
 }
