@@ -6,6 +6,16 @@ void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& 
 	for (auto& behavior : m_behaviors) {
 		behavior->init(scene, renderer);
 	}
+
+	// Compute AABB based on meshes
+	Math::AABB combinedAABB;
+	size_t meshCount = getMeshCount();
+	for (size_t i = 0; i < meshCount; ++i) {
+		auto [mesh, material] = getMeshAndMaterial(i);
+		Math::AABB meshAABB = mesh.computeAABB(); // Dont call this every frame, only on init or when mesh data changes
+		combinedAABB = combinedAABB.unionWith(meshAABB);
+	}
+	setAABB(combinedAABB);
 }
 
 void GFXEngine::Core::Entity::update(Scene& scene, float deltaTime)

@@ -1,5 +1,6 @@
 #pragma once
 #include "DataTypes.h"
+#include "AABB.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -14,6 +15,7 @@ namespace GFXEngine {
 			static std::pair<std::vector<GFXEngine::EngineTypes::Vertex2D>, std::vector<uint32_t>> createQuad();
 			static std::pair<std::vector<GFXEngine::EngineTypes::PositionVertex>, std::vector<uint32_t>> createSkybox();
 			static std::pair<std::vector<GFXEngine::EngineTypes::FramebufferVertex>, std::vector<uint32_t>> createFramebufferQuad();
+			static std::pair<std::vector<GFXEngine::EngineTypes::PositionVertex>, std::vector<uint32_t>> createAabbVertices(const GFXEngine::Math::AABB& aabb);
 		};
 	}
 }

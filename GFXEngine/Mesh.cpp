@@ -22,3 +22,12 @@ void GFXEngine::Graphics::Mesh::destroy(Renderer& renderer)
 	renderer.destroyBuffer(m_vertexBuffer);
 	renderer.destroyBuffer(m_indexBuffer);
 }
+
+GFXEngine::Math::AABB GFXEngine::Graphics::Mesh::computeAABB() const
+{
+	Math::AABB aabb;
+	for (const auto& vertex : m_vertices) {
+		aabb = aabb.unionWith(Math::AABB(vertex.pos, vertex.pos));
+	}
+	return aabb;
+}

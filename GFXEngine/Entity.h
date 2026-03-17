@@ -12,6 +12,7 @@
 #include "Pipeline.h"
 #include <vector>
 #include "Scene.h"
+#include "AABB.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -44,6 +45,9 @@ namespace GFXEngine {
 
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
+
+			const Math::AABB& getAABB() const { return m_aabb; }
+			void setAABB(const Math::AABB& aabb) { m_aabb = aabb; }
 
 			template<typename T>
 			T* addBehavior(std::unique_ptr<T> behavior) {
@@ -98,6 +102,7 @@ namespace GFXEngine {
 		private:
 			std::vector<std::string> m_tags;
 			std::vector<std::unique_ptr<Behavior>> m_behaviors;
+			Math::AABB m_aabb;
 			bool m_visible = true;
 			std::string m_name;
 		};

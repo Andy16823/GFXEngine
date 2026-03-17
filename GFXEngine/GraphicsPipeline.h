@@ -1,12 +1,16 @@
 #pragma once
 #include "Pipeline.h"
-#include "VkContext.h"
 #include "RenderShader.h"
 #include <vector>
 #include <span>
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// Abstract base class for graphics pipelines in the GFXEngine.
+		/// TODO: Change GeometryPipeline, InstancedGeometryPipeline, EnvironmentPipeline and PresentationPipeline to inherit from this class instead of directly from Pipeline.
+		/// </summary>
 		class GraphicsPipeline : public LibGFX::Pipeline
 		{
 		public:

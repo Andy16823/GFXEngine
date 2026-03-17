@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Buffer.h"
 #include <vector>
+#include "AABB.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -33,6 +34,7 @@ namespace GFXEngine {
 
 			void setVertices(std::vector<EngineTypes::Vertex3D> vertices) { m_vertices = std::move(vertices); }
 			void setIndices(std::vector<uint32_t> indices) { m_indices = std::move(indices); }
+			Math::AABB computeAABB() const;
 
 			const LibGFX::Buffer& getVertexBuffer() const { return m_vertexBuffer; }
 			const LibGFX::Buffer& getIndexBuffer() const { return m_indexBuffer; }
