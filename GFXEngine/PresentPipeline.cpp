@@ -13,23 +13,19 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 	// Get the Vulkan device from the context
 	VkDevice device = context.getDevice();
 
-	if (m_renderPass == VK_NULL_HANDLE) {
+	if (renderPass == VK_NULL_HANDLE) {
 		throw std::runtime_error("Render pass must be set before creating the pipeline!");
 	}
 
-	if (m_textureLayout == VK_NULL_HANDLE) {
-		throw std::runtime_error("Texture descriptor set layout must be set before creating the pipeline!");
-	}
-
 	// Shader Stage
-	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
+	auto vertexShaderModule = context.createShaderModule(shader.vertCode);
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
 	vertShaderStageInfo.module = vertexShaderModule;
 	vertShaderStageInfo.pName = "main";
 
-	auto fragmentShaderModule = context.createShaderModule(m_shader.fragCode);
+	auto fragmentShaderModule = context.createShaderModule(shader.fragCode);
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -70,9 +66,9 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = 1;
-	viewportState.pViewports = &m_viewport;
+	viewportState.pViewports = &viewport;
 	viewportState.scissorCount = 1;
-	viewportState.pScissors = &m_scissor;
+	viewportState.pScissors = &scissor;
 
 	// Dynamic State
 	std::array<VkDynamicState, 2> dynamicStates = {
@@ -122,15 +118,14 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 	colorBlending.pAttachments = &colorBlendAttachment;
 
 	// Pipeline Layout
-	std::array<VkDescriptorSetLayout, 1> layouts = { m_textureLayout };
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
-	pipelineLayoutInfo.pSetLayouts = layouts.data();
+	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
+	pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
@@ -155,11 +150,11 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDepthStencilState = &depthStencil;
-	pipelineInfo.layout = m_pipelineLayout;
-	pipelineInfo.renderPass = m_renderPass;
+	pipelineInfo.layout = pipelineLayout;
+	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
 
-	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_pipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
@@ -170,23 +165,13 @@ void GFXEngine::Graphics::PresentPipeline::create(VkContext& context)
 
 void GFXEngine::Graphics::PresentPipeline::destroy(VkContext& context)
 {
-	if (m_pipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(context.getDevice(), m_pipeline, nullptr);
-		m_pipeline = VK_NULL_HANDLE;
+	if (pipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(context.getDevice(), pipeline, nullptr);
+		pipeline = VK_NULL_HANDLE;
 	}
 
-	if (m_pipelineLayout != VK_NULL_HANDLE) {
-		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
-		m_pipelineLayout = VK_NULL_HANDLE;
+	if (pipelineLayout != VK_NULL_HANDLE) {
+		vkDestroyPipelineLayout(context.getDevice(), pipelineLayout, nullptr);
+		pipelineLayout = VK_NULL_HANDLE;
 	}
-}
-
-VkPipeline GFXEngine::Graphics::PresentPipeline::getPipeline() const
-{
-	return m_pipeline;
-}
-
-VkPipelineLayout GFXEngine::Graphics::PresentPipeline::getPipelineLayout() const
-{
-	return m_pipelineLayout;
 }
