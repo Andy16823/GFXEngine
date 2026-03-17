@@ -1,0 +1,36 @@
+#pragma once
+#include "Pipeline.h"
+#include "VkContext.h"
+#include "RenderShader.h"
+#include <vector>
+#include <span>
+
+namespace GFXEngine {
+	namespace Graphics {
+		class GraphicsPipeline : public LibGFX::Pipeline
+		{
+		public:
+			GraphicsPipeline(const RenderShader& shader) 
+				: shader(shader), renderPass(VK_NULL_HANDLE), pipeline(VK_NULL_HANDLE), pipelineLayout(VK_NULL_HANDLE), viewport({}), scissor({}) {}
+			~GraphicsPipeline() = default;
+
+			VkPipelineLayout getPipelineLayout() const override { return pipelineLayout; }
+			VkPipeline getPipeline() const override { return pipeline; }
+			
+			void setViewport(VkViewport viewport) { viewport = viewport; }
+			void setScissor(VkRect2D scissor) { scissor = scissor; }
+			void setDescriptorSetLayouts(std::span<const VkDescriptorSetLayout> layouts) {
+				descriptorSetLayouts.assign(layouts.begin(), layouts.end());
+			}
+
+		protected:
+			std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
+			const RenderShader& shader;
+			VkRenderPass renderPass;
+			VkPipeline pipeline;
+			VkPipelineLayout pipelineLayout;
+			VkViewport viewport;
+			VkRect2D scissor;
+		};
+	}
+}
