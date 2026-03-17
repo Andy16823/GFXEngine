@@ -1,5 +1,5 @@
 #pragma once
-#include "Pipeline.h"
+#include "GraphicsPipeline.h"
 #include "VkContext.h"
 #include "LibGFX.h"
 #include "DataTypes.h"
@@ -13,32 +13,13 @@ namespace GFXEngine {
 		/// GeometryPipeline class that encapsulates the Vulkan graphics pipeline for rendering geometry.
 		/// It provides methods to create and destroy the pipeline, set viewport and scissor, and access pipeline layouts and descriptor sets.
 		/// </summary>
-		class GeometryPipeline : public LibGFX::Pipeline
+		class GeometryPipeline : public GraphicsPipeline
 		{
 		public:
-			GeometryPipeline(const RenderShader& shader) 
-				: m_shader(shader) {}
+			GeometryPipeline(const RenderShader& shader) : GraphicsPipeline(shader) {}
 
 			void create(LibGFX::VkContext& context) override;
 			void destroy(LibGFX::VkContext& context) override;
-			void setViewport(VkViewport viewport) { m_viewport = viewport; }
-			void setScissor(VkRect2D scissor) { m_scissor = scissor; }
-			void setRenderPass(VkRenderPass renderPass) { m_renderPass = renderPass; }
-			VkPipeline getPipeline() const override;
-			VkPipelineLayout getPipelineLayout() const override;
-
-			void setDescriptorSetLayouts(std::span<const VkDescriptorSetLayout> layouts) {
-				m_descriptorSetLayouts.assign(layouts.begin(), layouts.end());
-			}
-
-		private:
-			std::vector<VkDescriptorSetLayout> m_descriptorSetLayouts;
-			VkRenderPass m_renderPass = VK_NULL_HANDLE;
-			VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
-			VkPipeline m_pipeline = VK_NULL_HANDLE;
-			const RenderShader& m_shader;
-			VkViewport m_viewport;
-			VkRect2D m_scissor;
 		};
 	}
 }
