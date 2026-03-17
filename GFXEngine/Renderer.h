@@ -12,6 +12,7 @@
 #include "QueueFamilyIndices.h"
 #include "Imaging.h"
 #include <vector>
+#include <string>
 #
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
@@ -82,7 +83,7 @@ namespace GFXEngine {
 			~Renderer() = default;
 
 			// MAIN LOOP FUNCTIONS
-			void init(GLFWwindow* window);
+			void init(GLFWwindow* window, const std::string& shadersDirectory);
 			void createSyncObjects();
 			uint32_t nextImage();
 			void beginFrame(uint32_t imageIndex);

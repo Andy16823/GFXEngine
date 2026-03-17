@@ -13,7 +13,7 @@ namespace GFXEngine {
 			Game() = default;
 			~Game() = default;
 
-			void start(uint32_t width, uint32_t height, const std::string& title = "My Game", bool validationLayers = true);
+			void start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title = "My Game", bool validationLayers = true);
 
 			virtual void onInit(Graphics::Renderer& renderer) = 0;
 			virtual void onStart(Graphics::Renderer& renderer) = 0;

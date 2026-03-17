@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <thread>
 
-void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& title /*= "My Game"*/, bool validationLayers /*= true*/)
+void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool validationLayers /*= true*/)
 {
 	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
 
@@ -19,7 +19,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 
 	m_renderer = std::make_unique<Graphics::Renderer>();
 	m_renderer->setValidationEnabled(validationLayers);
-	m_renderer->init(m_window);
+	m_renderer->init(m_window, shadersDirectory);
 
 	// Call user-defined initialization
 	this->onInit(*m_renderer);

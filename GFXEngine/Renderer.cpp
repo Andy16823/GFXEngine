@@ -3,13 +3,18 @@
 #include "DescriptorPoolBuilder.h"
 #include "DescriptorSetWriter.h"
 #include "DescriptorSetLayoutBuilder.h"
+#include <filesystem>
 
 
 using namespace std;
 using namespace GFXEngine::Graphics;
 
-void Renderer::init(GLFWwindow* window)
+void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 {
+	if (!std::filesystem::exists(shadersDirectory)) {
+		throw std::runtime_error("Shader directory does not exist: " + shadersDirectory);
+	}
+
 	// Create Vulkan context
 	m_context = LibGFX::GFX::createContext(window);
 	m_context->initialize(LibGFX::VkContext::defaultAppInfo(), m_enableValidationLayers);
