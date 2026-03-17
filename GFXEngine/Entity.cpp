@@ -3,10 +3,6 @@
 
 void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
-	for (auto& behavior : m_behaviors) {
-		behavior->init(scene, renderer);
-	}
-
 	// Compute AABB based on meshes
 	Math::AABB combinedAABB;
 	size_t meshCount = getMeshCount();
@@ -16,6 +12,11 @@ void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& 
 		combinedAABB = combinedAABB.unionWith(meshAABB);
 	}
 	setAABB(combinedAABB);
+
+	// Initialize behaviors
+	for (auto& behavior : m_behaviors) {
+		behavior->init(scene, renderer);
+	}
 }
 
 void GFXEngine::Core::Entity::update(Scene& scene, float deltaTime)

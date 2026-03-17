@@ -14,7 +14,16 @@ namespace GFXEngine {
 			class Entity* m_entity;
 
 		public:
+
+			Behavior() = default;
 			virtual ~Behavior() = default;
+
+			Behavior(const Behavior&) = delete;
+			Behavior& operator=(const Behavior&) = delete;
+
+			Behavior(Behavior&&) = delete;
+			Behavior& operator=(Behavior&&) = delete;
+
 			void setEntity(class Entity* entity) { m_entity = entity; }
 			virtual void init(Scene& scene, Graphics::Renderer& renderer) = 0;
 			virtual void update(Scene& scene, float deltaTime) = 0;
