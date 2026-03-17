@@ -617,8 +617,3 @@ void Renderer::managePipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline>
 {
 	m_pipelineManager.managePipeline(pipelineId, std::move(pipeline));
 }
-
-const LibGFX::Pipeline* Renderer::getPipeline(char pipelineId) const
-{
-	return m_pipelineManager.getPipeline<LibGFX::Pipeline>(pipelineId);
-}
