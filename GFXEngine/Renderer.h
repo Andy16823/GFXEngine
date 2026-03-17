@@ -13,7 +13,11 @@
 #include "Imaging.h"
 #include <vector>
 #include <string>
-#
+#include "PresentPipeline.h"
+#include "GeometryPipeline.h"
+#include "InstancedGeometryPipeline.h"
+#include "EnviromentPipeline.h"
+#include "DebugPipeline.h"
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
@@ -58,6 +62,9 @@ namespace GFXEngine {
 			LibGFX::QueueFamilyIndices m_queueFamilyIndices;
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
+			// Pipelines
+
+
 			// COMMAND POOL
 			VkCommandPool m_commandPool;
 
@@ -76,6 +83,8 @@ namespace GFXEngine {
 			VkDescriptorSetLayout m_uniformBuffferLayout;
 			VkDescriptorSetLayout m_storageBufferLayout;
 			VkDescriptorSetLayout m_pbrMaterialLayout;
+
+			void createPipelines(const std::string& shadersDirectory);
 
 		public:
 			// CONSTRUCTORS & DESTRUCTORS

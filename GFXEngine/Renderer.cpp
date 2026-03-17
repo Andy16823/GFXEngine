@@ -527,3 +527,8 @@ void Renderer::flushBuffer(const LibGFX::Buffer& buffer)
 	memoryRange.size = buffer.size;
 	vkFlushMappedMemoryRanges(m_context->getDevice(), 1, &memoryRange);
 }
+
+void Renderer::createPipelines(const std::string& shadersDirectory)
+{
+
+}
