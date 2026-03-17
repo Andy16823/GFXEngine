@@ -1,0 +1,16 @@
+#version 450
+
+layout(location = 0) out vec4 fragColor;
+
+layout(location = 0) in vec3 color;
+layout(location = 1) in vec2 fragTexCoord;
+
+layout(set = 1, binding = 0) uniform sampler2D textureSampler;
+
+void main() { 
+    vec4 texColor = texture(textureSampler, fragTexCoord);
+    // if (texColor.a < 0.1) {
+    //     discard;
+    // }
+    fragColor = vec4(color, 1.0) * texColor;
+}
