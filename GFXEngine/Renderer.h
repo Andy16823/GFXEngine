@@ -63,7 +63,7 @@ namespace GFXEngine {
 			std::vector<VkCommandBuffer> m_commandBuffers;
 
 			// Pipelines
-
+			PipelineManager m_pipelineManager;
 
 			// COMMAND POOL
 			VkCommandPool m_commandPool;
@@ -140,6 +140,12 @@ namespace GFXEngine {
 			// PIPELINES
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
+			void managePipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
+			const LibGFX::Pipeline* getPipeline(char pipelineId) const;
+			template<typename T>
+			T* getPipeline(char pipelineId) const {
+				return m_pipelineManager.getPipeline<T>(pipelineId);
+			}
 
 			// Framebuffers
 			LibGFX::DepthBuffer createDepthBuffer(VkExtent2D extent, VkFormat format);

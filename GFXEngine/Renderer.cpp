@@ -4,10 +4,13 @@
 #include "DescriptorSetWriter.h"
 #include "DescriptorSetLayoutBuilder.h"
 #include <filesystem>
+#include <iostream>
+#include "EngineDefinitions.h"
 
 
 using namespace std;
 using namespace GFXEngine::Graphics;
+using namespace GFXEngine::Defintions;
 
 void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 {
@@ -107,6 +110,8 @@ void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 		.addBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
+
+	this->createPipelines(shadersDirectory);
 }
 
 void Renderer::drawFrame()
@@ -118,6 +123,9 @@ void Renderer::dispose()
 {
 	// Wait for idle
 	m_context->waitIdle();
+
+	// Clean up pipelines
+	m_pipelineManager.disposePipelines(*m_context);
 
 	m_context->destroyDescriptorSetLayout(m_samplerLayout);
 	m_context->destroyDescriptorSetLayout(m_cubemapSamplerLayout);
@@ -530,5 +538,87 @@ void Renderer::flushBuffer(const LibGFX::Buffer& buffer)
 
 void Renderer::createPipelines(const std::string& shadersDirectory)
 {
+	std::cout << "Creating pipelines with shaders from directory: " << shadersDirectory << std::endl;
 
+	// PBR Geometry Pipeline
+	std::filesystem::path vertPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_vert.spv";
+	std::filesystem::path fragPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_frag.spv";
+	
+	// PBR Pipeline
+	RenderShader meshShaderPBR = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	std::array<VkDescriptorSetLayout, 3> geometryPipelinePBRLayouts = { m_uniformBuffferLayout, m_pbrMaterialLayout, m_uniformBuffferLayout };
+	auto geometryPipelinePBR = std::make_unique<GeometryPipeline>(meshShaderPBR);
+	geometryPipelinePBR->setDescriptorSetLayouts(geometryPipelinePBRLayouts);
+	geometryPipelinePBR->setRenderPass(m_offscreenRenderPass->getRenderPass());
+	geometryPipelinePBR->setViewport(m_viewport);
+	geometryPipelinePBR->setScissor(m_scissor);
+	this->createPipeline(*geometryPipelinePBR);
+	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
+	std::cout << "Created PBR Geometry Pipeline" << std::endl;
+
+	// Create Instanced Geometry Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_frag.spv";
+	RenderShader instancedMeshShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	std::array<VkDescriptorSetLayout, 4> instancedGeometryPipelineLayouts = { m_uniformBuffferLayout, m_pbrMaterialLayout, m_uniformBuffferLayout, m_storageBufferLayout };
+	auto instancedGeometryPipeline = std::make_unique<InstancedGeometryPipeline>(instancedMeshShader);
+	instancedGeometryPipeline->setDescriptorSetLayouts(instancedGeometryPipelineLayouts);
+	instancedGeometryPipeline->setRenderPass(m_offscreenRenderPass->getRenderPass());
+	instancedGeometryPipeline->setViewport(m_viewport);
+	instancedGeometryPipeline->setScissor(m_scissor);
+	this->createPipeline(*instancedGeometryPipeline);
+	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
+	std::cout << "Created PBR Instanced Geometry Pipeline" << std::endl;
+
+	// Create Enviroment Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "env_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "env_frag.spv";
+	RenderShader enviromentShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	std::array<VkDescriptorSetLayout, 2> enviromentPipelineLayouts = { m_uniformBuffferLayout, m_cubemapSamplerLayout };
+	auto enviromentPipeline = std::make_unique<EnviromentPipeline>(enviromentShader);
+	enviromentPipeline->setDescriptorSetLayouts(enviromentPipelineLayouts);
+	enviromentPipeline->setRenderPass(m_offscreenRenderPass->getRenderPass());
+	enviromentPipeline->setViewport(m_viewport);
+	enviromentPipeline->setScissor(m_scissor);
+	this->createPipeline(*enviromentPipeline);
+	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
+	std::cout << "Created Enviroment Pipeline" << std::endl;
+
+	// Debug Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "debug_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "debug_frag.spv";
+	RenderShader debugShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	std::array<VkDescriptorSetLayout, 1> debugPipelineLayouts = { m_uniformBuffferLayout };
+	auto debugPipeline = std::make_unique<DebugPipeline>(debugShader);
+	debugPipeline->setDescriptorSetLayouts(debugPipelineLayouts);
+	debugPipeline->setRenderPass(m_offscreenRenderPass->getRenderPass());
+	debugPipeline->setViewport(m_viewport);
+	debugPipeline->setScissor(m_scissor);
+	this->createPipeline(*debugPipeline);
+	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
+	std::cout << "Created Debug Pipeline" << std::endl;
+
+	// Create Present Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "frag.spv";
+	RenderShader defaultShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	std::array<VkDescriptorSetLayout, 1> presentPipelineLayouts = { m_samplerLayout };
+	auto presentPipeline = std::make_unique<PresentPipeline>(defaultShader);
+	presentPipeline->setDescriptorSetLayouts(presentPipelineLayouts);
+	presentPipeline->setRenderPass(m_renderPass->getRenderPass());
+	presentPipeline->setViewport(m_viewport);
+	presentPipeline->setScissor(m_scissor);
+	this->createPipeline(*presentPipeline);
+	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
+	std::cout << "Created Present Pipeline" << std::endl;
+}
+
+void Renderer::managePipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline)
+{
+	m_pipelineManager.managePipeline(pipelineId, std::move(pipeline));
+}
+
+const LibGFX::Pipeline* Renderer::getPipeline(char pipelineId) const
+{
+	return m_pipelineManager.getPipeline<LibGFX::Pipeline>(pipelineId);
 }

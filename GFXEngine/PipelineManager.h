@@ -13,7 +13,7 @@ namespace GFXEngine {
 			PipelineManager() = default;
 			~PipelineManager() = default;
 
-			void addPipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
+			void managePipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
 			void createPipelines(LibGFX::VkContext& context);
 			void disposePipelines(LibGFX::VkContext& context);
 
