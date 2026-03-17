@@ -7,20 +7,12 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 {
 	VkDevice device = context.getDevice();
 
-	if (m_renderPass == VK_NULL_HANDLE) {
+	if (renderPass == VK_NULL_HANDLE) {
 		throw std::runtime_error("Render pass must be set before creating the pipeline!");
 	}
 
-	if (m_uniformsLayout == VK_NULL_HANDLE) {
-		throw std::runtime_error("Uniforms descriptor set layout must be set before creating the pipeline!");
-	}
-
-	if (m_cubemapLayout == VK_NULL_HANDLE) {
-		throw std::runtime_error("Cubemap descriptor set layout must be set before creating the pipeline!");
-	}
-
 	// Vertex shader
-	auto vertexShaderModule = context.createShaderModule(m_shader.vertCode);
+	auto vertexShaderModule = context.createShaderModule(shader.vertCode);
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
@@ -28,7 +20,7 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 	vertShaderStageInfo.pName = "main";
 
 	// Fragment shader
-	auto fragmentShaderModule = context.createShaderModule(m_shader.fragCode);
+	auto fragmentShaderModule = context.createShaderModule(shader.fragCode);
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -65,9 +57,9 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = 1;
-	viewportState.pViewports = &m_viewport;
+	viewportState.pViewports = &viewport;
 	viewportState.scissorCount = 1;
-	viewportState.pScissors = &m_scissor;
+	viewportState.pScissors = &scissor;
 
 	// Dynamic state
 	std::array<VkDynamicState, 2> dynamicStates = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
@@ -111,7 +103,6 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 	colorBlending.pAttachments = &colorBlendAttachment;
 
 	// Pipeline layout
-	std::array<VkDescriptorSetLayout, 2> descriptorSetLayouts = { m_uniformsLayout, m_cubemapLayout };
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
@@ -119,7 +110,7 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
@@ -145,11 +136,11 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDepthStencilState = &depthStencil;
-	pipelineInfo.layout = m_pipelineLayout;
-	pipelineInfo.renderPass = m_renderPass;
+	pipelineInfo.layout = pipelineLayout;
+	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
 
-	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_pipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
@@ -161,22 +152,13 @@ void GFXEngine::Graphics::EnviromentPipeline::create(LibGFX::VkContext& context)
 void GFXEngine::Graphics::EnviromentPipeline::destroy(LibGFX::VkContext& context)
 {
 	VkDevice device = context.getDevice();
-	if (m_pipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(device, m_pipeline, nullptr);
-		m_pipeline = VK_NULL_HANDLE;
+	if (pipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(device, pipeline, nullptr);
+		pipeline = VK_NULL_HANDLE;
 	}
-	if (m_pipelineLayout != VK_NULL_HANDLE) {
-		vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
-		m_pipelineLayout = VK_NULL_HANDLE;
+
+	if (pipelineLayout != VK_NULL_HANDLE) {
+		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+		pipelineLayout = VK_NULL_HANDLE;
 	}
-}
-
-VkPipeline GFXEngine::Graphics::EnviromentPipeline::getPipeline() const
-{
-	return m_pipeline;
-}
-
-VkPipelineLayout GFXEngine::Graphics::EnviromentPipeline::getPipelineLayout() const
-{
-	return m_pipelineLayout;
 }
