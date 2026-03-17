@@ -6,7 +6,7 @@
 namespace GFXEngine
 {
 	namespace Graphics {
-		class PresentPipeline : GraphicsPipeline
+		class PresentPipeline : public GraphicsPipeline
 		{
 		public:
 			PresentPipeline(const RenderShader& shader) : GraphicsPipeline(shader) {}
