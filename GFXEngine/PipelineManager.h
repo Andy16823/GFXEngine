@@ -13,12 +13,12 @@ namespace GFXEngine {
 			PipelineManager() = default;
 			~PipelineManager() = default;
 
-			void managePipeline(uint32_t pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
+			void managePipeline(unsigned int pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
 			void createPipelines(LibGFX::VkContext& context);
 			void disposePipelines(LibGFX::VkContext& context);
 
 			template<typename T>
-			T* getPipeline(char pipelineId) const {
+			T* getPipeline(unsigned int pipelineId) const {
 				auto it = m_pipelines.find(pipelineId);
 				if (it != m_pipelines.end()) {
 					return dynamic_cast<T*>(it->second.get());
@@ -27,7 +27,7 @@ namespace GFXEngine {
 			}
 
 		private:
-			std::map<uint32_t, std::unique_ptr<LibGFX::Pipeline>> m_pipelines;
+			std::map<unsigned int, std::unique_ptr<LibGFX::Pipeline>> m_pipelines;
 		};
 	}
 

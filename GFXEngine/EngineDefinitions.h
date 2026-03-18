@@ -3,7 +3,7 @@
 namespace GFXEngine {
 	namespace Defintions {
 
-		enum PipelineType : uint32_t {
+		enum PipelineType : unsigned int {
 			PRESENT_PIPELINE					= 'PRES',
 			GEOMETRY_PIPELINE					= 'GEOM',
 			GEOMETRY_PIPELINE_UNLIT				= 'GULI',
