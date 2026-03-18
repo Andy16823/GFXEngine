@@ -1,5 +1,6 @@
 #include "InstancedModel.h"
 #include "Scene3D.h"
+#include "EngineDefinitions.h"
 
 
 void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
@@ -38,16 +39,17 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 		auto& scene3D = static_cast<Scene3D&>(scene);
 
 		auto meshCount = this->getMeshCount();
-
 		auto cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-		renderer.usePipeline(m_pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-		scene3D.directionalLight.bind(renderer, camera, m_pipeline, LIGHTS_UBO_BINDING, imageIndex);
-		renderer.bindDescriptorSet(m_instanceDataDescriptorSet, m_pipeline.getPipelineLayout(), INSTANCE_SSBO_BINDING, imageIndex);
+		auto pipeline = renderer.getPipeline<Graphics::InstancedGeometryPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
+
+		renderer.usePipeline(*pipeline, imageIndex);
+		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
+		scene3D.directionalLight.bind(renderer, camera, *pipeline, LIGHTS_UBO_BINDING, imageIndex);
+		renderer.bindDescriptorSet(m_instanceDataDescriptorSet, pipeline->getPipelineLayout(), INSTANCE_SSBO_BINDING, imageIndex);
 
 		for (size_t i = 0; i < meshCount; ++i) {
 			auto [mesh, material] = this->getMeshAndMaterial(i);
-			material.bind(renderer, camera, m_pipeline, imageIndex);
+			material.bind(renderer, camera, *pipeline, imageIndex);
 			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex, static_cast<uint32_t>(m_instanceCount));
 		}
 	}

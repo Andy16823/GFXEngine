@@ -11,8 +11,8 @@ namespace GFXEngine {
 		class InstancedModel : public Entity
 		{
 		public:
-			InstancedModel(const Graphics::MeshModel& meshModel, const Graphics::InstancedGeometryPipeline& pipeline, size_t instanceCount) 
-				: m_meshModel(meshModel), m_pipeline(pipeline), m_instanceCount(instanceCount) {
+			InstancedModel(const Graphics::MeshModel& meshModel, size_t instanceCount) 
+				: m_meshModel(meshModel), m_instanceCount(instanceCount) {
 			}
 
 			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
@@ -25,7 +25,6 @@ namespace GFXEngine {
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 		private:
 			const Graphics::MeshModel& m_meshModel;
-			const Graphics::InstancedGeometryPipeline& m_pipeline;
 			size_t m_instanceCount = 0;
 
 			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;

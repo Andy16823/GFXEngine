@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Scene3D.h"
+#include "EngineDefinitions.h"
 
 void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
@@ -23,16 +24,17 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
 		glm::mat4 modelMatrix = this->transform.getModelMatrix();
 
-		// Bind pipeline and camera descriptor set
-		renderer.usePipeline(m_pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, m_pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), m_pipeline.getPipelineLayout(), imageIndex);
-		scene3D.directionalLight.bind(renderer, camera, m_pipeline, LIGHTS_UBO_BINDING, imageIndex);
+		// TODO: Create an render mode flag to switch between different pipelines (e.g. wireframe, unlit, pbr, etc.)
+		auto pipeline = renderer.getPipeline<Graphics::GeometryPipeline>(Defintions::GEOMETRY_PIPELINE);
+		renderer.usePipeline(*pipeline, imageIndex);
+		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
+		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline->getPipelineLayout(), imageIndex);
+		scene3D.directionalLight.bind(renderer, camera, *pipeline, LIGHTS_UBO_BINDING, imageIndex);
 
 		// Render each mesh of the entity
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
 			auto [mesh, material] = this->getMeshAndMaterial(i);
-			material.bind(renderer, camera, m_pipeline, imageIndex);
+			material.bind(renderer, camera, *pipeline, imageIndex);
 			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex);
 		}
 	}

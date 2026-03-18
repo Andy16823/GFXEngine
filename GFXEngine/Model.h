@@ -12,12 +12,11 @@ namespace GFXEngine {
 		class Model : public Entity
 		{
 		private:
-			const Graphics::MeshModel& m_meshModel;
-			const Graphics::GeometryPipeline& m_pipeline;	
+			const Graphics::MeshModel& m_meshModel;	
 
 		public:
 			Model(const Graphics::MeshModel& meshModel, const Graphics::GeometryPipeline& pipeline) 
-				: m_meshModel(meshModel), m_pipeline(pipeline) {}
+				: m_meshModel(meshModel) {}
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
