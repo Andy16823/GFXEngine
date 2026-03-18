@@ -1,7 +1,12 @@
 #include "DebugBhv.h"
 #include "DataTypes.h"
+#include "EngineDefinitions.h"
 #include "Shapes.h"
 #include "Entity.h"
+#include "DebugPipeline.h"
+
+using namespace GFXEngine::Core;
+using namespace GFXEngine::Graphics;
 
 
 void GFXEngine::Core::DebugBhv::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
@@ -35,10 +40,11 @@ void GFXEngine::Core::DebugBhv::render(Scene& scene, GFXEngine::Graphics::Render
 {
 	VkDescriptorSet descriptorSet = camera.getDescriptorSet(imageIndex);
 	glm::mat4 modelMatrix = getEntity()->transform.getModelMatrix();
+	auto pipeline = renderer.getPipeline<DebugPipeline>(Defintions::DEBUG_PIPELINE);
 
-	renderer.usePipeline(m_pipeline, imageIndex);
-	renderer.bindDescriptorSet(descriptorSet, m_pipeline.getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-	renderer.bindPushConstants(&modelMatrix, sizeof(modelMatrix), m_pipeline.getPipelineLayout(), imageIndex);
+	renderer.usePipeline(*pipeline, imageIndex);
+	renderer.bindDescriptorSet(descriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
+	renderer.bindPushConstants(&modelMatrix, sizeof(modelMatrix), pipeline->getPipelineLayout(), imageIndex);
 	renderer.drawBuffers(m_debugVertexBuffer, m_debugIndexBuffer, m_indexCount, imageIndex);
 }
 
