@@ -556,6 +556,19 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
 	std::cout << "Created PBR Geometry Pipeline" << std::endl;
 
+	// Unlit Geometry Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "mesh_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "mesh_frag.spv";
+	RenderShader meshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	auto geometryPipelineUnlit = std::make_unique<GeometryPipeline>(meshShaderUnlit);
+	std::array<VkDescriptorSetLayout, 3> geometryPipelineUnlitLayouts = { m_uniformBuffferLayout, m_samplerLayout, m_uniformBuffferLayout };
+	geometryPipelineUnlit->setDescriptorSetLayouts(geometryPipelineUnlitLayouts);
+	geometryPipelineUnlit->setRenderPass(m_offscreenRenderPass->getRenderPass());
+	geometryPipelineUnlit->setViewport(m_viewport);
+	geometryPipelineUnlit->setScissor(m_scissor);
+	this->createPipeline(*geometryPipelineUnlit);
+	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(geometryPipelineUnlit));
+
 	// Create Instanced Geometry Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_frag.spv";
@@ -569,6 +582,20 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	this->createPipeline(*instancedGeometryPipeline);
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
 	std::cout << "Created PBR Instanced Geometry Pipeline" << std::endl;
+
+	// Instant Geometry Pipeline Unlit
+	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_frag.spv";
+	RenderShader instancedMeshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	std::array<VkDescriptorSetLayout, 4> instancedGeometryPipelineUnlitLayouts = { m_uniformBuffferLayout, m_samplerLayout, m_uniformBuffferLayout, m_storageBufferLayout };
+	auto instancedGeometryPipelineUnlit = std::make_unique<InstancedGeometryPipeline>(instancedMeshShaderUnlit);
+	instancedGeometryPipelineUnlit->setDescriptorSetLayouts(instancedGeometryPipelineUnlitLayouts);
+	instancedGeometryPipelineUnlit->setRenderPass(m_offscreenRenderPass->getRenderPass());
+	instancedGeometryPipelineUnlit->setViewport(m_viewport);
+	instancedGeometryPipelineUnlit->setScissor(m_scissor);
+	this->createPipeline(*instancedGeometryPipelineUnlit);
+	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedGeometryPipelineUnlit));
+	std::cout << "Created Unlit Instanced Geometry Pipeline" << std::endl;
 
 	// Create Enviroment Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "env_vert.spv";
