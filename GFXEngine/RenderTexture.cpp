@@ -50,19 +50,37 @@ void GFXEngine::Graphics::RenderTexture::create(Renderer& renderer, VkExtent2D e
 
 	// TODO: Change this to staging buffer properly
 	auto [vertices, indices] = Shapes::createFramebufferQuad();
+	
+
+	// Create Vertex Buffer
 	size_t vertexBufferSize = vertices.size() * sizeof(EngineTypes::FramebufferVertex);
+	auto vertexStagingBuffer = renderer.createBuffer(
+		vertexBufferSize, 
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	renderer.updateBuffer(vertexStagingBuffer, vertices.data(), vertices.size());
+
 	m_vertexBuffer = renderer.createBuffer(
 		vertexBufferSize, 
-		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_vertexBuffer, vertices.data(), vertices.size());
+		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	renderer.copyBuffer(vertexStagingBuffer, m_vertexBuffer, vertexBufferSize);
+	renderer.destroyBuffer(vertexStagingBuffer);
 
+	// Create Index Buffer
 	size_t indexBufferSize = indices.size() * sizeof(uint32_t);
+	auto indexStagingBuffer = renderer.createBuffer(
+		indexBufferSize, 
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	renderer.updateBuffer(indexStagingBuffer, indices.data(), indices.size());
+
 	m_indexBuffer = renderer.createBuffer(
 		indexBufferSize, 
-		VK_BUFFER_USAGE_INDEX_BUFFER_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_indexBuffer, indices.data(), indices.size());
+		VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	renderer.copyBuffer(indexStagingBuffer, m_indexBuffer, indexBufferSize);
+	renderer.destroyBuffer(indexStagingBuffer);
 }
 
 void GFXEngine::Graphics::RenderTexture::destroy(Renderer& renderer)
