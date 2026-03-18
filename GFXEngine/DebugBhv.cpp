@@ -14,20 +14,37 @@ void GFXEngine::Core::DebugBhv::init(Scene& scene, GFXEngine::Graphics::Renderer
 	auto entity = this->getEntity();
 	auto [vertices, indices] = GFXEngine::Graphics::Shapes::createAabbVertices(entity->getAABB());
 	
+	// Create Vertex Buffer with staging buffer
 	VkDeviceSize vertexBufferSize = vertices.size() * sizeof(EngineTypes::PositionVertex);
+	auto vertexStagingBuffer = renderer.createBuffer(
+		vertexBufferSize, 
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	renderer.updateBuffer(vertexStagingBuffer, vertices.data(), vertices.size());
+
 	m_debugVertexBuffer = renderer.createBuffer(
 		vertexBufferSize, 
-		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_debugVertexBuffer, vertices.data(), vertices.size());
+		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	renderer.copyBuffer(vertexStagingBuffer, m_debugVertexBuffer, vertexBufferSize);
+	renderer.destroyBuffer(vertexStagingBuffer);
 
+	// Create Index Buffer with staging buffer
 	VkDeviceSize indexBufferSize = indices.size() * sizeof(uint32_t);
+	auto indexStagingBuffer = renderer.createBuffer(
+		indexBufferSize, 
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	renderer.updateBuffer(indexStagingBuffer, indices.data(), indices.size());
+
 	m_debugIndexBuffer = renderer.createBuffer(
 		indexBufferSize, 
-		VK_BUFFER_USAGE_INDEX_BUFFER_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.updateBuffer(m_debugIndexBuffer, indices.data(), indices.size());
+		VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	renderer.copyBuffer(indexStagingBuffer, m_debugIndexBuffer, indexBufferSize);
+	renderer.destroyBuffer(indexStagingBuffer);
 
+	// Store index count for rendering
 	m_indexCount = static_cast<uint32_t>(indices.size());
 }
 
