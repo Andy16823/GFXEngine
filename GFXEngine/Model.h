@@ -15,7 +15,7 @@ namespace GFXEngine {
 			const Graphics::MeshModel& m_meshModel;	
 
 		public:
-			Model(const Graphics::MeshModel& meshModel, const Graphics::GeometryPipeline& pipeline) 
+			Model(const Graphics::MeshModel& meshModel) 
 				: m_meshModel(meshModel) {}
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
