@@ -140,9 +140,9 @@ namespace GFXEngine {
 			// PIPELINES
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
-			void managePipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
+			void managePipeline(unsigned int pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
 			template<typename T>
-			T* getPipeline(char pipelineId) const {
+			T* getPipeline(unsigned int pipelineId) const {
 				return m_pipelineManager.getPipeline<T>(pipelineId);
 			}
 

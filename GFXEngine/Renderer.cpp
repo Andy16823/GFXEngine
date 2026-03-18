@@ -554,7 +554,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	geometryPipelinePBR->setScissor(m_scissor);
 	this->createPipeline(*geometryPipelinePBR);
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
-	std::cout << "Created PBR Geometry Pipeline" << std::endl;
+	std::cout << "Created PBR Geometry Pipeline with id " << PipelineType::GEOMETRY_PIPELINE << std::endl;
 
 	// Unlit Geometry Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_vert.spv";
@@ -568,6 +568,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	geometryPipelineUnlit->setScissor(m_scissor);
 	this->createPipeline(*geometryPipelineUnlit);
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(geometryPipelineUnlit));
+	std::cout << "Created Unlit Geometry Pipeline with id " << PipelineType::GEOMETRY_PIPELINE_UNLIT << std::endl;
 
 	// Create Instanced Geometry Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_vert.spv";
@@ -581,7 +582,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	instancedGeometryPipeline->setScissor(m_scissor);
 	this->createPipeline(*instancedGeometryPipeline);
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
-	std::cout << "Created PBR Instanced Geometry Pipeline" << std::endl;
+	std::cout << "Created PBR Instanced Geometry Pipeline with id " << PipelineType::INSTANCED_GEOMETRY_PIPELINE << std::endl;
 
 	// Instant Geometry Pipeline Unlit
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_vert.spv";
@@ -595,7 +596,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	instancedGeometryPipelineUnlit->setScissor(m_scissor);
 	this->createPipeline(*instancedGeometryPipelineUnlit);
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedGeometryPipelineUnlit));
-	std::cout << "Created Unlit Instanced Geometry Pipeline" << std::endl;
+	std::cout << "Created Unlit Instanced Geometry Pipeline with id " << PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT << std::endl;
 
 	// Create Enviroment Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "env_vert.spv";
@@ -609,7 +610,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	enviromentPipeline->setScissor(m_scissor);
 	this->createPipeline(*enviromentPipeline);
 	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
-	std::cout << "Created Enviroment Pipeline" << std::endl;
+	std::cout << "Created Enviroment Pipeline with id " << PipelineType::ENVIRONMENT_PIPELINE << std::endl;
 
 	// Debug Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "debug_vert.spv";
@@ -623,7 +624,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	debugPipeline->setScissor(m_scissor);
 	this->createPipeline(*debugPipeline);
 	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
-	std::cout << "Created Debug Pipeline" << std::endl;
+	std::cout << "Created Debug Pipeline with id " << PipelineType::DEBUG_PIPELINE << std::endl;
 
 	// Create Present Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "vert.spv";
@@ -637,10 +638,10 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	presentPipeline->setScissor(m_scissor);
 	this->createPipeline(*presentPipeline);
 	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
-	std::cout << "Created Present Pipeline" << std::endl;
+	std::cout << "Created Present Pipeline with id " << PipelineType::PRESENT_PIPELINE << std::endl;
 }
 
-void Renderer::managePipeline(char pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline)
+void Renderer::managePipeline(unsigned int pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline)
 {
 	m_pipelineManager.managePipeline(pipelineId, std::move(pipeline));
 }
