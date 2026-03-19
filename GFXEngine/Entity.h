@@ -46,7 +46,7 @@ namespace GFXEngine {
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
 
-			const Math::AABB& getAABB() const { return m_aabb; }
+			Math::AABB getAABB() const { return m_aabb; }
 			void setAABB(const Math::AABB& aabb) { m_aabb = aabb; }
 
 			template<typename T>
