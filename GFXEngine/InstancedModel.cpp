@@ -90,6 +90,49 @@ GFXEngine::Math::AABB GFXEngine::Core::InstancedModel::computeInstanceAABB(size_
 	return aabb;
 }
 
+bool GFXEngine::Core::InstancedModel::isInstanceVisible(size_t instanceIndex) const
+{
+	if (instanceIndex >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	auto instance = m_instanceDataCache[instanceIndex];
+	return (instance.extras.x > 0.0f);
+}
+
+void GFXEngine::Core::InstancedModel::hideInstance(size_t instanceIndex)
+{
+	if (instanceIndex >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	m_instanceDataCache[instanceIndex].extras.x = 0.0f;
+}
+
+void GFXEngine::Core::InstancedModel::showInstance(size_t instanceIndex)
+{
+	if (instanceIndex >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	m_instanceDataCache[instanceIndex].extras.x = 1.0f;
+}
+
+size_t GFXEngine::Core::InstancedModel::findNextFreeInstance() const
+{
+	for (size_t i = 0; i < m_instanceCount; ++i) {
+		if (m_instanceDataCache[i].extras.x <= 0.0f) {
+			return i;
+		}
+	}
+	return static_cast<size_t>(-1); // No free instance found
+}
+
+glm::mat4 GFXEngine::Core::InstancedModel::getInstanceModelMatrix(size_t instanceIndex) const
+{
+	if(instanceIndex >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	return m_instanceDataCache[instanceIndex].model;
+}
+
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedModel::bakeInstanceData() const
 {
 	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);

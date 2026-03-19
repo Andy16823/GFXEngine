@@ -27,6 +27,13 @@ namespace GFXEngine {
 
 			size_t getInstanceCount() const { return m_instanceCount; }
 			GFXEngine::Math::AABB computeInstanceAABB(size_t instanceIndex) const;
+			bool isInstanceVisible(size_t instanceIndex) const;
+			void hideInstance(size_t instanceIndex);
+			void showInstance(size_t instanceIndex);
+			size_t findNextFreeInstance() const;
+			glm::mat4 getInstanceModelMatrix(size_t instanceIndex) const;
+
+
 
 		private:
 			std::vector<EngineTypes::InstanceData> m_instanceDataCache;
