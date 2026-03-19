@@ -24,11 +24,11 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	m_instanceDataDescriptorSet = renderer.allocateStorageBufferDescriptorSet(m_instanceDataBuffer, 0, renderer.getStorageBufferLayout());
 
 	// Bake initial instance data
-	auto instanceData = bakeInstanceData();
+	m_instanceDataCache = bakeInstanceData();
 
 	// Persistently map the buffer for easy updates
 	m_mappedInstanceData = renderer.mapBuffer(m_instanceDataBuffer);
-	renderer.updateMappedBuffer(m_mappedInstanceData, bufferSize, instanceData.data(), m_instanceCount);
+	renderer.updateMappedBuffer(m_mappedInstanceData, bufferSize, m_instanceDataCache.data(), m_instanceCount);
 }
 
 void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
@@ -68,6 +68,11 @@ std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&
 	return { m_meshModel.getMesh(index), m_meshModel.getMeshMaterial(index) };
 }
 
+GFXEngine::Math::AABB GFXEngine::Core::InstancedModel::computeInstanceAABB(size_t instanceIndex) const
+{
+	
+}
+
 std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedModel::bakeInstanceData() const
 {
 	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);
@@ -77,8 +82,6 @@ std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedMode
 	}
 	return instanceData;
 }
-
-
 
 void GFXEngine::Core::InstancedModel::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {

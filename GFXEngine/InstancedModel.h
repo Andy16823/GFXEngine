@@ -1,10 +1,10 @@
 #pragma once
 #include "Entity.h"
 #include "MeshModel.h"
-#include "InstancedGeometryPipeline.h"
 #include "Buffer.h"
 #include <vector>
 #include "DataTypes.h"
+#include "AABB.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -23,7 +23,12 @@ namespace GFXEngine {
 
 			size_t getMeshCount() const override;
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+
+			size_t getInstanceCount() const { return m_instanceCount; }
+			GFXEngine::Math::AABB computeInstanceAABB(size_t instanceIndex) const;
+
 		private:
+			std::vector<EngineTypes::InstanceData> m_instanceDataCache;
 			const Graphics::MeshModel& m_meshModel;
 			size_t m_instanceCount = 0;
 
