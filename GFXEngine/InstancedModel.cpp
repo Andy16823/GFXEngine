@@ -105,6 +105,7 @@ void GFXEngine::Core::InstancedModel::hideInstance(size_t instanceIndex)
 		throw std::out_of_range("Instance index out of range");
 	}
 	m_instanceDataCache[instanceIndex].extras.x = 0.0f;
+	this->invalidateInstance(instanceIndex);
 }
 
 void GFXEngine::Core::InstancedModel::showInstance(size_t instanceIndex)
@@ -113,6 +114,25 @@ void GFXEngine::Core::InstancedModel::showInstance(size_t instanceIndex)
 		throw std::out_of_range("Instance index out of range");
 	}
 	m_instanceDataCache[instanceIndex].extras.x = 1.0f;
+	this->invalidateInstance(instanceIndex);
+}
+
+void GFXEngine::Core::InstancedModel::setInstanceModelMatrix(size_t instanceIndex, const glm::mat4& modelMatrix)
+{
+	if (instanceIndex >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	m_instanceDataCache[instanceIndex].model = modelMatrix;
+	this->invalidateInstance(instanceIndex);
+}
+
+void GFXEngine::Core::InstancedModel::invalidateInstance(size_t instanceIndex)
+{
+	if (instanceIndex >= m_instanceCount) {
+		throw std::out_of_range("Instance index out of range");
+	}
+	auto& instance = m_instanceDataCache[instanceIndex];
+	this->updateInstance({ instance.model, instance.extras }, instanceIndex);
 }
 
 size_t GFXEngine::Core::InstancedModel::findNextFreeInstance() const

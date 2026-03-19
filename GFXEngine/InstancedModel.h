@@ -30,6 +30,8 @@ namespace GFXEngine {
 			bool isInstanceVisible(size_t instanceIndex) const;
 			void hideInstance(size_t instanceIndex);
 			void showInstance(size_t instanceIndex);
+			void setInstanceModelMatrix(size_t instanceIndex, const glm::mat4& modelMatrix);
+			void invalidateInstance(size_t instanceIndex);
 			size_t findNextFreeInstance() const;
 			glm::mat4 getInstanceModelMatrix(size_t instanceIndex) const;
 
