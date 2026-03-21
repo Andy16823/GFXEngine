@@ -5,6 +5,7 @@
 #include "RenderTexture.h"
 #include "imgui.h"
 #include <vector>
+#include "glm/glm.hpp"
 
 namespace GFXEngine {
 	namespace Core {
@@ -19,8 +20,8 @@ namespace GFXEngine {
 			void beginUI(const char* title);
 			void createText(const char* text);
 			void createButton(const char* label, const std::function<void()>& onClick);
-			void createImage(ImTextureID textureId, const ImVec2& size);
-			void createImage(VkDescriptorSet descriptorSet, const ImVec2& size);
+			void createImage(ImTextureID textureId, const glm::vec2& size);
+			void createImage(VkDescriptorSet descriptorSet, const glm::vec2& size);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);
