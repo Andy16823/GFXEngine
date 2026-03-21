@@ -56,17 +56,6 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-ImTextureID GFXGui::createTexture(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
-{
-	VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(
-		renderer.getTextureSampler(),
-		renderTexture.getColorImageView(),
-		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-	);
-
-	return reinterpret_cast<ImTextureID>(descriptorSet);
-}
-
 void GFXGui::beginUI(const char* title)
 {
 	ImGui::Begin(title);
@@ -83,11 +72,6 @@ void GFXGui::createButton(const char* label, const std::function<void()>& onClic
 	{
 		onClick();
 	}
-}
-
-void GFXGui::createImage(ImTextureID textureId, const glm::vec2& size)
-{
-	ImGui::Image(textureId, ImVec2(size.x, size.y));
 }
 
 void GFXGui::createImage(VkDescriptorSet descriptorSet, const glm::vec2& size)
