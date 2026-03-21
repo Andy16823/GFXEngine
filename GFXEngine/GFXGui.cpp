@@ -4,7 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 #include <iostream>
-#include "../out/build/x64-debug/_deps/glm-src/glm/gtc/type_ptr.inl"
+#include "glm/gtc/type_ptr.hpp"
 
 using namespace GFXEngine::Core;
 using namespace LibGFX;
