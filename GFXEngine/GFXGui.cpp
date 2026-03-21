@@ -46,6 +46,14 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::createButton(const char* label, const std::function<void()>& onClick)
+{
+	if (ImGui::Button(label))
+	{
+		onClick();
+	}
+}
+
 void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
 {
 	renderer.getContext().destroyDescriptorSetPool(m_descriptorPool);
@@ -56,16 +64,17 @@ void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
 
 void GFXGui::render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
+	ImGui::Render();
 	auto commandBuffer = renderer.getCommandBuffer(imageIndex);
 	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
 }
 
 void GFXGui::buildGui()
 {
+	ImGui::DockSpaceOverViewport();
 	ImGui::Begin("Hello, ImGui!");
 	ImGui::Text("This is a simple ImGui window.");
 	ImGui::End();
-	ImGui::Render();
 }
 
 void GFXGui::newFrame()

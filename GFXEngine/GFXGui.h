@@ -9,6 +9,9 @@ namespace GFXEngine {
 		public:
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
 			void newFrame();
+
+			void createButton(const char* label, const std::function<void()>& onClick);
+
 			void buildGui();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);
