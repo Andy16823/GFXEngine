@@ -16,6 +16,7 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	DescriptorPoolBuilder descriptorPoolBuilder;
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000);
 	descriptorPoolBuilder.setMaxSets(1000);
+	descriptorPoolBuilder.setFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 	m_descriptorPool = descriptorPoolBuilder.build(renderer.getContext());
 	std::cout << "Descriptor pool created: " << m_descriptorPool << std::endl;
 
