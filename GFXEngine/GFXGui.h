@@ -8,14 +8,24 @@
 
 namespace GFXEngine {
 	namespace Core {
+
+		/// <summary>
+		/// Wrapper class for ImGui integration with Vulkan and GLFW. 
+		/// Provides functions to initialize ImGui, create UI elements, 
+		/// and render the UI within the Vulkan rendering loop.
+		/// </summary>
 		class GFXGui
 		{
 		public:
+			// Base functions
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
-			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
 			void newFrame();
-
 			void beginUI(const char* title);
+			void endUI();
+			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+			void dispose(GFXEngine::Graphics::Renderer& renderer);
+
+			// UI element creation functions
 			bool createCollapsingHeader(const char* label);
 			void createText(const char* text);
 			void createButton(const char* label, const std::function<void()>& onClick);
@@ -27,11 +37,13 @@ namespace GFXEngine {
 			void createTextInput(const char* label, char* buffer, size_t bufferSize);
 			void createVector3Input(const char* label, glm::vec3* value);
 			void createVector4Input(const char* label, glm::vec4* value);
-			void endUI();
-			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
-			void dispose(GFXEngine::Graphics::Renderer& renderer);
+			void createColorInput(const char* label, glm::vec4* color);
+			void createColorInput(const char* label, glm::vec3* color);
 
-
+			// Utility functions
+			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
+			glm::vec2 getClientAreaSize() const;
+			glm::vec2 getWindowPosition() const;
 		private:
 			VkDescriptorPool m_descriptorPool;
 		};

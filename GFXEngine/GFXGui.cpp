@@ -48,6 +48,28 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::createColorInput(const char* label, glm::vec4* color)
+{
+	ImGui::ColorEdit4(label, glm::value_ptr(*color));
+}
+
+void GFXGui::createColorInput(const char* label, glm::vec3* color)
+{
+	ImGui::ColorEdit3(label, glm::value_ptr(*color));
+}
+
+glm::vec2 GFXGui::getWindowPosition() const
+{
+	ImVec2 pos = ImGui::GetWindowPos();
+	return glm::vec2(pos.x, pos.y);
+}
+
+glm::vec2 GFXGui::getClientAreaSize() const
+{
+	ImVec2 size = ImGui::GetContentRegionAvail();
+	return glm::vec2(size.x, size.y);
+}
+
 void GFXGui::createVector4Input(const char* label, glm::vec4* value)
 {
 	ImGui::InputFloat4(label, glm::value_ptr(*value));
