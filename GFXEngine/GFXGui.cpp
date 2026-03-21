@@ -46,12 +46,27 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::beginUI(const char* title)
+{
+	ImGui::Begin(title);
+}
+
+void GFXGui::createText(const char* text)
+{
+	ImGui::Text("%s", text);
+}
+
 void GFXGui::createButton(const char* label, const std::function<void()>& onClick)
 {
 	if (ImGui::Button(label))
 	{
 		onClick();
 	}
+}
+
+void GFXGui::endUI()
+{
+	ImGui::End();
 }
 
 void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
@@ -67,14 +82,6 @@ void GFXGui::render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex
 	ImGui::Render();
 	auto commandBuffer = renderer.getCommandBuffer(imageIndex);
 	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
-}
-
-void GFXGui::buildGui()
-{
-	ImGui::DockSpaceOverViewport();
-	ImGui::Begin("Hello, ImGui!");
-	ImGui::Text("This is a simple ImGui window.");
-	ImGui::End();
 }
 
 void GFXGui::newFrame()
