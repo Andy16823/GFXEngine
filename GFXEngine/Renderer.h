@@ -215,6 +215,7 @@ namespace GFXEngine {
 			SwapchainInfo& getSwapchainInfo() { return m_swapchainInfo; }
 			VkFormat getDepthFormat() const { return m_depthFormat; }
 			LibGFX::VkContext& getContext() { return *m_context; }
+			VkSampler getTextureSampler() const { return m_textureSampler; }
 			VkDescriptorSetLayout getSamplerLayout() const { return m_samplerLayout; }
 			VkDescriptorSetLayout getCubemapSamplerLayout() const { return m_cubemapSamplerLayout; }
 			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }

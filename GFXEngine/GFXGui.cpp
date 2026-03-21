@@ -46,6 +46,17 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+ImTextureID GFXGui::createTexture(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
+{
+	VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(
+		renderer.getTextureSampler(),
+		renderTexture.getColorImageView(),
+		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+	);
+
+	return reinterpret_cast<ImTextureID>(descriptorSet);
+}
+
 void GFXGui::beginUI(const char* title)
 {
 	ImGui::Begin(title);
@@ -64,6 +75,11 @@ void GFXGui::createButton(const char* label, const std::function<void()>& onClic
 	}
 }
 
+void GFXGui::createImage(ImTextureID textureId, const ImVec2& size)
+{
+	ImGui::Image(textureId, size);
+}
+
 void GFXGui::endUI()
 {
 	ImGui::End();
@@ -71,10 +87,10 @@ void GFXGui::endUI()
 
 void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
 {
-	renderer.getContext().destroyDescriptorSetPool(m_descriptorPool);
 	ImGui_ImplVulkan_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+	renderer.getContext().destroyDescriptorSetPool(m_descriptorPool);
 }
 
 void GFXGui::render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)

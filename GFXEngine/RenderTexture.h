@@ -33,6 +33,9 @@ namespace GFXEngine {
 			void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) override;
 			void draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex) override;
 			virtual void destroy(Renderer& renderer) override;
+
+			VkImageView getColorImageView() const { return m_colorAttachment.imageView; }
+			VkImageView getDepthImageView() const { return m_depthAttachment.imageView; }
 		};
 	}
 }
