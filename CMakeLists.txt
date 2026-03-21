@@ -10,6 +10,7 @@ if (POLICY CMP0141)
 endif()
 
 project ("GFXEngine")
+find_package(Vulkan REQUIRED)
 
 include(FetchContent)
 
@@ -41,6 +42,13 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
+#ImGUI Laden
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG docking
+)
+
 # Nur die Quellen herunterladen/auspacken (kein add_subdirectory, da kein CMake-Projekt vorhanden)
 FetchContent_Populate(stb)
 # Erstelle ein INTERFACE-Target, damit andere Targets es mit target_link_libraries verwenden können
@@ -49,6 +57,29 @@ target_include_directories(stb_image INTERFACE ${stb_SOURCE_DIR})
 
 # LibGFX und GLM verfügbar machen
 FetchContent_MakeAvailable(LibGFX GLM Assimp)
+
+# ImGui Quellen herunterladen (ohne add_subdirectory, da kein CMake-Projekt)
+FetchContent_Populate(imgui)
+
+add_library(imgui STATIC
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp
+)
+
+target_include_directories(imgui PUBLIC
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
+)
+
+target_link_libraries(imgui PUBLIC 
+    Vulkan::Vulkan
+    LibGFX
+)
 
 # Schließen Sie Unterprojekte ein.
 add_subdirectory ("GFXEngine")

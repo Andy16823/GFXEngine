@@ -95,6 +95,8 @@ namespace GFXEngine {
 			void init(GLFWwindow* window, const std::string& shadersDirectory);
 			void createSyncObjects();
 			uint32_t nextImage();
+			VkCommandBuffer beginSingleTimeCommands();
+			void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 			void beginFrame(uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, uint32_t imageIndex);
@@ -219,6 +221,7 @@ namespace GFXEngine {
 			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
 			VkDescriptorSetLayout getPBRMaterialLayout() const { return m_pbrMaterialLayout; }
 			bool isValidationEnabled() const { return m_enableValidationLayers; }
+			LibGFX::QueueFamilyIndices getQueueFamilyIndices() const { return m_queueFamilyIndices; }
 
 			// SETTERS
 			void setValidationEnabled(bool enabled) { m_enableValidationLayers = enabled; }
