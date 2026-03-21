@@ -25,6 +25,8 @@ namespace GFXEngine {
 			void createNumberInput(const char* label, int* value);
 			void createFloatInput(const char* label, float* value);
 			void createTextInput(const char* label, char* buffer, size_t bufferSize);
+			void createVector3Input(const char* label, glm::vec3* value);
+			void createVector4Input(const char* label, glm::vec4* value);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);

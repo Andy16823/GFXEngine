@@ -4,6 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 #include <iostream>
+#include "../out/build/x64-debug/_deps/glm-src/glm/gtc/type_ptr.inl"
 
 using namespace GFXEngine::Core;
 using namespace LibGFX;
@@ -45,6 +46,16 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	initInfo.ImageCount = renderer.getSwapchainInfo().imageCount;
 
 	ImGui_ImplVulkan_Init(&initInfo);
+}
+
+void GFXGui::createVector4Input(const char* label, glm::vec4* value)
+{
+	ImGui::InputFloat4(label, glm::value_ptr(*value));
+}
+
+void GFXGui::createVector3Input(const char* label, glm::vec3* value)
+{
+	ImGui::InputFloat3(label, glm::value_ptr(*value));
 }
 
 bool GFXGui::createCollapsingHeader(const char* label)
