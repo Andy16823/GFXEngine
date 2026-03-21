@@ -46,6 +46,21 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::createImage(VkDescriptorSet descriptorSet, const ImVec2& size)
+{
+	ImGui::Image(reinterpret_cast<ImTextureID>(descriptorSet), size);
+}
+
+VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
+{
+	VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(
+		renderer.getTextureSampler(),
+		renderTexture.getColorImageView(),
+		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+	);
+	return descriptorSet;
+}
+
 ImTextureID GFXGui::createTexture(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
 {
 	VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(
