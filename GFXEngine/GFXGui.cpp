@@ -47,6 +47,11 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+bool GFXGui::createCollapsingHeader(const char* label)
+{
+	return ImGui::CollapsingHeader(label);
+}
+
 void GFXGui::createTextInput(const char* label, char* buffer, size_t bufferSize)
 {
 	ImGui::InputText(label, buffer, bufferSize);

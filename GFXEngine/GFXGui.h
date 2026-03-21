@@ -16,6 +16,7 @@ namespace GFXEngine {
 			void newFrame();
 
 			void beginUI(const char* title);
+			bool createCollapsingHeader(const char* label);
 			void createText(const char* text);
 			void createButton(const char* label, const std::function<void()>& onClick);
 			void createImage(VkDescriptorSet descriptorSet, const glm::vec2& size);
