@@ -19,6 +19,11 @@ namespace GFXEngine {
 			void createText(const char* text);
 			void createButton(const char* label, const std::function<void()>& onClick);
 			void createImage(VkDescriptorSet descriptorSet, const glm::vec2& size);
+			void createFloatSlider(const char* label, float* value, float min, float max);
+			void createCheckbox(const char* label, bool* value);
+			void createNumberInput(const char* label, int* value);
+			void createFloatInput(const char* label, float* value);
+			void createTextInput(const char* label, char* buffer, size_t bufferSize);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);

@@ -47,6 +47,31 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::createTextInput(const char* label, char* buffer, size_t bufferSize)
+{
+	ImGui::InputText(label, buffer, bufferSize);
+}
+
+void GFXGui::createFloatInput(const char* label, float* value)
+{
+	ImGui::InputFloat(label, value);
+}
+
+void GFXGui::createNumberInput(const char* label, int* value)
+{
+	ImGui::InputInt(label, value);
+}
+
+void GFXGui::createCheckbox(const char* label, bool* value)
+{
+	ImGui::Checkbox(label, value);
+}
+
+void GFXGui::createFloatSlider(const char* label, float* value, float min, float max)
+{
+	ImGui::SliderFloat(label, value, min, max);
+}
+
 VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
 {
 	VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(
