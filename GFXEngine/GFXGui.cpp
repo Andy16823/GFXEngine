@@ -48,6 +48,31 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::createTextAreaInput(const char* label, char* buffer, size_t bufferSize)
+{
+	ImGui::InputTextMultiline(label, buffer, bufferSize);
+}
+
+void GFXGui::createTreePop()
+{
+	ImGui::TreePop();
+}
+
+void GFXGui::createSameLine()
+{
+	ImGui::SameLine();
+}
+
+bool GFXGui::createTreeNode(const char* label)
+{
+	return ImGui::TreeNode(label);
+}
+
+void GFXGui::createVectorInput(const char* label, glm::vec2* value)
+{
+	ImGui::InputFloat2(label, glm::value_ptr(*value));
+}
+
 void GFXGui::createColorInput(const char* label, glm::vec4* color)
 {
 	ImGui::ColorEdit4(label, glm::value_ptr(*color));
@@ -70,12 +95,12 @@ glm::vec2 GFXGui::getClientAreaSize() const
 	return glm::vec2(size.x, size.y);
 }
 
-void GFXGui::createVector4Input(const char* label, glm::vec4* value)
+void GFXGui::createVectorInput(const char* label, glm::vec4* value)
 {
 	ImGui::InputFloat4(label, glm::value_ptr(*value));
 }
 
-void GFXGui::createVector3Input(const char* label, glm::vec3* value)
+void GFXGui::createVectorInput(const char* label, glm::vec3* value)
 {
 	ImGui::InputFloat3(label, glm::value_ptr(*value));
 }

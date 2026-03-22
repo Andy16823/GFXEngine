@@ -27,6 +27,9 @@ namespace GFXEngine {
 
 			// UI element creation functions
 			bool createCollapsingHeader(const char* label);
+			bool createTreeNode(const char* label);
+			void createTreePop();
+			void createSameLine();
 			void createText(const char* text);
 			void createButton(const char* label, const std::function<void()>& onClick);
 			void createImage(VkDescriptorSet descriptorSet, const glm::vec2& size);
@@ -35,8 +38,10 @@ namespace GFXEngine {
 			void createNumberInput(const char* label, int* value);
 			void createFloatInput(const char* label, float* value);
 			void createTextInput(const char* label, char* buffer, size_t bufferSize);
-			void createVector3Input(const char* label, glm::vec3* value);
-			void createVector4Input(const char* label, glm::vec4* value);
+			void createTextAreaInput(const char* label, char* buffer, size_t bufferSize);
+			void createVectorInput(const char* label, glm::vec2* value);
+			void createVectorInput(const char* label, glm::vec3* value);
+			void createVectorInput(const char* label, glm::vec4* value);
 			void createColorInput(const char* label, glm::vec4* color);
 			void createColorInput(const char* label, glm::vec3* color);
 
