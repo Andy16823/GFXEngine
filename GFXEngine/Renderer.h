@@ -84,6 +84,10 @@ namespace GFXEngine {
 			VkDescriptorSetLayout m_storageBufferLayout;
 			VkDescriptorSetLayout m_pbrMaterialLayout;
 
+			// Callbacks
+			std::vector<std::function<void(Renderer&)>> m_swapchainCleanupCallbacks;
+			std::vector<std::function<void(Renderer&, VkViewport viewport, VkRect2D scissors)>> m_swapchainRecreationCallbacks;
+
 			void createPipelines(const std::string& shadersDirectory);
 
 		public:
@@ -93,6 +97,7 @@ namespace GFXEngine {
 
 			// MAIN LOOP FUNCTIONS
 			void init(GLFWwindow* window, const std::string& shadersDirectory);
+			void recreate(GLFWwindow* window, const std::string& shadersDirectory);
 			void createSyncObjects();
 			uint32_t nextImage();
 			VkCommandBuffer beginSingleTimeCommands();
@@ -226,6 +231,15 @@ namespace GFXEngine {
 
 			// SETTERS
 			void setValidationEnabled(bool enabled) { m_enableValidationLayers = enabled; }
+
+			// CALLBACK REGISTRATION
+			void registerSwapchainCleanupCallback(std::function<void(Renderer&)> callback) {
+				m_swapchainCleanupCallbacks.push_back(callback);
+			}
+			
+			void registerSwapchainRecreationCallback(std::function<void(Renderer&, VkViewport, VkRect2D)> callback) {
+				m_swapchainRecreationCallbacks.push_back(callback);
+			}
 		};
 	}
 }

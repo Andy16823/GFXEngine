@@ -21,6 +21,8 @@ namespace GFXEngine {
 			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
 			virtual void onInput(int key, int mods, int action) = 0;
+			virtual void onSwpachainRecreate(Graphics::Renderer& renderer) = 0;
+			virtual void afterSwapchainRecreate(Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) = 0;
 			
 
 			glm::ivec2 getWindowSize() const { return m_windowSize; }

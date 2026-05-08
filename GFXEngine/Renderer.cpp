@@ -232,7 +232,10 @@ void Renderer::presentFrame(uint32_t imageIndex)
 		.pSwapchains = &m_swapchainInfo.swapchain,
 		.pImageIndices = &imageIndex
 	};
-	m_context->queuePresent(presentInfo);
+
+	if (m_context->queuePresent(presentInfo) != VK_SUCCESS) {
+		throw std::runtime_error("Failed to present swapchain image");
+	}
 }
 
 void Renderer::advanceFrame()
@@ -671,4 +674,61 @@ void Renderer::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 	vkQueueWaitIdle(m_context->getGraphicsQueue());
 
 	vkFreeCommandBuffers(m_context->getDevice(), m_commandPool, 1, &commandBuffer);
+}
+
+void Renderer::recreate(GLFWwindow* window, const std::string& shadersDirectory)
+{
+	// Cleanup existing resources
+	m_context->waitIdle();
+	std::cout << "Started cleanup for swapchain recreation" << std::endl;
+
+	for (auto framebuffer : m_framebuffers) {
+		m_context->destroyFramebuffer(framebuffer);
+	}
+	m_framebuffers.clear();
+	std::cout << "Destroyed framebuffers" << std::endl;
+
+	m_context->freeCommandBuffers(m_commandPool, m_commandBuffers);
+	m_commandBuffers.clear();
+	std::cout << "Destroyed command buffers" << std::endl;
+
+	m_context->destroyDepthBuffer(m_depthBuffer);
+	std::cout << "Destroyed depth buffer" << std::endl;
+
+	m_context->destroySwapChain(m_swapchainInfo);
+	std::cout << "Destroyed swapchain" << std::endl;
+
+	m_renderPass->destroy(*m_context);
+	std::cout << "Destroyed render pass" << std::endl;
+
+	m_offscreenRenderPass->destroy(*m_context);
+	std::cout << "Destroyed offscreen render pass" << std::endl;
+
+	m_pipelineManager.disposePipelines(*m_context);
+	std::cout << "Destroyed pipelines" << std::endl;
+
+	for (auto callback : m_swapchainCleanupCallbacks) {
+		callback(*this);
+	}
+
+	// Recreate swapchain and depth buffer
+	m_swapchainInfo = m_context->createSwapChain(VK_PRESENT_MODE_MAILBOX_KHR);
+	m_viewport = m_context->createViewport(0.0f, 0.0f, m_swapchainInfo.extent);
+	m_scissor = m_context->createScissorRect(0, 0, m_swapchainInfo.extent);
+	m_depthBuffer = m_context->createDepthBuffer(m_swapchainInfo.extent, m_depthFormat);
+	m_renderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format);
+	m_offscreenRenderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format);
+	this->createPipelines(shadersDirectory);
+	m_framebuffers = m_context->createFramebuffers(*m_renderPass, m_swapchainInfo, m_depthBuffer);
+	m_commandBuffers = m_context->allocateCommandBuffers(m_commandPool, static_cast<uint32_t>(m_framebuffers.size()));
+	std::cout << "Recreated swapchain, depth buffer, render passes, pipelines, framebuffers and command buffers" << std::endl;
+
+	for (auto callback : m_swapchainRecreationCallbacks) {
+		callback(*this, m_viewport, m_scissor);
+	}
+
+	// Sync objects
+	m_imagesInFlight.clear();
+	m_imagesInFlight.resize(m_framebuffers.size(), VK_NULL_HANDLE);	
+	std::cout << "Resized images in flight vector to " << m_imagesInFlight.size() << std::endl;
 }

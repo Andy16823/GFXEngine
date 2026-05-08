@@ -21,6 +21,15 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	m_renderer->setValidationEnabled(validationLayers);
 	m_renderer->init(m_window, shadersDirectory);
 
+	// Register swapchain recreation callbacks
+	m_renderer->registerSwapchainCleanupCallback([this](Graphics::Renderer& renderer) {
+		this->onSwpachainRecreate(renderer);
+		});
+
+	m_renderer->registerSwapchainRecreationCallback([this](Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) {
+		this->afterSwapchainRecreate(renderer, viewport, scissor);
+		});
+
 	// Call user-defined initialization
 	this->onInit(*m_renderer);
 
