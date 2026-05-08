@@ -49,6 +49,12 @@ FetchContent_Declare(
     GIT_TAG docking
 )
 
+FetchContent_Declare(
+    imguizmo
+    GIT_REPOSITORY https://github.com/CedricGuillemet/ImGuizmo.git
+    GIT_TAG master
+)
+
 # Nur die Quellen herunterladen/auspacken (kein add_subdirectory, da kein CMake-Projekt vorhanden)
 FetchContent_Populate(stb)
 # Erstelle ein INTERFACE-Target, damit andere Targets es mit target_link_libraries verwenden können
@@ -60,6 +66,12 @@ FetchContent_MakeAvailable(LibGFX GLM Assimp)
 
 # ImGui Quellen herunterladen (ohne add_subdirectory, da kein CMake-Projekt)
 FetchContent_Populate(imgui)
+
+# ImGuizmo Quellen herunterladen (ohne add_subdirectory, da kein CMake-Projekt)
+FetchContent_GetProperties(imguizmo)
+if(NOT imguizmo_POPULATED)
+    FetchContent_Populate(imguizmo)
+endif()
 
 add_library(imgui STATIC
     ${imgui_SOURCE_DIR}/imgui.cpp
@@ -79,6 +91,18 @@ target_include_directories(imgui PUBLIC
 target_link_libraries(imgui PUBLIC 
     Vulkan::Vulkan
     LibGFX
+)
+
+add_library(imguizmo STATIC
+    ${imguizmo_SOURCE_DIR}/src/ImGuizmo.cpp
+)
+
+target_include_directories(imguizmo PUBLIC
+    ${imguizmo_SOURCE_DIR}/src
+)
+
+target_link_libraries(imguizmo PUBLIC
+    imgui
 )
 
 # Schließen Sie Unterprojekte ein.

@@ -18,6 +18,7 @@ target_link_libraries(GFXEngine
     PRIVATE stb_image
     PRIVATE assimp::assimp
     PRIVATE imgui
+    PRIVATE imguizmo
 )
 
 # Include-Verzeichnisse (falls nötig)
