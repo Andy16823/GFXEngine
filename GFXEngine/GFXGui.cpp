@@ -16,6 +16,8 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	std::cout << "Creating descriptor pool for ImGui..." << std::endl;
 	DescriptorPoolBuilder descriptorPoolBuilder;
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000);
+	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLER, 1000);
+	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000);
 	descriptorPoolBuilder.setMaxSets(1000);
 	descriptorPoolBuilder.setFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 	m_descriptorPool = descriptorPoolBuilder.build(renderer.getContext());
