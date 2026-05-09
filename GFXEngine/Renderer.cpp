@@ -672,8 +672,15 @@ void Renderer::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 
 void Renderer::recreate()
 {
-	// Cleanup existing resources
+	// Get the new window size
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(m_context->getTargetWindow(), & width, & height);
+	while (width == 0 || height == 0) {
+		glfwGetFramebufferSize(m_context->getTargetWindow(), &width, &height);
+		glfwWaitEvents();
+	}
 	m_context->waitIdle();
+
 	std::cout << "Started cleanup for swapchain recreation" << std::endl;
 
 	for (auto framebuffer : m_framebuffers) {
@@ -692,15 +699,6 @@ void Renderer::recreate()
 	m_context->destroySwapChain(m_swapchainInfo);
 	std::cout << "Destroyed swapchain" << std::endl;
 
-	m_renderPass->destroy(*m_context);
-	std::cout << "Destroyed render pass" << std::endl;
-
-	m_offscreenRenderPass->destroy(*m_context);
-	std::cout << "Destroyed offscreen render pass" << std::endl;
-
-	m_pipelineManager.disposePipelines(*m_context);
-	std::cout << "Destroyed pipelines" << std::endl;
-
 	for (auto callback : m_swapchainCleanupCallbacks) {
 		callback(*this);
 	}
@@ -710,9 +708,6 @@ void Renderer::recreate()
 	m_viewport = m_context->createViewport(0.0f, 0.0f, m_swapchainInfo.extent);
 	m_scissor = m_context->createScissorRect(0, 0, m_swapchainInfo.extent);
 	m_depthBuffer = m_context->createDepthBuffer(m_swapchainInfo.extent, m_depthFormat);
-	m_renderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format);
-	m_offscreenRenderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format);
-	this->createPipelines(*m_shadersDirectory);
 	m_framebuffers = m_context->createFramebuffers(*m_renderPass, m_swapchainInfo, m_depthBuffer);
 	m_commandBuffers = m_context->allocateCommandBuffers(m_commandPool, static_cast<uint32_t>(m_framebuffers.size()));
 	std::cout << "Recreated swapchain, depth buffer, render passes, pipelines, framebuffers and command buffers" << std::endl;
