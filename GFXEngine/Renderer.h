@@ -18,6 +18,7 @@
 #include "InstancedGeometryPipeline.h"
 #include "EnviromentPipeline.h"
 #include "DebugPipeline.h"
+#include "GraphicsPipeline.h"
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
@@ -88,7 +89,6 @@ namespace GFXEngine {
 			std::vector<std::function<void(Renderer&)>> m_swapchainCleanupCallbacks;
 			std::vector<std::function<void(Renderer&, VkViewport viewport, VkRect2D scissors)>> m_swapchainRecreationCallbacks;
 
-			GLFWwindow* m_window;
 			const std::string* m_shadersDirectory;
 
 			void createPipelines(const std::string& shadersDirectory);
@@ -108,7 +108,7 @@ namespace GFXEngine {
 			void beginFrame(uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, uint32_t imageIndex);
-			void usePipeline(const LibGFX::Pipeline& pipeline, uint32_t imageIndex);
+			void usePipeline(const GraphicsPipeline& pipeline, uint32_t imageIndex);
 			void endRenderPass(uint32_t imageIndex);
 			void endFrame(uint32_t imageIndex);
 			void submitFrame(uint32_t imageIndex);

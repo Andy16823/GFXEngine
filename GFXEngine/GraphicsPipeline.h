@@ -15,7 +15,7 @@ namespace GFXEngine {
 		{
 		public:
 			GraphicsPipeline(const RenderShader& shader) 
-				: shader(shader), renderPass(VK_NULL_HANDLE), pipeline(VK_NULL_HANDLE), pipelineLayout(VK_NULL_HANDLE), viewport({}), scissor({}) {}
+				: shader(shader), renderPass(VK_NULL_HANDLE), pipeline(VK_NULL_HANDLE), pipelineLayout(VK_NULL_HANDLE) {}
 
 			GraphicsPipeline(const GraphicsPipeline&) = delete;
 			GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
@@ -27,11 +27,12 @@ namespace GFXEngine {
 			VkPipeline getPipeline() const override { return pipeline; }
 			
 			void setRenderPass(VkRenderPass renderPass) { this->renderPass = renderPass; }
-			void setViewport(VkViewport viewport) { this->viewport = viewport; }
-			void setScissor(VkRect2D scissor) { this->scissor = scissor; }
 			void setDescriptorSetLayouts(std::span<const VkDescriptorSetLayout> layouts) {
 				descriptorSetLayouts.assign(layouts.begin(), layouts.end());
 			}
+
+			void bindViewport(VkCommandBuffer commandBuffer, VkViewport viewport) const;
+			void bindScissor(VkCommandBuffer commandBuffer, VkRect2D scissor) const;
 
 		protected:
 			std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
@@ -39,8 +40,6 @@ namespace GFXEngine {
 			VkRenderPass renderPass;
 			VkPipeline pipeline;
 			VkPipelineLayout pipelineLayout;
-			VkViewport viewport;
-			VkRect2D scissor;
 		};
 	}
 }

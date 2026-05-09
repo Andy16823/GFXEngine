@@ -18,7 +18,6 @@ void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 		throw std::runtime_error("Shader directory does not exist: " + shadersDirectory);
 	}
 
-	m_window = window;
 	m_shadersDirectory = &shadersDirectory;
 
 	// Create Vulkan context
@@ -343,8 +342,10 @@ void Renderer::destroyPipeline(LibGFX::Pipeline& pipeline)
 	pipeline.destroy(*m_context);
 }
 
-void Renderer::usePipeline(const LibGFX::Pipeline& pipeline, uint32_t imageIndex)
+void Renderer::usePipeline(const GraphicsPipeline& pipeline, uint32_t imageIndex)
 {
+	pipeline.bindViewport(m_commandBuffers[imageIndex], m_viewport);
+	pipeline.bindScissor(m_commandBuffers[imageIndex], m_scissor);
 	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }
 
@@ -560,8 +561,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	auto geometryPipelinePBR = std::make_unique<GeometryPipeline>(meshShaderPBR);
 	geometryPipelinePBR->setDescriptorSetLayouts(geometryPipelinePBRLayouts);
 	geometryPipelinePBR->setRenderPass(m_offscreenRenderPass->getRenderPass());
-	geometryPipelinePBR->setViewport(m_viewport);
-	geometryPipelinePBR->setScissor(m_scissor);
 	this->createPipeline(*geometryPipelinePBR);
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
 	std::cout << "Created PBR Geometry Pipeline with id " << PipelineType::GEOMETRY_PIPELINE << std::endl;
@@ -574,8 +573,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	std::array<VkDescriptorSetLayout, 3> geometryPipelineUnlitLayouts = { m_uniformBuffferLayout, m_samplerLayout, m_uniformBuffferLayout };
 	geometryPipelineUnlit->setDescriptorSetLayouts(geometryPipelineUnlitLayouts);
 	geometryPipelineUnlit->setRenderPass(m_offscreenRenderPass->getRenderPass());
-	geometryPipelineUnlit->setViewport(m_viewport);
-	geometryPipelineUnlit->setScissor(m_scissor);
 	this->createPipeline(*geometryPipelineUnlit);
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(geometryPipelineUnlit));
 	std::cout << "Created Unlit Geometry Pipeline with id " << PipelineType::GEOMETRY_PIPELINE_UNLIT << std::endl;
@@ -588,8 +585,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	auto instancedGeometryPipeline = std::make_unique<InstancedGeometryPipeline>(instancedMeshShader);
 	instancedGeometryPipeline->setDescriptorSetLayouts(instancedGeometryPipelineLayouts);
 	instancedGeometryPipeline->setRenderPass(m_offscreenRenderPass->getRenderPass());
-	instancedGeometryPipeline->setViewport(m_viewport);
-	instancedGeometryPipeline->setScissor(m_scissor);
 	this->createPipeline(*instancedGeometryPipeline);
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
 	std::cout << "Created PBR Instanced Geometry Pipeline with id " << PipelineType::INSTANCED_GEOMETRY_PIPELINE << std::endl;
@@ -602,8 +597,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	auto instancedGeometryPipelineUnlit = std::make_unique<InstancedGeometryPipeline>(instancedMeshShaderUnlit);
 	instancedGeometryPipelineUnlit->setDescriptorSetLayouts(instancedGeometryPipelineUnlitLayouts);
 	instancedGeometryPipelineUnlit->setRenderPass(m_offscreenRenderPass->getRenderPass());
-	instancedGeometryPipelineUnlit->setViewport(m_viewport);
-	instancedGeometryPipelineUnlit->setScissor(m_scissor);
 	this->createPipeline(*instancedGeometryPipelineUnlit);
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedGeometryPipelineUnlit));
 	std::cout << "Created Unlit Instanced Geometry Pipeline with id " << PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT << std::endl;
@@ -616,8 +609,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	auto enviromentPipeline = std::make_unique<EnviromentPipeline>(enviromentShader);
 	enviromentPipeline->setDescriptorSetLayouts(enviromentPipelineLayouts);
 	enviromentPipeline->setRenderPass(m_offscreenRenderPass->getRenderPass());
-	enviromentPipeline->setViewport(m_viewport);
-	enviromentPipeline->setScissor(m_scissor);
 	this->createPipeline(*enviromentPipeline);
 	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
 	std::cout << "Created Enviroment Pipeline with id " << PipelineType::ENVIRONMENT_PIPELINE << std::endl;
@@ -630,8 +621,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	auto debugPipeline = std::make_unique<DebugPipeline>(debugShader);
 	debugPipeline->setDescriptorSetLayouts(debugPipelineLayouts);
 	debugPipeline->setRenderPass(m_offscreenRenderPass->getRenderPass());
-	debugPipeline->setViewport(m_viewport);
-	debugPipeline->setScissor(m_scissor);
 	this->createPipeline(*debugPipeline);
 	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
 	std::cout << "Created Debug Pipeline with id " << PipelineType::DEBUG_PIPELINE << std::endl;
@@ -644,8 +633,6 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	auto presentPipeline = std::make_unique<PresentPipeline>(defaultShader);
 	presentPipeline->setDescriptorSetLayouts(presentPipelineLayouts);
 	presentPipeline->setRenderPass(m_renderPass->getRenderPass());
-	presentPipeline->setViewport(m_viewport);
-	presentPipeline->setScissor(m_scissor);
 	this->createPipeline(*presentPipeline);
 	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
 	std::cout << "Created Present Pipeline with id " << PipelineType::PRESENT_PIPELINE << std::endl;
