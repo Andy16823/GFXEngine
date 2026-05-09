@@ -109,6 +109,7 @@ namespace GFXEngine {
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, VkExtent2D extent, uint32_t imageIndex);
+			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, const VkViewport& viewport, const VkRect2D& scissors, uint32_t imageIndex);
 			void usePipeline(const GraphicsPipeline& pipeline, uint32_t imageIndex);
 			void endRenderPass(uint32_t imageIndex);
 			void endFrame(uint32_t imageIndex);

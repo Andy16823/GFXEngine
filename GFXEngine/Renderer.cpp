@@ -205,6 +205,17 @@ void Renderer::beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFra
 	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderpass, framebuffer, extent);
 }
 
+void Renderer::beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, const VkViewport& viewport, const VkRect2D& scissors, uint32_t imageIndex) 
+{
+	this->setViewport(viewport);
+	this->setScissor(scissors);
+	VkExtent2D extent = {
+		static_cast<uint32_t>(viewport.width),
+		static_cast<uint32_t>(viewport.height)
+	};
+	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderpass, framebuffer, extent);
+}
+
 void Renderer::endRenderPass(uint32_t imageIndex)
 {
 	m_context->endRenderPass(m_commandBuffers[imageIndex]);
