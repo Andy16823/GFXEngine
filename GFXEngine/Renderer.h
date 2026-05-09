@@ -88,6 +88,9 @@ namespace GFXEngine {
 			std::vector<std::function<void(Renderer&)>> m_swapchainCleanupCallbacks;
 			std::vector<std::function<void(Renderer&, VkViewport viewport, VkRect2D scissors)>> m_swapchainRecreationCallbacks;
 
+			GLFWwindow* m_window;
+			const std::string* m_shadersDirectory;
+
 			void createPipelines(const std::string& shadersDirectory);
 
 		public:
@@ -97,7 +100,7 @@ namespace GFXEngine {
 
 			// MAIN LOOP FUNCTIONS
 			void init(GLFWwindow* window, const std::string& shadersDirectory);
-			void recreate(GLFWwindow* window, const std::string& shadersDirectory);
+			void recreate();
 			void createSyncObjects();
 			uint32_t nextImage();
 			VkCommandBuffer beginSingleTimeCommands();

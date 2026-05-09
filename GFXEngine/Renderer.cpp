@@ -18,6 +18,9 @@ void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 		throw std::runtime_error("Shader directory does not exist: " + shadersDirectory);
 	}
 
+	m_window = window;
+	m_shadersDirectory = &shadersDirectory;
+
 	// Create Vulkan context
 	m_context = LibGFX::GFX::createContext(window);
 	m_context->initialize(LibGFX::VkContext::defaultAppInfo(), m_enableValidationLayers);
@@ -233,7 +236,11 @@ void Renderer::presentFrame(uint32_t imageIndex)
 		.pImageIndices = &imageIndex
 	};
 
-	if (m_context->queuePresent(presentInfo) != VK_SUCCESS) {
+	VkResult result = m_context->queuePresent(presentInfo);
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+		// Swapchain is out of date (e.g. window resized) or suboptimal, trigger recreation
+		this->recreate();
+	} else if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to present swapchain image");
 	}
 }
@@ -676,7 +683,7 @@ void Renderer::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 	vkFreeCommandBuffers(m_context->getDevice(), m_commandPool, 1, &commandBuffer);
 }
 
-void Renderer::recreate(GLFWwindow* window, const std::string& shadersDirectory)
+void Renderer::recreate()
 {
 	// Cleanup existing resources
 	m_context->waitIdle();
@@ -718,7 +725,7 @@ void Renderer::recreate(GLFWwindow* window, const std::string& shadersDirectory)
 	m_depthBuffer = m_context->createDepthBuffer(m_swapchainInfo.extent, m_depthFormat);
 	m_renderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format);
 	m_offscreenRenderPass->create(*m_context, m_swapchainInfo.surfaceFormat.format, m_depthBuffer.format);
-	this->createPipelines(shadersDirectory);
+	this->createPipelines(*m_shadersDirectory);
 	m_framebuffers = m_context->createFramebuffers(*m_renderPass, m_swapchainInfo, m_depthBuffer);
 	m_commandBuffers = m_context->allocateCommandBuffers(m_commandPool, static_cast<uint32_t>(m_framebuffers.size()));
 	std::cout << "Recreated swapchain, depth buffer, render passes, pipelines, framebuffers and command buffers" << std::endl;
