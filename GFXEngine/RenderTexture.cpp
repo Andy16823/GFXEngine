@@ -103,3 +103,34 @@ void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, LibGFX::Pipeli
 	renderer.bindDescriptorSet(m_descriptorSet, pipeline.getPipelineLayout(), 0, imageIndex);
 	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, 6, imageIndex);
 }
+
+void GFXEngine::Graphics::RenderTexture::resize(Renderer& renderer, VkExtent2D newExtent, const LibGFX::RenderPass& renderpass)
+{
+	std::cout << "Resizing render texture to: " << newExtent.width << "x" << newExtent.height << std::endl;
+	renderer.disposeTexture(m_colorAttachment);
+	renderer.destroyDepthBuffer(m_depthAttachment);
+	vkDestroyFramebuffer(renderer.getContext().getDevice(), m_framebuffer, nullptr);
+
+	VkFormat format = renderer.getSwapchainInfo().surfaceFormat.format;
+	m_colorAttachment = renderer.createImage(newExtent, format, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	m_depthAttachment = renderer.createDepthBuffer(newExtent, renderer.getDepthFormat());
+
+	VkImageView attachments[] = {
+		m_colorAttachment.imageView,
+		m_depthAttachment.imageView
+	};
+
+	VkFramebufferCreateInfo framebufferInfo = {};
+	framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	framebufferInfo.renderPass = renderpass.getRenderPass();
+	framebufferInfo.attachmentCount = 2;
+	framebufferInfo.pAttachments = attachments;
+	framebufferInfo.width = newExtent.width;
+	framebufferInfo.height = newExtent.height;
+	framebufferInfo.layers = 1;
+
+	if (vkCreateFramebuffer(renderer.getContext().getDevice(), &framebufferInfo, nullptr, &m_framebuffer) != VK_SUCCESS) {
+		throw std::runtime_error("Failed to recreate framebuffer for render texture");
+	}
+	std::cout << "Resized render texture to: " << newExtent.width << "x" << newExtent.height << std::endl;
+}

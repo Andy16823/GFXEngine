@@ -32,6 +32,7 @@ namespace GFXEngine {
 			virtual void create(Renderer& renderer, VkExtent2D extend, const LibGFX::RenderPass& renderpass) override;
 			void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) override;
 			void draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex) override;
+			virtual void resize(Renderer& renderer, VkExtent2D newExtent, const LibGFX::RenderPass& renderpass) override;
 			virtual void destroy(Renderer& renderer) override;
 
 			VkImageView getColorImageView() const { return m_colorAttachment.imageView; }
