@@ -44,15 +44,19 @@ namespace GFXEngine {
 			void createVectorInput(const char* label, glm::vec4* value);
 			void createColorInput(const char* label, glm::vec4* color);
 			void createColorInput(const char* label, glm::vec3* color);
-			void createDockingSpace(const char* id);
-
-			// Geter
-			uint32_t getID(const char* label) const;
+			void createDockingSpace(const char* id);		
 
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
+
+			// Setters
+			void setWindowPosition(const glm::vec2& position);
+			void setWindowSize(const glm::vec2& size);
+
+			// Getters
 			glm::vec2 getClientAreaSize() const;
 			glm::vec2 getWindowPosition() const;
+			uint32_t getID(const char* label) const;
 		private:
 			VkDescriptorPool m_descriptorPool;
 		};

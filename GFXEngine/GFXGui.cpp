@@ -50,6 +50,16 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::setWindowSize(const glm::vec2& size)
+{
+	ImGui::SetWindowSize(ImVec2(size.x, size.y));
+}
+
+void GFXGui::setWindowPosition(const glm::vec2& position)
+{
+	ImGui::SetWindowPos(ImVec2(position.x, position.y));
+}
+
 void GFXGui::createDockingSpace(const char* id)
 {
 	ImGuiID dockspaceID = ImGui::GetID(id);
