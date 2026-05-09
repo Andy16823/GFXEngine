@@ -344,9 +344,9 @@ void Renderer::destroyPipeline(LibGFX::Pipeline& pipeline)
 
 void Renderer::usePipeline(const GraphicsPipeline& pipeline, uint32_t imageIndex)
 {
+	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	pipeline.bindViewport(m_commandBuffers[imageIndex], m_viewport);
 	pipeline.bindScissor(m_commandBuffers[imageIndex], m_scissor);
-	m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }
 
 //LibGFX::Buffer Renderer::createVertexBuffer(const std::vector<EngineTypes::Vertex3D>& vertices)
