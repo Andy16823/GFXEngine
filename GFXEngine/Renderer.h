@@ -234,6 +234,8 @@ namespace GFXEngine {
 
 			// SETTERS
 			void setValidationEnabled(bool enabled) { m_enableValidationLayers = enabled; }
+			void setViewport(const VkViewport& viewport) { m_viewport = viewport; }
+			void setScissor(const VkRect2D& scissor) { m_scissor = scissor; }
 
 			// CALLBACK REGISTRATION
 			void registerSwapchainCleanupCallback(std::function<void(Renderer&)> callback) {
