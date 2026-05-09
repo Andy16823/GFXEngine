@@ -200,6 +200,11 @@ void Renderer::beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFra
 	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderpass, framebuffer, m_swapchainInfo.extent);
 }
 
+void Renderer::beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, VkExtent2D extent, uint32_t imageIndex)
+{
+	m_context->beginRenderPass(m_commandBuffers[imageIndex], renderpass, framebuffer, extent);
+}
+
 void Renderer::endRenderPass(uint32_t imageIndex)
 {
 	m_context->endRenderPass(m_commandBuffers[imageIndex]);
