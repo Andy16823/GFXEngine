@@ -31,8 +31,8 @@ namespace GFXEngine {
 				descriptorSetLayouts.assign(layouts.begin(), layouts.end());
 			}
 
-			void bindViewport(VkCommandBuffer commandBuffer, VkViewport viewport) const;
-			void bindScissor(VkCommandBuffer commandBuffer, VkRect2D scissor) const;
+			void bindViewport(VkCommandBuffer commandBuffer, const VkViewport& viewport) const;
+			void bindScissor(VkCommandBuffer commandBuffer, const VkRect2D& scissor) const;
 
 		protected:
 			std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
