@@ -62,18 +62,21 @@ void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 	// Create descriptor pool for texture samplers
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, TEXTURE_SAMPLER_DESCRIPTOR_COUNT);
 	descriptorPoolBuilder.setMaxSets(TEXTURE_SAMPLER_MAX_SETS);
+	descriptorPoolBuilder.setFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 	m_samplerDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
 
 	// Create descriptor pool for uniform buffers
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UNIFORM_BUFFER_DESCRIPTOR_COUNT);
 	descriptorPoolBuilder.setMaxSets(UNIFORM_BUFFER_MAX_SETS);
+	descriptorPoolBuilder.setFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 	m_uniformBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
 
 	// Create descriptor pool for storage buffers
 	descriptorPoolBuilder.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, STORAGE_BUFFER_DESCRIPTOR_COUNT);
 	descriptorPoolBuilder.setMaxSets(STORAGE_BUFFER_MAX_SETS);
+	descriptorPoolBuilder.setFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 	m_storageBufferDescriptorPool = descriptorPoolBuilder.build(*m_context);
 	descriptorPoolBuilder.clear();
 
