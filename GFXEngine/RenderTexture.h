@@ -38,6 +38,8 @@ namespace GFXEngine {
 
 			VkImageView getColorImageView() const { return m_colorAttachment.imageView; }
 			VkImageView getDepthImageView() const { return m_depthAttachment.imageView; }
+			VkViewport getViewport() const { return VkViewport{ 0.0f, 0.0f, static_cast<float>(m_extent.width), static_cast<float>(m_extent.height), 0.0f, 1.0f }; }
+			VkRect2D getScissor() const { return VkRect2D{ {0, 0}, m_extent }; }
 		};
 	}
 }
