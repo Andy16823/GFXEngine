@@ -20,7 +20,7 @@ namespace GFXEngine {
 			// Base functions
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
 			void newFrame();
-			void beginUI(const char* title);
+			void beginUI(const char* title, bool docking = false);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);
@@ -44,6 +44,10 @@ namespace GFXEngine {
 			void createVectorInput(const char* label, glm::vec4* value);
 			void createColorInput(const char* label, glm::vec4* color);
 			void createColorInput(const char* label, glm::vec3* color);
+			void createDockingSpace(const char* id);
+
+			// Geter
+			uint32_t getID(const char* label) const;
 
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);

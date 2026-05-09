@@ -50,6 +50,17 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::createDockingSpace(const char* id)
+{
+	ImGuiID dockspaceID = ImGui::GetID(id);
+	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+}
+
+uint32_t GFXGui::getID(const char* label) const
+{
+	return ImGui::GetID(label);
+}
+
 void GFXGui::createTextAreaInput(const char* label, char* buffer, size_t bufferSize)
 {
 	ImGui::InputTextMultiline(label, buffer, bufferSize);
@@ -147,9 +158,14 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-void GFXGui::beginUI(const char* title)
+void GFXGui::beginUI(const char* title, bool docking)
 {
-	ImGui::Begin(title);
+	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
+	if (docking)
+	{
+		windowFlags |= ImGuiWindowFlags_NoDocking;
+	}
+	ImGui::Begin(title, nullptr, windowFlags);
 }
 
 void GFXGui::createText(const char* text)
