@@ -98,6 +98,12 @@ void GFXEngine::Graphics::RenderTexture::createDescriptorSet(Renderer& renderer,
 	m_descriptorSet = renderer.allocateTextureDescriptorSet(m_colorAttachment, binding);
 }
 
+void GFXEngine::Graphics::RenderTexture::updateDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout)
+{
+	renderer.freeTextureDescriptorSet(m_descriptorSet);
+	m_descriptorSet = renderer.allocateTextureDescriptorSet(m_colorAttachment, binding);
+}
+
 void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex)
 {
 	renderer.bindDescriptorSet(m_descriptorSet, pipeline.getPipelineLayout(), 0, imageIndex);

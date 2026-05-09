@@ -16,6 +16,7 @@ namespace GFXEngine {
 			virtual std::span<const VkClearValue> getClearValues() const = 0;
 			virtual void create(Renderer& renderer, VkExtent2D extend, const LibGFX::RenderPass& renderpass) = 0;
 			virtual void createDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) = 0;
+			virtual void updateDescriptorSet(Renderer& renderer, uint32_t binding, VkDescriptorSetLayout layout) = 0;
 			virtual void draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex) = 0;
 			virtual void resize(Renderer& renderer, VkExtent2D newExtent, const LibGFX::RenderPass& renderpass) = 0;
 			virtual void destroy(Renderer& renderer) = 0;
