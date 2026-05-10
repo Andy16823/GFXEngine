@@ -40,6 +40,13 @@ namespace GFXEngine {
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
 			void freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet);
+
+		public:
+			static glm::vec2 toVec2(const ImVec2& v) { return glm::vec2(v.x, v.y); }
+			static glm::vec4 toVec4(const ImVec4& v) { return glm::vec4(v.x, v.y, v.z, v.w); }
+			static ImVec2 toImVec2(const glm::vec2& v) { return ImVec2(v.x, v.y); }
+			static ImVec4 toImVec4(const glm::vec4& v) { return ImVec4(v.x, v.y, v.z, v.w); }
+
 		private:
 			VkDescriptorPool m_descriptorPool;
 		};
