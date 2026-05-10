@@ -96,180 +96,9 @@ bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 	return ImGuizmo::IsUsing();
 }
 
-bool GFXGui::createSelectable(const char* label, bool selected /*= false*/)
-{
-	return ImGui::Selectable(label, selected);
-}
-
-glm::vec2 GFXGui::getMousePos() const
-{
-	auto pos = ImGui::GetMousePos();
-	return glm::vec2(pos.x, pos.y);
-}
-
-glm::vec2 GFXGui::getCursorPos() const
-{
-	auto pos = ImGui::GetCursorPos();
-	return glm::vec2(pos.x, pos.y);
-}
-
-glm::vec2 GFXGui::getCursorScreenPos() const
-{
-	auto pos = ImGui::GetCursorScreenPos();
-	return glm::vec2(pos.x, pos.y);
-}
-
 void GFXGui::freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet)
 {
 	vkFreeDescriptorSets(renderer.getContext().getDevice(), m_descriptorPool, 1, &descriptorSet);
-}
-
-void GFXGui::setWindowSize(const glm::vec2& size)
-{
-	ImGui::SetWindowSize(ImVec2(size.x, size.y));
-}
-
-void GFXGui::setWindowPosition(const glm::vec2& position)
-{
-	ImGui::SetWindowPos(ImVec2(position.x, position.y));
-}
-
-void GFXGui::createDockingSpace(const char* id)
-{
-	ImGuiID dockspaceID = ImGui::GetID(id);
-	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
-}
-
-void GFXGui::createDockingSpace(uint32_t id)
-{
-	ImGui::DockSpace(id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
-}
-
-void GFXGui::dockbuilderRemoveNode(uint32_t id)
-{
-	ImGui::DockBuilderRemoveNode(id);
-}
-
-void GFXGui::dockbuilderAddNode(uint32_t nodeID)
-{
-	ImGui::DockBuilderAddNode(nodeID, ImGuiDockNodeFlags_DockSpace);
-}
-
-void GFXGui::dockbuilderSetNodeSize(uint32_t nodeID, const glm::vec2& size)
-{
-	ImGui::DockBuilderSetNodeSize(nodeID, ImVec2(size.x, size.y));
-}
-
-uint32_t GFXGui::dockbuilderSplitNode(uint32_t nodeID, DockingNodeSlot splitDir, float splitRatio, uint32_t* outIDAtDir /*= nullptr*/, uint32_t* outIDAtOppositeDir /*= nullptr*/)
-{
-	return ImGui::DockBuilderSplitNode(nodeID, static_cast<ImGuiDir>(splitDir), splitRatio, outIDAtDir, outIDAtOppositeDir);
-}
-
-void GFXGui::dockbuilderDockWindow(const char* windowLabel, uint32_t nodeID)
-{
-	ImGui::DockBuilderDockWindow(windowLabel, nodeID);
-}
-
-void GFXGui::dockbuilderFinish(uint32_t nodeID)
-{
-	ImGui::DockBuilderFinish(nodeID);
-}
-
-uint32_t GFXGui::getID(const char* label) const
-{
-	return ImGui::GetID(label);
-}
-
-void GFXGui::createTextAreaInput(const char* label, char* buffer, size_t bufferSize)
-{
-	ImGui::InputTextMultiline(label, buffer, bufferSize);
-}
-
-void GFXGui::createTreePop()
-{
-	ImGui::TreePop();
-}
-
-void GFXGui::createSameLine()
-{
-	ImGui::SameLine();
-}
-
-bool GFXGui::createTreeNode(const char* label)
-{
-	return ImGui::TreeNode(label);
-}
-
-void GFXGui::createVectorInput(const char* label, glm::vec2* value)
-{
-	ImGui::InputFloat2(label, glm::value_ptr(*value));
-}
-
-void GFXGui::createColorInput(const char* label, glm::vec4* color)
-{
-	ImGui::ColorEdit4(label, glm::value_ptr(*color));
-}
-
-void GFXGui::createColorInput(const char* label, glm::vec3* color)
-{
-	ImGui::ColorEdit3(label, glm::value_ptr(*color));
-}
-
-void GFXGui::createQuatInput(const char* label, glm::quat* value)
-{
-	ImGui::InputFloat4(label, glm::value_ptr(*value));
-}
-
-glm::vec2 GFXGui::getWindowPosition() const
-{
-	ImVec2 pos = ImGui::GetWindowPos();
-	return glm::vec2(pos.x, pos.y);
-}
-
-glm::vec2 GFXGui::getClientAreaSize() const
-{
-	ImVec2 size = ImGui::GetContentRegionAvail();
-	return glm::vec2(size.x, size.y);
-}
-
-void GFXGui::createVectorInput(const char* label, glm::vec4* value)
-{
-	ImGui::InputFloat4(label, glm::value_ptr(*value));
-}
-
-void GFXGui::createVectorInput(const char* label, glm::vec3* value)
-{
-	ImGui::InputFloat3(label, glm::value_ptr(*value));
-}
-
-bool GFXGui::createCollapsingHeader(const char* label)
-{
-	return ImGui::CollapsingHeader(label);
-}
-
-void GFXGui::createTextInput(const char* label, char* buffer, size_t bufferSize)
-{
-	ImGui::InputText(label, buffer, bufferSize);
-}
-
-void GFXGui::createFloatInput(const char* label, float* value)
-{
-	ImGui::InputFloat(label, value);
-}
-
-void GFXGui::createNumberInput(const char* label, int* value)
-{
-	ImGui::InputInt(label, value);
-}
-
-void GFXGui::createCheckbox(const char* label, bool* value)
-{
-	ImGui::Checkbox(label, value);
-}
-
-void GFXGui::createFloatSlider(const char* label, float* value, float min, float max)
-{
-	ImGui::SliderFloat(label, value, min, max);
 }
 
 VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
@@ -282,18 +111,7 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-void GFXGui::beginUI(const char* title, bool docking, WindowFlags flags)
-{
-	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
-	if (docking)
-	{
-		windowFlags |= ImGuiWindowFlags_NoDocking;
-	}
-	windowFlags |= static_cast<ImGuiWindowFlags>(flags);
-	ImGui::Begin(title, nullptr, windowFlags);
-}
-
-void GFXGui::beginFullscreenUI(const char* title, bool docking /*= false*/, WindowFlags flags /*= WindowFlags::None*/)
+void GFXGui::beginnFullscreen(const char* title, ImGuiWindowFlags flags /*= ImGuiWindowFlags_None*/)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
@@ -306,7 +124,7 @@ void GFXGui::beginFullscreenUI(const char* title, bool docking /*= false*/, Wind
 		ImGuiWindowFlags_NoBringToFrontOnFocus |
 		ImGuiWindowFlags_NoNavFocus;
 
-	windowFlags |= static_cast<ImGuiWindowFlags>(flags);
+	windowFlags |= flags;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -314,12 +132,6 @@ void GFXGui::beginFullscreenUI(const char* title, bool docking /*= false*/, Wind
 
 	ImGui::Begin(title, nullptr, windowFlags);
 	ImGui::PopStyleVar(3);
-}
-
-
-void GFXGui::createText(const char* text)
-{
-	ImGui::Text("%s", text);
 }
 
 void GFXGui::createButton(const char* label, const std::function<void()>& onClick)
@@ -333,11 +145,6 @@ void GFXGui::createButton(const char* label, const std::function<void()>& onClic
 void GFXGui::createImage(VkDescriptorSet descriptorSet, const glm::vec2& size)
 {
 	ImGui::Image(reinterpret_cast<ImTextureID>(descriptorSet), ImVec2(size.x, size.y));
-}
-
-void GFXGui::endUI()
-{
-	ImGui::End();
 }
 
 void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
