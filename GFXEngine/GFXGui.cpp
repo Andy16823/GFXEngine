@@ -50,6 +50,11 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+bool GFXGui::createSelectable(const char* label, bool selected /*= false*/)
+{
+	return ImGui::Selectable(label, selected);
+}
+
 glm::vec2 GFXGui::getMousePos() const
 {
 	auto pos = ImGui::GetMousePos();
