@@ -51,7 +51,7 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
-void GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect)
+bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect)
 {
 	ImGuizmo::SetOrthographic(false);
 	ImGuizmo::BeginFrame();
@@ -68,6 +68,8 @@ void GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 		ImGuizmo::WORLD,
 		glm::value_ptr(transform)
 	);
+
+	return ImGuizmo::IsUsing();
 }
 
 bool GFXGui::createSelectable(const char* label, bool selected /*= false*/)
