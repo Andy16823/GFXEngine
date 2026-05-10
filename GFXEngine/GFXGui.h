@@ -19,6 +19,12 @@ namespace GFXEngine {
 				Down = 3
 			};
 
+			enum class GuizmoOperation {
+				Translate,
+				Rotate,
+				Scale
+			};
+
 		public:
 			// Base functions
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
@@ -58,7 +64,7 @@ namespace GFXEngine {
 			void dockbuilderDockWindow(const char* windowLabel, uint32_t nodeID);
 			void dockbuilderFinish(uint32_t nodeID);
 
-			bool transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect);
+			bool transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation = GuizmoOperation::Translate);
 			bool gizmoIsOver();
 			bool gizmoIsUsing();
 

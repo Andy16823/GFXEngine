@@ -61,7 +61,7 @@ bool GFXGui::gizmoIsOver()
 	return ImGuizmo::IsOver();
 }
 
-bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect)
+bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation)
 {
 	ImGuizmo::SetOrthographic(false);
 	ImGuizmo::BeginFrame();
@@ -71,10 +71,27 @@ bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 	glm::mat4 adjustedProjection = projection;
 	adjustedProjection[1][1] *= -1.0f; // Y-Flip für Vulkan
 
+	ImGuizmo::OPERATION guizmoOperation;
+	switch (operation)
+	{
+	case GFXEngine::Core::GFXGui::GuizmoOperation::Translate:
+		guizmoOperation = ImGuizmo::TRANSLATE;
+		break;
+	case GFXEngine::Core::GFXGui::GuizmoOperation::Rotate:
+		guizmoOperation = ImGuizmo::ROTATE;
+		break;
+	case GFXEngine::Core::GFXGui::GuizmoOperation::Scale:
+		guizmoOperation = ImGuizmo::SCALE;
+		break;
+	default:
+		guizmoOperation = ImGuizmo::TRANSLATE;
+		break;
+	}
+
 	ImGuizmo::Manipulate(
 		glm::value_ptr(view),
 		glm::value_ptr(adjustedProjection),
-		ImGuizmo::TRANSLATE,
+		guizmoOperation,
 		ImGuizmo::WORLD,
 		glm::value_ptr(transform)
 	);
