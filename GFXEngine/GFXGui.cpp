@@ -51,6 +51,16 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+bool GFXGui::gizmoIsUsing()
+{
+	return ImGuizmo::IsUsing();
+}
+
+bool GFXGui::gizmoIsOver()
+{
+	return ImGuizmo::IsOver();
+}
+
 bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect)
 {
 	ImGuizmo::SetOrthographic(false);
@@ -258,13 +268,14 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-void GFXGui::beginUI(const char* title, bool docking)
+void GFXGui::beginUI(const char* title, bool docking, WindowFlags flags)
 {
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
 	if (docking)
 	{
 		windowFlags |= ImGuiWindowFlags_NoDocking;
 	}
+	windowFlags |= static_cast<ImGuiWindowFlags>(flags);
 	ImGui::Begin(title, nullptr, windowFlags);
 }
 

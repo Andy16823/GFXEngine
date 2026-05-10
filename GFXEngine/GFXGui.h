@@ -9,20 +9,49 @@
 namespace GFXEngine {
 	namespace Core {
 
-		enum class DockingNodeSlot {
-			Left = 0,
-			Right = 1,
-			Up = 2,
-			Down = 3
-		};
-
 		class GFXGui
 		{
+		public:
+			enum class WindowFlags : int
+			{
+				None = 0,
+				NoTitleBar = 1 << 0,
+				NoResize = 1 << 1,
+				NoMove = 1 << 2,
+				NoScrollbar = 1 << 3,
+				NoScrollWithMouse = 1 << 4,
+				NoCollapse = 1 << 5,
+				AlwaysAutoResize = 1 << 6,
+				NoBackground = 1 << 7,
+				NoSavedSettings = 1 << 8,
+				NoMouseInputs = 1 << 9,
+				MenuBar = 1 << 10,
+				HorizontalScrollbar = 1 << 11,
+				NoFocusOnAppearing = 1 << 12,
+				NoBringToFrontOnFocus = 1 << 13,
+				AlwaysVerticalScrollbar = 1 << 14,
+				AlwaysHorizontalScrollbar = 1 << 15,
+				NoNavInputs = 1 << 16,
+				NoNavFocus = 1 << 17,
+				UnsavedDocument = 1 << 18,
+				NoDocking = 1 << 19,
+				NoNav = 1 << 20,
+				NoDecoration = 1 << 21,
+				NoInputs = 1 << 22
+			};
+
+			enum class DockingNodeSlot {
+				Left = 0,
+				Right = 1,
+				Up = 2,
+				Down = 3
+			};
+
 		public:
 			// Base functions
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
 			void newFrame();
-			void beginUI(const char* title, bool docking = false);
+			void beginUI(const char* title, bool docking = false, WindowFlags flags = WindowFlags::None);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);
@@ -58,6 +87,8 @@ namespace GFXEngine {
 			void dockbuilderFinish(uint32_t nodeID);
 
 			bool transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect);
+			bool gizmoIsOver();
+			bool gizmoIsUsing();
 
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
