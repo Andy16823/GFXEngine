@@ -58,9 +58,12 @@ void GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 	ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
 	ImGuizmo::SetRect(rect.x, rect.y, rect.z, rect.w);
 
+	glm::mat4 adjustedProjection = projection;
+	adjustedProjection[1][1] *= -1.0f; // Y-Flip für Vulkan
+
 	ImGuizmo::Manipulate(
 		glm::value_ptr(view),
-		glm::value_ptr(projection),
+		glm::value_ptr(adjustedProjection),
 		ImGuizmo::TRANSLATE,
 		ImGuizmo::WORLD,
 		glm::value_ptr(transform)
