@@ -59,6 +59,7 @@ namespace GFXEngine {
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
 			void newFrame();
 			void beginUI(const char* title, bool docking = false, WindowFlags flags = WindowFlags::None);
+			void beginFullscreenUI(const char* title, bool docking = false, WindowFlags flags = WindowFlags::None);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);

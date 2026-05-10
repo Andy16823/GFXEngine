@@ -296,6 +296,30 @@ void GFXGui::beginUI(const char* title, bool docking, WindowFlags flags)
 	ImGui::Begin(title, nullptr, windowFlags);
 }
 
+void GFXGui::beginFullscreenUI(const char* title, bool docking /*= false*/, WindowFlags flags /*= WindowFlags::None*/)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowSize(io.DisplaySize);
+
+	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | 
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoBringToFrontOnFocus |
+		ImGuiWindowFlags_NoNavFocus;
+
+	windowFlags |= static_cast<ImGuiWindowFlags>(flags);
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+	ImGui::Begin(title, nullptr, windowFlags);
+	ImGui::PopStyleVar(3);
+}
+
+
 void GFXGui::createText(const char* text)
 {
 	ImGui::Text("%s", text);
