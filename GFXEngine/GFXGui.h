@@ -108,5 +108,17 @@ namespace GFXEngine {
 		private:
 			VkDescriptorPool m_descriptorPool;
 		};
+
+		// Operator overloads AUSSERHALB der Klasse
+		inline GFXGui::WindowFlags operator|(GFXGui::WindowFlags a, GFXGui::WindowFlags b)
+		{
+			return static_cast<GFXGui::WindowFlags>(static_cast<int>(a) | static_cast<int>(b));
+		}
+
+		inline GFXGui::WindowFlags operator&(GFXGui::WindowFlags a, GFXGui::WindowFlags b)
+		{
+			return static_cast<GFXGui::WindowFlags>(static_cast<int>(a) & static_cast<int>(b));
+		}
 	}
+
 }
