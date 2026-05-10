@@ -1,12 +1,12 @@
 #include "Game.h"
 #include <thread>
 
-void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool validationLayers /*= true*/)
+void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
 {
 	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
 
 	// Create window and renderer
-	m_window = LibGFX::GFX::createWindow(width, height, title.c_str());
+	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen);
 	glfwSetWindowUserPointer(m_window, this);
 
 	// Input callback
