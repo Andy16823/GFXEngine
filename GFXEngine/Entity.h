@@ -18,11 +18,7 @@ namespace GFXEngine {
 	namespace Core {
 
 		/// <summary>
-		/// Basic entity class that can have multiple behaviors attached to it. 
-		/// Each behavior can define its own logic for initialization, updating, 
-		/// rendering, and destruction. The entity itself holds a transform 
-		/// for position, rotation, and scale, and a visibility flag. 
-		/// Behaviors can be added and retrieved using template functions that ensure type safety.
+		/// Base class for every entity in the game.
 		/// </summary>
 		class Entity
 		{
@@ -47,9 +43,7 @@ namespace GFXEngine {
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
 
 			Math::AABB getAABB() const { return m_aabb; }
-			Math::AABB getWorldAABB() const {
-				return m_aabb.applyTransform(transform.getModelMatrix());
-			}
+			Math::AABB getWorldAABB() const { return m_aabb.applyTransform(transform.getModelMatrix()); }
 			void setAABB(const Math::AABB& aabb) { m_aabb = aabb; }
 
 			template<typename T>

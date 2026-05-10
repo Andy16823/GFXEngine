@@ -52,6 +52,16 @@ namespace GFXEngine {
 					}
 				}
 			}
+			
+			std::vector<Entity*> collectEntities(const std::function<bool(Entity&)>& predicate) {
+				std::vector<Entity*> collectedEntities;
+				for (auto& entity : m_entities) {
+					if (predicate(*entity)) {
+						collectedEntities.push_back(entity.get());
+					}
+				}
+				return collectedEntities;
+			}
 
 			Entity* getEntity(size_t index) {
 				if (index >= m_entities.size()) {
