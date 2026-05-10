@@ -13,7 +13,7 @@ namespace GFXEngine {
 		/// </summary>
 		class StaticMeshModel : public MeshModel {
 		public:
-			StaticMeshModel(const std::string& filePath, MaterialType materialType);
+			StaticMeshModel(const std::string& name, const std::string& filePath, MaterialType materialType);
 			void init(Renderer& renderer) override;
 			void destroy(Renderer& renderer) override;
 

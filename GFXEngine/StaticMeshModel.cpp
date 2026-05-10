@@ -1,7 +1,8 @@
 #include "StaticMeshModel.h"
 #include "Utils.h"
 
-GFXEngine::Graphics::StaticMeshModel::StaticMeshModel(const std::string& filePath, MaterialType materialType)
+GFXEngine::Graphics::StaticMeshModel::StaticMeshModel(const std::string& name, const std::string& filePath, MaterialType materialType)
+	: MeshModel(name)
 {
 	this->loadFromFile(filePath, materialType);
 }

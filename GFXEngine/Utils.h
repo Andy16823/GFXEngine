@@ -27,6 +27,7 @@ namespace GFXEngine {
 		static std::vector<GFXEngine::Graphics::PBRMaterial> loadPBRMaterialsFromFile(const std::string& filePath);
 		static std::string getBasePath(const std::string& filePath);
 		static std::string getFileName(const std::string& filePath);
+		static std::string generateUUID();
 		static bool isAbsolutePath(const std::string& filePath);
 		static void log(const std::string& service, const std::string& message);
 	};

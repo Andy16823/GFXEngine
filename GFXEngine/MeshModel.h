@@ -3,6 +3,7 @@
 #include "Functional"
 #include "Material.h"
 #include "Mesh.h"
+#include "Asset.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -15,9 +16,10 @@ namespace GFXEngine {
 		/// <summary>
 		/// Abstract base class representing a 3D model composed of one or more meshes and materials.
 		/// </summary>
-		class MeshModel {
+		class MeshModel : public Asset {
 		public:
-			MeshModel() = default;
+			MeshModel(const std::string& name)
+				: Asset(name) {}
 			virtual ~MeshModel() = default;
 
 			MeshModel(const MeshModel&) = delete;

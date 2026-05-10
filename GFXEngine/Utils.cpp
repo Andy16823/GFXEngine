@@ -7,6 +7,10 @@
 #include "assimp/scene.h"
 #include "assimp/pbrmaterial.h"
 #include <iostream>
+#include <cstring>
+#include <sstream>
+#include <iomanip>
+#include <random>
 
 LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath, bool flipVertically)
 {
@@ -233,6 +237,27 @@ std::string GFXEngine::Utils::getFileName(const std::string& filePath)
 		return filePath; // The entire path is the file name
 	}
 	return filePath.substr(lastSlashPos + 1);
+}
+
+std::string GFXEngine::Utils::generateUUID()
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_int_distribution<uint32_t> dis;
+
+	std::stringstream ss;
+
+	ss << std::hex << std::setfill('0');
+
+	ss << std::setw(8) << dis(gen) << "-";
+	ss << std::setw(4) << (dis(gen) & 0xFFFF) << "-";
+	ss << std::setw(4) << (dis(gen) & 0xFFFF) << "-";
+	ss << std::setw(4) << (dis(gen) & 0xFFFF) << "-";
+	ss << std::setw(12) << (
+		(static_cast<uint64_t>(dis(gen)) << 32) | dis(gen)
+		);
+
+	return ss.str();
 }
 
 bool GFXEngine::Utils::isAbsolutePath(const std::string& filePath)

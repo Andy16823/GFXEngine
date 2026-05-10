@@ -3,15 +3,17 @@
 #include "Camera.h"
 #include "LibGFX.h"
 #include "DataTypes.h"
+#include "AssetManager.h"
 
 namespace GFXEngine {
 	namespace Core {
 		class Game
 		{
 		public:
-
 			Game() = default;
 			~Game() = default;
+
+			std::unique_ptr<AssetManager> assetManager = std::make_unique<AssetManager>();
 
 			void start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title = "My Game", bool fullscreen = false, bool validationLayers = true);
 
@@ -24,7 +26,6 @@ namespace GFXEngine {
 			virtual void onSwpachainRecreate(Graphics::Renderer& renderer) = 0;
 			virtual void afterSwapchainRecreate(Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) = 0;
 			
-
 			glm::ivec2 getWindowSize() const { return m_windowSize; }
 			glm::vec2 getCursorPos() const;
 			GLFWwindow* getWindow() const { return m_window; }
