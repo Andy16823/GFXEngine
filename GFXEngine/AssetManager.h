@@ -2,6 +2,7 @@
 #include "Asset.h"
 #include <unordered_map>
 #include <memory>
+#include <functional>
 
 namespace GFXEngine {
 
@@ -28,6 +29,25 @@ namespace GFXEngine {
 				return it->second.get();
 			}
 			return nullptr;
+		}
+
+		void forEachAsset(const std::function<void(const Asset&)>& func) const {
+			for (const auto& pair : m_assets) {
+				func(*pair.second);
+			}
+		}
+
+		template<typename T>
+		void forEachAssetOfType(const std::function<void(const T&)>& func) const {
+			for (const auto& pair : m_assets) {
+				if (auto asset = dynamic_cast<T*>(pair.second.get())) {
+					func(*asset);
+				}
+			}
+		}
+
+		void clear() {
+			m_assets.clear();
 		}
 	};
 }
