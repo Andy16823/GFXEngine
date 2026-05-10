@@ -129,6 +129,11 @@ void GFXGui::createColorInput(const char* label, glm::vec3* color)
 	ImGui::ColorEdit3(label, glm::value_ptr(*color));
 }
 
+void GFXGui::createQuatInput(const char* label, glm::quat* value)
+{
+	ImGui::InputFloat4(label, glm::value_ptr(*value));
+}
+
 glm::vec2 GFXGui::getWindowPosition() const
 {
 	ImVec2 pos = ImGui::GetWindowPos();

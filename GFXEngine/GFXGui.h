@@ -42,6 +42,7 @@ namespace GFXEngine {
 			void createVectorInput(const char* label, glm::vec2* value);
 			void createVectorInput(const char* label, glm::vec3* value);
 			void createVectorInput(const char* label, glm::vec4* value);
+			void createQuatInput(const char* label, glm::quat* value);
 			void createColorInput(const char* label, glm::vec4* color);
 			void createColorInput(const char* label, glm::vec3* color);
 			void createDockingSpace(const char* id);		

@@ -30,7 +30,7 @@ namespace GFXEngine {
 				m_entities.push_back(std::move(entity));
 			}
 
-			std::span<Entity*> getEntities() {
+			std::vector<Entity*> getEntities() {
 				std::vector<Entity*> entityPointers;
 				for (auto& entity : m_entities) {
 					entityPointers.push_back(entity.get());
