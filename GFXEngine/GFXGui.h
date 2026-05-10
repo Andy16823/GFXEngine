@@ -5,9 +5,6 @@
 #include "RenderTexture.h"
 #include <vector>
 #include "glm/glm.hpp"
-#include "imgui_internal.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -31,29 +28,30 @@ namespace GFXEngine {
 			enum class WindowFlags : int
 			{
 				None = 0,
-				NoTitleBar = ImGuiWindowFlags_NoTitleBar,
-				NoResize = ImGuiWindowFlags_NoResize,
-				NoMove = ImGuiWindowFlags_NoMove,
-				NoScrollbar = ImGuiWindowFlags_NoScrollbar,
-				NoScrollWithMouse = ImGuiWindowFlags_NoScrollWithMouse,
-				NoCollapse = ImGuiWindowFlags_NoCollapse,
-				AlwaysAutoResize = ImGuiWindowFlags_AlwaysAutoResize,
-				NoBackground = ImGuiWindowFlags_NoBackground,
-				NoSavedSettings = ImGuiWindowFlags_NoSavedSettings,
-				NoMouseInputs = ImGuiWindowFlags_NoMouseInputs,
-				MenuBar = ImGuiWindowFlags_MenuBar,
-				HorizontalScrollbar = ImGuiWindowFlags_HorizontalScrollbar,
-				NoFocusOnAppearing = ImGuiWindowFlags_NoFocusOnAppearing,
-				NoBringToFrontOnFocus = ImGuiWindowFlags_NoBringToFrontOnFocus,
-				AlwaysVerticalScrollbar = ImGuiWindowFlags_AlwaysVerticalScrollbar,
-				AlwaysHorizontalScrollbar = ImGuiWindowFlags_AlwaysHorizontalScrollbar,
-				NoNavInputs = ImGuiWindowFlags_NoNavInputs,
-				NoNavFocus = ImGuiWindowFlags_NoNavFocus,
-				UnsavedDocument = ImGuiWindowFlags_UnsavedDocument,
-				NoDocking = ImGuiWindowFlags_NoDocking,
-				NoNav = ImGuiWindowFlags_NoNav,
-				NoDecoration = ImGuiWindowFlags_NoDecoration,
-				NoInputs = ImGuiWindowFlags_NoInputs
+				NoTitleBar = 1 << 0,    // 1
+				NoResize = 1 << 1,    // 2
+				NoMove = 1 << 2,    // 4
+				NoScrollbar = 1 << 3,    // 8
+				NoScrollWithMouse = 1 << 4,    // 16
+				NoCollapse = 1 << 5,    // 32
+				AlwaysAutoResize = 1 << 6,    // 64
+				NoBackground = 1 << 7,    // 128
+				NoSavedSettings = 1 << 8,    // 256
+				NoMouseInputs = 1 << 9,    // 512
+				MenuBar = 1 << 10,   // 1024
+				HorizontalScrollbar = 1 << 11,   // 2048
+				NoFocusOnAppearing = 1 << 12,   // 4096
+				NoBringToFrontOnFocus = 1 << 13,   // 8192
+				AlwaysVerticalScrollbar = 1 << 14,   // 16384
+				AlwaysHorizontalScrollbar = 1 << 15,   // 32768
+				NoNavInputs = 1 << 16,   // 65536
+				NoNavFocus = 1 << 17,   // 131072
+				UnsavedDocument = 1 << 18,   // 262144
+				NoDocking = 1 << 19,   // 524288
+
+				NoNav = (1 << 16) | (1 << 17),  // NoNavInputs | NoNavFocus
+				NoDecoration = (1 << 0) | (1 << 1) | (1 << 3) | (1 << 5),  // NoTitleBar | NoResize | NoScrollbar | NoCollapse
+				NoInputs = (1 << 9) | (1 << 16) | (1 << 17)  // NoMouseInputs | NoNavInputs | NoNavFocus
 			};
 
 		public:
