@@ -42,9 +42,9 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	initInfo.PipelineCache = VK_NULL_HANDLE;
 	initInfo.DescriptorPool = m_descriptorPool;
 	initInfo.Allocator = nullptr;
-	initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-	initInfo.RenderPass = renderer.getRenderPass().getRenderPass();
-	initInfo.Subpass = 0;
+	initInfo.PipelineInfoMain.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+	initInfo.PipelineInfoMain.RenderPass = renderer.getRenderPass().getRenderPass();
+	initInfo.PipelineInfoMain.Subpass = 0;
 	initInfo.MinImageCount = renderer.getSwapchainInfo().imageCount;
 	initInfo.ImageCount = renderer.getSwapchainInfo().imageCount;
 
