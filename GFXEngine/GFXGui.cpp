@@ -5,6 +5,7 @@
 #include "imgui_impl_vulkan.h"
 #include <iostream>
 #include "glm/gtc/type_ptr.hpp"
+#include "imguizmo.h"
 
 using namespace GFXEngine::Core;
 using namespace LibGFX;
@@ -48,6 +49,14 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	initInfo.ImageCount = renderer.getSwapchainInfo().imageCount;
 
 	ImGui_ImplVulkan_Init(&initInfo);
+}
+
+void GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect)
+{
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(rect.x, rect.y, rect.z, rect.w);
+	ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::MODE::LOCAL, glm::value_ptr(transform));
 }
 
 bool GFXGui::createSelectable(const char* label, bool selected /*= false*/)

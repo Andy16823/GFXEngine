@@ -57,6 +57,8 @@ namespace GFXEngine {
 			void dockbuilderDockWindow(const char* windowLabel, uint32_t nodeID);
 			void dockbuilderFinish(uint32_t nodeID);
 
+			void transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect);
+
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
 			void freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet);
