@@ -54,9 +54,17 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 void GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect)
 {
 	ImGuizmo::SetOrthographic(false);
-	ImGuizmo::SetDrawlist();
+	ImGuizmo::BeginFrame();
+	ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
 	ImGuizmo::SetRect(rect.x, rect.y, rect.z, rect.w);
-	ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::MODE::LOCAL, glm::value_ptr(transform));
+
+	ImGuizmo::Manipulate(
+		glm::value_ptr(view),
+		glm::value_ptr(projection),
+		ImGuizmo::TRANSLATE,
+		ImGuizmo::LOCAL,
+		glm::value_ptr(transform)
+	);
 }
 
 bool GFXGui::createSelectable(const char* label, bool selected /*= false*/)
