@@ -138,5 +138,7 @@ void GFXEngine::Graphics::RenderTexture::resize(Renderer& renderer, VkExtent2D n
 	if (vkCreateFramebuffer(renderer.getContext().getDevice(), &framebufferInfo, nullptr, &m_framebuffer) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to recreate framebuffer for render texture");
 	}
+
+	m_extent = newExtent;
 	std::cout << "Resized render texture to: " << newExtent.width << "x" << newExtent.height << std::endl;
 }
