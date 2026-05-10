@@ -62,7 +62,7 @@ void GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 		glm::value_ptr(view),
 		glm::value_ptr(projection),
 		ImGuizmo::TRANSLATE,
-		ImGuizmo::LOCAL,
+		ImGuizmo::WORLD,
 		glm::value_ptr(transform)
 	);
 }
