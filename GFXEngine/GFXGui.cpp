@@ -50,6 +50,11 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+void GFXGui::freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet)
+{
+	vkFreeDescriptorSets(renderer.getContext().getDevice(), m_descriptorPool, 1, &descriptorSet);
+}
+
 void GFXGui::setWindowSize(const glm::vec2& size)
 {
 	ImGui::SetWindowSize(ImVec2(size.x, size.y));

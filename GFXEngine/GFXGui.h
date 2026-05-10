@@ -48,6 +48,7 @@ namespace GFXEngine {
 
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);
+			void freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet);
 
 			// Setters
 			void setWindowPosition(const glm::vec2& position);
