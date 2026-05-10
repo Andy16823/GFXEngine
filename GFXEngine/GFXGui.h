@@ -9,11 +9,13 @@
 namespace GFXEngine {
 	namespace Core {
 
-		/// <summary>
-		/// Wrapper class for ImGui integration with Vulkan and GLFW. 
-		/// Provides functions to initialize ImGui, create UI elements, 
-		/// and render the UI within the Vulkan rendering loop.
-		/// </summary>
+		enum class DockingNodeSlot {
+			Left = 0,
+			Right = 1,
+			Up = 2,
+			Down = 3
+		};
+
 		class GFXGui
 		{
 		public:
@@ -46,6 +48,13 @@ namespace GFXEngine {
 			void createColorInput(const char* label, glm::vec4* color);
 			void createColorInput(const char* label, glm::vec3* color);
 			void createDockingSpace(const char* id);		
+			void createDockingSpace(uint32_t id);
+			void dockbuilderRemoveNode(uint32_t nodeID);
+			void dockbuilderAddNode(uint32_t nodeID);
+			void dockbuilderSetNodeSize(uint32_t nodeID, const glm::vec2& size);
+			uint32_t dockbuilderSplitNode(uint32_t nodeID, DockingNodeSlot splitDir, float splitRatio, uint32_t* outIDAtDir = nullptr, uint32_t* outIDAtOppositeDir = nullptr);
+			void dockbuilderDockWindow(const char* windowLabel, uint32_t nodeID);
+			void dockbuilderFinish(uint32_t nodeID);
 
 			// Utility functions
 			VkDescriptorSet createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture);

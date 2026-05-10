@@ -1,6 +1,6 @@
 #include "GFXGui.h"
 #include "DescriptorPoolBuilder.h"
-#include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 #include <iostream>
@@ -87,6 +87,41 @@ void GFXGui::createDockingSpace(const char* id)
 {
 	ImGuiID dockspaceID = ImGui::GetID(id);
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+}
+
+void GFXGui::createDockingSpace(uint32_t id)
+{
+	ImGui::DockSpace(id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+}
+
+void GFXGui::dockbuilderRemoveNode(uint32_t id)
+{
+	ImGui::DockBuilderRemoveNode(id);
+}
+
+void GFXGui::dockbuilderAddNode(uint32_t nodeID)
+{
+	ImGui::DockBuilderAddNode(nodeID, ImGuiDockNodeFlags_DockSpace);
+}
+
+void GFXGui::dockbuilderSetNodeSize(uint32_t nodeID, const glm::vec2& size)
+{
+	ImGui::DockBuilderSetNodeSize(nodeID, ImVec2(size.x, size.y));
+}
+
+uint32_t GFXGui::dockbuilderSplitNode(uint32_t nodeID, DockingNodeSlot splitDir, float splitRatio, uint32_t* outIDAtDir /*= nullptr*/, uint32_t* outIDAtOppositeDir /*= nullptr*/)
+{
+	return ImGui::DockBuilderSplitNode(nodeID, static_cast<ImGuiDir>(splitDir), splitRatio, outIDAtDir, outIDAtOppositeDir);
+}
+
+void GFXGui::dockbuilderDockWindow(const char* windowLabel, uint32_t nodeID)
+{
+	ImGui::DockBuilderDockWindow(windowLabel, nodeID);
+}
+
+void GFXGui::dockbuilderFinish(uint32_t nodeID)
+{
+	ImGui::DockBuilderFinish(nodeID);
 }
 
 uint32_t GFXGui::getID(const char* label) const
