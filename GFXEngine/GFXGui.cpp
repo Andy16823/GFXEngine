@@ -50,6 +50,24 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+glm::vec2 GFXGui::getMousePos() const
+{
+	auto pos = ImGui::GetMousePos();
+	return glm::vec2(pos.x, pos.y);
+}
+
+glm::vec2 GFXGui::getCursorPos() const
+{
+	auto pos = ImGui::GetCursorPos();
+	return glm::vec2(pos.x, pos.y);
+}
+
+glm::vec2 GFXGui::getCursorScreenPos() const
+{
+	auto pos = ImGui::GetCursorScreenPos();
+	return glm::vec2(pos.x, pos.y);
+}
+
 void GFXGui::freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet)
 {
 	vkFreeDescriptorSets(renderer.getContext().getDevice(), m_descriptorPool, 1, &descriptorSet);

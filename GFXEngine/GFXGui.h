@@ -57,6 +57,9 @@ namespace GFXEngine {
 			// Getters
 			glm::vec2 getClientAreaSize() const;
 			glm::vec2 getWindowPosition() const;
+			glm::vec2 getCursorScreenPos() const;
+			glm::vec2 getCursorPos() const;
+			glm::vec2 getMousePos() const;
 			uint32_t getID(const char* label) const;
 		private:
 			VkDescriptorPool m_descriptorPool;
