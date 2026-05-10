@@ -40,6 +40,8 @@ namespace GFXEngine {
 			VkImageView getDepthImageView() const { return m_depthAttachment.imageView; }
 			VkViewport getViewport() const { return VkViewport{ 0.0f, 0.0f, static_cast<float>(m_extent.width), static_cast<float>(m_extent.height), 0.0f, 1.0f }; }
 			VkRect2D getScissor() const { return VkRect2D{ {0, 0}, m_extent }; }
+			glm::vec2 getSize() const { return glm::vec2(static_cast<float>(m_extent.width), static_cast<float>(m_extent.height)); }
+			glm::ivec2 getIntSize() const { return glm::ivec2(m_extent.width, m_extent.height); }
 		};
 	}
 }
