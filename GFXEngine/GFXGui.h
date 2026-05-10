@@ -30,6 +30,7 @@ namespace GFXEngine {
 			// UI element creation functions
 			bool createCollapsingHeader(const char* label);
 			bool createTreeNode(const char* label);
+			bool createSelectable(const char* label, bool selected = false);
 			void createTreePop();
 			void createSameLine();
 			void createText(const char* text);
