@@ -30,6 +30,21 @@ namespace GFXEngine {
 				m_entities.push_back(std::move(entity));
 			}
 
+			void forEachEntity(const std::function<void(Entity&)>& func) {
+				for (auto& entity : m_entities) {
+					func(*entity);
+				}
+			}
+
+			template<typename T>
+			void forEachEntityOfType(const std::function<void(T&)>& func) {
+				for (auto& entity : m_entities) {
+					if (auto casted = dynamic_cast<T*>(entity.get())) {
+						func(*casted);
+					}
+				}
+			}
+
 			Entity* getEntity(size_t index) {
 				if (index >= m_entities.size()) {
 					throw std::out_of_range("Entity index out of range");
