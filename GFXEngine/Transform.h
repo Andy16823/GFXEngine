@@ -17,6 +17,8 @@ namespace GFXEngine {
 			Transform(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scl);
 			~Transform() = default;
 
+			void setFromMatrix(const glm::mat4& matrix);
+
 			void setRotationFromEuler(const glm::vec3& rot);
 			void rotateByEuler(float pitch, float yaw, float roll);
 			void translate(const glm::vec3& delta);

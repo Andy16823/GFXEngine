@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "glm/gtx/matrix_decompose.hpp"
 
 GFXEngine::Math::Transform::Transform(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scl)
 {
@@ -13,6 +14,13 @@ glm::mat4 GFXEngine::Math::Transform::getModelMatrix() const
 	glm::mat4 rotationMat = glm::toMat4(rotation);
 	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), scale);
 	return translation * rotationMat * scaleMat;
+}
+
+void GFXEngine::Math::Transform::setFromMatrix(const glm::mat4& matrix)
+{
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(matrix, scale, rotation, position, skew, perspective);
 }
 
 void GFXEngine::Math::Transform::setRotationFromEuler(const glm::vec3& rot)
