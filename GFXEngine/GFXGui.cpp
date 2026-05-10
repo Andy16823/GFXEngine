@@ -268,14 +268,22 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-void GFXGui::beginUI(const char* title, bool docking, WindowFlags flags)
+void GFXGui::beginUI(const char* title, bool docking, bool allowInput, bool allowMove)
 {
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
 	if (docking)
 	{
 		windowFlags |= ImGuiWindowFlags_NoDocking;
 	}
-	windowFlags |= static_cast<ImGuiWindowFlags>(flags);
+	if (!allowInput)
+	{
+		windowFlags |= ImGuiWindowFlags_NoInputs;
+	}
+	if (!allowMove)
+	{
+		windowFlags |= ImGuiWindowFlags_NoMove;
+	}
+
 	ImGui::Begin(title, nullptr, windowFlags);
 }
 
