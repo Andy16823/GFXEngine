@@ -47,6 +47,9 @@ namespace GFXEngine {
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
 
 			Math::AABB getAABB() const { return m_aabb; }
+			Math::AABB getWorldAABB() const {
+				return m_aabb.applyTransform(transform.getModelMatrix());
+			}
 			void setAABB(const Math::AABB& aabb) { m_aabb = aabb; }
 
 			template<typename T>
