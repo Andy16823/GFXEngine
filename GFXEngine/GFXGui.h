@@ -5,6 +5,9 @@
 #include "RenderTexture.h"
 #include <vector>
 #include "glm/glm.hpp"
+#include "imgui_internal.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -25,11 +28,39 @@ namespace GFXEngine {
 				Scale
 			};
 
+			enum class WindowFlags : int
+			{
+				None = 0,
+				NoTitleBar = ImGuiWindowFlags_NoTitleBar,
+				NoResize = ImGuiWindowFlags_NoResize,
+				NoMove = ImGuiWindowFlags_NoMove,
+				NoScrollbar = ImGuiWindowFlags_NoScrollbar,
+				NoScrollWithMouse = ImGuiWindowFlags_NoScrollWithMouse,
+				NoCollapse = ImGuiWindowFlags_NoCollapse,
+				AlwaysAutoResize = ImGuiWindowFlags_AlwaysAutoResize,
+				NoBackground = ImGuiWindowFlags_NoBackground,
+				NoSavedSettings = ImGuiWindowFlags_NoSavedSettings,
+				NoMouseInputs = ImGuiWindowFlags_NoMouseInputs,
+				MenuBar = ImGuiWindowFlags_MenuBar,
+				HorizontalScrollbar = ImGuiWindowFlags_HorizontalScrollbar,
+				NoFocusOnAppearing = ImGuiWindowFlags_NoFocusOnAppearing,
+				NoBringToFrontOnFocus = ImGuiWindowFlags_NoBringToFrontOnFocus,
+				AlwaysVerticalScrollbar = ImGuiWindowFlags_AlwaysVerticalScrollbar,
+				AlwaysHorizontalScrollbar = ImGuiWindowFlags_AlwaysHorizontalScrollbar,
+				NoNavInputs = ImGuiWindowFlags_NoNavInputs,
+				NoNavFocus = ImGuiWindowFlags_NoNavFocus,
+				UnsavedDocument = ImGuiWindowFlags_UnsavedDocument,
+				NoDocking = ImGuiWindowFlags_NoDocking,
+				NoNav = ImGuiWindowFlags_NoNav,
+				NoDecoration = ImGuiWindowFlags_NoDecoration,
+				NoInputs = ImGuiWindowFlags_NoInputs
+			};
+
 		public:
 			// Base functions
 			void init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window);
 			void newFrame();
-			void beginUI(const char* title, bool docking = false, bool allowInput = true, bool allowMove = true);
+			void beginUI(const char* title, bool docking = false, WindowFlags flags = WindowFlags::None);
 			void endUI();
 			void render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void dispose(GFXEngine::Graphics::Renderer& renderer);
@@ -86,6 +117,51 @@ namespace GFXEngine {
 		private:
 			VkDescriptorPool m_descriptorPool;
 		};
+
+		// Bitwise OR
+		inline GFXGui::WindowFlags operator|(GFXGui::WindowFlags a, GFXGui::WindowFlags b)
+		{
+			return static_cast<GFXGui::WindowFlags>(static_cast<int>(a) | static_cast<int>(b));
+		}
+
+		// Bitwise AND
+		inline GFXGui::WindowFlags operator&(GFXGui::WindowFlags a, GFXGui::WindowFlags b)
+		{
+			return static_cast<GFXGui::WindowFlags>(static_cast<int>(a) & static_cast<int>(b));
+		}
+
+		// Bitwise XOR
+		inline GFXGui::WindowFlags operator^(GFXGui::WindowFlags a, GFXGui::WindowFlags b)
+		{
+			return static_cast<GFXGui::WindowFlags>(static_cast<int>(a) ^ static_cast<int>(b));
+		}
+
+		// Bitwise NOT
+		inline GFXGui::WindowFlags operator~(GFXGui::WindowFlags a)
+		{
+			return static_cast<GFXGui::WindowFlags>(~static_cast<int>(a));
+		}
+
+		// Compound assignment OR
+		inline GFXGui::WindowFlags& operator|=(GFXGui::WindowFlags& a, GFXGui::WindowFlags b)
+		{
+			a = a | b;
+			return a;
+		}
+
+		// Compound assignment AND
+		inline GFXGui::WindowFlags& operator&=(GFXGui::WindowFlags& a, GFXGui::WindowFlags b)
+		{
+			a = a & b;
+			return a;
+		}
+
+		// Compound assignment XOR
+		inline GFXGui::WindowFlags& operator^=(GFXGui::WindowFlags& a, GFXGui::WindowFlags b)
+		{
+			a = a ^ b;
+			return a;
+		}
 	}
 
 }

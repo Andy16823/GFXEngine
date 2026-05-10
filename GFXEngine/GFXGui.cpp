@@ -1,8 +1,5 @@
 #include "GFXGui.h"
 #include "DescriptorPoolBuilder.h"
-#include "imgui_internal.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
 #include <iostream>
 #include "glm/gtc/type_ptr.hpp"
 #include "imguizmo.h"
@@ -285,22 +282,14 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-void GFXGui::beginUI(const char* title, bool docking, bool allowInput, bool allowMove)
+void GFXGui::beginUI(const char* title, bool docking, WindowFlags flags)
 {
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
 	if (docking)
 	{
 		windowFlags |= ImGuiWindowFlags_NoDocking;
 	}
-	if (!allowInput)
-	{
-		windowFlags |= ImGuiWindowFlags_NoInputs;
-	}
-	if (!allowMove)
-	{
-		windowFlags |= ImGuiWindowFlags_NoMove;
-	}
-
+	windowFlags |= static_cast<ImGuiWindowFlags>(flags);
 	ImGui::Begin(title, nullptr, windowFlags);
 }
 
