@@ -37,6 +37,7 @@ namespace GFXEngine{
 			void createDescriptorSets(Renderer& renderer, VkDescriptorSetLayout descriptorSetLayout) override;
 			void updateCameraBuffers(Renderer& renderer, uint32_t imageIndex) override;
 			void destroyDescriptorSets(Renderer& renderer) override;
+			void setAspectRatio(float aspect) { m_aspectRatio = aspect; }
 			VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const override { return m_descriptorSets[imageIndex]; }
 		};
 	}
