@@ -30,6 +30,10 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		this->afterSwapchainRecreate(renderer, viewport, scissor);
 		});
 
+	// Load assets and register behaviors before initialization
+	this->registerBehaviors(*behaviorRegistry);
+	this->loadAssets(*assetManager);
+	
 	// Call user-defined initialization
 	this->onInit(*m_renderer);
 
@@ -84,6 +88,10 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	// Call user-defined cleanup
 	this->onDestroy(*m_renderer);
 	m_renderer->dispose();
+	
+	// Clean up assets and behaviors
+	assetManager->clear();
+	behaviorRegistry->clear();
 }
 
 glm::vec2 GFXEngine::Core::Game::getCursorPos() const

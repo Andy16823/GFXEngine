@@ -4,6 +4,7 @@
 #include "LibGFX.h"
 #include "DataTypes.h"
 #include "AssetManager.h"
+#include "BehaviorRegistry.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -14,9 +15,12 @@ namespace GFXEngine {
 			~Game() = default;
 
 			std::unique_ptr<AssetManager> assetManager = std::make_unique<AssetManager>();
+			std::unique_ptr<BehaviorRegistry> behaviorRegistry = std::make_unique<BehaviorRegistry>();
 
+			// Non-virtual function to start the game loop
 			void start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title = "My Game", bool fullscreen = false, bool validationLayers = true);
 
+			// Main functions to be implemented by the user
 			virtual void onInit(Graphics::Renderer& renderer) = 0;
 			virtual void onStart(Graphics::Renderer& renderer) = 0;
 			virtual void onUpdate(Graphics::Renderer& renderer, uint32_t imageIndex, float deltaTime) = 0;
@@ -25,7 +29,12 @@ namespace GFXEngine {
 			virtual void onInput(int key, int mods, int action) = 0;
 			virtual void onSwpachainRecreate(Graphics::Renderer& renderer) = 0;
 			virtual void afterSwapchainRecreate(Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) = 0;
+
+			// Optional overrides for asset loading and behavior registration
+			virtual void loadAssets(AssetManager& assetManager) {}
+			virtual void registerBehaviors(BehaviorRegistry& behaviorRegistry) {}
 			
+			// Getters
 			glm::ivec2 getWindowSize() const { return m_windowSize; }
 			glm::vec2 getCursorPos() const;
 			GLFWwindow* getWindow() const { return m_window; }
@@ -34,6 +43,7 @@ namespace GFXEngine {
 			float getFPS() const { return (m_deltaTime > 0.0f) ? (1.0f / m_deltaTime) : 0.0f; }
 			float getTargetFPS() const { return m_targetFPS; }
 
+			// Setters
 			void setTargetFPS(float fps) { m_targetFPS = fps; }
 
 		private:
