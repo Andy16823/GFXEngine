@@ -1,4 +1,4 @@
-#include "GFXGui.h"
+#include "UIContext.h"
 #include "DescriptorPoolBuilder.h"
 #include <iostream>
 #include "glm/gtc/type_ptr.hpp"
@@ -7,7 +7,7 @@
 using namespace GFXEngine::Core;
 using namespace LibGFX;
 
-void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window)
+void GFXEngine::Core::UIContext::init(GFXEngine::Graphics::Renderer& renderer, GLFWwindow* window)
 {
 	std::cout << "Initializing ImGui..." << std::endl;
 	
@@ -48,17 +48,17 @@ void GFXEngine::Core::GFXGui::init(GFXEngine::Graphics::Renderer& renderer, GLFW
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
-bool GFXGui::gizmoIsUsing()
+bool UIContext::gizmoIsUsing()
 {
 	return ImGuizmo::IsUsing();
 }
 
-bool GFXGui::gizmoIsOver()
+bool UIContext::gizmoIsOver()
 {
 	return ImGuizmo::IsOver();
 }
 
-bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation)
+bool UIContext::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation)
 {
 	ImGuizmo::SetOrthographic(false);
 	ImGuizmo::BeginFrame();
@@ -71,13 +71,13 @@ bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 	ImGuizmo::OPERATION guizmoOperation;
 	switch (operation)
 	{
-	case GFXEngine::Core::GFXGui::GuizmoOperation::Translate:
+	case GFXEngine::Core::GuizmoOperation::Translate:
 		guizmoOperation = ImGuizmo::TRANSLATE;
 		break;
-	case GFXEngine::Core::GFXGui::GuizmoOperation::Rotate:
+	case GFXEngine::Core::GuizmoOperation::Rotate:
 		guizmoOperation = ImGuizmo::ROTATE;
 		break;
-	case GFXEngine::Core::GFXGui::GuizmoOperation::Scale:
+	case GFXEngine::Core::GuizmoOperation::Scale:
 		guizmoOperation = ImGuizmo::SCALE;
 		break;
 	default:
@@ -96,12 +96,12 @@ bool GFXGui::transformGizmo(const glm::mat4& view, const glm::mat4& projection, 
 	return ImGuizmo::IsUsing();
 }
 
-void GFXGui::freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet)
+void UIContext::freeTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, VkDescriptorSet descriptorSet)
 {
 	vkFreeDescriptorSets(renderer.getContext().getDevice(), m_descriptorPool, 1, &descriptorSet);
 }
 
-VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
+VkDescriptorSet UIContext::createTextureDescriptorSet(GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Graphics::RenderTexture& renderTexture)
 {
 	VkDescriptorSet descriptorSet = ImGui_ImplVulkan_AddTexture(
 		renderer.getTextureSampler(),
@@ -111,7 +111,7 @@ VkDescriptorSet GFXGui::createTextureDescriptorSet(GFXEngine::Graphics::Renderer
 	return descriptorSet;
 }
 
-void GFXGui::beginnFullscreen(const char* title, ImGuiWindowFlags flags /*= ImGuiWindowFlags_None*/)
+void UIContext::beginnFullscreen(const char* title, ImGuiWindowFlags flags /*= ImGuiWindowFlags_None*/)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
@@ -134,7 +134,7 @@ void GFXGui::beginnFullscreen(const char* title, ImGuiWindowFlags flags /*= ImGu
 	ImGui::PopStyleVar(3);
 }
 
-void GFXGui::createButton(const char* label, const std::function<void()>& onClick)
+void UIContext::createButton(const char* label, const std::function<void()>& onClick)
 {
 	if (ImGui::Button(label))
 	{
@@ -142,12 +142,12 @@ void GFXGui::createButton(const char* label, const std::function<void()>& onClic
 	}
 }
 
-void GFXGui::createImage(VkDescriptorSet descriptorSet, const glm::vec2& size)
+void UIContext::createImage(VkDescriptorSet descriptorSet, const glm::vec2& size)
 {
 	ImGui::Image(reinterpret_cast<ImTextureID>(descriptorSet), ImVec2(size.x, size.y));
 }
 
-void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
+void UIContext::dispose(GFXEngine::Graphics::Renderer& renderer)
 {
 	ImGui_ImplVulkan_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -155,14 +155,14 @@ void GFXGui::dispose(GFXEngine::Graphics::Renderer& renderer)
 	renderer.getContext().destroyDescriptorSetPool(m_descriptorPool);
 }
 
-void GFXGui::render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+void UIContext::render(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
 	ImGui::Render();
 	auto commandBuffer = renderer.getCommandBuffer(imageIndex);
 	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
 }
 
-void GFXGui::newFrame()
+void UIContext::newFrame()
 {
 	ImGui_ImplVulkan_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
