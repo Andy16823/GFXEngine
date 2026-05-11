@@ -11,6 +11,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Mesh class that encapsulates vertex and index data, along with Vulkan buffers for rendering. 
 		/// It provides methods to initialize the mesh, draw it using a renderer, and clean up resources when done.
+		/// TODO: Add mesh matrix;
 		/// </summary>
 		class Mesh {
 		private:
@@ -36,6 +37,8 @@ namespace GFXEngine {
 			void setIndices(std::vector<uint32_t> indices) { m_indices = std::move(indices); }
 			Math::AABB computeAABB() const;
 
+			const std::vector<EngineTypes::Vertex3D>& getVertices() const { return m_vertices; }
+			const std::vector<uint32_t>& getIndices() const { return m_indices; }
 			const LibGFX::Buffer& getVertexBuffer() const { return m_vertexBuffer; }
 			const LibGFX::Buffer& getIndexBuffer() const { return m_indexBuffer; }
 			size_t getIndexCount() const { return m_indices.size(); }

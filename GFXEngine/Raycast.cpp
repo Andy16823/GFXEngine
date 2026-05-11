@@ -58,3 +58,70 @@ bool GFXEngine::Physics::Raycast::rayIntersectsAABB(const Ray& ray, const Math::
 	}
 	return true;
 }
+
+bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh& mesh, RaycastHit& hitInfo)
+{
+	glm::mat4 finalMatrix = transform.getModelMatrix(); // TODO: Add mesh matrix
+	float closestT = std::numeric_limits<float>::max();
+	hitInfo.hit = false;
+
+	auto indices = mesh.getIndices();
+	auto vertices = mesh.getVertices();
+
+	for (size_t i = 0; i < indices.size(); i += 3) {
+		auto v0 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i]].pos, 1.0f));
+		auto v1 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i + 1]].pos, 1.0f));
+		auto v2 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i + 2]].pos, 1.0f));
+
+		float t;
+		glm::vec3 normal;
+		if (rayIntersectsTriangle(ray, v0, v1, v2, t, normal)) {
+			if (t < closestT) {
+				closestT = t;
+				hitInfo.point = ray.origin + ray.direction * t;
+				hitInfo.normal = normal;
+				hitInfo.hit = true;
+				hitInfo.distance = t;
+			}
+		}
+	}
+	return hitInfo.hit;
+}
+
+bool GFXEngine::Physics::Raycast::rayIntersectsTriangle(const Ray& ray, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& t, glm::vec3& normal)
+{
+	t = 0;
+	normal = glm::vec3(0.0f);
+
+	const float EPSILON = 0.0000001f;
+	glm::vec3 edge1 = v1 - v0;
+	glm::vec3 edge2 = v2 - v0;
+	glm::vec3 h = glm::cross(ray.direction, edge2);
+	float a = glm::dot(edge1, h);
+
+	if (a > -EPSILON && a < EPSILON) {
+		return false;
+	}
+
+	float f = 1.0f / a;
+	glm::vec3 s = ray.origin - v0;
+	float u = f * glm::dot(s, h);
+
+	if (u < 0.0f || u > 1.0f) {
+		return false;
+	}
+
+	glm::vec3 q = glm::cross(s, edge1);
+	float v = f * glm::dot(ray.direction, q);
+
+	if (v < 0.0f || u + v > 1.0f) {
+		return false;
+	}
+
+	t = f * glm::dot(edge2, q);
+	if (t > EPSILON) {
+		normal = glm::normalize(glm::cross(edge1, edge2));
+		return true;
+	}
+	return false;
+}
