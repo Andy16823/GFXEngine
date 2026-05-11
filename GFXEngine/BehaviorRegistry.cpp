@@ -34,3 +34,10 @@ void GFXEngine::BehaviorRegistry::clear()
 {
 	m_registry.clear();
 }
+
+void GFXEngine::BehaviorRegistry::foreachBehavior(const std::function<void(const std::string&)>& func) const
+{
+	for (const auto& pair : m_registry) {
+		func(pair.first);
+	}
+}
