@@ -20,7 +20,8 @@ namespace GFXEngine {
 			void setFromMatrix(const glm::mat4& matrix);
 
 			void setRotationFromEuler(const glm::vec3& rot);
-			void rotateByEuler(float pitch, float yaw, float roll);
+			void rotateWorld(float pitch, float yaw, float roll);
+			void rotateLocal(float pitch, float yaw, float roll);
 			void translate(const glm::vec3& delta);
 			void setPosition(const glm::vec3& newPos);
 			void setScale(const glm::vec3& newScale);
