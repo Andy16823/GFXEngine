@@ -17,6 +17,7 @@ namespace GFXEngine {
 		std::vector<std::string> getRegisteredBehaviors() const;
 
 		void clear();
+		void foreachBehavior(const std::function<void(const std::string&)>& func) const;
 	private:
 		std::unordered_map<std::string, FactoryFunction> m_registry;
 	};
