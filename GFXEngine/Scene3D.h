@@ -92,6 +92,10 @@ namespace GFXEngine {
 				return taggedEntities;
 			}
 
+			void clearEntities() {
+				m_entities.clear();
+			}
+
 			void setEnviromentMap(Graphics::EnviromentMap& enviromentMap) {
 				m_enviromentMap = &enviromentMap;
 			}
