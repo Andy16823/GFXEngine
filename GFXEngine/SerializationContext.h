@@ -10,7 +10,8 @@ namespace GFXEngine {
 		AssetManager* assetManager;
 		BehaviorRegistry* behaviorRegistry;
 
-		SerializationContext() = default;
+		SerializationContext(AssetManager* assetMgr, BehaviorRegistry* behaviorReg)
+			: assetManager(assetMgr), behaviorRegistry(behaviorReg) {}
 		~SerializationContext() = default;
 	};
 }
