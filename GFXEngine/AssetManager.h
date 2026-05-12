@@ -43,17 +43,17 @@ namespace GFXEngine {
 			return dynamic_cast<T*>(it->second.get());
 		}
 
-		void forEachAsset(const std::function<void(Asset&)>& func) {
+		void forEachAsset(const std::function<void(Asset*)>& func) {
 			for (auto& pair : m_assets) {
-				func(*pair.second);
+				func(pair.second.get());
 			}
 		}
 
 		template<typename T>
-		void forEachAssetOfType(const std::function<void(T&)>& func) {
+		void forEachAssetOfType(const std::function<void(T*)>& func) {
 			for (auto& pair : m_assets) {
 				if (auto asset = dynamic_cast<T*>(pair.second.get())) {
-					func(*asset);
+					func(asset);
 				}
 			}
 		}
