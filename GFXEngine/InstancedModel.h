@@ -12,7 +12,8 @@ namespace GFXEngine {
 		class InstancedModel : public Entity
 		{
 		public:
-			InstancedModel(const Graphics::MeshModel& meshModel, size_t instanceCount) 
+			InstancedModel() = default;
+			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount) 
 				: m_meshModel(meshModel), m_instanceCount(instanceCount) {
 			}
 
@@ -35,12 +36,10 @@ namespace GFXEngine {
 			size_t findNextFreeInstance() const;
 			glm::mat4 getInstanceModelMatrix(size_t instanceIndex) const;
 
-
-
 		private:
 			std::vector<EngineTypes::InstanceData> m_instanceDataCache;
 			std::map<size_t, EngineTypes::InstanceData> m_instanceUpdateQueue;
-			const Graphics::MeshModel& m_meshModel;
+			Graphics::MeshModel* m_meshModel;
 			size_t m_instanceCount = 0;
 
 			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;

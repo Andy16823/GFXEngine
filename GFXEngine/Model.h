@@ -15,6 +15,7 @@ namespace GFXEngine {
 			Graphics::MeshModel* m_meshModel;	
 
 		public:
+			Model() = default;
 			Model(Graphics::MeshModel* meshModel) 
 				: m_meshModel(meshModel) {}
 

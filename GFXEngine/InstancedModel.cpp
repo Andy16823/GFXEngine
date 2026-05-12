@@ -69,15 +69,15 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 
 size_t GFXEngine::Core::InstancedModel::getMeshCount() const
 {
-	return m_meshModel.getMeshCount();
+	return m_meshModel->getMeshCount();
 }
 
 std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::InstancedModel::getMeshAndMaterial(size_t index) const
 {
-	if (index >= m_meshModel.getMeshCount()) {
+	if (index >= m_meshModel->getMeshCount()) {
 		throw std::out_of_range("Mesh index out of range");
 	}
-	return { m_meshModel.getMesh(index), m_meshModel.getMeshMaterial(index) };
+	return { m_meshModel->getMesh(index), m_meshModel->getMeshMaterial(index) };
 }
 
 GFXEngine::Math::AABB GFXEngine::Core::InstancedModel::computeInstanceAABB(size_t instanceIndex) const
