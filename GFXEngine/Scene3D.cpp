@@ -1,6 +1,7 @@
 #include "Scene3D.h"
 #include <fstream>
 #include "Model.h"
+#include "InstancedModel.h"
 
 /// <summary>
 /// Initializes the scene by initializing the directional light and all entities in the scene.
@@ -106,8 +107,11 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		if (typeName == typeid(GFXEngine::Core::Model).name()) {
 			entity = std::make_unique<GFXEngine::Core::Model>(); 
 		}
+		else if (typeName == typeid(GFXEngine::Core::InstancedModel).name()) {
+			continue;
+		}
 		else {
-			throw std::runtime_error("Unknown entity type: " + typeName);
+			continue;
 		}
 		entity->deserialize(entityData, context);
 		addEntity(std::move(entity));
