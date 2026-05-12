@@ -65,6 +65,12 @@ namespace GFXEngine {
 				throw std::runtime_error("Behavior not found");
 			}
 
+			void foreachBehavior(const std::function<void(Behavior*)>& func) {
+				for (auto& behavior : m_behaviors) {
+					func(behavior.get());
+				}
+			}
+
 			bool isVisible() const { 
 				return m_visible; 
 			}
