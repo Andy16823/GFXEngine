@@ -32,5 +32,6 @@ namespace GFXEngine {
 		static bool isAbsolutePath(const std::string& filePath);
 		static void log(const std::string& service, const std::string& message);
 		static void saveJsonToFile(const nlohmann::json& jsonData, const std::string& filename);
+		static nlohmann::json loadJsonFromFile(const std::string& filename);
 	};
 }

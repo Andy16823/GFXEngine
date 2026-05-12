@@ -285,3 +285,16 @@ void GFXEngine::Utils::saveJsonToFile(const nlohmann::json& jsonData, const std:
 	file << jsonData.dump(4);
 	file.close();
 }
+
+nlohmann::json GFXEngine::Utils::loadJsonFromFile(const std::string& filename)
+{
+	// Load the JSON data from a file
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		throw std::runtime_error("Failed to open file for reading: " + filename);
+	}
+	nlohmann::json jsonData;
+	file >> jsonData;
+	file.close();
+	return jsonData;
+}
