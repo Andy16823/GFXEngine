@@ -1,8 +1,9 @@
 #pragma once
-#include "AssetManager.h"
-#include "BehaviorRegistry.h"
 
 namespace GFXEngine {
+	class AssetManager;
+	class BehaviorRegistry;
+
 	class SerializationContext
 	{
 	public:
