@@ -1,10 +1,11 @@
 #pragma once
 #include "Renderer.h"
 #include "Camera.h"
+#include "ISerializable.h"
 
 namespace GFXEngine {
 	namespace Core {
-		class Scene
+		class Scene : public GFXEngine::ISerializable
 		{
 		public:
 			Scene() = default;
@@ -15,8 +16,8 @@ namespace GFXEngine {
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) = 0;
 			virtual void input(int key, int mods, int action) = 0;
 
-			virtual void serialize(const std::string& filename) const = 0;
-			virtual void deserialize(const std::string& filename) = 0;
+			virtual nlohmann::json serialize() const override = 0;
+			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override = 0;
 		};
 	}
 }

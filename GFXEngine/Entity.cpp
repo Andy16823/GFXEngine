@@ -98,11 +98,7 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 	return data;
 }
 
-void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data)
+void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
 {
-	m_name = data.value("name", "");
-	m_visible = data.value("visible", true);
-	transform.deserialize(data.value("transform", nlohmann::json{}));
-	m_tags = data.value("tags", std::vector<std::string>{});
-	// TODO: Deserialize behaviors
+	// TODO: Implement deserialization of behaviors and their properties
 }

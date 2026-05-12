@@ -11,6 +11,7 @@
 #include <sstream>
 #include <iomanip>
 #include <random>
+#include <fstream>
 
 LibGFX::ImageData GFXEngine::Utils::loadImage(const std::string& filePath, bool flipVertically)
 {
@@ -272,4 +273,15 @@ bool GFXEngine::Utils::isAbsolutePath(const std::string& filePath)
 void GFXEngine::Utils::log(const std::string& service, const std::string& message)
 {
 	std::cout << "[" << service << "] " << message << std::endl;
+}
+
+void GFXEngine::Utils::saveJsonToFile(const nlohmann::json& jsonData, const std::string& filename)
+{
+	// Save the JSON data to a file
+	std::ofstream file(filename);
+	if (!file.is_open()) {
+		throw std::runtime_error("Failed to open file for writing: " + filename);
+	}
+	file << jsonData.dump(4);
+	file.close();
 }

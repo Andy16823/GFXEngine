@@ -13,7 +13,7 @@
 #include <vector>
 #include "Scene.h"
 #include "AABB.h"
-#include <nlohmann/json.hpp>
+#include "ISerializable.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -21,7 +21,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Base class for every entity in the game.
 		/// </summary>
-		class Entity
+		class Entity : public GFXEngine::ISerializable
 		{
 
 		public:
@@ -40,8 +40,8 @@ namespace GFXEngine {
 			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 
-			virtual nlohmann::json serialize() const;
-			virtual void deserialize(const nlohmann::json& data);
+			nlohmann::json serialize() const override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
 
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;

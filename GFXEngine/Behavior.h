@@ -1,10 +1,10 @@
 #pragma once
 #include "Renderer.h"
 #include "Camera.h"
-#include "Scene.h"
 
 namespace GFXEngine {
 	namespace Core {
+		class Scene;
 
 		/// <summary>
 		/// PropertyType enum represents the type of a property that can be used in a behavior.
