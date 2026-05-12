@@ -55,6 +55,7 @@ void GFXEngine::Core::DebugBhv::update(Scene& scene, float deltaTime)
 
 void GFXEngine::Core::DebugBhv::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
+	if (!m_isEnabled) return;
 	VkDescriptorSet descriptorSet = camera.getDescriptorSet(imageIndex);
 	glm::mat4 modelMatrix = getEntity()->transform.getModelMatrix();
 	auto pipeline = renderer.getPipeline<DebugPipeline>(Defintions::DEBUG_PIPELINE);
@@ -69,4 +70,11 @@ void GFXEngine::Core::DebugBhv::destroy(Scene& scene, GFXEngine::Graphics::Rende
 {
 	renderer.destroyBuffer(m_debugVertexBuffer);
 	renderer.destroyBuffer(m_debugIndexBuffer);
+}
+
+std::vector<GFXEngine::Core::PropertyInfo> DebugBhv::getProperties() const
+{
+	std::vector<PropertyInfo> properties;
+	properties.push_back({ "Enabled", PropertyType::Float, (void*)& m_isEnabled});
+	return properties;
 }
