@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Scene3D.h"
 #include "EngineDefinitions.h"
+#include "AssetManager.h"
 
 void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
@@ -43,19 +44,33 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 nlohmann::json GFXEngine::Core::Model::serialize() const
 {
 	nlohmann::json data = Entity::serialize();
-	data["meshModel"] = m_meshModel.getName();
+	data["meshModel"] = m_meshModel->getName();
 	return data;
+}
+
+void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+{
+	Entity::deserialize(data, context);
+	if (!data.contains("meshModel") || !data["meshModel"].is_string()) {
+		throw std::runtime_error("Model deserialization error: 'meshModel' field is missing or not a string");
+	}
+	auto modelName = data["meshModel"].get<std::string>();
+	auto meshModelAsset = context.assetManager->getAssetOfType<Graphics::MeshModel>(modelName);
+	if (!meshModelAsset) {
+		throw std::runtime_error("Model deserialization error: MeshModel asset '" + modelName + "' not found");
+	}
+	m_meshModel = meshModelAsset;
 }
 
 size_t GFXEngine::Core::Model::getMeshCount() const
 {
-	return m_meshModel.getMeshCount();
+	return m_meshModel->getMeshCount();
 }
 
 std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
 {
-	if (index >= m_meshModel.getMeshCount()) {
+	if (index >= m_meshModel->getMeshCount()) {
 		throw std::out_of_range("Mesh index out of range");
 	}
-	return { m_meshModel.getMesh(index), m_meshModel.getMeshMaterial(index) };
+	return { m_meshModel->getMesh(index), m_meshModel->getMeshMaterial(index) };
 }

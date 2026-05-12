@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include "Behavior.h"
+#include "BehaviorRegistry.h"
 
 void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
@@ -52,46 +53,7 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 	for (const auto& bhv : m_behaviors) {
 		nlohmann::json bhvData;
 		bhvData["name"] = bhv->getName();
-		
-		for (const auto& prop : bhv->getProperties()) {
-			nlohmann::json propData;
-			propData["name"] = prop.name;
-			propData["type"] = static_cast<int>(prop.type);
-			switch (prop.type)
-			{
-				case PropertyType::String:
-					propData["value"] = *static_cast<std::string*>(prop.data);
-					break;
-				case PropertyType::Int:
-					propData["value"] = *static_cast<int*>(prop.data);
-					break;
-				case PropertyType::Bool:
-					propData["value"] = *static_cast<bool*>(prop.data);
-					break;
-				case PropertyType::Float:
-					propData["value"] = *static_cast<float*>(prop.data);
-					break;
-				case PropertyType::Vector2:
-					glm::vec2 vec2Value = *static_cast<glm::vec2*>(prop.data);
-					propData["value"] = { vec2Value.x, vec2Value.y };
-					break;
-				case PropertyType::Vector3:
-					glm::vec3 vec3Value = *static_cast<glm::vec3*>(prop.data);
-					propData["value"] = { vec3Value.x, vec3Value.y, vec3Value.z };
-					break;
-				case PropertyType::Vector4:
-					glm::vec4 vec4Value = *static_cast<glm::vec4*>(prop.data);
-					propData["value"] = { vec4Value.x, vec4Value.y, vec4Value.z, vec4Value.w };
-					break;
-				case PropertyType::Color:
-					glm::vec4 colorValue = *static_cast<glm::vec4*>(prop.data);
-					propData["value"] = { colorValue.r, colorValue.g, colorValue.b, colorValue.a };
-					break;
-			default:
-				break;
-			}
-			bhvData["properties"].push_back(propData);
-		}
+		bhvData["data"] = bhv->serialize();
 		behaviorsData.push_back(bhvData);
 	}
 	data["behaviors"] = behaviorsData;
@@ -100,5 +62,22 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 
 void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
 {
-	// TODO: Implement deserialization of behaviors and their properties
+	m_name = data.value("name", "");
+	m_visible = data.value("visible", true);
+	transform.deserialize(data.value("transform", nlohmann::json()), context);
+	m_tags = data.value("tags", std::vector<std::string>());
+
+	auto behaviorsData = data.value("behaviors", std::vector<nlohmann::json>());
+	for (const auto& bhvData : behaviorsData) {
+		std::string bhvName = bhvData.value("name", "");
+		nlohmann::json bhvJson = bhvData.value("data", nlohmann::json());
+
+		auto behavior = context.behaviorRegistry->createBehavior(bhvName);
+		if (behavior) {
+			behavior->deserialize(bhvJson, context);
+			addBehavior(std::move(behavior));
+		} else {
+			throw std::runtime_error("Unknown behavior type: " + bhvName);
+		}
+	}
 }

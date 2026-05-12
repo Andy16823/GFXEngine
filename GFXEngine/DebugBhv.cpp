@@ -78,3 +78,15 @@ std::vector<GFXEngine::Core::PropertyInfo> DebugBhv::getProperties() const
 	properties.push_back({ "Enabled", PropertyType::Bool, (void*)& m_isEnabled});
 	return properties;
 }
+
+nlohmann::json DebugBhv::serialize() const
+{
+	nlohmann::json data;
+	data["enabled"] = m_isEnabled;
+	return data;
+}
+
+void DebugBhv::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+{
+	m_isEnabled = data.value("enabled", true);
+}

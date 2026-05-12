@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Camera.h"
+#include "ISerializable.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -33,7 +34,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Abstract base class for behaviors that can be attached to entities.
 		/// </summary>
-		class Behavior {
+		class Behavior : public GFXEngine::ISerializable {
 		protected:
 			class Entity* m_entity;
 
@@ -54,6 +55,8 @@ namespace GFXEngine {
 
 			virtual std::string getName() const = 0;
 			virtual std::vector<PropertyInfo> getProperties() const = 0;
+			virtual nlohmann::json serialize() const override = 0;
+			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override = 0;
 
 			Entity* getEntity() const { return m_entity; }
 		};
