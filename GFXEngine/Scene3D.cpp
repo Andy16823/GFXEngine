@@ -84,6 +84,8 @@ void GFXEngine::Core::Scene3D::input(int key, int mods, int action)
 nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 {
 	nlohmann::json data;
+	data["directionalLight"] = directionalLight.serialize();
+
 	for (const auto& entity : m_entities) {
 		nlohmann::json entityData = entity->serialize();
 		entityData["type"] = typeid(*entity).name();
@@ -99,6 +101,10 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 /// <param name="context"></param>
 void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
 {
+	if (data.contains("directionalLight")) {
+		directionalLight.deserialize(data["directionalLight"], context);
+	}
+
 	auto entities = data["entities"];
 	for(const auto& entityData : entities) {
 		std::string typeName = entityData["type"];

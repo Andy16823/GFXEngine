@@ -20,6 +20,22 @@ void GFXEngine::Graphics::DirectionalLight::init(Renderer& renderer)
 	}
 }
 
+void DirectionalLight::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+{
+	direction = glm::vec3(data["direction"][0], data["direction"][1], data["direction"][2]);
+	color = glm::vec3(data["color"][0], data["color"][1], data["color"][2]);
+	intensity = data["intensity"].get<float>();
+}
+
+nlohmann::json DirectionalLight::serialize() const
+{
+	nlohmann::json data;
+	data["direction"] = { direction.x, direction.y, direction.z };
+	data["color"] = { color.r, color.g, color.b };
+	data["intensity"] = intensity;
+	return data;
+}
+
 void DirectionalLight::destroy(Renderer& renderer)
 {
 	for (auto& buffer : m_uniformBuffers) {
