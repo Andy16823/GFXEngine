@@ -14,6 +14,9 @@ namespace GFXEngine {
 			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) = 0;
 			virtual void input(int key, int mods, int action) = 0;
+
+			virtual void serialize(const std::string& filename) const = 0;
+			virtual void deserialize(const std::string& filename) = 0;
 		};
 	}
 }

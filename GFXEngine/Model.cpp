@@ -40,6 +40,13 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 	}
 }
 
+nlohmann::json GFXEngine::Core::Model::serialize() const
+{
+	nlohmann::json data = Entity::serialize();
+	data["meshModel"] = m_meshModel.getName();
+	return data;
+}
+
 size_t GFXEngine::Core::Model::getMeshCount() const
 {
 	return m_meshModel.getMeshCount();

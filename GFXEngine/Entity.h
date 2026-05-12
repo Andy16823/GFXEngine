@@ -13,6 +13,7 @@
 #include <vector>
 #include "Scene.h"
 #include "AABB.h"
+#include <nlohmann/json.hpp>
 
 namespace GFXEngine {
 	namespace Core {
@@ -38,6 +39,9 @@ namespace GFXEngine {
 			virtual void update(Scene& scene, float deltaTime);
 			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
+
+			virtual nlohmann::json serialize() const;
+			virtual void deserialize(const nlohmann::json& data);
 
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;

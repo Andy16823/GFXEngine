@@ -26,6 +26,9 @@ namespace GFXEngine {
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
 
+			void serialize(const std::string& filename) const override;	
+			void deserialize(const std::string& filename) override;
+
 			void addEntity(std::unique_ptr<Entity> entity) {
 				m_entities.push_back(std::move(entity));
 			}

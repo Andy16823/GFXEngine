@@ -55,6 +55,12 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+)
+
 # Nur die Quellen herunterladen/auspacken (kein add_subdirectory, da kein CMake-Projekt vorhanden)
 FetchContent_Populate(stb)
 # Erstelle ein INTERFACE-Target, damit andere Targets es mit target_link_libraries verwenden können
@@ -62,7 +68,7 @@ add_library(stb_image INTERFACE)
 target_include_directories(stb_image INTERFACE ${stb_SOURCE_DIR})
 
 # LibGFX und GLM verfügbar machen
-FetchContent_MakeAvailable(LibGFX GLM Assimp)
+FetchContent_MakeAvailable(LibGFX GLM Assimp json)
 
 # ImGui Quellen herunterladen (ohne add_subdirectory, da kein CMake-Projekt)
 FetchContent_Populate(imgui)

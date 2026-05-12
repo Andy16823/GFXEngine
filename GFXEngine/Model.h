@@ -21,6 +21,8 @@ namespace GFXEngine {
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 
+			nlohmann::json serialize() const override;
+
 			size_t getMeshCount() const override;
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 

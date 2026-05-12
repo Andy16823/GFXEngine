@@ -4,6 +4,7 @@
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
+#include <nlohmann/json.hpp>
 
 namespace GFXEngine {
 	namespace Math {
@@ -34,6 +35,9 @@ namespace GFXEngine {
 			glm::vec3 getForward() const;
 			glm::vec3 getRight() const;
 			glm::vec3 getUp();
+
+			nlohmann::json serialize() const;
+			void deserialize(const nlohmann::json& data);
 		};
 	}
 }

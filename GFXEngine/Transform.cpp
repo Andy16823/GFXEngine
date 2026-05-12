@@ -96,3 +96,25 @@ glm::vec3 GFXEngine::Math::Transform::getUp()
 {
 	return rotation * glm::vec3(0.0f, 1.0f, 0.0f);
 }
+
+nlohmann::json GFXEngine::Math::Transform::serialize() const
+{
+	nlohmann::json data;
+	data["position"] = { position.x, position.y, position.z };
+	data["rotation"] = { rotation.x, rotation.y, rotation.z, rotation.w };
+	data["scale"] = { scale.x, scale.y, scale.z };
+	return data;
+}
+
+void GFXEngine::Math::Transform::deserialize(const nlohmann::json& data)
+{
+	if (data.contains("position")) {
+		position = glm::vec3(data["position"][0], data["position"][1], data["position"][2]);
+	}
+	if (data.contains("rotation")) {
+		rotation = glm::quat(data["rotation"][3], data["rotation"][0], data["rotation"][1], data["rotation"][2]);
+	}
+	if (data.contains("scale")) {
+		scale = glm::vec3(data["scale"][0], data["scale"][1], data["scale"][2]);
+	}
+}

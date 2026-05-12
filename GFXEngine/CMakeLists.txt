@@ -19,6 +19,7 @@ target_link_libraries(GFXEngine
     PRIVATE assimp::assimp
     PRIVATE imgui
     PRIVATE imguizmo
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 # Include-Verzeichnisse (falls nötig)
