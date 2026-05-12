@@ -10,15 +10,14 @@ namespace GFXEngine {
 		/// PropertyType enum represents the type of a property that can be used in a behavior.
 		/// </summary>
 		enum class PropertyType {
+			String,
+			Int,
+			Bool,
 			Float,
 			Vector2,
 			Vector3,
 			Vector4,
 			Color,
-			Texture,
-			Material,
-			Mesh,
-			Animation,
 			Entity
 		};
 
