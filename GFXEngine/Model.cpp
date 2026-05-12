@@ -55,7 +55,7 @@ void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::
 		throw std::runtime_error("Model deserialization error: 'meshModel' field is missing or not a string");
 	}
 	auto modelName = data["meshModel"].get<std::string>();
-	auto meshModelAsset = context.assetManager->getAssetOfType<Graphics::MeshModel>(modelName);
+	auto meshModelAsset = context.assets.getAssetOfType<Graphics::MeshModel>(modelName);
 	if (!meshModelAsset) {
 		throw std::runtime_error("Model deserialization error: MeshModel asset '" + modelName + "' not found");
 	}

@@ -72,7 +72,7 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 		std::string bhvName = bhvData.value("name", "");
 		nlohmann::json bhvJson = bhvData.value("data", nlohmann::json());
 
-		auto behavior = context.behaviorRegistry->createBehavior(bhvName);
+		auto behavior = context.behaviors.createBehavior(bhvName);
 		if (behavior) {
 			behavior->deserialize(bhvJson, context);
 			addBehavior(std::move(behavior));

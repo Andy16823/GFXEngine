@@ -4,14 +4,15 @@ namespace GFXEngine {
 	class AssetManager;
 	class BehaviorRegistry;
 
-	class SerializationContext
+	/// <summary>
+	/// SerializationContext provides necessary resources and information for the serialization and deserialization processes within the GFXEngine. 
+	/// </summary>
+	struct SerializationContext
 	{
-	public:
-		AssetManager* assetManager;
-		BehaviorRegistry* behaviorRegistry;
+		AssetManager& assets;
+		BehaviorRegistry& behaviors;
 
-		SerializationContext(AssetManager* assetMgr, BehaviorRegistry* behaviorReg)
-			: assetManager(assetMgr), behaviorRegistry(behaviorReg) {}
-		~SerializationContext() = default;
+		constexpr SerializationContext(AssetManager& assetMgr, BehaviorRegistry& behaviorReg) noexcept
+			: assets(assetMgr), behaviors(behaviorReg) {}
 	};
 }
