@@ -3,6 +3,7 @@
 #include "DataTypes.h"
 #include "EngineDefinitions.h"
 #include "EnviromentPipeline.h"
+#include "Utils.h"
 
 using namespace GFXEngine::Graphics;
 
@@ -41,6 +42,8 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 	renderer.destroyBuffer(indexStagingBuffer);
 
 	// Create descriptor set for cubemap
+	LibGFX::CubemapData cubemapData = GFXEngine::Utils::loadCubemap(m_faceFilepaths, false);
+	m_cubemap = renderer.loadCubemap(cubemapData);
 	m_cubemapDescriptorSet = renderer.allocateCubemapDescriptorSet(m_cubemap, 0);
 }
 
@@ -57,6 +60,7 @@ void EnviromentMap::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::G
 
 void EnviromentMap::destroy(GFXEngine::Graphics::Renderer& renderer)
 {
+	renderer.disposeCubemap(m_cubemap);
 	renderer.destroyBuffer(m_vertexBuffer);
 	renderer.destroyBuffer(m_indexBuffer);
 }
