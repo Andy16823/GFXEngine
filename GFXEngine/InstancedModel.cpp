@@ -3,6 +3,12 @@
 #include "EngineDefinitions.h"
 
 
+GFXEngine::Core::InstancedModel::InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount)
+	: m_meshModel(meshModel)
+{
+	m_instanceData.resize(instanceCount, { glm::mat4(1.0f), glm::vec4(0.0f) });
+}
+
 void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	if (dynamic_cast<Scene3D*>(&scene) == nullptr) {
@@ -13,7 +19,7 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	Entity::init(scene, renderer);
 
 	// Create storage buffer for instance data
-	auto bufferSize = m_instanceCount * sizeof(EngineTypes::InstanceData);
+	auto bufferSize = m_instanceData.size() * sizeof(EngineTypes::InstanceData);
 	m_instanceDataBuffer = renderer.createBuffer(
 		bufferSize,
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
@@ -23,12 +29,10 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	// Allocate descriptor set for instance data buffer
 	m_instanceDataDescriptorSet = renderer.allocateStorageBufferDescriptorSet(m_instanceDataBuffer, 0, renderer.getStorageBufferLayout());
 
-	// Bake initial instance data
-	m_instanceDataCache = bakeInstanceData();
-
 	// Persistently map the buffer for easy updates
 	m_mappedInstanceData = renderer.mapBuffer(m_instanceDataBuffer);
-	renderer.updateMappedBuffer(m_mappedInstanceData, bufferSize, m_instanceDataCache.data(), m_instanceCount);
+	renderer.updateMappedBuffer(m_mappedInstanceData, bufferSize, m_instanceData.data(), m_instanceData.size());
+	m_isDirty = false; // Data is now in sync with GPU
 }
 
 void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
@@ -37,15 +41,11 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 	if (this->isVisible()) {
 		Entity::render(scene, renderer, camera, imageIndex);
 
-		// Update instance data buffer if there are pending updates
-		size_t bufferSize = m_instanceCount * sizeof(EngineTypes::InstanceData);
-		for (const auto& [index, instanceData] : m_instanceUpdateQueue) {
-			if (index < m_instanceCount) {
-				renderer.updateMappedBufferRange(m_mappedInstanceData, bufferSize, &instanceData, 1, index);
-				m_instanceDataCache[index] = instanceData;
-			}
+		// Update instance data buffer if there are any pending updates
+		if (m_isDirty) {
+			renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());
+			m_isDirty = false;
 		}
-		m_instanceUpdateQueue.clear();
 
 		// Render the instanced model using the appropriate pipeline and descriptor sets
 		auto& scene3D = static_cast<Scene3D&>(scene);
@@ -62,7 +62,7 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 		for (size_t i = 0; i < meshCount; ++i) {
 			auto [mesh, material] = this->getMeshAndMaterial(i);
 			material.bind(renderer, camera, *pipeline, imageIndex);
-			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex, static_cast<uint32_t>(m_instanceCount));
+			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex, static_cast<uint32_t>(m_instanceData.size()));
 		}
 	}
 }
@@ -82,85 +82,66 @@ std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&
 
 GFXEngine::Math::AABB GFXEngine::Core::InstancedModel::computeInstanceAABB(size_t instanceIndex) const
 {
-	if (instanceIndex >= m_instanceCount) {
+	if (instanceIndex >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	auto instance = m_instanceDataCache[instanceIndex];
+	auto instance = m_instanceData[instanceIndex];
 	auto aabb = this->getAABB().applyTransform(instance.model);
 	return aabb;
 }
 
 bool GFXEngine::Core::InstancedModel::isInstanceVisible(size_t instanceIndex) const
 {
-	if (instanceIndex >= m_instanceCount) {
+	if (instanceIndex >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	auto instance = m_instanceDataCache[instanceIndex];
+	auto instance = m_instanceData[instanceIndex];
 	return (instance.extras.x > 0.0f);
 }
 
 void GFXEngine::Core::InstancedModel::hideInstance(size_t instanceIndex)
 {
-	if (instanceIndex >= m_instanceCount) {
+	if (instanceIndex >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	m_instanceDataCache[instanceIndex].extras.x = 0.0f;
-	this->invalidateInstance(instanceIndex);
+	m_instanceData[instanceIndex].extras.x = 0.0f;
+	m_isDirty = true;
 }
 
 void GFXEngine::Core::InstancedModel::showInstance(size_t instanceIndex)
 {
-	if (instanceIndex >= m_instanceCount) {
+	if (instanceIndex >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	m_instanceDataCache[instanceIndex].extras.x = 1.0f;
-	this->invalidateInstance(instanceIndex);
+	m_instanceData[instanceIndex].extras.x = 1.0f;
+	m_isDirty = true;
 }
 
 void GFXEngine::Core::InstancedModel::setInstanceModelMatrix(size_t instanceIndex, const glm::mat4& modelMatrix)
 {
-	if (instanceIndex >= m_instanceCount) {
+	if (instanceIndex >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	m_instanceDataCache[instanceIndex].model = modelMatrix;
-	this->invalidateInstance(instanceIndex);
-}
-
-void GFXEngine::Core::InstancedModel::invalidateInstance(size_t instanceIndex)
-{
-	if (instanceIndex >= m_instanceCount) {
-		throw std::out_of_range("Instance index out of range");
-	}
-	auto& instance = m_instanceDataCache[instanceIndex];
-	this->updateInstance({ instance.model, instance.extras }, instanceIndex);
+	m_instanceData[instanceIndex].model = modelMatrix;
+	m_isDirty = true;
 }
 
 size_t GFXEngine::Core::InstancedModel::findNextFreeInstance() const
 {
-	for (size_t i = 0; i < m_instanceCount; ++i) {
-		if (m_instanceDataCache[i].extras.x <= 0.0f) {
+	for (size_t i = 0; i < m_instanceData.size(); ++i) {
+		if (m_instanceData[i].extras.x <= 0.0f) {
 			return i;
 		}
 	}
-	return static_cast<size_t>(-1); // No free instance found
+	return static_cast<size_t>(-1);
 }
 
 glm::mat4 GFXEngine::Core::InstancedModel::getInstanceModelMatrix(size_t instanceIndex) const
 {
-	if(instanceIndex >= m_instanceCount) {
+	if(instanceIndex >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	return m_instanceDataCache[instanceIndex].model;
-}
-
-std::vector<GFXEngine::EngineTypes::InstanceData> GFXEngine::Core::InstancedModel::bakeInstanceData() const
-{
-	std::vector<EngineTypes::InstanceData> instanceData(m_instanceCount);
-	for (size_t i = 0; i < m_instanceCount; ++i) {
-		instanceData[i].model = this->transform.getModelMatrix();
-		instanceData[i].extras = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f); // You can use this for additional per-instance data if needed
-	}
-	return instanceData;
+	return m_instanceData[instanceIndex].model;
 }
 
 void GFXEngine::Core::InstancedModel::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
@@ -172,19 +153,21 @@ void GFXEngine::Core::InstancedModel::destroy(Scene& scene, GFXEngine::Graphics:
 
 void GFXEngine::Core::InstancedModel::updateInstance(const EngineTypes::InstanceData& instanceData, size_t index)
 {
-	if (index >= m_instanceCount) {
+	if (index >= m_instanceData.size()) {
 		throw std::out_of_range("Instance index out of range");
 	}
-	m_instanceUpdateQueue[index] = instanceData;
+	m_instanceData[index] = instanceData;
+	m_isDirty = true;
 }
 
 void GFXEngine::Core::InstancedModel::updateInstanceRange(const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex)
 {
 	size_t total = startIndex + instanceData.size();
-	if (total > m_instanceCount) {
+	if (total > m_instanceData.size()) {
 		throw std::out_of_range("Instance range out of range");
 	}
 	for (size_t i = 0; i < instanceData.size(); ++i) {
-		m_instanceUpdateQueue[startIndex + i] = instanceData[i];
+		m_instanceData[startIndex + i] = instanceData[i];
 	}
+	m_isDirty = true;
 }

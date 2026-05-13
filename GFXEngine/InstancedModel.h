@@ -13,9 +13,7 @@ namespace GFXEngine {
 		{
 		public:
 			InstancedModel() = default;
-			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount) 
-				: m_meshModel(meshModel), m_instanceCount(instanceCount) {
-			}
+			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount);
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
@@ -26,27 +24,23 @@ namespace GFXEngine {
 			size_t getMeshCount() const override;
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 
-			size_t getInstanceCount() const { return m_instanceCount; }
+			size_t getInstanceCount() const { return m_instanceData.size(); }
 			GFXEngine::Math::AABB computeInstanceAABB(size_t instanceIndex) const;
 			bool isInstanceVisible(size_t instanceIndex) const;
 			void hideInstance(size_t instanceIndex);
 			void showInstance(size_t instanceIndex);
 			void setInstanceModelMatrix(size_t instanceIndex, const glm::mat4& modelMatrix);
-			void invalidateInstance(size_t instanceIndex);
 			size_t findNextFreeInstance() const;
 			glm::mat4 getInstanceModelMatrix(size_t instanceIndex) const;
 
 		private:
-			std::vector<EngineTypes::InstanceData> m_instanceDataCache;
-			std::map<size_t, EngineTypes::InstanceData> m_instanceUpdateQueue;
+			std::vector<EngineTypes::InstanceData> m_instanceData;
 			Graphics::MeshModel* m_meshModel;
-			size_t m_instanceCount = 0;
+			bool m_isDirty = true;
 
 			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;
 			LibGFX::Buffer m_instanceDataBuffer;
 			void* m_mappedInstanceData = nullptr;
-
-			std::vector<EngineTypes::InstanceData> bakeInstanceData() const;
 		};
 	}
 }
