@@ -298,3 +298,99 @@ nlohmann::json GFXEngine::Utils::loadJsonFromFile(const std::string& filename)
 	file.close();
 	return jsonData;
 }
+
+nlohmann::json GFXEngine::Utils::serializeMat4(const glm::mat4& matrix)
+{
+	nlohmann::json jsonData;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			jsonData[i][j] = matrix[i][j];
+		}
+	}
+	return jsonData;
+}
+
+nlohmann::json GFXEngine::Utils::serializeVec2(const glm::vec2& vector)
+{
+	nlohmann::json jsonData;
+	jsonData[0] = vector.x;
+	jsonData[1] = vector.y;
+	return jsonData;
+}
+
+nlohmann::json GFXEngine::Utils::serializeVec3(const glm::vec3& vector)
+{
+	nlohmann::json jsonData;
+	jsonData[0] = vector.x;
+	jsonData[1] = vector.y;
+	jsonData[2] = vector.z;
+	return jsonData;
+}
+
+nlohmann::json GFXEngine::Utils::serializeVec4(const glm::vec4& vector)
+{
+	nlohmann::json jsonData;
+	jsonData[0] = vector.x;
+	jsonData[1] = vector.y;
+	jsonData[2] = vector.z;
+	jsonData[3] = vector.w;
+	return jsonData;
+}
+
+nlohmann::json GFXEngine::Utils::serializeQuat(const glm::quat& quat)
+{
+	nlohmann::json jsonData;
+	jsonData[0] = quat.x;
+	jsonData[1] = quat.y;
+	jsonData[2] = quat.z;	
+	jsonData[3] = quat.w;
+	return jsonData;
+}
+
+glm::mat4 GFXEngine::Utils::deserializeMat4(const nlohmann::json& jsonData)
+{
+	glm::mat4 matrix;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			matrix[i][j] = jsonData[i][j].get<float>();
+		}
+	}
+	return matrix;
+}
+
+glm::vec2 GFXEngine::Utils::deserializeVec2(const nlohmann::json& jsonData)
+{
+	glm::vec2 vector;
+	vector.x = jsonData[0].get<float>();
+	vector.y = jsonData[1].get<float>();
+	return vector;
+}
+
+glm::vec3 GFXEngine::Utils::deserializeVec3(const nlohmann::json& jsonData)
+{
+	glm::vec3 vector;
+	vector.x = jsonData[0].get<float>();
+	vector.y = jsonData[1].get<float>();
+	vector.z = jsonData[2].get<float>();
+	return vector;
+}
+
+glm::vec4 GFXEngine::Utils::deserializeVec4(const nlohmann::json& jsonData)
+{
+	glm::vec4 vector;
+	vector.x = jsonData[0].get<float>();
+	vector.y = jsonData[1].get<float>();
+	vector.z = jsonData[2].get<float>();
+	vector.w = jsonData[3].get<float>();
+	return vector;
+}
+
+glm::quat GFXEngine::Utils::deserializeQuat(const nlohmann::json& jsonData)
+{
+	glm::quat quat;
+	quat.x = jsonData[0].get<float>();
+	quat.y = jsonData[1].get<float>();
+	quat.z = jsonData[2].get<float>();
+	quat.w = jsonData[3].get<float>();
+	return quat;
+}

@@ -125,7 +125,7 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 			entity = std::make_unique<GFXEngine::Core::Model>(); 
 		}
 		else if (typeName == typeid(GFXEngine::Core::InstancedModel).name()) {
-			continue;
+			entity = std::make_unique<GFXEngine::Core::InstancedModel>();
 		}
 		else {
 			continue;

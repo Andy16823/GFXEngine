@@ -21,6 +21,9 @@ namespace GFXEngine {
 			void updateInstance(const EngineTypes::InstanceData& instanceData, size_t index);
 			void updateInstanceRange(const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex);
 
+			nlohmann::json serialize() const override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
+
 			size_t getMeshCount() const override;
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 

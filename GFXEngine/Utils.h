@@ -33,5 +33,16 @@ namespace GFXEngine {
 		static void log(const std::string& service, const std::string& message);
 		static void saveJsonToFile(const nlohmann::json& jsonData, const std::string& filename);
 		static nlohmann::json loadJsonFromFile(const std::string& filename);
+		static nlohmann::json serializeMat4(const glm::mat4& matrix);
+		static nlohmann::json serializeVec2(const glm::vec2& vector);
+		static nlohmann::json serializeVec3(const glm::vec3& vector);
+		static nlohmann::json serializeVec4(const glm::vec4& vector);
+		static nlohmann::json serializeQuat(const glm::quat& quat);
+
+		static glm::mat4 deserializeMat4(const nlohmann::json& jsonData);
+		static glm::vec2 deserializeVec2(const nlohmann::json& jsonData);
+		static glm::vec3 deserializeVec3(const nlohmann::json& jsonData);
+		static glm::vec4 deserializeVec4(const nlohmann::json& jsonData);
+		static glm::quat deserializeQuat(const nlohmann::json& jsonData);
 	};
 }

@@ -3,6 +3,8 @@
 #include "EngineDefinitions.h"
 #include <stdexcept>
 #include <iostream>
+#include "Utils.h"
+#include "AssetManager.h"
 
 
 GFXEngine::Core::InstancedModel::InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount)
@@ -173,4 +175,43 @@ void GFXEngine::Core::InstancedModel::updateInstanceRange(const std::span<const 
 		m_instanceData[startIndex + i] = instanceData[i];
 	}
 	m_isDirty = true;
+}
+
+nlohmann::json GFXEngine::Core::InstancedModel::serialize() const
+{
+	auto data = Entity::serialize();
+	data["meshModel"] = m_meshModel->getName();
+	data["instanceCount"] = m_instanceData.size();
+	data["instances"] = nlohmann::json::array();
+	for (const auto& instance : m_instanceData) {
+		nlohmann::json instanceJson;
+		instanceJson["model"] = Utils::serializeMat4(instance.model);
+		instanceJson["extras"] = Utils::serializeVec4(instance.extras);
+		data["instances"].push_back(instanceJson);
+	}
+	return data;
+}
+
+void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+{
+	Entity::deserialize(data, context);
+
+	if (!data.contains("meshModel") || !data["meshModel"].is_string()) {
+		throw std::runtime_error("InstancedModel deserialization error: 'meshModel' field is missing or not a string");
+	}
+	m_meshModel = context.assets.get<Graphics::MeshModel>(data["meshModel"].get<std::string>());
+
+	size_t instanceCount = data.value("instanceCount", 0);
+	m_instanceData.resize(instanceCount);
+	if (data.contains("instances") && data["instances"].is_array()) {
+		for (size_t i = 0; i < data["instances"].size(); ++i) {
+			const auto& instanceJson = data["instances"][i];
+			if(instanceJson.contains("model") && instanceJson.contains("extras")) {
+				m_instanceData[i].model = Utils::deserializeMat4(instanceJson["model"]);
+				m_instanceData[i].extras = Utils::deserializeVec4(instanceJson["extras"]);
+			} else {
+				throw std::runtime_error("InstancedModel deserialization error: Instance data is missing 'model' or 'extras' fields");
+			}
+		}
+	}
 }
