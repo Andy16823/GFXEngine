@@ -1,6 +1,8 @@
 #include "InstancedModel.h"
 #include "Scene3D.h"
 #include "EngineDefinitions.h"
+#include <stdexcept>
+#include <iostream>
 
 
 GFXEngine::Core::InstancedModel::InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount)
@@ -44,6 +46,7 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 		// Update instance data buffer if there are any pending updates
 		if (m_isDirty) {
 			renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());
+			std::cout << "Updated instance data buffer with " << m_instanceData.size() << " instances." << std::endl;
 			m_isDirty = false;
 		}
 
