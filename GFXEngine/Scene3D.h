@@ -96,8 +96,8 @@ namespace GFXEngine {
 				m_entities.clear();
 			}
 
-			void setEnviromentMap(Graphics::EnviromentMap& enviromentMap) {
-				m_enviromentMap = &enviromentMap;
+			void setEnviromentMap(Graphics::EnviromentMap* enviromentMap) {
+				m_enviromentMap = enviromentMap;
 			}
 
 		private:
