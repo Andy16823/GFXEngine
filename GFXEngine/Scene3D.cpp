@@ -109,7 +109,7 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 
 	if (data.contains("enviromentMap")) {
 		std::string envMapName = data["enviromentMap"].get<std::string>();
-		auto envmap = context.assets.getAssetOfType<GFXEngine::Graphics::EnviromentMap>(envMapName);
+		auto envmap = context.assets.get<GFXEngine::Graphics::EnviromentMap>(envMapName);
 		if (!envmap) {
 			throw std::runtime_error("Failed to find enviroment map asset with name: " + envMapName);
 		}

@@ -33,7 +33,7 @@ namespace GFXEngine {
 		}
 
 		template<typename T>
-		T* getAssetOfType(const std::string& name) {
+		T* get(const std::string& name) {
 			auto it = m_assets.find(name);
 
 			if (it == m_assets.end()) {
