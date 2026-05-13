@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Model.h"
 #include "InstancedModel.h"
+#include "AssetManager.h"
 
 /// <summary>
 /// Initializes the scene by initializing the directional light and all entities in the scene.
@@ -85,6 +86,7 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 {
 	nlohmann::json data;
 	data["directionalLight"] = directionalLight.serialize();
+	data["enviromentMap"] = m_enviromentMap ? m_enviromentMap->getName() : "";
 
 	for (const auto& entity : m_entities) {
 		nlohmann::json entityData = entity->serialize();
@@ -103,6 +105,15 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 {
 	if (data.contains("directionalLight")) {
 		directionalLight.deserialize(data["directionalLight"], context);
+	}
+
+	if (data.contains("enviromentMap")) {
+		std::string envMapName = data["enviromentMap"].get<std::string>();
+		auto envmap = context.assets.getAssetOfType<GFXEngine::Graphics::EnviromentMap>(envMapName);
+		if (!envmap) {
+			throw std::runtime_error("Failed to find enviroment map asset with name: " + envMapName);
+		}
+		m_enviromentMap = envmap;
 	}
 
 	auto entities = data["entities"];
