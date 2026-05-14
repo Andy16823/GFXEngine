@@ -75,7 +75,7 @@ void GFXEngine::Core::DebugBhv::destroy(Scene& scene, GFXEngine::Graphics::Rende
 std::vector<GFXEngine::Core::PropertyInfo> DebugBhv::getProperties() const
 {
 	std::vector<PropertyInfo> properties;
-	properties.push_back({ "Enabled", PropertyType::Bool, (void*)& m_isEnabled});
+	properties.push_back({ "Enabled", PropertyType::Bool, PropertyHint::None, (void*)& m_isEnabled});
 	return properties;
 }
 

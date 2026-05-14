@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "ISerializable.h"
+#include <variant>
 
 namespace GFXEngine {
 	namespace Core {
@@ -23,12 +24,39 @@ namespace GFXEngine {
 		};
 
 		/// <summary>
+		/// PropertyHint enum represents additional hints for how a property should be displayed or edited in an editor.
+		/// </summary>
+		enum class PropertyHint {
+			None,
+			Enum,
+			Color,
+			Multiline,
+			File,
+			Asset,
+			Entity
+		};
+
+		/// <summary>
+		/// EnumMetaData struct represents additional metadata for properties of type Enum, such as the list of options that should be displayed in an editor.
+		/// </summary>
+		struct EnumMetaData {
+			std::vector<std::string> options;
+		};
+
+		/// <summary>
+		/// PropertyMetaData is a variant type that can hold additional metadata for a property.
+		/// </summary>
+		using PropertyMetaData = std::variant<std::monostate, EnumMetaData>;
+
+		/// <summary>
 		/// PropertyInfo struct represents a property of a behavior.
 		/// </summary>
 		struct PropertyInfo {
 			std::string name;
 			PropertyType type;
+			PropertyHint hint = PropertyHint::None;
 			void* data;
+			PropertyMetaData metaData;
 		};
 
 		/// <summary>
