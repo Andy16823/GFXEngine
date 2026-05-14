@@ -41,6 +41,12 @@ void DirectionalLight::destroy(Renderer& renderer)
 	for (auto& buffer : m_uniformBuffers) {
 		renderer.destroyBuffer(buffer);
 	}
+	m_uniformBuffers.clear();
+
+	for (auto& descriptorSet : m_descriptorSets) {
+		renderer.freeUniformBufferDescriptorSet(descriptorSet);
+	}
+	m_descriptorSets.clear();
 }
 
 void DirectionalLight::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const
