@@ -152,6 +152,7 @@ glm::mat4 GFXEngine::Core::InstancedModel::getInstanceModelMatrix(size_t instanc
 void GFXEngine::Core::InstancedModel::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	Entity::destroy(scene, renderer);
+	renderer.freeStorageBufferDescriptorSet(m_instanceDataDescriptorSet);
 	renderer.unmapBuffer(m_instanceDataBuffer);
 	renderer.destroyBuffer(m_instanceDataBuffer);
 }
