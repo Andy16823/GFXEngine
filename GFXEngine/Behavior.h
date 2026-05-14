@@ -74,6 +74,7 @@ namespace GFXEngine {
 			PropertyHint hint = PropertyHint::None;
 			void* data;
 			PropertyMetaData metaData;
+			std::function<void()> onChanged;
 		};
 
 		/// <summary>
