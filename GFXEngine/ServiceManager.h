@@ -1,12 +1,16 @@
 #pragma once
-#include <map>
+#include <unordered_map>
+#include <string>
+#include <typeindex>
 
 namespace GFXEngine {
 	namespace Core {
 
-		/// <summary>
-		/// ServiceManager is a simple class that allows registering and retrieving services by a unique char identifier. 
-		/// </summary>
+		struct ServiceEntry {
+			std::type_index type;
+			void* service;
+		};
+
 		class ServiceManager {
 
 		public:
@@ -14,13 +18,35 @@ namespace GFXEngine {
 			~ServiceManager() = default;
 
 			template<typename T>
-			T* getService(char serviceId) {
-				return static_cast<T*>(m_services[serviceId]);
+			T* getService(const std::string& serviceId) {
+				auto it = m_services.find(serviceId);
+				if (it != m_services.end()) {
+					
+					if (it->second.type == typeid(T)) {
+						return static_cast<T*>(it->second.service);
+					}
+					throw std::runtime_error("Service type mismatch for service ID: " + serviceId);
+				}
+				return nullptr;
 			}
 
-			void registerService(char serviceId, void* service);
+			template<typename T>
+			void addService(const std::string& serviceId, T* service) {
+				if (m_services.find(serviceId) != m_services.end()) {
+					throw std::runtime_error("Service with ID '" + serviceId + "' already exists");
+				}
+				m_services.emplace(serviceId, ServiceEntry{ typeid(T), static_cast<void*>(service) });
+			}
+
+			void removeService(const std::string& serviceId) {
+				m_services.erase(serviceId);
+			}
+
+			void clearServices() {
+				m_services.clear();
+			}
 		private:
-			std::map<char, void*> m_services;
+			std::unordered_map<std::string, ServiceEntry> m_services;
 		};
 	}
 }
