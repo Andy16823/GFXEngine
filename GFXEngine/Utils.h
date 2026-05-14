@@ -29,6 +29,7 @@ namespace GFXEngine {
 		static std::string getBasePath(const std::string& filePath);
 		static std::string getFileName(const std::string& filePath);
 		static std::string generateUUID();
+		static bool fileExists(const std::string& filePath);
 		static bool isAbsolutePath(const std::string& filePath);
 		static void log(const std::string& service, const std::string& message);
 		static void saveJsonToFile(const nlohmann::json& jsonData, const std::string& filename);

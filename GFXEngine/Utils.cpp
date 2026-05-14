@@ -261,6 +261,12 @@ std::string GFXEngine::Utils::generateUUID()
 	return ss.str();
 }
 
+bool GFXEngine::Utils::fileExists(const std::string& filePath)
+{
+	std::ifstream file(filePath);
+	return file.good();
+}
+
 bool GFXEngine::Utils::isAbsolutePath(const std::string& filePath)
 {
 #ifdef _WIN32
