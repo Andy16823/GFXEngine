@@ -29,11 +29,10 @@ namespace GFXEngine {
 		enum class PropertyHint {
 			None,
 			Enum,
-			Color,
 			Multiline,
 			File,
 			Asset,
-			Entity
+			Range
 		};
 
 		/// <summary>
@@ -44,9 +43,27 @@ namespace GFXEngine {
 		};
 
 		/// <summary>
+		/// MetaData struct for an range between a minimum and maximum value, with an optional step value.
+		/// </summary>
+		struct RangeMetaData {
+			float min;
+			float max;
+			float step;
+		};
+
+		/// <summary>
+		/// MetaData struct for an integer range between a minimum and maximum value, with an optional step value.
+		/// </summary>
+		struct RangeIntMetaData {
+			int min;
+			int max;
+			int step;
+		};
+
+		/// <summary>
 		/// PropertyMetaData is a variant type that can hold additional metadata for a property.
 		/// </summary>
-		using PropertyMetaData = std::variant<std::monostate, EnumMetaData>;
+		using PropertyMetaData = std::variant<std::monostate, EnumMetaData, RangeMetaData, RangeIntMetaData>;
 
 		/// <summary>
 		/// PropertyInfo struct represents a property of a behavior.
