@@ -51,6 +51,7 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 {
 	nlohmann::json data;
 	data["name"] = name;
+	data["uuid"] = uuid;
 	data["visible"] = m_visible;
 	data["transform"] = transform.serialize();
 	data["tags"] = m_tags;
@@ -69,6 +70,7 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
 {
 	name = data.value("name", "");
+	uuid = data.value("uuid", Utils::generateUUID());
 	m_visible = data.value("visible", true);
 	transform.deserialize(data.value("transform", nlohmann::json()), context);
 	m_tags = data.value("tags", std::vector<std::string>());
