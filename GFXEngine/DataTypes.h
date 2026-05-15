@@ -1,14 +1,8 @@
 #pragma once
 #include <vector>
-#include <string>
 #include <glm/glm.hpp>
 
 namespace GFXEngine {
-
-	namespace Core {
-		class Entity;
-	}
-
 	namespace EngineTypes {
 
 		/// <summary>
@@ -91,15 +85,6 @@ namespace GFXEngine {
 		{
 			glm::vec4 direction; // w component can be used for padding
 			glm::vec4 color;     // w component can be used for intensity
-		};
-
-		/// <summary>
-		/// EntityReferencePointer is a simple structure that holds a reference to an entity by its UUID and a pointer to the actual entity.
-		/// </summary>
-		struct EntityReferencePointer
-		{
-			std::string uuid;
-			GFXEngine::Core::Entity* entity;
 		};
 	}
 }
