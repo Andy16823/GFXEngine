@@ -30,6 +30,7 @@ namespace GFXEngine {
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
 
 			void addEntity(std::unique_ptr<Entity> entity) {
+				entity->setScene(this);
 				m_entities.push_back(std::move(entity));
 			}
 
@@ -76,6 +77,15 @@ namespace GFXEngine {
 			Entity* findEntityByName(const std::string& name) {
 				for (auto& entity : m_entities) {
 					if (entity->getName() == name) {
+						return entity.get();
+					}
+				}
+				return nullptr;
+			}
+
+			Entity* findEntityByUUID(const std::string& uuid) {
+				for (auto& entity : m_entities) {
+					if (entity->getUUID() == uuid) {
 						return entity.get();
 					}
 				}

@@ -18,6 +18,12 @@ namespace GFXEngine {
 
 			virtual nlohmann::json serialize() const override = 0;
 			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override = 0;
+
+			template<typename T>
+			T* as() {
+				static_assert(std::is_base_of_v<Scene, T>, "T must be a subclass of Scene");
+				return dynamic_cast<T*>(this);
+			}
 		};
 	}
 }

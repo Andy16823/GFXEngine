@@ -25,9 +25,11 @@ namespace GFXEngine {
 		{
 
 		public:
+			std::string name;
+			std::string uuid;
 			GFXEngine::Math::Transform transform;
 
-			Entity() = default;
+			Entity();
 			virtual ~Entity() = default;
 
 			Entity(const Entity&) = delete; // Disable copy semantics
@@ -49,6 +51,12 @@ namespace GFXEngine {
 			Math::AABB getAABB() const { return m_aabb; }
 			Math::AABB getWorldAABB() const { return m_aabb.applyTransform(transform.getModelMatrix()); }
 			void setAABB(const Math::AABB& aabb) { m_aabb = aabb; }
+
+			template<typename T>
+			T* as() {
+				static_assert(std::is_base_of_v<Entity, T>, "T must be a subclass of Entity");
+				return dynamic_cast<T*>(this);
+			}
 
 			template<typename T>
 			T* addBehavior(std::unique_ptr<T> behavior) {
@@ -84,11 +92,23 @@ namespace GFXEngine {
 			}
 
 			const std::string& getName() const { 
-				return m_name; 
+				return name; 
 			}
 
 			void setName(const std::string& name) { 
-				m_name = name; 
+				this->name = name; 
+			}
+
+			void setScene(Scene* scene) {
+				m_scene = scene;
+			}
+
+			Scene* getScene() const {
+				return m_scene;
+			}
+
+			const std::string& getUUID() const {
+				return uuid;
 			}
 
 			bool hasTag(const std::string& tag) const {
@@ -110,8 +130,8 @@ namespace GFXEngine {
 			std::vector<std::string> m_tags;
 			std::vector<std::unique_ptr<Behavior>> m_behaviors;
 			Math::AABB m_aabb;
+			Scene* m_scene = nullptr;
 			bool m_visible = true;
-			std::string m_name;
 		};
 	}
 }

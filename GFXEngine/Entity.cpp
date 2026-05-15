@@ -1,6 +1,12 @@
 #include "Entity.h"
 #include "Behavior.h"
 #include "BehaviorRegistry.h"
+#include "Utils.h"
+
+GFXEngine::Core::Entity::Entity()
+{
+	uuid = GFXEngine::Utils::generateUUID();
+}
 
 void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
@@ -44,7 +50,7 @@ void GFXEngine::Core::Entity::destroy(Scene& scene, GFXEngine::Graphics::Rendere
 nlohmann::json GFXEngine::Core::Entity::serialize() const
 {
 	nlohmann::json data;
-	data["name"] = m_name;
+	data["name"] = name;
 	data["visible"] = m_visible;
 	data["transform"] = transform.serialize();
 	data["tags"] = m_tags;
@@ -62,7 +68,7 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 
 void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
 {
-	m_name = data.value("name", "");
+	name = data.value("name", "");
 	m_visible = data.value("visible", true);
 	transform.deserialize(data.value("transform", nlohmann::json()), context);
 	m_tags = data.value("tags", std::vector<std::string>());
