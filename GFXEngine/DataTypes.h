@@ -3,6 +3,11 @@
 #include <glm/glm.hpp>
 
 namespace GFXEngine {
+
+	namespace Core {
+		class Entity;
+	}
+
 	namespace EngineTypes {
 
 		/// <summary>
@@ -85,6 +90,14 @@ namespace GFXEngine {
 		{
 			glm::vec4 direction; // w component can be used for padding
 			glm::vec4 color;     // w component can be used for intensity
+		};
+
+		/// <summary>
+		/// EntityReference is a simple structure that holds a non-owning pointer to an Entity.
+		/// </summary>
+		struct EntityReference
+		{
+			GFXEngine::Core::Entity* entity;
 		};
 	}
 }
