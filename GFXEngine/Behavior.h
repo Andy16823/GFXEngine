@@ -32,7 +32,7 @@ namespace GFXEngine {
 			virtual void destroy(Scene& scene, Graphics::Renderer& renderer) = 0;
 
 			virtual std::string getName() const = 0;
-			virtual std::vector<PropertyInfo> getProperties() const = 0;
+			virtual std::vector<PropertyInfo> getProperties() = 0;
 			virtual nlohmann::json serialize() const override = 0;
 			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override = 0;
 

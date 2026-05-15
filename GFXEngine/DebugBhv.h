@@ -16,7 +16,7 @@ namespace GFXEngine {
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
 
 			std::string getName() const override { return "DebugBhv"; }
-			std::vector<PropertyInfo> getProperties() const override;
+			std::vector<PropertyInfo> getProperties() override;
 
 		private:
 			LibGFX::Buffer m_debugVertexBuffer;
