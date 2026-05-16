@@ -42,7 +42,9 @@ namespace GFXEngine {
 				return data;
 			}
 			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override {
-				m_uuid = data.value("uuid", Utils::generateUUID());
+				if (data != NULL) {
+					m_uuid = data.value("uuid", Utils::generateUUID());
+				}
 			}
 
 			Entity* getEntity() const { return m_entity; }
