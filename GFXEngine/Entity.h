@@ -77,6 +77,42 @@ namespace GFXEngine {
 				throw std::runtime_error("Behavior not found");
 			}
 
+			void removeBehavior(const std::string& behaviorUUID) {
+				m_behaviors.erase(std::remove_if(m_behaviors.begin(), m_behaviors.end(),
+					[&](const std::unique_ptr<Behavior>& behavior) {
+						return behavior->getUUID() == behaviorUUID;
+					}), m_behaviors.end());
+			}
+
+			void removeBehavior(const std::string& behaviorUUID, std::function<void(Behavior*)> onDestroy) {
+				m_behaviors.erase(std::remove_if(m_behaviors.begin(), m_behaviors.end(),
+					[&](const std::unique_ptr<Behavior>& behavior) {
+						if (behavior->getUUID() == behaviorUUID) {
+							onDestroy(behavior.get());
+							return true;
+						}
+						return false;
+					}), m_behaviors.end());
+			}
+
+			void removeBehavior(Behavior* behaviorToRemove) {
+				m_behaviors.erase(std::remove_if(m_behaviors.begin(), m_behaviors.end(),
+					[&](const std::unique_ptr<Behavior>& behavior) {
+						return behavior.get() == behaviorToRemove;
+					}), m_behaviors.end());
+			}
+
+			void removeBehavior(Behavior* behaviorToRemove, std::function<void(Behavior*)> onDestroy) {
+				m_behaviors.erase(std::remove_if(m_behaviors.begin(), m_behaviors.end(),
+					[&](const std::unique_ptr<Behavior>& behavior) {
+						if (behavior.get() == behaviorToRemove) {
+							onDestroy(behavior.get());
+							return true;
+						}
+						return false;
+					}), m_behaviors.end());
+			}
+
 			void foreachBehavior(const std::function<void(Behavior*)>& func) {
 				for (auto& behavior : m_behaviors) {
 					func(behavior.get());
