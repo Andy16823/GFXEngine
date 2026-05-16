@@ -75,18 +75,22 @@ void GFXEngine::Core::DebugBhv::destroy(Scene& scene, GFXEngine::Graphics::Rende
 std::vector<GFXEngine::Core::PropertyInfo> DebugBhv::getProperties()
 {
 	std::vector<PropertyInfo> properties;
-	properties.push_back({ "Enabled", PropertyType::Bool, PropertyHint::None, (void*)& m_isEnabled});
+	properties.push_back({ 
+		.name = "Enabled",
+		.data = &m_isEnabled,
+	});
 	return properties;
 }
 
 nlohmann::json DebugBhv::serialize() const
 {
-	nlohmann::json data;
+	nlohmann::json data = Behavior::serialize();
 	data["enabled"] = m_isEnabled;
 	return data;
 }
 
 void DebugBhv::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
 {
+	Behavior::deserialize(data, context);
 	m_isEnabled = data.value("enabled", true);
 }

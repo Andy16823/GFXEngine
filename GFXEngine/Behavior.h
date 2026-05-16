@@ -4,6 +4,7 @@
 #include "ISerializable.h"
 #include <variant>
 #include "PropertyInfo.h"
+#include "Utils.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -14,11 +15,12 @@ namespace GFXEngine {
 		/// </summary>
 		class Behavior : public GFXEngine::ISerializable {
 		protected:
-			class Entity* m_entity;
+			class Entity* m_entity = nullptr;
+			std::string m_uuid;
 
 		public:
 
-			Behavior() = default;
+			Behavior() : m_uuid(Utils::generateUUID()) {}
 			virtual ~Behavior() = default;
 			Behavior(const Behavior&) = delete;
 			Behavior& operator=(const Behavior&) = delete;
@@ -33,10 +35,18 @@ namespace GFXEngine {
 
 			virtual std::string getName() const = 0;
 			virtual std::vector<PropertyInfo> getProperties() = 0;
-			virtual nlohmann::json serialize() const override = 0;
-			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override = 0;
+
+			virtual nlohmann::json serialize() const override {
+				nlohmann::json data;
+				data["uuid"] = m_uuid;
+				return data;
+			}
+			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override {
+				m_uuid = data.value("uuid", Utils::generateUUID());
+			}
 
 			Entity* getEntity() const { return m_entity; }
+			const std::string& getUUID() const { return m_uuid; }
 		};
 	}
 }

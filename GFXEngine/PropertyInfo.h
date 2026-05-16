@@ -1,4 +1,5 @@
 #pragma once
+#include "DataTypes.h"
 #include <string>
 #include <variant>
 #include <vector>
@@ -6,20 +7,6 @@
 
 namespace GFXEngine {
 	namespace Core {
-		/// <summary>
-		/// PropertyType enum represents the type of a property that can be used in a behavior.
-		/// </summary>
-		enum class PropertyType {
-			String,
-			Int,
-			Bool,
-			Float,
-			Vector2,
-			Vector3,
-			Vector4,
-			Color,
-			Entity
-		};
 
 		/// <summary>
 		/// PropertyHint enum represents additional hints for how a property should be displayed or edited in an editor.
@@ -64,13 +51,17 @@ namespace GFXEngine {
 		using PropertyMetaData = std::variant<std::monostate, EnumMetaData, RangeMetaData, RangeIntMetaData>;
 
 		/// <summary>
+		/// PropertyDataPointer is a variant type that can hold a pointer to the actual data of a property.
+		/// </summary>
+		using PropertyDataPointer = std::variant<std::string*, int*, bool*, float*, glm::vec2*, glm::vec3*, glm::vec4*, glm::quat*, GFXEngine::EngineTypes::EntityReference*>;
+
+		/// <summary>
 		/// PropertyInfo struct represents a property of a behavior.
 		/// </summary>
 		struct PropertyInfo {
 			std::string name;
-			PropertyType type;
+			PropertyDataPointer data;
 			PropertyHint hint = PropertyHint::None;
-			void* data;
 			PropertyMetaData metaData;
 			std::function<void()> onChanged;
 		};
