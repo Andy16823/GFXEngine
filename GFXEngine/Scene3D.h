@@ -22,7 +22,7 @@ namespace GFXEngine {
 
 			void init(Graphics::Renderer& renderer) override;
 			void update(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) override;
-			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
+			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections = nullptr) override;
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
 

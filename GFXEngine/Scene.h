@@ -5,6 +5,16 @@
 
 namespace GFXEngine {
 	namespace Core {
+
+		struct RenderInjections {
+			std::function<void(class Scene&, GFXEngine::Graphics::Renderer&, GFXEngine::Graphics::Camera&, uint32_t)> beforeRender;
+			std::function<void(class Scene&, class Entity&, GFXEngine::Graphics::Renderer&, GFXEngine::Graphics::Camera&, uint32_t)> onEntityRender;
+			std::function<void(class Scene&, GFXEngine::Graphics::Renderer&, GFXEngine::Graphics::Camera&, uint32_t)> beforeEnvironment;
+			std::function<void(class Scene&, GFXEngine::Graphics::Renderer&, GFXEngine::Graphics::Camera&, uint32_t)> afterEnvironment;
+			std::function<void(class Scene&, GFXEngine::Graphics::Renderer&, GFXEngine::Graphics::Camera&, uint32_t)> afterRender;
+		};
+
+
 		class Scene : public GFXEngine::ISerializable
 		{
 		public:
@@ -12,7 +22,7 @@ namespace GFXEngine {
 			virtual ~Scene() = default;
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) = 0;
 			virtual void update(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) = 0;
-			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
+			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections = nullptr) = 0;
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) = 0;
 			virtual void input(int key, int mods, int action) = 0;
 

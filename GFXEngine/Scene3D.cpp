@@ -39,17 +39,37 @@ void GFXEngine::Core::Scene3D::update(Graphics::Renderer& renderer, Graphics::Ca
 /// <param name="renderer"></param>
 /// <param name="camera"></param>
 /// <param name="imageIndex"></param>
-void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
+/// <param name="injections"></param>
+void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections)
 {
+	if (injections && injections->beforeRender) {
+		injections->beforeRender(*this, renderer, camera, imageIndex);
+	}
+
 	for (auto& entity : m_entities)
 	{
 		if (entity->isVisible()) {
 			entity->render(*this, renderer, camera, imageIndex);
 		}
+		if (injections && injections->onEntityRender) {
+			injections->onEntityRender(*this, *entity, renderer, camera, imageIndex);
+		}
 	}
 
 	if(m_enviromentMap) {
+		if (injections && injections->beforeEnvironment) {
+			injections->beforeEnvironment(*this, renderer, camera, imageIndex);
+		}
+
 		m_enviromentMap->render(renderer, camera, imageIndex);
+
+		if (injections && injections->afterEnvironment) {
+			injections->afterEnvironment(*this, renderer, camera, imageIndex);
+		}
+	}
+
+	if (injections && injections->afterRender) {
+		injections->afterRender(*this, renderer, camera, imageIndex);
 	}
 }
 
