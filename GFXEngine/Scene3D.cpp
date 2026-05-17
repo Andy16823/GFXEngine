@@ -111,7 +111,6 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 
 	for (const auto& entity : m_entities) {
 		nlohmann::json entityData = entity->serialize();
-		entityData["type"] = typeid(*entity).name();
 		data["entities"].push_back(entityData);
 	}
 	return data;

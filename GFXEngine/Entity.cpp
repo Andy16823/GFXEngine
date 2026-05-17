@@ -50,6 +50,7 @@ void GFXEngine::Core::Entity::destroy(Scene& scene, GFXEngine::Graphics::Rendere
 nlohmann::json GFXEngine::Core::Entity::serialize() const
 {
 	nlohmann::json data;
+	data["type"] = typeid(*this).name();
 	data["name"] = name;
 	data["uuid"] = uuid;
 	data["visible"] = m_visible;
