@@ -20,7 +20,7 @@ void GFXEngine::Graphics::DirectionalLight::init(Renderer& renderer)
 	}
 }
 
-void DirectionalLight::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+void DirectionalLight::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	direction = glm::vec3(data["direction"][0], data["direction"][1], data["direction"][2]);
 	color = glm::vec3(data["color"][0], data["color"][1], data["color"][2]);

@@ -67,12 +67,16 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 	return data;
 }
 
-void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	name = data.value("name", "");
-	uuid = data.value("uuid", Utils::generateUUID());
+	if (hasFlag(flags, GFXEngine::SerializationFlags::RegenerateUUID)) {
+		uuid = Utils::generateUUID();
+	} else {
+		uuid = data.value("uuid", Utils::generateUUID());
+	}
 	m_visible = data.value("visible", true);
-	transform.deserialize(data.value("transform", nlohmann::json()), context);
+	transform.deserialize(data.value("transform", nlohmann::json()), context, flags);
 	m_tags = data.value("tags", std::vector<std::string>());
 
 	auto behaviorsData = data.value("behaviors", std::vector<nlohmann::json>());
@@ -82,7 +86,7 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 
 		auto behavior = context.behaviors.createBehavior(bhvName);
 		if (behavior) {
-			behavior->deserialize(bhvJson, context);
+			behavior->deserialize(bhvJson, context, flags);
 			addBehavior(std::move(behavior));
 		} else {
 			throw std::runtime_error("Unknown behavior type: " + bhvName);

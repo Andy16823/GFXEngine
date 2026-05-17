@@ -13,7 +13,7 @@ namespace GFXEngine {
 			void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 
 			nlohmann::json serialize() const override;
-			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			std::string getName() const override { return "DebugBhv"; }
 			std::vector<PropertyInfo> getProperties() override;

@@ -29,7 +29,7 @@ namespace GFXEngine {
 			void destroy(Renderer& renderer);
 
 			nlohmann::json serialize() const override;
-			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			glm::vec3 direction = glm::vec3(-0.5f, -1.0f, -0.3f);
 			glm::vec3 color = glm::vec3(1.0f, 0.95f, 0.9f);

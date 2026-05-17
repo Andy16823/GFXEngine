@@ -121,7 +121,8 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 /// </summary>
 /// <param name="data"></param>
 /// <param name="context"></param>
-void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+/// <param name="flags"></param>
+void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	if (data.contains("directionalLight")) {
 		directionalLight.deserialize(data["directionalLight"], context);
@@ -150,7 +151,7 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		else {
 			continue;
 		}
-		entity->deserialize(entityData, context);
+		entity->deserialize(entityData, context, flags);
 		addEntity(std::move(entity));
 	}
 }

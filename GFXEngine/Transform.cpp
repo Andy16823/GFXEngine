@@ -106,7 +106,7 @@ nlohmann::json GFXEngine::Math::Transform::serialize() const
 	return data;
 }
 
-void GFXEngine::Math::Transform::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+void GFXEngine::Math::Transform::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	if (data.contains("position")) {
 		position = glm::vec3(data["position"][0], data["position"][1], data["position"][2]);

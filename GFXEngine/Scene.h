@@ -27,7 +27,7 @@ namespace GFXEngine {
 			virtual void input(int key, int mods, int action) = 0;
 
 			virtual nlohmann::json serialize() const override = 0;
-			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override = 0;
+			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override = 0;
 
 			template<typename T>
 			T* as() {

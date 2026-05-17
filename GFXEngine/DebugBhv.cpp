@@ -89,8 +89,8 @@ nlohmann::json DebugBhv::serialize() const
 	return data;
 }
 
-void DebugBhv::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+void DebugBhv::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
-	Behavior::deserialize(data, context);
+	Behavior::deserialize(data, context, flags);
 	m_isEnabled = data.value("enabled", true);
 }

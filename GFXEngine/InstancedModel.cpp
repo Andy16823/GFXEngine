@@ -193,9 +193,9 @@ nlohmann::json GFXEngine::Core::InstancedModel::serialize() const
 	return data;
 }
 
-void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context)
+void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
-	Entity::deserialize(data, context);
+	Entity::deserialize(data, context, flags);
 
 	if (!data.contains("meshModel") || !data["meshModel"].is_string()) {
 		throw std::runtime_error("InstancedModel deserialization error: 'meshModel' field is missing or not a string");

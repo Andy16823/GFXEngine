@@ -38,7 +38,7 @@ namespace GFXEngine {
 			glm::vec3 getUp();
 
 			nlohmann::json serialize() const override;
-			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 		};
 	}
 }

@@ -43,7 +43,7 @@ namespace GFXEngine {
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 
 			nlohmann::json serialize() const override;
-			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;

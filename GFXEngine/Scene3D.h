@@ -27,7 +27,7 @@ namespace GFXEngine {
 			void input(int key, int mods, int action) override;
 
 			nlohmann::json serialize() const override;
-			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context) override;
+			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			void addEntity(std::unique_ptr<Entity> entity) {
 				entity->setScene(this);
