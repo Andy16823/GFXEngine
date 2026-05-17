@@ -93,3 +93,13 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 		}
 	}
 }
+
+void GFXEngine::Core::Entity::exportToPrefab(const std::filesystem::path& path) const
+{
+	if (!std::filesystem::exists(path.parent_path())) {
+		std::filesystem::create_directories(path.parent_path());
+	}
+	nlohmann::json prefabData;
+	prefabData["prefab"] = serialize();
+	Utils::saveJsonToFile(prefabData, path.string());
+}

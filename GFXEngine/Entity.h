@@ -14,6 +14,7 @@
 #include "Scene.h"
 #include "AABB.h"
 #include "ISerializable.h"
+#include <filesystem>
 
 namespace GFXEngine {
 	namespace Core {
@@ -44,6 +45,8 @@ namespace GFXEngine {
 
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
+
+			void exportToPrefab(const std::filesystem::path& path) const;
 
 			virtual size_t getMeshCount() const = 0;
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;

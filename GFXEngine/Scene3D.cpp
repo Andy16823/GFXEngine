@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "InstancedModel.h"
 #include "AssetManager.h"
+#include "Utils.h"
 
 /// <summary>
 /// Initializes the scene by initializing the directional light and all entities in the scene.
@@ -154,4 +155,26 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		entity->deserialize(entityData, context, flags);
 		addEntity(std::move(entity));
 	}
+}
+
+GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context)
+{
+	// Ensure the path exists before trying to load it
+	if (!std::filesystem::exists(path)) {
+		throw std::runtime_error("Prefab file does not exist: " + path.string());
+	}
+
+	// Load the prefab JSON data from the file and ensure it contains the necessary "prefab" field
+	auto json = Utils::loadJsonFromFile(path.string());
+	if (!json.contains("prefab")) {
+		throw std::runtime_error("Invalid prefab file: " + path.string());
+	}
+
+	// Create a new entity based on the prefab data, ensuring that new UUIDs are generated to avoid conflicts with existing entities in the scene
+	auto entity = std::make_unique<Entity>();
+	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID); // When instantiating a prefab, we want to generate new UUIDs for the entities to avoid conflicts with existing entities in the scene
+	addEntity(std::move(entity));
+
+	// Return a pointer to the newly instantiated entity to initialize it or modify it after instantiation if needed
+	return entity.get();
 }

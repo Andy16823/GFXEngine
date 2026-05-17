@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "ISerializable.h"
+#include <filesystem>
 
 namespace GFXEngine {
 	namespace Core {
@@ -28,6 +29,8 @@ namespace GFXEngine {
 
 			virtual nlohmann::json serialize() const override = 0;
 			virtual void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override = 0;
+
+			virtual class Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) = 0;
 
 			template<typename T>
 			T* as() {

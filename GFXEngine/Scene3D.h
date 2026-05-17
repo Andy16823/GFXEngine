@@ -29,6 +29,8 @@ namespace GFXEngine {
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
+			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
+
 			void addEntity(std::unique_ptr<Entity> entity) {
 				entity->setScene(this);
 				m_entities.push_back(std::move(entity));
