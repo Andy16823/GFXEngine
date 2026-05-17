@@ -170,11 +170,24 @@ GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::
 		throw std::runtime_error("Invalid prefab file: " + path.string());
 	}
 
-	// Create a new entity based on the prefab data, ensuring that new UUIDs are generated to avoid conflicts with existing entities in the scene
-	auto entity = std::make_unique<Entity>();
-	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID); // When instantiating a prefab, we want to generate new UUIDs for the entities to avoid conflicts with existing entities in the scene
-	addEntity(std::move(entity));
+	// Ensure the prefab JSON data contains the necessary "type" field to determine which entity type to instantiate
+	if (!json["prefab"].contains("type")) {
+		throw std::runtime_error("Invalid prefab file: " + path.string());
+	}
 
-	// Return a pointer to the newly instantiated entity to initialize it or modify it after instantiation if needed
-	return entity.get();
+	std::unique_ptr<Entity> entity;
+	std::string typeName = json["prefab"]["type"].get<std::string>();
+
+	if (typeName == typeid(GFXEngine::Core::Model).name()) {
+		entity = std::make_unique<GFXEngine::Core::Model>();
+	}
+	else if (typeName == typeid(GFXEngine::Core::InstancedModel).name()) {
+		entity = std::make_unique<GFXEngine::Core::InstancedModel>();
+	}
+	else {
+		throw std::runtime_error("Unknown entity type in prefab: " + typeName);
+	}
+	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID); // When instantiating a prefab, we want to generate new UUIDs for the entities to avoid conflicts with existing entities in the scene
+	
+	return addEntity(std::move(entity));
 }

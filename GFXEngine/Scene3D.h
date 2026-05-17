@@ -31,9 +31,13 @@ namespace GFXEngine {
 
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
 
-			void addEntity(std::unique_ptr<Entity> entity) {
+			template<typename T>
+			T* addEntity(std::unique_ptr<T> entity) {
+				static_assert(std::is_base_of<Entity, T>::value, "T must be derived from Entity");
 				entity->setScene(this);
+				T* entityPtr = entity.get();
 				m_entities.push_back(std::move(entity));
+				return entityPtr;
 			}
 
 			std::vector<Entity*> getEntities() {
