@@ -48,7 +48,7 @@ void GFXEngine::Core::DebugBhv::init(Scene& scene, GFXEngine::Graphics::Renderer
 	m_indexCount = static_cast<uint32_t>(indices.size());
 }
 
-void GFXEngine::Core::DebugBhv::update(Scene& scene, float deltaTime)
+void GFXEngine::Core::DebugBhv::update(Scene& scene, GFXEngine::Graphics::Renderer& renderer, float deltaTime)
 {
 
 }

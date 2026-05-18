@@ -30,7 +30,7 @@ void GFXEngine::Core::Scene3D::update(Graphics::Renderer& renderer, Graphics::Ca
 {
 	for (auto& entity : m_entities)
 	{
-		entity->update(*this, deltaTime);
+		entity->update(*this, renderer, deltaTime);
 	}
 	directionalLight.update(renderer, camera, imageIndex);
 }

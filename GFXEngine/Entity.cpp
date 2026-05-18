@@ -26,10 +26,10 @@ void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& 
 	}
 }
 
-void GFXEngine::Core::Entity::update(Scene& scene, float deltaTime)
+void GFXEngine::Core::Entity::update(Scene& scene, GFXEngine::Graphics::Renderer& renderer, float deltaTime)
 {
 	for (auto& behavior : m_behaviors) {
-		behavior->update(scene, deltaTime);
+		behavior->update(scene, renderer, deltaTime);
 	}
 }
 
