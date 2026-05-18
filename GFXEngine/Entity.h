@@ -116,9 +116,15 @@ namespace GFXEngine {
 					}), m_behaviors.end());
 			}
 
-			void foreachBehavior(const std::function<void(Behavior*)>& func) {
-				for (auto& behavior : m_behaviors) {
-					func(behavior.get());
+			void foreachBehavior(const std::function<void(Behavior*)>& func, bool reverse = false) {
+				if (reverse) {
+					for (auto it = m_behaviors.rbegin(); it != m_behaviors.rend(); ++it) {
+						func(it->get());
+					}
+				} else {
+					for (auto& behavior : m_behaviors) {
+						func(behavior.get());
+					}
 				}
 			}
 
