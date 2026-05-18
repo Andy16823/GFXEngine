@@ -41,7 +41,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		});
 
 	m_renderer->registerSwapchainRecreationCallback([this](Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) {
-		m_windowSize = { static_cast<int>(viewport.width), static_cast<int>(viewport.height) };
+		int width, height;
+		glfwGetWindowSize(m_window, &width, &height);
+		m_windowSize = { width, height };
 		this->afterSwapchainRecreate(renderer, viewport, scissor);
 		});
 
