@@ -18,7 +18,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	glfwSetWindowUserPointer(m_window, this);
 
 	// Create services and register them in the runtime context
-	this->inputManager = std::make_unique<InputManager>(m_window);
+	this->inputManager = std::make_unique<GFXEngine::InputManager>(m_window);
 
 	// Register core services in the runtime context so they can be accessed globally
 	GFXEngine::RuntimeContext::getInstance().addService(ASSET_MANAGER_SERVICE_ID, assetManager.get());
