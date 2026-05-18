@@ -5,6 +5,7 @@
 #include "DataTypes.h"
 #include "AssetManager.h"
 #include "BehaviorRegistry.h"
+#include "EntityFactory.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -16,6 +17,7 @@ namespace GFXEngine {
 
 			std::unique_ptr<AssetManager> assetManager = std::make_unique<AssetManager>();
 			std::unique_ptr<BehaviorRegistry> behaviorRegistry = std::make_unique<BehaviorRegistry>();
+			std::unique_ptr<EntityFactory> entityFactory = std::make_unique<EntityFactory>();
 
 			// Non-virtual function to start the game loop
 			void start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title = "My Game", bool fullscreen = false, bool validationLayers = true);
@@ -42,6 +44,7 @@ namespace GFXEngine {
 			float getTime() const { return m_lastFrameTime; }
 			float getFPS() const { return (m_deltaTime > 0.0f) ? (1.0f / m_deltaTime) : 0.0f; }
 			float getTargetFPS() const { return m_targetFPS; }
+			SerializationContext createSerializationContext() {	return SerializationContext(*assetManager, *behaviorRegistry, *entityFactory); }
 
 			// Setters
 			void setTargetFPS(float fps) { m_targetFPS = fps; }

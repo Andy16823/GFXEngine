@@ -1,8 +1,10 @@
 ﻿#pragma once
 #include "ServiceManager.h"
+#include "SerializationContext.h"
 
 const std::string ASSET_MANAGER_SERVICE_ID = "AssetManager";
 const std::string BEHAVIOR_REGISTRY_SERVICE_ID = "BehaviorRegistry";
+const std::string ENTITY_FACTORY_SERVICE_ID = "EntityFactory";
 
 namespace GFXEngine {
 	class RuntimeContext
@@ -26,6 +28,14 @@ namespace GFXEngine {
 		void removeService(const std::string& serviceId) {
 			m_serviceManager.removeService(serviceId);
 		}
+
+		SerializationContext createSerializationContext() {
+			AssetManager* assetManager = getService<AssetManager>(ASSET_MANAGER_SERVICE_ID);
+			BehaviorRegistry* behaviorRegistry = getService<BehaviorRegistry>(BEHAVIOR_REGISTRY_SERVICE_ID);
+			EntityFactory* entityFactory = getService<EntityFactory>(ENTITY_FACTORY_SERVICE_ID);
+			return SerializationContext(*assetManager, *behaviorRegistry, *entityFactory);
+		}
+
 	private:
 		RuntimeContext() = default;
 		~RuntimeContext() = default;

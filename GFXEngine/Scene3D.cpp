@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "InstancedModel.h"
 #include "AssetManager.h"
+#include "EntityFactory.h"
 #include "Utils.h"
 
 /// <summary>
@@ -140,17 +141,13 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 	auto entities = data["entities"];
 	for(const auto& entityData : entities) {
 		std::string typeName = entityData["type"];
-		std::unique_ptr<Entity> entity;
+		std::unique_ptr<Entity> entity = context.entityFactory.createEntity(typeName);
 	
-		if (typeName == typeid(GFXEngine::Core::Model).name()) {
-			entity = std::make_unique<GFXEngine::Core::Model>(); 
-		}
-		else if (typeName == typeid(GFXEngine::Core::InstancedModel).name()) {
-			entity = std::make_unique<GFXEngine::Core::InstancedModel>();
-		}
-		else {
+		if (!entity) {
+			// Continue to the next entity if the type is unknown.
 			continue;
 		}
+
 		entity->deserialize(entityData, context, flags);
 		addEntity(std::move(entity));
 	}
@@ -174,16 +171,9 @@ GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::
 		throw std::runtime_error("Invalid prefab file: " + path.string());
 	}
 
-	std::unique_ptr<Entity> entity;
 	std::string typeName = json["prefab"]["type"].get<std::string>();
-
-	if (typeName == typeid(GFXEngine::Core::Model).name()) {
-		entity = std::make_unique<GFXEngine::Core::Model>();
-	}
-	else if (typeName == typeid(GFXEngine::Core::InstancedModel).name()) {
-		entity = std::make_unique<GFXEngine::Core::InstancedModel>();
-	}
-	else {
+	std::unique_ptr<Entity> entity = context.entityFactory.createEntity(typeName);
+	if (!entity) {
 		throw std::runtime_error("Unknown entity type in prefab: " + typeName);
 	}
 	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID); // When instantiating a prefab, we want to generate new UUIDs for the entities to avoid conflicts with existing entities in the scene

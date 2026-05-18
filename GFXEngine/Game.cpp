@@ -1,12 +1,21 @@
 #include "Game.h"
 #include <thread>
 #include "RuntimeContext.h"
+#include "Model.h"
+#include "InstancedModel.h"
+#include "Sprite.h"
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
 {
+	// Register core entity types in the entity factory
+	this->entityFactory->registerEntity<GFXEngine::Core::Model>();
+	this->entityFactory->registerEntity<GFXEngine::Core::InstancedModel>();
+	//this->entityFactory->registerEntity<GFXEngine::Core::Sprite>(); TODO: Add a default constructor to Sprite that initializes the material and mesh references, then register it here.
+
 	// Register core services in the runtime context so they can be accessed globally
 	GFXEngine::RuntimeContext::getInstance().addService(ASSET_MANAGER_SERVICE_ID, assetManager.get());
 	GFXEngine::RuntimeContext::getInstance().addService(BEHAVIOR_REGISTRY_SERVICE_ID, behaviorRegistry.get());
+	GFXEngine::RuntimeContext::getInstance().addService(ENTITY_FACTORY_SERVICE_ID, entityFactory.get());
 
 	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
 

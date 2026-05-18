@@ -6,7 +6,7 @@
 #include "SpriteMaterial.h"
 #include "Mesh.h"
 
-
+// TODO: Add Serialization support for Sprite (including material and mesh references) make mesh and material an pointer and add an standard constructor.
 namespace GFXEngine {
 	namespace Core {
 
