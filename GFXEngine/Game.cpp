@@ -32,6 +32,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) {
 			game->onInput(key, mods, action);
+			game->inputManager->handleInput(key, mods, action);
 		}
 	});
 
