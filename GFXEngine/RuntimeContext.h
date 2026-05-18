@@ -17,8 +17,9 @@ namespace GFXEngine {
 			return instance;
 		}
 
-		void addService(const std::string& serviceId, void* service) {
-			m_serviceManager.addService(serviceId, service);
+		template<typename T>
+		void addService(const std::string& serviceId, T* service) {
+			m_serviceManager.addService<T>(serviceId, service);
 		}
 
 		template<typename T>

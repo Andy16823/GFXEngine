@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "InstancedModel.h"
 #include "Sprite.h"
+#include "InputManager.h"
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
 {
