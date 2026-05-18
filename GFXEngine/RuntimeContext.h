@@ -5,6 +5,7 @@
 const std::string ASSET_MANAGER_SERVICE_ID = "AssetManager";
 const std::string BEHAVIOR_REGISTRY_SERVICE_ID = "BehaviorRegistry";
 const std::string ENTITY_FACTORY_SERVICE_ID = "EntityFactory";
+const std::string INPUT_MANAGER_SERVICE_ID = "InputManager";
 
 namespace GFXEngine {
 	class RuntimeContext

@@ -6,6 +6,7 @@
 #include "AssetManager.h"
 #include "BehaviorRegistry.h"
 #include "EntityFactory.h"
+#include "InputManager.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -18,6 +19,7 @@ namespace GFXEngine {
 			std::unique_ptr<AssetManager> assetManager = std::make_unique<AssetManager>();
 			std::unique_ptr<BehaviorRegistry> behaviorRegistry = std::make_unique<BehaviorRegistry>();
 			std::unique_ptr<EntityFactory> entityFactory = std::make_unique<EntityFactory>();
+			std::unique_ptr<InputManager> inputManager = nullptr;
 
 			// Non-virtual function to start the game loop
 			void start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title = "My Game", bool fullscreen = false, bool validationLayers = true);

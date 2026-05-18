@@ -12,16 +12,19 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	this->entityFactory->registerEntity<GFXEngine::Core::InstancedModel>();
 	//this->entityFactory->registerEntity<GFXEngine::Core::Sprite>(); TODO: Add a default constructor to Sprite that initializes the material and mesh references, then register it here.
 
+	// Create the window and initialize the renderer
+	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
+	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen, m_resizable);
+	glfwSetWindowUserPointer(m_window, this);
+
+	// Create services and register them in the runtime context
+	this->inputManager = std::make_unique<InputManager>(m_window);
+
 	// Register core services in the runtime context so they can be accessed globally
 	GFXEngine::RuntimeContext::getInstance().addService(ASSET_MANAGER_SERVICE_ID, assetManager.get());
 	GFXEngine::RuntimeContext::getInstance().addService(BEHAVIOR_REGISTRY_SERVICE_ID, behaviorRegistry.get());
 	GFXEngine::RuntimeContext::getInstance().addService(ENTITY_FACTORY_SERVICE_ID, entityFactory.get());
-
-	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
-
-	// Create window and renderer
-	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen, m_resizable);
-	glfwSetWindowUserPointer(m_window, this);
+	GFXEngine::RuntimeContext::getInstance().addService(INPUT_MANAGER_SERVICE_ID, inputManager.get());
 
 	// Input callback
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
