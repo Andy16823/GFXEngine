@@ -21,11 +21,7 @@ namespace GFXEngine {
 			T* getService(const std::string& serviceId) {
 				auto it = m_services.find(serviceId);
 				if (it != m_services.end()) {
-					
-					if (it->second.type == typeid(T)) {
-						return static_cast<T*>(it->second.service);
-					}
-					throw std::runtime_error("Service type mismatch for service ID: " + serviceId);
+					return static_cast<T*>(it->second.service);
 				}
 				return nullptr;
 			}
