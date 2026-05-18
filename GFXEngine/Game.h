@@ -46,9 +46,11 @@ namespace GFXEngine {
 			float getFPS() const { return (m_deltaTime > 0.0f) ? (1.0f / m_deltaTime) : 0.0f; }
 			float getTargetFPS() const { return m_targetFPS; }
 			SerializationContext createSerializationContext() {	return SerializationContext(*assetManager, *behaviorRegistry, *entityFactory); }
+			bool isResizable() const { return m_resizable; }
 
 			// Setters
 			void setTargetFPS(float fps) { m_targetFPS = fps; }
+			void setResizable(bool resizable) { m_resizable = resizable; }
 
 		private:
 			GLFWwindow* m_window = nullptr;
@@ -57,6 +59,7 @@ namespace GFXEngine {
 			float m_targetFPS = 120.0f;
 			float m_lastFrameTime = 0.0f;
 			float m_deltaTime = 0.0f;
+			bool m_resizable = true;
 		};
 	}
 }
