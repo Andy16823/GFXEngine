@@ -20,13 +20,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
 
 	// Create window and renderer
-	if (m_resizable) {
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	}
-	else {
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	}
-	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen);
+	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen, m_resizable);
 	glfwSetWindowUserPointer(m_window, this);
 
 	// Input callback

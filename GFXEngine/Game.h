@@ -59,7 +59,7 @@ namespace GFXEngine {
 			float m_targetFPS = 120.0f;
 			float m_lastFrameTime = 0.0f;
 			float m_deltaTime = 0.0f;
-			bool m_resizable = true;
+			bool m_resizable = false;
 		};
 	}
 }
