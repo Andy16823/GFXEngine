@@ -68,7 +68,6 @@ void GFXEngine::Core::DebugBhv::render(Scene& scene, GFXEngine::Graphics::Render
 
 void GFXEngine::Core::DebugBhv::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
-	renderer.waitIdle(); // Ensure GPU is not using the buffers before destroying
 	renderer.destroyBuffer(m_debugVertexBuffer);
 	renderer.destroyBuffer(m_debugIndexBuffer);
 }
