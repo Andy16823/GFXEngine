@@ -48,6 +48,16 @@ void GFXEngine::Core::UIContext::init(GFXEngine::Graphics::Renderer& renderer, G
 	ImGui_ImplVulkan_Init(&initInfo);
 }
 
+std::string UIContext::createLabelID(const std::string& base, uint32_t id)
+{
+	return createLabelID(base, std::to_string(id));
+}
+
+std::string UIContext::createLabelID(const std::string& base, const std::string& id)
+{
+	return base + "##" + id;
+}
+
 bool UIContext::gizmoIsUsing()
 {
 	return ImGuizmo::IsUsing();

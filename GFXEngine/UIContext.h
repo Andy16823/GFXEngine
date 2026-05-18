@@ -41,6 +41,8 @@ namespace GFXEngine {
 			static void beginnFullscreen(const char* title, ImGuiWindowFlags flags = ImGuiWindowFlags_None);
 			static void createButton(const char* label, const std::function<void()>& onClick);
 			static void createImage(VkDescriptorSet descriptorSet, const glm::vec2& size);
+			static std::string createLabelID(const std::string& base, const std::string& id);
+			static std::string createLabelID(const std::string& base, uint32_t id);
 			
 			// Guizmo functions
 			static bool transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation = GuizmoOperation::Translate);
