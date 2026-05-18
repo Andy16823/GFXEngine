@@ -94,6 +94,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		m_renderer->submitFrame(imageIndex);
 		m_renderer->presentFrame(imageIndex);
 
+		// Call user-defined after render
+		this->afterRender(*m_renderer, imageIndex);
+
 		// Advance to the next frame
 		m_renderer->advanceFrame();
 	}

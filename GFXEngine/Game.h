@@ -27,6 +27,7 @@ namespace GFXEngine {
 			virtual void onStart(Graphics::Renderer& renderer) = 0;
 			virtual void onUpdate(Graphics::Renderer& renderer, uint32_t imageIndex, float deltaTime) = 0;
 			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
+			virtual void afterRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
 			virtual void onInput(int key, int mods, int action) = 0;
 			virtual void onSwpachainRecreate(Graphics::Renderer& renderer) = 0;
