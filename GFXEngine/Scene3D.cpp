@@ -26,12 +26,16 @@ void GFXEngine::Core::Scene3D::init(Graphics::Renderer& renderer)
 /// <param name="camera"></param>
 /// <param name="imageIndex"></param>
 /// <param name="deltaTime"></param>
-void GFXEngine::Core::Scene3D::update(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime)
+void GFXEngine::Core::Scene3D::update(Graphics::Camera& camera, float deltaTime)
 {
 	for (auto& entity : m_entities)
 	{
-		entity->update(*this, renderer, deltaTime);
+		entity->update(*this, camera, deltaTime);
 	}
+}
+
+void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
+{
 	directionalLight.update(renderer, camera, imageIndex);
 }
 
@@ -73,6 +77,17 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 	if (injections && injections->afterRender) {
 		injections->afterRender(*this, renderer, camera, imageIndex);
 	}
+}
+
+/// <summary>
+/// After rendering the scene, this function can be used to perform any necessary operations such as post-processing effects or cleanup. 
+/// </summary>
+/// <param name="renderer"></param>
+/// <param name="camera"></param>
+/// <param name="imageIndex"></param>
+void GFXEngine::Core::Scene3D::afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
+{
+
 }
 
 /// <summary>

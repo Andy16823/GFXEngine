@@ -1,4 +1,5 @@
 #pragma once
+#include "ServiceManager.h"
 #include "Renderer.h"
 #include "Camera.h"
 #include "LibGFX.h"
@@ -14,12 +15,13 @@ namespace GFXEngine {
 		{
 		public:
 			Game() = default;
-			~Game() = default;
+			virtual ~Game() = default;
 
+			std::unique_ptr<ServiceManager> serviceManager = std::make_unique<ServiceManager>();
 			std::unique_ptr<AssetManager> assetManager = std::make_unique<AssetManager>();
 			std::unique_ptr<BehaviorRegistry> behaviorRegistry = std::make_unique<BehaviorRegistry>();
 			std::unique_ptr<EntityFactory> entityFactory = std::make_unique<EntityFactory>();
-			std::unique_ptr<InputManager> inputManager = nullptr;
+			std::unique_ptr<InputManager> inputManager = std::make_unique<InputManager>();
 
 			// Non-virtual function to start the game loop
 			void start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title = "My Game", bool fullscreen = false, bool validationLayers = true);
@@ -28,6 +30,7 @@ namespace GFXEngine {
 			virtual void onInit(Graphics::Renderer& renderer) = 0;
 			virtual void onStart(Graphics::Renderer& renderer) = 0;
 			virtual void onUpdate(Graphics::Renderer& renderer, uint32_t imageIndex, float deltaTime) = 0;
+			virtual void beforeRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void afterRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;

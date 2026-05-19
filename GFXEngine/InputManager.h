@@ -23,8 +23,11 @@ namespace GFXEngine {
 
 		uint32_t generateCallbackId() {	return m_nextCallbackId++; }
 	public:
+		InputManager() = default;
 		InputManager(GLFWwindow* window) : m_window(window) {}
 		~InputManager() = default;
+
+		void init(GLFWwindow* window) { m_window = window; }
 
 		bool isKeyPressed(int key) const;
 		bool isKeyReleased(int key) const;

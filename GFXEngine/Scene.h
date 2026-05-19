@@ -22,8 +22,10 @@ namespace GFXEngine {
 			Scene() = default;
 			virtual ~Scene() = default;
 			virtual void init(GFXEngine::Graphics::Renderer& renderer) = 0;
-			virtual void update(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) = 0;
+			virtual void update(GFXEngine::Graphics::Camera& camera, float deltaTime) = 0;
+			virtual void beforeRender(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
 			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections = nullptr) = 0;
+			virtual void afterRender(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
 			virtual void destroy(GFXEngine::Graphics::Renderer& renderer) = 0;
 			virtual void input(int key, int mods, int action) = 0;
 

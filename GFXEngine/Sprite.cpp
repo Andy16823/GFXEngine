@@ -12,9 +12,9 @@ void GFXEngine::Core::Sprite::init(Scene& scene,  GFXEngine::Graphics::Renderer&
 	Entity::init(scene, renderer);
 }
 
-void GFXEngine::Core::Sprite::update(Scene& scene, GFXEngine::Graphics::Renderer& renderer, float deltaTime)
+void GFXEngine::Core::Sprite::update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime)
 {
-	Entity::update(scene, renderer, deltaTime);
+	Entity::update(scene, camera, deltaTime);
 }
 
 void GFXEngine::Core::Sprite::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)

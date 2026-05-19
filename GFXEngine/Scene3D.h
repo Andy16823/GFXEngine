@@ -21,8 +21,10 @@ namespace GFXEngine {
 			virtual ~Scene3D() = default;
 
 			void init(Graphics::Renderer& renderer) override;
-			void update(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, float deltaTime) override;
+			void update(Graphics::Camera& camera, float deltaTime) override;
+			void beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections = nullptr) override;
+			void afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
 

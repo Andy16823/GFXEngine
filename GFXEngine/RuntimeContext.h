@@ -1,40 +1,43 @@
 ﻿#pragma once
+
+#include <GLFW/glfw3.h>
 #include "ServiceManager.h"
 #include "SerializationContext.h"
-
-const std::string ASSET_MANAGER_SERVICE_ID = "AssetManager";
-const std::string BEHAVIOR_REGISTRY_SERVICE_ID = "BehaviorRegistry";
-const std::string ENTITY_FACTORY_SERVICE_ID = "EntityFactory";
-const std::string INPUT_MANAGER_SERVICE_ID = "InputManager";
+#include "AssetManager.h"
+#include "BehaviorRegistry.h"
+#include "EntityFactory.h"
+#include "InputManager.h"
 
 namespace GFXEngine {
+
 	class RuntimeContext
 	{
 	public: 
-		static RuntimeContext& getInstance()
+
+		static RuntimeContext& get()
 		{
 			static RuntimeContext instance;
 			return instance;
 		}
 
-		template<typename T>
-		void addService(const std::string& serviceId, T* service) {
-			m_serviceManager.addService<T>(serviceId, service);
-		}
+		void setWindow(GLFWwindow* window) { m_window = window; }
+		void setServiceManager(ServiceManager* manager) { m_serviceManager = manager; }
+		void setAssetManager(AssetManager* manager) { m_assetManager = manager; }
+		void setBehaviorRegistry(BehaviorRegistry* registry) { m_behaviorRegistry = registry; }
+		void setEntityFactory(EntityFactory* factory) { m_entityFactory = factory; }
+		void setInputManager(InputManager* manager) { m_inputManager = manager; }
 
-		template<typename T>
-		T* getService(const std::string& serviceId) {
-			return m_serviceManager.getService<T>(serviceId);
-		}
-
-		void removeService(const std::string& serviceId) {
-			m_serviceManager.removeService(serviceId);
-		}
-
+		GLFWwindow* getWindow() const { return m_window; }
+		ServiceManager* getServiceManager() { return m_serviceManager; }
+		AssetManager* getAssetManager() const { return m_assetManager; }
+		BehaviorRegistry* getBehaviorRegistry() const { return m_behaviorRegistry; }
+		EntityFactory* getEntityFactory() const { return m_entityFactory; }
+		InputManager* getInputManager() const { return m_inputManager; }
+		
 		SerializationContext createSerializationContext() {
-			AssetManager* assetManager = getService<AssetManager>(ASSET_MANAGER_SERVICE_ID);
-			BehaviorRegistry* behaviorRegistry = getService<BehaviorRegistry>(BEHAVIOR_REGISTRY_SERVICE_ID);
-			EntityFactory* entityFactory = getService<EntityFactory>(ENTITY_FACTORY_SERVICE_ID);
+			AssetManager* assetManager = m_assetManager;
+			BehaviorRegistry* behaviorRegistry = m_behaviorRegistry;
+			EntityFactory* entityFactory = m_entityFactory;
 			return SerializationContext(*assetManager, *behaviorRegistry, *entityFactory);
 		}
 
@@ -47,6 +50,11 @@ namespace GFXEngine {
 		RuntimeContext(RuntimeContext&&) = delete;
 		RuntimeContext& operator=(RuntimeContext&&) = delete;
 
-		Core::ServiceManager m_serviceManager;
+		GLFWwindow* m_window = nullptr;
+		ServiceManager* m_serviceManager = nullptr;
+		AssetManager* m_assetManager = nullptr;
+		BehaviorRegistry* m_behaviorRegistry = nullptr;
+		EntityFactory* m_entityFactory = nullptr;
+		InputManager* m_inputManager = nullptr;
 	};
 }

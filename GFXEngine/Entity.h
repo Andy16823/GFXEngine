@@ -39,7 +39,7 @@ namespace GFXEngine {
 			Entity& operator=(Entity&&) = default; // Allow move semantics
 
 			virtual void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
-			virtual void update(Scene& scene, GFXEngine::Graphics::Renderer& renderer, float deltaTime);
+			virtual void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime);
 			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 

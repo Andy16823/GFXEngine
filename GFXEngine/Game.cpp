@@ -17,15 +17,15 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
 	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen, m_resizable);
 	glfwSetWindowUserPointer(m_window, this);
+	this->inputManager->init(m_window);
 
-	// Create services and register them in the runtime context
-	this->inputManager = std::make_unique<GFXEngine::InputManager>(m_window);
-
-	// Register core services in the runtime context so they can be accessed globally
-	GFXEngine::RuntimeContext::getInstance().addService(ASSET_MANAGER_SERVICE_ID, assetManager.get());
-	GFXEngine::RuntimeContext::getInstance().addService(BEHAVIOR_REGISTRY_SERVICE_ID, behaviorRegistry.get());
-	GFXEngine::RuntimeContext::getInstance().addService(ENTITY_FACTORY_SERVICE_ID, entityFactory.get());
-	GFXEngine::RuntimeContext::getInstance().addService(INPUT_MANAGER_SERVICE_ID, inputManager.get());
+	// Create the static runtime context and register core services
+	GFXEngine::RuntimeContext::get().setWindow(m_window);
+	GFXEngine::RuntimeContext::get().setServiceManager(serviceManager.get());
+	GFXEngine::RuntimeContext::get().setAssetManager(assetManager.get());
+	GFXEngine::RuntimeContext::get().setBehaviorRegistry(behaviorRegistry.get());
+	GFXEngine::RuntimeContext::get().setEntityFactory(entityFactory.get());
+	GFXEngine::RuntimeContext::get().setInputManager(inputManager.get());
 
 	// Input callback
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -120,6 +120,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		// Call user-defined update
 		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);
 
+		// Call user-defined before render
+		this->beforeRender(*m_renderer, imageIndex);
+
 		// Start recording commands for the current frame
 		m_renderer->beginFrame(imageIndex);
 		this->onRender(*m_renderer, imageIndex);
@@ -146,12 +149,6 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	behaviorRegistry->clear();
 	entityFactory->clear();
 	inputManager->clearCallbacks();
-
-	// Unregister services from the runtime context
-	GFXEngine::RuntimeContext::getInstance().removeService(ASSET_MANAGER_SERVICE_ID);
-	GFXEngine::RuntimeContext::getInstance().removeService(BEHAVIOR_REGISTRY_SERVICE_ID);
-	GFXEngine::RuntimeContext::getInstance().removeService(ENTITY_FACTORY_SERVICE_ID);
-	GFXEngine::RuntimeContext::getInstance().removeService(INPUT_MANAGER_SERVICE_ID);
 }
 
 glm::vec2 GFXEngine::Core::Game::getCursorPos() const

@@ -8,7 +8,7 @@ namespace GFXEngine {
 		{
 		public:
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
-			void update(Scene& scene, GFXEngine::Graphics::Renderer& renderer, float deltaTime) override;
+			void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime) override;
 			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 
