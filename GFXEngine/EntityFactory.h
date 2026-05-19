@@ -52,7 +52,6 @@ namespace GFXEngine
 			return result.second;
 		}
 
-
 		std::unique_ptr<GFXEngine::Core::Entity> createEntity(const std::string& name) const 
 		{
 			auto it = m_entityCreators.find(name);
@@ -61,6 +60,11 @@ namespace GFXEngine
 				return it->second();
 			}
 			return nullptr;
+		}
+
+		void clear()
+		{
+			m_entityCreators.clear();
 		}
 	};
 }

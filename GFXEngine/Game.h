@@ -32,7 +32,10 @@ namespace GFXEngine {
 			virtual void afterRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void onDestroy(Graphics::Renderer& renderer) = 0;
 			virtual void onInput(int key, int mods, int action) = 0;
-			virtual void onSwpachainRecreate(Graphics::Renderer& renderer) = 0;
+			virtual void onMouseInput(int button, int mods, int action) = 0;
+			virtual void onMouseMove(double xpos, double ypos) = 0;
+			virtual void onScroll(double xoffset, double yoffset) = 0;
+			virtual void onSwapchainRecreate(Graphics::Renderer& renderer) = 0;
 			virtual void afterSwapchainRecreate(Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) = 0;
 
 			// Optional overrides for asset loading and behavior registration

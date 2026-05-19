@@ -36,13 +36,40 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		}
 	});
 
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) 
+		{ 
+			game->onMouseInput(button, mods, action);
+			game->inputManager->handleMouseButton(button, mods, action);
+		}
+	});
+
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) 
+		{
+			game->onMouseMove(xpos, ypos);
+			game->inputManager->handleMouseMove(xpos, ypos);
+		}
+	});
+
+	glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) 
+		{
+			game->onScroll(xoffset, yoffset);
+			game->inputManager->handleScroll(xoffset, yoffset);
+		}
+	});
+
 	m_renderer = std::make_unique<Graphics::Renderer>();
 	m_renderer->setValidationEnabled(validationLayers);
 	m_renderer->init(m_window, shadersDirectory);
 
 	// Register swapchain recreation callbacks
 	m_renderer->registerSwapchainCleanupCallback([this](Graphics::Renderer& renderer) {
-		this->onSwpachainRecreate(renderer);
+		this->onSwapchainRecreate(renderer);
 		});
 
 	m_renderer->registerSwapchainRecreationCallback([this](Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) {
@@ -117,8 +144,14 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	// Clean up assets and behaviors
 	assetManager->clear();
 	behaviorRegistry->clear();
+	entityFactory->clear();
+	inputManager->clearCallbacks();
+
+	// Unregister services from the runtime context
 	GFXEngine::RuntimeContext::getInstance().removeService(ASSET_MANAGER_SERVICE_ID);
 	GFXEngine::RuntimeContext::getInstance().removeService(BEHAVIOR_REGISTRY_SERVICE_ID);
+	GFXEngine::RuntimeContext::getInstance().removeService(ENTITY_FACTORY_SERVICE_ID);
+	GFXEngine::RuntimeContext::getInstance().removeService(INPUT_MANAGER_SERVICE_ID);
 }
 
 glm::vec2 GFXEngine::Core::Game::getCursorPos() const
