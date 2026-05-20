@@ -15,6 +15,7 @@
 #include "AABB.h"
 #include "ISerializable.h"
 #include <filesystem>
+#include "PropertyInfo.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -43,6 +44,7 @@ namespace GFXEngine {
 			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 
+			virtual std::vector<PropertyInfo> getProperties();
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 

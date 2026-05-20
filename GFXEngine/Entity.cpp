@@ -47,6 +47,43 @@ void GFXEngine::Core::Entity::destroy(Scene& scene, GFXEngine::Graphics::Rendere
 	}
 }
 
+std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Entity::getProperties()
+{
+	std::vector<PropertyInfo> properties;
+	properties.push_back({
+			.name = "Name",
+			.data = &name,
+		});
+
+	properties.push_back({
+			.name = "UUID",
+			.data = &uuid,
+			.hint = PropertyHint::ReadOnly
+		});
+
+	properties.push_back({
+			.name = "Position",
+			.data = &transform.position,
+		});
+
+	properties.push_back({
+			.name = "Rotation",
+			.data = &transform.rotation,
+		});
+
+	properties.push_back({
+			.name = "Scale",
+			.data = &transform.scale,
+		});
+
+	properties.push_back({
+			.name = "Visible",
+			.data = &m_visible,
+		});
+
+	return properties;
+}
+
 nlohmann::json GFXEngine::Core::Entity::serialize() const
 {
 	nlohmann::json data;

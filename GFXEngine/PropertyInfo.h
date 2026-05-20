@@ -15,6 +15,7 @@ namespace GFXEngine {
 			None,
 			Enum,
 			Multiline,
+			ReadOnly,
 			File,
 			Asset,
 			Range
