@@ -11,8 +11,8 @@ namespace GFXEngine {
 		class UIWidget {
 		private:
 			bool m_isVisible = false;
-			std::string m_name = nullptr;
-			std::string m_uuid = nullptr;
+			std::string m_name;
+			std::string m_uuid;
 
 		public:
 
