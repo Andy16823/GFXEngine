@@ -126,7 +126,8 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 
 	properties.push_back({
 		.name = "Light Color",
-		.data = &directionalLight.color
+		.data = &directionalLight.color,
+		.hint = PropertyHint::Color
 		});
 
 	properties.push_back({

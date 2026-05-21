@@ -19,6 +19,7 @@ namespace GFXEngine {
 			ReadOnly,
 			File,
 			Asset,
+			Color,	
 			Range
 		};
 

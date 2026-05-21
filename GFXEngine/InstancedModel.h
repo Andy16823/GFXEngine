@@ -11,6 +11,15 @@ namespace GFXEngine {
 
 		class InstancedModel : public Entity
 		{
+		private:
+			std::vector<EngineTypes::InstanceData> m_instanceData;
+			EngineTypes::AssetReference m_meshModelRef;
+			bool m_isDirty = true;
+
+			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;
+			LibGFX::Buffer m_instanceDataBuffer;
+			void* m_mappedInstanceData = nullptr;
+
 		public:
 			InstancedModel() = default;
 			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount);
@@ -35,15 +44,6 @@ namespace GFXEngine {
 			void setInstanceModelMatrix(size_t instanceIndex, const glm::mat4& modelMatrix);
 			size_t findNextFreeInstance() const;
 			glm::mat4 getInstanceModelMatrix(size_t instanceIndex) const;
-
-		private:
-			std::vector<EngineTypes::InstanceData> m_instanceData;
-			Graphics::MeshModel* m_meshModel;
-			bool m_isDirty = true;
-
-			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;
-			LibGFX::Buffer m_instanceDataBuffer;
-			void* m_mappedInstanceData = nullptr;
 		};
 	}
 }

@@ -3,11 +3,15 @@
 #include "EngineDefinitions.h"
 #include "AssetManager.h"
 
+GFXEngine::Core::Model::Model(Graphics::MeshModel* meshModel)
+{
+	m_meshModelRef.set(meshModel);
+}
+
 void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	Entity::init(scene, renderer);
 
-	// Ensure the model is being initialized in a Scene3D context
 	if (dynamic_cast<Scene3D*>(&scene) == nullptr) {
 		throw std::runtime_error("Model can only be initialized in a Scene3D");
 	}
@@ -43,34 +47,43 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 
 nlohmann::json GFXEngine::Core::Model::serialize() const
 {
+	// Serialize base entity data first
 	nlohmann::json data = Entity::serialize();
-	data["meshModel"] = m_meshModel->getName();
+
+	// Serialize mesh model reference by storing the name of the referenced mesh model asset
+	data["meshModel"] = m_meshModelRef.get<Graphics::MeshModel>()->getName();
 	return data;
 }
 
 void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
+	// Deserialize base entity data first
 	Entity::deserialize(data, context, flags);
+
+	// Deserialize mesh model reference
 	if (!data.contains("meshModel") || !data["meshModel"].is_string()) {
 		throw std::runtime_error("Model deserialization error: 'meshModel' field is missing or not a string");
 	}
 	auto modelName = data["meshModel"].get<std::string>();
+
+	// Look up the mesh model asset by name and set the reference
 	auto meshModelAsset = context.assets.get<Graphics::MeshModel>(modelName);
 	if (!meshModelAsset) {
 		throw std::runtime_error("Model deserialization error: MeshModel asset '" + modelName + "' not found");
 	}
-	m_meshModel = meshModelAsset;
+	m_meshModelRef.set(meshModelAsset);
 }
 
 size_t GFXEngine::Core::Model::getMeshCount() const
 {
-	return m_meshModel->getMeshCount();
+	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
 }
 
 std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
 {
-	if (index >= m_meshModel->getMeshCount()) {
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	if (index >= meshModel->getMeshCount()) {
 		throw std::out_of_range("Mesh index out of range");
 	}
-	return { m_meshModel->getMesh(index), m_meshModel->getMeshMaterial(index) };
+	return { meshModel->getMesh(index), meshModel->getMeshMaterial(index) };
 }
