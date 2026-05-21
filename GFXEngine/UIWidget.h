@@ -15,6 +15,7 @@ namespace GFXEngine {
 
 		public:
 			virtual void init(UIContext& context, GFXEngine::Graphics::Renderer& renderer) = 0;
+			virtual void handleInput(GLFWwindow* window, int key, int mods, int action) = 0;
 			virtual void update(UIContext& context, InputManager& input, float deltaTime) = 0;
 			virtual void beforeRender(UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
 			virtual void render(UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
