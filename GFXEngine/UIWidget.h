@@ -3,6 +3,7 @@
 #include "UIContext.h"
 #include "InputManager.h"
 #include <string>
+#include "Utils.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -14,6 +15,10 @@ namespace GFXEngine {
 			std::string m_uuid;
 
 		public:
+
+			UIWidget() : m_uuid(Utils::generateUUID()) {}
+			virtual ~UIWidget() = default;
+
 			virtual void init(UIContext& context, GFXEngine::Graphics::Renderer& renderer) = 0;
 			virtual void handleInput(GLFWwindow* window, int key, int mods, int action) = 0;
 			virtual void update(UIContext& context, InputManager& input, float deltaTime) = 0;
