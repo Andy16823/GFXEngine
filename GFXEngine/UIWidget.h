@@ -10,9 +10,9 @@ namespace GFXEngine {
 
 		class UIWidget {
 		private:
-			bool m_isVisible;
-			std::string m_name;
-			std::string m_uuid;
+			bool m_isVisible = false;
+			std::string m_name = nullptr;
+			std::string m_uuid = nullptr;
 
 		public:
 
