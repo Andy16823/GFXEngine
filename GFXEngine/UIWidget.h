@@ -35,7 +35,7 @@ namespace GFXEngine {
 			void setVisible(bool visible) {	m_isVisible = visible; }
 			void show() { m_isVisible = true; }
 			void hide() { m_isVisible = false; }
-			void toggle() {	m_isVisible != m_isVisible; }
+			void toggle() {	m_isVisible = !m_isVisible; }
 		};
 	}
 }
