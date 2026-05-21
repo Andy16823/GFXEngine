@@ -30,6 +30,7 @@ namespace GFXEngine {
 			void updateInstance(const EngineTypes::InstanceData& instanceData, size_t index);
 			void updateInstanceRange(const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex);
 
+			std::vector<PropertyInfo> getProperties() override;
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 

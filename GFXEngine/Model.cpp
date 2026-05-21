@@ -45,6 +45,21 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 	}
 }
 
+std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Model::getProperties()
+{
+	// Get base entity properties first
+	std::vector<PropertyInfo> properties = Entity::getProperties();
+
+	// Add mesh model reference property
+	properties.push_back({
+		.name = "Mesh Model",
+		.data = &m_meshModelRef,
+		.hint = PropertyHint::Asset
+		});
+
+	return properties;
+}
+
 nlohmann::json GFXEngine::Core::Model::serialize() const
 {
 	// Serialize base entity data first
