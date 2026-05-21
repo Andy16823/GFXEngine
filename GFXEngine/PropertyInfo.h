@@ -6,6 +6,7 @@
 #include <functional>
 
 namespace GFXEngine {
+
 	namespace Core {
 
 		/// <summary>
@@ -54,7 +55,18 @@ namespace GFXEngine {
 		/// <summary>
 		/// PropertyDataPointer is a variant type that can hold a pointer to the actual data of a property.
 		/// </summary>
-		using PropertyDataPointer = std::variant<std::string*, int*, bool*, float*, glm::vec2*, glm::vec3*, glm::vec4*, glm::quat*, GFXEngine::EngineTypes::EntityReference*>;
+		using PropertyDataPointer = std::variant<
+			std::string*, 
+			int*, 
+			bool*, 
+			float*, 
+			glm::vec2*, 
+			glm::vec3*, 
+			glm::vec4*, 
+			glm::quat*, 
+			GFXEngine::EngineTypes::EntityReference*,
+			GFXEngine::EngineTypes::AssetReference*
+		>;
 
 		/// <summary>
 		/// PropertyInfo struct represents a property of a behavior.

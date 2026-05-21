@@ -4,6 +4,7 @@
 #include <span>
 #include "EnviromentMap.h"
 #include "DirectionalLight.h"
+#include "DataTypes.h"
 
 #pragma once
 namespace GFXEngine {
@@ -28,6 +29,7 @@ namespace GFXEngine {
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
 
+			std::vector<PropertyInfo> getProperties() override;
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
@@ -115,12 +117,12 @@ namespace GFXEngine {
 			}
 
 			void setEnviromentMap(Graphics::EnviromentMap* enviromentMap) {
-				m_enviromentMap = enviromentMap;
+				m_enviromentMapRef.set(enviromentMap);
 			}
 
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
-			Graphics::EnviromentMap* m_enviromentMap = nullptr;
+			EngineTypes::AssetReference m_enviromentMapRef;
 		};
 	}
 }

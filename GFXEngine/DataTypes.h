@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <glm/glm.hpp>
+#include <typeindex>
 
 namespace GFXEngine {
 
@@ -98,6 +99,44 @@ namespace GFXEngine {
 		struct EntityReference
 		{
 			GFXEngine::Core::Entity* entity;
+		};
+
+		/// <summary>
+		/// AssetReference is a simple structure that holds a non-owning pointer to an Asset, allowing entities to reference assets without owning them directly.
+		/// </summary>
+		struct AssetReference
+		{
+			std::type_index assetType = typeid(void);
+			void* asset = nullptr;
+
+			operator bool() const {
+				return asset != nullptr;
+			} 
+
+			template<typename T>
+			void set(T* assetPtr) {
+				static_assert(std::derived_from<T, class GFXEngine::Asset>, "AssetReference can only hold pointers to Asset-derived types");
+				assetType = typeid(T);
+				asset = assetPtr;
+			}
+
+			template <typename T>
+			T* get() const {
+				if (assetType == typeid(T)) {
+					return static_cast<T*>(asset);
+				}
+				return nullptr;
+			}
+
+			template <typename T>
+			bool isTypeOf() const {
+				return assetType == typeid(T);
+			}
+
+			void clear() {
+				assetType = typeid(void);
+				asset = nullptr;
+			}
 		};
 	}
 }

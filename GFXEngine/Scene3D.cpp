@@ -62,12 +62,12 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		}
 	}
 
-	if(m_enviromentMap) {
+	if (auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) {
 		if (injections && injections->beforeEnvironment) {
 			injections->beforeEnvironment(*this, renderer, camera, imageIndex);
 		}
 
-		m_enviromentMap->render(renderer, camera, imageIndex);
+		envMap->render(renderer, camera, imageIndex);
 
 		if (injections && injections->afterEnvironment) {
 			injections->afterEnvironment(*this, renderer, camera, imageIndex);
@@ -115,6 +115,34 @@ void GFXEngine::Core::Scene3D::input(int key, int mods, int action)
 
 }
 
+std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperties()
+{
+	std::vector<PropertyInfo> properties;
+
+	properties.push_back({
+		.name = "Light Direction",
+		.data = &directionalLight.direction,
+		});
+
+	properties.push_back({
+		.name = "Light Color",
+		.data = &directionalLight.color
+		});
+
+	properties.push_back({
+		.name = "Light Intensity",
+		.data = &directionalLight.intensity,
+		});
+
+	properties.push_back({
+		.name = "Enviroment Map",
+		.data = &m_enviromentMapRef,
+		.hint = PropertyHint::Asset,
+		});
+
+	return properties;
+}
+
 /// <summary>
 /// Serializes the scene by serializing each entity and storing its type information.
 /// </summary>
@@ -123,7 +151,11 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 {
 	nlohmann::json data;
 	data["directionalLight"] = directionalLight.serialize();
-	data["enviromentMap"] = m_enviromentMap ? m_enviromentMap->getName() : "";
+	if (m_enviromentMapRef.isTypeOf<Graphics::EnviromentMap>()) {
+		auto envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>();
+		data["enviromentMap"] = envMap ? envMap->getName() : "";
+	}
+	
 
 	for (const auto& entity : m_entities) {
 		nlohmann::json entityData = entity->serialize();
@@ -150,7 +182,7 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		if (!envmap) {
 			throw std::runtime_error("Failed to find enviroment map asset with name: " + envMapName);
 		}
-		m_enviromentMap = envmap;
+		m_enviromentMapRef.set(envmap);
 	}
 
 	auto entities = data["entities"];
