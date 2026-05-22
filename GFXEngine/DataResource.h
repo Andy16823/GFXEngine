@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <span>
+#include <initializer_list>
 
 namespace GFXEngine {
 	namespace Core {
@@ -14,8 +15,9 @@ namespace GFXEngine {
 			nlohmann::json data;
 
 			bool hasProperty(const std::string& propertyName) const;
-			bool hasProperty(std::span<const std::string> propertyPath) const;
+			bool hasProperty(std::span<std::string> propertyPath) const;
 			const nlohmann::json* findProperty(std::span<const std::string> path) const;
+			const nlohmann::json* findProperty(std::initializer_list<std::string> path) const;
 		};
 	}
 }

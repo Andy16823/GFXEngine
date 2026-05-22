@@ -1,5 +1,6 @@
 #include "DataResource.h"
 #include "Utils.h"
+#include <span>
 
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
@@ -10,6 +11,11 @@ GFXEngine::Core::DataResource::DataResource(const std::string& name, const std::
 		throw std::runtime_error("DataResource error: File '" + path + "' does not exist");
 	}
 	data = GFXEngine::Utils::loadJsonFromFile(path);
+}
+
+const nlohmann::json* DataResource::findProperty(std::initializer_list<std::string> path) const
+{
+	return this->findProperty(std::span<const std::string>(path.begin(), path.size()));
 }
 
 const nlohmann::json* DataResource::findProperty(std::span<const std::string> path) const
@@ -24,7 +30,7 @@ const nlohmann::json* DataResource::findProperty(std::span<const std::string> pa
 	return current;
 }
 
-bool DataResource::hasProperty(std::span<const std::string> propertyPath) const
+bool DataResource::hasProperty(std::span<std::string> propertyPath) const
 {
 	const nlohmann::json* current = &data;
 	for (const auto& property : propertyPath) {
