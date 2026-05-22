@@ -15,6 +15,7 @@ namespace GFXEngine {
 
 			bool hasProperty(const std::string& propertyName) const;
 			bool hasProperty(std::span<const std::string> propertyPath) const;
+			const nlohmann::json* findProperty(std::span<const std::string> path) const;
 		};
 	}
 }

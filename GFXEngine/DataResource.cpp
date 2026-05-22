@@ -12,6 +12,18 @@ GFXEngine::Core::DataResource::DataResource(const std::string& name, const std::
 	data = GFXEngine::Utils::loadJsonFromFile(path);
 }
 
+const nlohmann::json* DataResource::findProperty(std::span<const std::string> path) const
+{
+	const nlohmann::json* current = &data;
+	for (const auto& property : path) {
+		if (!current->contains(property)) {
+			return nullptr;
+		}
+		current = &current->at(property);
+	}
+	return current;
+}
+
 bool DataResource::hasProperty(std::span<const std::string> propertyPath) const
 {
 	const nlohmann::json* current = &data;
