@@ -36,10 +36,10 @@ namespace GFXEngine
 			std::vector<DescriptorSetBinding> descriptorSets;
 			std::vector<PushConstant> pushConstants;
 
-			GFXEngine::Graphics::GraphicsPipeline* pipeline;
-			const GFXEngine::Graphics::Material* material;
-			const LibGFX::Buffer* vertexBuffer;
-			const LibGFX::Buffer* indexBuffer;
+			GFXEngine::Graphics::GraphicsPipeline* pipeline = nullptr;
+			const GFXEngine::Graphics::Material* material = nullptr;
+			const LibGFX::Buffer* vertexBuffer = nullptr;
+			const LibGFX::Buffer* indexBuffer = nullptr;
 			glm::mat4 modelMatrix;
 			uint32_t instanceCount = 1;
 			uint32_t sortingKey = 0;
