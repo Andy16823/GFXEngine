@@ -47,13 +47,12 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 	};
 
 	// Prepare Entitys for rendering by allowing them to update any necessary data or state before they build their render tasks
-	for (auto& entity : m_entities)
-	{
-		if (entity->isVisible())
+	this->forEachEntityPar([&](Entity& entity) {
+		if (entity.isVisible())
 		{
-			entity->preRender(context);
+			entity.preRender(context);
 		}
-	}
+	});
 }
 
 /// <summary>
@@ -81,7 +80,7 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 			entity->buildRenderTasks(context, m_renderQueue);
 		}
 	}
-#
+
 	// Allow the enviroment map to add its render tasks to the render queue if it exists
 	if (auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) {
 		envMap->buildRenderTasks(context, m_renderQueue);

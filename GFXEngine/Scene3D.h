@@ -6,6 +6,7 @@
 #include "DirectionalLight.h"
 #include "DataTypes.h"
 #include "RenderQueue.h"
+#include <execution>
 
 #pragma once
 namespace GFXEngine {
@@ -57,6 +58,14 @@ namespace GFXEngine {
 				for (auto& entity : m_entities) {
 					func(*entity);
 				}
+			}
+
+			template<typename Func>
+			void forEachEntityPar(Func&& func)
+			{
+				std::for_each(std::execution::par, m_entities.begin(), m_entities.end(), [&](const std::unique_ptr<Entity>& entity) {
+					func(*entity);
+					});
 			}
 
 			template<typename T>
