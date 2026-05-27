@@ -578,7 +578,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	std::filesystem::path vertPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_vert.spv";
 	std::filesystem::path fragPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_frag.spv";
 	RenderShader meshShaderPBR = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(meshShaderPBR, "main")
+	pipelineBuilder.addShaderStage(meshShaderPBR)
 		.useVertex3DInput(0)
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
 		.addDescriptorSetLayout(m_pbrMaterialLayout) // PBR Material textures
@@ -592,7 +592,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_frag.spv";
 	RenderShader meshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(meshShaderUnlit, "main")
+	pipelineBuilder.addShaderStage(meshShaderUnlit)
 		.useVertex3DInput(0)
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
 		.addDescriptorSetLayout(m_samplerLayout) // Texture sampler
@@ -606,7 +606,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_frag.spv";
 	RenderShader instancedMeshShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(instancedMeshShader, "main")
+	pipelineBuilder.addShaderStage(instancedMeshShader)
 		.useVertex3DInput(0)
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
 		.addDescriptorSetLayout(m_pbrMaterialLayout) // PBR Material textures
@@ -620,7 +620,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_frag.spv";
 	RenderShader instancedMeshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(instancedMeshShaderUnlit, "main")
+	pipelineBuilder.addShaderStage(instancedMeshShaderUnlit)
 		.useVertex3DInput(0)
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
 		.addDescriptorSetLayout(m_samplerLayout) // Texture sampler
@@ -634,7 +634,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	vertPath = std::filesystem::path(shadersDirectory) / "env_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "env_frag.spv";
 	RenderShader enviromentShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(enviromentShader, "main")
+	pipelineBuilder.addShaderStage(enviromentShader)
 		.usePositionInput(0)
 		.setDepthTestEnable(VK_TRUE)
 		.setDepthWriteEnable(VK_FALSE)
@@ -649,7 +649,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	vertPath = std::filesystem::path(shadersDirectory) / "debug_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "debug_frag.spv";
 	RenderShader debugShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(debugShader, "main")
+	pipelineBuilder.addShaderStage(debugShader)
 		.usePositionInput(0)
 		.addDescriptorSetLayout(m_uniformBuffferLayout)
 		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
@@ -661,7 +661,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	vertPath = std::filesystem::path(shadersDirectory) / "vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "frag.spv";
 	RenderShader defaultShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(defaultShader, "main")
+	pipelineBuilder.addShaderStage(defaultShader)
 		.useFramebufferInput(0)
 		.setDepthTestEnable(VK_FALSE)
 		.setFrontFace(VK_FRONT_FACE_CLOCKWISE)

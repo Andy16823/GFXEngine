@@ -57,7 +57,7 @@ namespace GFXEngine
 			PipelineBuilder(Renderer& renderer) : renderer(renderer) {}
 			virtual ~PipelineBuilder() = default;
 
-			PipelineBuilder& addShaderStage(const RenderShader& shader, const std::string& entryPoint);	// Required
+			PipelineBuilder& addShaderStage(const RenderShader& shader);	// Required
 			PipelineBuilder& addVertexInputBinding(uint32_t binding, uint32_t stride); // Required
 			PipelineBuilder& addVertexInputAttribute(uint32_t binding, uint32_t location, VkFormat format, uint32_t offset); // Required
 
