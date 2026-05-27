@@ -64,7 +64,12 @@ namespace GFXEngine {
 			void forEachEntityPar(Func&& func)
 			{
 				std::for_each(std::execution::par, m_entities.begin(), m_entities.end(), [&](const std::unique_ptr<Entity>& entity) {
-					func(*entity);
+					thread_local int threadIndex = -1;
+					if (threadIndex == -1) {
+						static std::atomic<int> counter(0);
+						threadIndex = counter++;
+					}
+					func(*entity, threadIndex);
 					});
 			}
 

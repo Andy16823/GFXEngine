@@ -47,7 +47,7 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 	};
 
 	// Prepare Entitys for rendering by allowing them to update any necessary data or state before they build their render tasks
-	this->forEachEntityPar([&](Entity& entity) {
+	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
 		if (entity.isVisible())
 		{
 			entity.preRender(context);
@@ -72,13 +72,20 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		.renderPass = Graphics::RenderPassIteration::GeometryPass
 	};
 
-	// Allow entities to add their render tasks to the render queue
-	for (auto& entity : m_entities)
-	{
-		if (entity->isVisible())
+	// Create temporary render queues for each thread to avoid contention
+	std::vector<GFXEngine::Graphics::RenderQueue> perThreadsQueues(std::thread::hardware_concurrency());
+
+	// Construct render tasks for each entity in parallel and add them to the appropriate thread's render queue
+	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
+		if (entity.isVisible())
 		{
-			entity->buildRenderTasks(context, m_renderQueue);
+			entity.buildRenderTasks(context, perThreadsQueues[threadIndex]);
 		}
+		});
+
+	// Merge the per-thread render queues into the main render queue
+	for (auto& queue : perThreadsQueues) {
+		m_renderQueue.append(std::move(queue));
 	}
 
 	// Allow the enviroment map to add its render tasks to the render queue if it exists
@@ -89,6 +96,7 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 	// Create a render context to pass to entities and render contributors
 	m_renderQueue.sort();
 	m_renderQueue.execute(renderer, camera, imageIndex);
+	perThreadsQueues.clear(); // Clear the per-thread queues to free memory
 }
 
 /// <summary>

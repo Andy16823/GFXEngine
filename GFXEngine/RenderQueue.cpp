@@ -20,6 +20,17 @@ void RenderQueue::sort()
 		});
 }
 
+void RenderQueue::append(RenderQueue&& other)
+{
+	// move tasks from the other queue into this one
+	m_tasks.insert(
+		m_tasks.end(),
+		std::make_move_iterator(other.m_tasks.begin()),
+		std::make_move_iterator(other.m_tasks.end())
+	);
+	other.m_tasks.clear();
+}
+
 void GFXEngine::Graphics::RenderQueue::execute(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
 	int pipelineSwitches = 0;
