@@ -65,16 +65,15 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 	auto cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
 
-	RenderTaskBuilder taskBuilder;
-	taskBuilder.setPipeline(pipeline)
-		.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
-		.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING);
-	
-	scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
-
 	for (size_t i = 0; i < meshCount; ++i) {
 		auto [mesh, material] = this->getMeshAndMaterial(i);
-		taskBuilder.setMesh(&mesh).setMaterial(&material);
+		RenderTaskBuilder taskBuilder;
+		taskBuilder.setPipeline(pipeline)
+			.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
+			.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING)
+			.setMesh(&mesh)
+			.setMaterial(&material);
+		scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
 		renderQueue.addRenderTask(taskBuilder.build());
 	}
 }
