@@ -46,7 +46,7 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 		.imageIndex = imageIndex
 	};
 
-	// Allow entities to add their render tasks to the render queue
+	// Prepare Entitys for rendering by allowing them to update any necessary data or state before they build their render tasks
 	for (auto& entity : m_entities)
 	{
 		if (entity->isVisible())
