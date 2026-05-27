@@ -68,6 +68,12 @@ GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::
 	return *this;
 }
 
+GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setRenderLayer(RenderLayer layer)
+{
+	m_task.layer = layer;
+	return *this;
+}
+
 GFXEngine::Graphics::RenderTask GFXEngine::Graphics::RenderTaskBuilder::build()
 {
 	return m_task;

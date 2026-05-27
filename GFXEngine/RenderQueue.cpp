@@ -11,7 +11,12 @@ void RenderQueue::addRenderTask(RenderTask task)
 void RenderQueue::sort()
 {
 	std::sort(m_tasks.begin(), m_tasks.end(), [](const RenderTask& a, const RenderTask& b) {
-		return a.pipeline->getId() < b.pipeline->getId(); // Sort by pipeline ID to minimize pipeline switches
+
+		if (a.layer != b.layer) {
+			return a.layer < b.layer; // Sort by render layer first
+		}
+
+		return a.pipeline->getId() < b.pipeline->getId(); // Sort by pipeline ID within the same layer to minimize pipeline switches
 		});
 }
 

@@ -20,10 +20,23 @@ namespace GFXEngine
 			size_t offset;
 		};
 
+		/// <summary>
+		/// Structure to represent a descriptor set binding, which includes the descriptor set 
+		/// handle and the set index it should be bound to in the pipeline layout.
+		/// </summary>
 		struct DescriptorSetBinding
 		{
 			VkDescriptorSet descriptorSet;
 			uint32_t setIndex;
+		};
+
+		/// <summary>
+		/// RenderLayer enum defines the different layers in which render tasks can be categorized.
+		/// </summary>
+		enum class RenderLayer {
+			Opaque,
+			Skybox,
+			Transparent,
 		};
 
 		/// <summary>
@@ -42,6 +55,7 @@ namespace GFXEngine
 			uint32_t instanceCount = 1;
 			uint32_t sortingKey = 0;
 			uint32_t indexCount = 0;
+			RenderLayer layer = RenderLayer::Opaque;
 		};
 
 		/// <summary>
@@ -62,6 +76,7 @@ namespace GFXEngine
 			RenderTaskBuilder& addDescriptorSet(const VkDescriptorSet& descriptorSet, uint32_t setIndex);
 			RenderTaskBuilder& addPushConstant(const void* data, size_t size, size_t offset = 0);
 			RenderTaskBuilder& setInstanceCount(uint32_t instanceCount);
+			RenderTaskBuilder& setRenderLayer(RenderLayer layer);
 			RenderTask build();
 			void reset();
 		};

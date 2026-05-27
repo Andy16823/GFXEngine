@@ -56,6 +56,7 @@ void EnviromentMap::buildRenderTasks(GFXEngine::Graphics::RenderContext& context
 
 		GFXEngine::Graphics::RenderTaskBuilder builder;
 		builder.setPipeline(pipeline)
+			.setRenderLayer(RenderLayer::Skybox)
 			.addDescriptorSet(cameraDescriptorSet, 0)
 			.addDescriptorSet(m_cubemapDescriptorSet, 1)
 			.setBuffers(m_vertexBuffer, m_indexBuffer)
