@@ -17,6 +17,14 @@ namespace GFXEngine {
 		/// </summary>
 		class Scene3D : public Scene
 		{
+		private:
+			std::vector<std::unique_ptr<Entity>> m_entities;
+			EngineTypes::AssetReference m_enviromentMapRef;
+			GFXEngine::Graphics::RenderQueue m_renderQueue;
+			bool m_useParallelRendering = false;
+
+			void renderSerial(GFXEngine::Graphics::RenderContext& context);
+			void renderParallel(GFXEngine::Graphics::RenderContext& context);
 		public:
 			Graphics::DirectionalLight directionalLight;
 
@@ -36,6 +44,9 @@ namespace GFXEngine {
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
+
+			bool isUsingParallelRendering() const { return m_useParallelRendering; }
+			void setUseParallelRendering(bool useParallel) { m_useParallelRendering = useParallel; }
 
 			template<typename T>
 			T* addEntity(std::unique_ptr<T> entity) {
@@ -134,11 +145,6 @@ namespace GFXEngine {
 			void setEnviromentMap(Graphics::EnviromentMap* enviromentMap) {
 				m_enviromentMapRef.set(enviromentMap);
 			}
-
-		private:
-			std::vector<std::unique_ptr<Entity>> m_entities;
-			EngineTypes::AssetReference m_enviromentMapRef;
-			GFXEngine::Graphics::RenderQueue m_renderQueue;
 		};
 	}
 }

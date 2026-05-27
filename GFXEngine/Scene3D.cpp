@@ -6,6 +6,32 @@
 #include "EntityFactory.h"
 #include "Utils.h"
 
+void GFXEngine::Core::Scene3D::renderSerial(GFXEngine::Graphics::RenderContext& context)
+{
+	for (auto& entity : m_entities) {
+		if (entity->isVisible())
+		{
+			entity->buildRenderTasks(context, m_renderQueue);
+		}
+	}
+}
+
+void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext& context)
+{
+	std::vector<GFXEngine::Graphics::RenderQueue> perThreadsQueues(64);
+
+	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
+		if (entity.isVisible())
+		{
+			entity.buildRenderTasks(context, perThreadsQueues[threadIndex]);
+		}
+		});
+
+	for (auto& queue : perThreadsQueues) {
+		m_renderQueue.append(std::move(queue));
+	}
+}
+
 /// <summary>
 /// Initializes the scene by initializing the directional light and all entities in the scene.
 /// </summary>
@@ -72,20 +98,11 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		.renderPass = Graphics::RenderPassIteration::GeometryPass
 	};
 
-	// Create temporary render queues for each thread to avoid contention
-	std::vector<GFXEngine::Graphics::RenderQueue> perThreadsQueues(64);
-
-	// Construct render tasks for each entity in parallel and add them to the appropriate thread's render queue
-	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
-		if (entity.isVisible())
-		{
-			entity.buildRenderTasks(context, perThreadsQueues[threadIndex]);
-		}
-		});
-
-	// Merge the per-thread render queues into the main render queue
-	for (auto& queue : perThreadsQueues) {
-		m_renderQueue.append(std::move(queue));
+	if (m_useParallelRendering) {
+		renderParallel(context);
+	}
+	else {
+		renderSerial(context);
 	}
 
 	// Allow the enviroment map to add its render tasks to the render queue if it exists
@@ -96,7 +113,6 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 	// Create a render context to pass to entities and render contributors
 	m_renderQueue.sort();
 	m_renderQueue.execute(renderer, camera, imageIndex);
-	perThreadsQueues.clear(); // Clear the per-thread queues to free memory
 }
 
 /// <summary>
