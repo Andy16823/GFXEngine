@@ -1,7 +1,7 @@
 #pragma once
 #include "Material.h"
-#include "GeometryPipeline.h"
 #include "Imaging.h"
+#include "GraphicsPipeline.h"
 
 
 namespace GFXEngine {
@@ -20,7 +20,7 @@ namespace GFXEngine {
 				: m_texturePath(texturePath) {}
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const override;
+			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;
 
 		private:

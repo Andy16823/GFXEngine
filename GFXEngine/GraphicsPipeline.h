@@ -7,37 +7,23 @@
 namespace GFXEngine {
 	namespace Graphics {
 
-		/// <summary>
-		/// Abstract base class for graphics pipelines in the GFXEngine.
-		/// TODO: Change GeometryPipeline, InstancedGeometryPipeline, EnvironmentPipeline and PresentationPipeline to inherit from this class instead of directly from Pipeline.
-		/// </summary>
-		class GraphicsPipeline : public LibGFX::Pipeline
+		class GraphicsPipeline
 		{
 		public:
-			GraphicsPipeline(const RenderShader& shader) 
-				: shader(shader), renderPass(VK_NULL_HANDLE), pipeline(VK_NULL_HANDLE), pipelineLayout(VK_NULL_HANDLE) {}
-
+			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout pipelineLayout) 
+				: pipeline(pipeline), pipelineLayout(pipelineLayout) {}
 			GraphicsPipeline(const GraphicsPipeline&) = delete;
 			GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
-
 			GraphicsPipeline(GraphicsPipeline&&) = default;
 			GraphicsPipeline& operator=(GraphicsPipeline&&) = default;
 
-			VkPipelineLayout getPipelineLayout() const override { return pipelineLayout; }
-			VkPipeline getPipeline() const override { return pipeline; }
-			
-			void setRenderPass(VkRenderPass renderPass) { this->renderPass = renderPass; }
-			void setDescriptorSetLayouts(std::span<const VkDescriptorSetLayout> layouts) {
-				descriptorSetLayouts.assign(layouts.begin(), layouts.end());
-			}
+			VkPipelineLayout getPipelineLayout() const { return pipelineLayout; }
+			VkPipeline getPipeline() const { return pipeline; }
 
 			void bindViewport(VkCommandBuffer commandBuffer, const VkViewport& viewport) const;
 			void bindScissor(VkCommandBuffer commandBuffer, const VkRect2D& scissor) const;
-
+			void destroy(LibGFX::VkContext& context);
 		protected:
-			std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
-			const RenderShader& shader;
-			VkRenderPass renderPass;
 			VkPipeline pipeline;
 			VkPipelineLayout pipelineLayout;
 		};

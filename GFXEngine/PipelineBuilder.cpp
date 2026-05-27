@@ -134,7 +134,7 @@ PipelineBuilder& PipelineBuilder::setDepthCompareOp(VkCompareOp depthCompareOp)
 	return *this;
 }
 
-PipelineBuildResult PipelineBuilder::build(VkRenderPass renderPass)
+std::unique_ptr<GraphicsPipeline> PipelineBuilder::build(VkRenderPass renderPass)
 {
 	if (m_shaderStages.empty()) {
 		throw std::runtime_error("At least one shader stage must be added to the pipeline");
@@ -261,7 +261,7 @@ PipelineBuildResult PipelineBuilder::build(VkRenderPass renderPass)
 
 	// Return the created pipeline and layout
 	std::cout << "Pipeline created successfully!" << std::endl;
-	return { pipeline, pipelineLayout };
+	return std::make_unique<GraphicsPipeline>(pipeline, pipelineLayout);
 }
 
 PipelineBuilder& PipelineBuilder::useVertex3DInput(uint32_t binding)
@@ -283,6 +283,23 @@ PipelineBuilder& PipelineBuilder::useVertex2DInput(uint32_t binding)
 	this->addVertexInputAttribute(binding, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, texCoord));
 	return *this;
 }
+
+
+PipelineBuilder& PipelineBuilder::usePositionInput(uint32_t binding)
+{
+	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::PositionVertex));
+	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::PositionVertex, pos));
+	return *this;
+}
+
+PipelineBuilder& PipelineBuilder::useFramebufferInput(uint32_t binding)
+{
+	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::FramebufferVertex));
+	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::FramebufferVertex, pos));
+	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::FramebufferVertex, texCoord));
+	return *this;
+}
+
 
 PipelineBuilder& PipelineBuilder::enableAlphaBlending()
 {
@@ -312,4 +329,38 @@ PipelineBuilder& PipelineBuilder::disableBlending()
 {
 	m_blendEnable = VK_FALSE;
 	return *this;
+}
+
+void PipelineBuilder::clear()
+{
+	m_shaderStages.clear();
+	m_bindingDescriptions.clear();
+	m_attributeDescriptions.clear();
+
+	// Input assembly
+	VkPrimitiveTopology m_primitiveTopology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
+	// Rasterization state
+	m_polygonMode = VK_POLYGON_MODE_FILL;
+	m_cullMode = VK_CULL_MODE_BACK_BIT;
+	m_frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+
+	// Color blending state
+	m_colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+	m_blendEnable = VK_TRUE;
+	m_srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	m_colorBlendOp = VK_BLEND_OP_ADD;
+	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+	m_alphaBlendOp = VK_BLEND_OP_ADD;
+
+	// Pipeline layout
+	m_descriptorSetLayouts.clear();
+	m_pushConstantRanges.clear();
+
+	// Depth stencil state
+	m_depthTestEnable = VK_TRUE;
+	m_depthWriteEnable = VK_TRUE;
+	m_depthCompareOp = VK_COMPARE_OP_LESS;
 }

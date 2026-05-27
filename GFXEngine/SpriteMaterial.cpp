@@ -9,7 +9,7 @@ void GFXEngine::Graphics::SpriteMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0);
 }
 
-void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const
+void GFXEngine::Graphics::SpriteMaterial::bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const
 {
 	// Bind the texture descriptor set to the pipeline
 	renderer.bindDescriptorSet(m_textureDescriptorSet, pipeline.getPipelineLayout(), 1, imageIndex);

@@ -49,7 +49,7 @@ void DirectionalLight::destroy(Renderer& renderer)
 	m_descriptorSets.clear();
 }
 
-void DirectionalLight::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const
+void DirectionalLight::bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const
 {
 	auto descriptorSet = m_descriptorSets[imageIndex];
 	renderer.bindDescriptorSet(descriptorSet, pipeline.getPipelineLayout(), firstSet, imageIndex);

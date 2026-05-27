@@ -1,6 +1,6 @@
 #pragma once
 #include "Material.h"
-#include "GeometryPipeline.h"
+#include "GraphicsPipeline.h"
 #include "Imaging.h"
 #include <string>
 
@@ -10,7 +10,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Material class specifically designed for rendering sprites. 
 		/// It manages a texture and its associated descriptor set, 
-		/// and uses a geometry pipeline for rendering.
+		/// and uses a graphics pipeline for rendering.
 		/// </summary>
 		class SpriteMaterial : public Material {
 
@@ -19,7 +19,7 @@ namespace GFXEngine {
 				: m_texturePath(texturePath) {}
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const override;
+			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;
 
 		private:

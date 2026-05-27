@@ -3,7 +3,7 @@
 #include "EngineDefinitions.h"
 #include "Shapes.h"
 #include "Entity.h"
-#include "DebugPipeline.h"
+#include "GraphicsPipeline.h"
 
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Graphics;
@@ -58,7 +58,7 @@ void GFXEngine::Core::DebugBhv::render(Scene& scene, GFXEngine::Graphics::Render
 	if (!m_isEnabled) return;
 	VkDescriptorSet descriptorSet = camera.getDescriptorSet(imageIndex);
 	glm::mat4 modelMatrix = getEntity()->transform.getModelMatrix();
-	auto pipeline = renderer.getPipeline<DebugPipeline>(Defintions::DEBUG_PIPELINE);
+	auto pipeline = renderer.getPipeline<GraphicsPipeline>(Defintions::DEBUG_PIPELINE);
 
 	renderer.usePipeline(*pipeline, imageIndex);
 	renderer.bindDescriptorSet(descriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);

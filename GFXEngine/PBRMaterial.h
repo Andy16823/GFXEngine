@@ -2,6 +2,8 @@
 #include "Material.h"
 #include "Imaging.h"
 #include <string>
+#include "Renderer.h"
+#include "GraphicsPipeline.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -11,7 +13,7 @@ namespace GFXEngine {
 			PBRMaterial() = default;
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const override;
+			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const override;
 			void destroy(Renderer& renderer) override;
 
 			void setAlbedoTexture(LibGFX::ImageData albedoData) { m_albedoData = std::move(albedoData); }

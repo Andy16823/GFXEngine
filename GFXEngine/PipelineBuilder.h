@@ -5,17 +5,12 @@
 #include "DataTypes.h"
 #include "RenderShader.h"
 #include "Renderer.h"
+#include "GraphicsPipeline.h"
 
 namespace GFXEngine
 {
 	namespace Graphics
 	{
-		struct PipelineBuildResult
-		{
-			VkPipeline pipeline;
-			VkPipelineLayout layout;
-		};
-
 		/// <summary>
 		/// Convenience builder class for creating Vulkan graphics pipelines with a more user-friendly interface. 
 		/// Allows configuring shader stages, vertex input state, rasterization state, color blending, pipeline layout, 
@@ -68,6 +63,8 @@ namespace GFXEngine
 
 			PipelineBuilder& useVertex3DInput(uint32_t binding);
 			PipelineBuilder& useVertex2DInput(uint32_t binding);
+			PipelineBuilder& usePositionInput(uint32_t binding);
+			PipelineBuilder& useFramebufferInput(uint32_t binding);
 
 			PipelineBuilder& setTopology(VkPrimitiveTopology topology);
 
@@ -89,7 +86,8 @@ namespace GFXEngine
 			PipelineBuilder& setDepthWriteEnable(VkBool32 depthWriteEnable);
 			PipelineBuilder& setDepthCompareOp(VkCompareOp depthCompareOp);
 
-			PipelineBuildResult build(VkRenderPass renderPass);
+			std::unique_ptr<GraphicsPipeline> build(VkRenderPass renderPass);
+			void clear();
 		};
 	}
 }

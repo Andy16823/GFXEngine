@@ -58,7 +58,7 @@ void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::
 
 		auto meshCount = this->getMeshCount();
 		auto cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-		auto pipeline = renderer.getPipeline<Graphics::InstancedGeometryPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
+		auto pipeline = renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
 
 		renderer.usePipeline(*pipeline, imageIndex);
 		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);

@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "DataTypes.h"
 #include "ISerializable.h"
+#include "GraphicsPipeline.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -25,7 +26,7 @@ namespace GFXEngine {
 
 			void init(Renderer& renderer);
 			void update(Renderer& renderer, const Camera& camera, uint32_t imageIndex);
-			void bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const;
+			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const;
 			void destroy(Renderer& renderer);
 
 			nlohmann::json serialize() const override;

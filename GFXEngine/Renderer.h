@@ -13,11 +13,6 @@
 #include "Imaging.h"
 #include <vector>
 #include <string>
-#include "PresentPipeline.h"
-#include "GeometryPipeline.h"
-#include "InstancedGeometryPipeline.h"
-#include "EnviromentPipeline.h"
-#include "DebugPipeline.h"
 #include "GraphicsPipeline.h"
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
@@ -155,7 +150,7 @@ namespace GFXEngine {
 			// PIPELINES
 			void createPipeline(LibGFX::Pipeline& pipeline);
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
-			void managePipeline(unsigned int pipelineId, std::unique_ptr<LibGFX::Pipeline> pipeline);
+			void managePipeline(unsigned int pipelineId, std::unique_ptr<GraphicsPipeline> pipeline);
 			template<typename T>
 			T* getPipeline(unsigned int pipelineId) const {
 				return m_pipelineManager.getPipeline<T>(pipelineId);

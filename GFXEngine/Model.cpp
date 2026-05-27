@@ -30,7 +30,7 @@ void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer&
 		glm::mat4 modelMatrix = this->transform.getModelMatrix();
 
 		// TODO: Create an render mode flag to switch between different pipelines (e.g. wireframe, unlit, pbr, etc.)
-		auto pipeline = renderer.getPipeline<Graphics::GeometryPipeline>(Defintions::GEOMETRY_PIPELINE);
+		auto pipeline = renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
 		renderer.usePipeline(*pipeline, imageIndex);
 		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
 		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline->getPipelineLayout(), imageIndex);

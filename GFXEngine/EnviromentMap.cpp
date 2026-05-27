@@ -2,7 +2,6 @@
 #include "Shapes.h"
 #include "DataTypes.h"
 #include "EngineDefinitions.h"
-#include "EnviromentPipeline.h"
 #include "Utils.h"
 
 using namespace GFXEngine::Graphics;
@@ -50,7 +49,7 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 void EnviromentMap::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
 {
 	VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-	auto pipeline = renderer.getPipeline<EnviromentPipeline>(Defintions::ENVIRONMENT_PIPELINE);
+	auto pipeline = renderer.getPipeline<GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
 
 	renderer.usePipeline(*pipeline, imageIndex);
 	renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), 0, imageIndex);
