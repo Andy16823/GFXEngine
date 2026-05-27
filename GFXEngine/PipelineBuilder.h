@@ -78,6 +78,9 @@ namespace GFXEngine
 			PipelineBuilder& setBlendEnable(VkBool32 blendEnable);
 			PipelineBuilder& setColorBlendFactors(VkBlendFactor srcColorBlendFactor, VkBlendFactor dstColorBlendFactor, VkBlendOp colorBlendOp);
 			PipelineBuilder& setAlphaBlendFactors(VkBlendFactor srcAlphaBlendFactor, VkBlendFactor dstAlphaBlendFactor, VkBlendOp alphaBlendOp);
+			PipelineBuilder& enableAlphaBlending();
+			PipelineBuilder& enableAdditiveBlending();
+			PipelineBuilder& disableBlending();
 
 			PipelineBuilder& addDescriptorSetLayout(VkDescriptorSetLayout layout);
 			PipelineBuilder& addPushConstantRange(VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size);
