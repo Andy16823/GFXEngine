@@ -64,6 +64,7 @@ namespace GFXEngine
 			RenderTaskBuilder& setModelMatrix(const glm::mat4& modelMatrix);
 			RenderTaskBuilder& addDescriptorSet(const VkDescriptorSet& descriptorSet, uint32_t setIndex);
 			RenderTaskBuilder& addPushConstant(const void* data, size_t size, size_t offset = 0);
+			RenderTaskBuilder& setInstanceCount(uint32_t instanceCount);
 			RenderTask build();
 			void reset();
 		};

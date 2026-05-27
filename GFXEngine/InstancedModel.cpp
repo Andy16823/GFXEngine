@@ -68,7 +68,8 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 	RenderTaskBuilder taskBuilder;
 	taskBuilder.setPipeline(pipeline)
 		.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
-		.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING);
+		.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING)
+		.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
 	
 	scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
 

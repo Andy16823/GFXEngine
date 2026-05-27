@@ -68,6 +68,12 @@ GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::
 	return *this;
 }
 
+GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setInstanceCount(uint32_t instanceCount)
+{
+	m_task.instanceCount = instanceCount;
+	return *this;
+}
+
 GFXEngine::Graphics::RenderTask GFXEngine::Graphics::RenderTaskBuilder::build()
 {
 	return m_task;
