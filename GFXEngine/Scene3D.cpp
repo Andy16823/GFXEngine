@@ -73,7 +73,7 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 	};
 
 	// Create temporary render queues for each thread to avoid contention
-	std::vector<GFXEngine::Graphics::RenderQueue> perThreadsQueues(std::thread::hardware_concurrency());
+	std::vector<GFXEngine::Graphics::RenderQueue> perThreadsQueues(64);
 
 	// Construct render tasks for each entity in parallel and add them to the appropriate thread's render queue
 	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
