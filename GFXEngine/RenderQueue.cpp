@@ -3,6 +3,18 @@
 using namespace GFXEngine;
 using namespace GFXEngine::Graphics;
 
+void RenderQueue::addRenderTask(RenderTask task)
+{
+	m_tasks.push_back(std::move(task));
+}
+
+void RenderQueue::sort()
+{
+	std::sort(m_tasks.begin(), m_tasks.end(), [](const RenderTask& a, const RenderTask& b) {
+		return a.sortingKey < b.sortingKey;
+		});
+}
+
 void GFXEngine::Graphics::RenderQueue::execute(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
 	std::cout << "Executing Render Queue with " << m_tasks.size() << " tasks" << std::endl;

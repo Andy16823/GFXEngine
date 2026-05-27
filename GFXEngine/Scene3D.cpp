@@ -69,7 +69,8 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 	GFXEngine::Graphics::RenderContext context{
 		.renderer = renderer,
 		.camera = camera,
-		.imageIndex = imageIndex
+		.imageIndex = imageIndex,
+		.renderPass = Graphics::RenderPassIteration::GeometryPass
 	};
 
 	// Allow entities to add their render tasks to the render queue
