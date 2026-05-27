@@ -10,8 +10,7 @@ namespace GFXEngine {
 		class GraphicsPipeline
 		{
 		public:
-			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout pipelineLayout) 
-				: pipeline(pipeline), pipelineLayout(pipelineLayout) {}
+			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout pipelineLayout);
 			GraphicsPipeline(const GraphicsPipeline&) = delete;
 			GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
 			GraphicsPipeline(GraphicsPipeline&&) = default;
@@ -19,6 +18,7 @@ namespace GFXEngine {
 
 			VkPipelineLayout getPipelineLayout() const { return pipelineLayout; }
 			VkPipeline getPipeline() const { return pipeline; }
+			const std::string& getId() const { return id; }
 
 			void bindViewport(VkCommandBuffer commandBuffer, const VkViewport& viewport) const;
 			void bindScissor(VkCommandBuffer commandBuffer, const VkRect2D& scissor) const;
@@ -26,6 +26,7 @@ namespace GFXEngine {
 		protected:
 			VkPipeline pipeline;
 			VkPipelineLayout pipelineLayout;
+			std::string id;
 		};
 	}
 }

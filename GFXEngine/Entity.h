@@ -15,6 +15,7 @@
 #include "ISerializable.h"
 #include <filesystem>
 #include "PropertyInfo.h"
+#include "IRenderable.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -22,7 +23,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Base class for every entity in the game.
 		/// </summary>
-		class Entity : public GFXEngine::ISerializable
+		class Entity : public GFXEngine::ISerializable, public GFXEngine::Graphics::IRenderable
 		{
 
 		public:
@@ -39,7 +40,7 @@ namespace GFXEngine {
 
 			virtual void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 			virtual void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime);
-			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex);
+			virtual void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 
 			virtual std::vector<PropertyInfo> getProperties();

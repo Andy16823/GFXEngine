@@ -3,6 +3,8 @@
 #include "DataTypes.h"
 #include "EngineDefinitions.h"
 #include "Utils.h"
+#include "RenderTask.h"
+#include "RenderQueue.h"
 
 using namespace GFXEngine::Graphics;
 
@@ -46,16 +48,22 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 	m_cubemapDescriptorSet = renderer.allocateCubemapDescriptorSet(m_cubemap, 0);
 }
 
-void EnviromentMap::render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+void EnviromentMap::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
-	VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-	auto pipeline = renderer.getPipeline<GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
+	if (context.renderPass == RenderPassIteration::GeometryPass) {
+		VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
+		auto pipeline = context.renderer.getPipeline<GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
 
-	renderer.usePipeline(*pipeline, imageIndex);
-	renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), 0, imageIndex);
-	renderer.bindDescriptorSet(m_cubemapDescriptorSet, pipeline->getPipelineLayout(), 1, imageIndex);
-	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, 36, imageIndex);
+		GFXEngine::Graphics::RenderTaskBuilder builder;
+		builder.setPipeline(pipeline)
+			.addDescriptorSet(cameraDescriptorSet, 0)
+			.addDescriptorSet(m_cubemapDescriptorSet, 1)
+			.setBuffers(m_vertexBuffer, m_indexBuffer)
+			.setIndexCount(36);
+		renderQueue.addRenderTask(builder.build());
+	}
 }
+
 
 void EnviromentMap::destroy(GFXEngine::Graphics::Renderer& renderer)
 {

@@ -20,6 +20,12 @@ void GFXEngine::Graphics::DirectionalLight::init(Renderer& renderer)
 	}
 }
 
+void DirectionalLight::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context)
+{
+	auto descriptorSet = m_descriptorSets[context.imageIndex];
+	builder.addDescriptorSet(descriptorSet, LIGHTS_UBO_BINDING);
+}
+
 void DirectionalLight::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	direction = glm::vec3(data["direction"][0], data["direction"][1], data["direction"][2]);
@@ -47,12 +53,6 @@ void DirectionalLight::destroy(Renderer& renderer)
 		renderer.freeUniformBufferDescriptorSet(descriptorSet);
 	}
 	m_descriptorSets.clear();
-}
-
-void DirectionalLight::bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const
-{
-	auto descriptorSet = m_descriptorSets[imageIndex];
-	renderer.bindDescriptorSet(descriptorSet, pipeline.getPipelineLayout(), firstSet, imageIndex);
 }
 
 void DirectionalLight::update(Renderer& renderer, const Camera& camera, uint32_t imageIndex)

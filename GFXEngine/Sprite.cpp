@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include "Utils.h"
 #include "Shapes.h"
+#include "RenderTask.h"
 
 using namespace GFXEngine;
 using namespace GFXEngine::Graphics;
@@ -17,10 +18,12 @@ void GFXEngine::Core::Sprite::update(Scene& scene, GFXEngine::Graphics::Camera& 
 	Entity::update(scene, camera, deltaTime);
 }
 
-void GFXEngine::Core::Sprite::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+void Sprite::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
-	if (isVisible()) {
-		Entity::render(scene, renderer, camera, imageIndex);
+	Entity::buildRenderTasks(context, renderQueue);
+	if (context.renderPass == Graphics::RenderPassIteration::GeometryPass) 
+	{
+		// TODO: Render Sprites!
 	}
 }
 

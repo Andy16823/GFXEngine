@@ -30,7 +30,6 @@ namespace GFXEngine {
 			void setEntity(class Entity* entity) { m_entity = entity; }
 			virtual void init(Scene& scene, Graphics::Renderer& renderer) = 0;
 			virtual void update(Scene& scene, Graphics::Camera& camera, float deltaTime) = 0;
-			virtual void render(Scene& scene, Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) = 0;
 			virtual void destroy(Scene& scene, Graphics::Renderer& renderer) = 0;
 
 			virtual std::string getName() const = 0;

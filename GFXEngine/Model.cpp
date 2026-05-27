@@ -2,6 +2,11 @@
 #include "Scene3D.h"
 #include "EngineDefinitions.h"
 #include "AssetManager.h"
+#include "RenderTask.h"
+
+using namespace GFXEngine;
+using namespace GFXEngine::Core;
+using namespace GFXEngine::Graphics;
 
 GFXEngine::Core::Model::Model(Graphics::MeshModel* meshModel)
 {
@@ -18,29 +23,63 @@ void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& r
 }
 
 
-void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+//void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+//{
+//	if (isVisible()) {
+//		Entity::render(scene, renderer, camera, imageIndex);
+//
+//		auto& scene3D = static_cast<Scene3D&>(scene);
+//
+//		// Get camera descriptor set and model matrix
+//		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
+//		glm::mat4 modelMatrix = this->transform.getModelMatrix();
+//
+//		// TODO: Create an render mode flag to switch between different pipelines (e.g. wireframe, unlit, pbr, etc.)
+//		auto pipeline = renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
+//		renderer.usePipeline(*pipeline, imageIndex);
+//		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
+//		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline->getPipelineLayout(), imageIndex);
+//		scene3D.directionalLight.bind(renderer, camera, *pipeline, LIGHTS_UBO_BINDING, imageIndex);
+//
+//		// Render each mesh of the entity
+//		for (size_t i = 0; i < this->getMeshCount(); ++i) {
+//			auto [mesh, material] = this->getMeshAndMaterial(i);
+//			material.bind(renderer, camera, *pipeline, imageIndex);
+//			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex);
+//		}
+//	}
+//}
+
+void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
-	if (isVisible()) {
-		Entity::render(scene, renderer, camera, imageIndex);
+	if (!isVisible())
+		return;
 
-		auto& scene3D = static_cast<Scene3D&>(scene);
+	Entity::buildRenderTasks(context, renderQueue);
 
-		// Get camera descriptor set and model matrix
-		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
+	if (context.renderPass == RenderPassIteration::GeometryPass) {
+		// Get scene as scene3d
+		Scene3D* scene3D = this->getScene()->as<Scene3D>();
+
+		// Get Descriptor Sets, model matrix, and pipeline
+		VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
 		glm::mat4 modelMatrix = this->transform.getModelMatrix();
+		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
 
-		// TODO: Create an render mode flag to switch between different pipelines (e.g. wireframe, unlit, pbr, etc.)
-		auto pipeline = renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
-		renderer.usePipeline(*pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline->getPipelineLayout(), imageIndex);
-		scene3D.directionalLight.bind(renderer, camera, *pipeline, LIGHTS_UBO_BINDING, imageIndex);
+		// Build render task for each mesh of the model
+		RenderTaskBuilder taskBuilder;
+		taskBuilder.setPipeline(pipeline)
+			.setModelMatrix(modelMatrix)
+			.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
+			.addPushConstant(&modelMatrix, sizeof(glm::mat4));
+		scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
 
-		// Render each mesh of the entity
+		// For each mesh, set the mesh and material in the render task and add it to the render queue
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
 			auto [mesh, material] = this->getMeshAndMaterial(i);
-			material.bind(renderer, camera, *pipeline, imageIndex);
-			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex);
+			taskBuilder.setMesh(&mesh);
+			taskBuilder.setMaterial(&material);
+			renderQueue.addRenderTask(taskBuilder.build());
 		}
 	}
 }

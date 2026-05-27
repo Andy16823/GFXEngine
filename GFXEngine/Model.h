@@ -19,7 +19,7 @@ namespace GFXEngine {
 			Model(Graphics::MeshModel* meshModel);
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
-			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
+			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 
 			std::vector<PropertyInfo> getProperties() override;
 			nlohmann::json serialize() const override;

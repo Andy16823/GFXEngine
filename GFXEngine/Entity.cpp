@@ -33,10 +33,12 @@ void GFXEngine::Core::Entity::update(Scene& scene, GFXEngine::Graphics::Camera& 
 	}
 }
 
-void GFXEngine::Core::Entity::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+void GFXEngine::Core::Entity::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
 	for (auto& behavior : m_behaviors) {
-		behavior->render(scene, renderer, camera, imageIndex);
+		if (auto renderableBehavior = dynamic_cast<GFXEngine::Graphics::IRenderable*>(behavior.get())) {
+			renderableBehavior->buildRenderTasks(context, renderQueue);
+		}
 	}
 }
 

@@ -440,8 +440,15 @@ void Renderer::drawBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buf
 
 void Renderer::bindPushConstants(const void* data, size_t size, VkPipelineLayout pipelineLayout, uint32_t imageIndex)
 {
+	/*VkCommandBuffer commandBuffer = this->getCommandBuffer(imageIndex);
+	vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, static_cast<uint32_t>(size), data);*/
+	this->bindPushConstants(data, size, 0, pipelineLayout, imageIndex);
+}
+
+void Renderer::bindPushConstants(const void* data, size_t size, size_t offset, VkPipelineLayout pipelineLayout, uint32_t imageIndex)
+{
 	VkCommandBuffer commandBuffer = this->getCommandBuffer(imageIndex);
-	vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, static_cast<uint32_t>(size), data);
+	vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, static_cast<uint32_t>(offset), static_cast<uint32_t>(size), data);
 }
 
 void Renderer::bindDescriptorSet(const VkDescriptorSet& descriptorSet, VkPipelineLayout pipelineLayout, uint32_t firstSet, uint32_t imageIndex)

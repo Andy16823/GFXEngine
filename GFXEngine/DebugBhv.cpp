@@ -4,6 +4,8 @@
 #include "Shapes.h"
 #include "Entity.h"
 #include "GraphicsPipeline.h"
+#include "RenderTask.h"
+
 
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Graphics;
@@ -53,23 +55,29 @@ void GFXEngine::Core::DebugBhv::update(Scene& scene, GFXEngine::Graphics::Camera
 
 }
 
-void GFXEngine::Core::DebugBhv::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
-{
-	if (!m_isEnabled) return;
-	VkDescriptorSet descriptorSet = camera.getDescriptorSet(imageIndex);
-	glm::mat4 modelMatrix = getEntity()->transform.getModelMatrix();
-	auto pipeline = renderer.getPipeline<GraphicsPipeline>(Defintions::DEBUG_PIPELINE);
-
-	renderer.usePipeline(*pipeline, imageIndex);
-	renderer.bindDescriptorSet(descriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-	renderer.bindPushConstants(&modelMatrix, sizeof(modelMatrix), pipeline->getPipelineLayout(), imageIndex);
-	renderer.drawBuffers(m_debugVertexBuffer, m_debugIndexBuffer, m_indexCount, imageIndex);
-}
-
 void GFXEngine::Core::DebugBhv::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	renderer.destroyBuffer(m_debugVertexBuffer);
 	renderer.destroyBuffer(m_debugIndexBuffer);
+}
+
+void DebugBhv::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
+{
+	if (!m_isEnabled)
+		return;
+
+	VkDescriptorSet descriptorSet = context.camera.getDescriptorSet(context.imageIndex);
+	glm::mat4 modelMatrix = getEntity()->transform.getModelMatrix();
+	auto pipeline = context.renderer.getPipeline<GraphicsPipeline>(Defintions::DEBUG_PIPELINE);
+
+	RenderTaskBuilder taskBuilder;
+	taskBuilder.setPipeline(pipeline)
+		.setBuffers(m_debugVertexBuffer, m_debugIndexBuffer)
+		.setIndexCount(m_indexCount)
+		.addDescriptorSet(descriptorSet, CAMERA_UBO_BINDING)
+		.addPushConstant(&modelMatrix, sizeof(modelMatrix));
+
+	renderQueue.addRenderTask(taskBuilder.build());
 }
 
 std::vector<GFXEngine::Core::PropertyInfo> DebugBhv::getProperties()

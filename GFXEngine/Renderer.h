@@ -111,6 +111,7 @@ namespace GFXEngine {
 			void submitFrame(uint32_t imageIndex);
 			void presentFrame(uint32_t imageIndex);
 			void advanceFrame();
+			void bindPushConstants(const void* data, size_t size, size_t offset, VkPipelineLayout pipelineLayout, uint32_t imageIndex);
 			void bindPushConstants(const void* data, size_t size, VkPipelineLayout pipelineLayout, uint32_t imageIndex);
 			void bindDescriptorSet(const VkDescriptorSet& descriptorSet, VkPipelineLayout pipelineLayout, uint32_t firstSet, uint32_t imageIndex);
 			void bindDescriptorSets(const std::vector<VkDescriptorSet>& descriptorSets, VkPipelineLayout pipelineLayout, uint32_t imageIndex);

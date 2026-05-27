@@ -36,7 +36,24 @@ void GFXEngine::Core::Scene3D::update(Graphics::Camera& camera, float deltaTime)
 
 void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
+	// Update the directional light's uniform buffers and descriptor sets before rendering so that they are up to date when entities build their render tasks
 	directionalLight.update(renderer, camera, imageIndex);
+
+	// Create a render context to pass to entities and render contributors
+	GFXEngine::Graphics::RenderContext context{
+		.renderer = renderer,
+		.camera = camera,
+		.imageIndex = imageIndex
+	};
+
+	// Allow entities to add their render tasks to the render queue
+	for (auto& entity : m_entities)
+	{
+		if (entity->isVisible())
+		{
+			entity->beforeRender(context);
+		}
+	}
 }
 
 /// <summary>
@@ -46,37 +63,32 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 /// <param name="camera"></param>
 /// <param name="imageIndex"></param>
 /// <param name="injections"></param>
-void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections)
+void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
-	if (injections && injections->beforeRender) {
-		injections->beforeRender(*this, renderer, camera, imageIndex);
-	}
+	// Create a render context to pass to entities and render contributors
+	GFXEngine::Graphics::RenderContext context{
+		.renderer = renderer,
+		.camera = camera,
+		.imageIndex = imageIndex
+	};
 
+	// Allow entities to add their render tasks to the render queue
 	for (auto& entity : m_entities)
 	{
-		if (entity->isVisible()) {
-			entity->render(*this, renderer, camera, imageIndex);
-		}
-		if (injections && injections->onEntityRender) {
-			injections->onEntityRender(*this, *entity, renderer, camera, imageIndex);
+		if (entity->isVisible())
+		{
+			entity->buildRenderTasks(context, m_renderQueue);
 		}
 	}
-
+#
+	// Allow the enviroment map to add its render tasks to the render queue if it exists
 	if (auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) {
-		if (injections && injections->beforeEnvironment) {
-			injections->beforeEnvironment(*this, renderer, camera, imageIndex);
-		}
-
-		envMap->render(renderer, camera, imageIndex);
-
-		if (injections && injections->afterEnvironment) {
-			injections->afterEnvironment(*this, renderer, camera, imageIndex);
-		}
+		envMap->buildRenderTasks(context, m_renderQueue);
 	}
 
-	if (injections && injections->afterRender) {
-		injections->afterRender(*this, renderer, camera, imageIndex);
-	}
+	// Create a render context to pass to entities and render contributors
+	m_renderQueue.sort();
+	m_renderQueue.execute(renderer, camera, imageIndex);
 }
 
 /// <summary>
@@ -87,7 +99,21 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 /// <param name="imageIndex"></param>
 void GFXEngine::Core::Scene3D::afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
+	// Create a render context to pass to entities and render contributors
+	GFXEngine::Graphics::RenderContext context{
+		.renderer = renderer,
+		.camera = camera,
+		.imageIndex = imageIndex
+	};
 
+	// Allow entities to add their render tasks to the render queue
+	for (auto& entity : m_entities)
+	{
+		if (entity->isVisible())
+		{
+			entity->afterRender(context);
+		}
+	}
 }
 
 /// <summary>

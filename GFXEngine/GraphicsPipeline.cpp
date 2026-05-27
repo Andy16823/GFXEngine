@@ -1,4 +1,10 @@
 #include "GraphicsPipeline.h"
+#include "Utils.h"
+
+GFXEngine::Graphics::GraphicsPipeline::GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout pipelineLayout) : pipeline(pipeline), pipelineLayout(pipelineLayout), id(Utils::generateUUID())
+{
+
+}
 
 void GFXEngine::Graphics::GraphicsPipeline::bindViewport(VkCommandBuffer commandBuffer, const VkViewport& viewport) const
 {

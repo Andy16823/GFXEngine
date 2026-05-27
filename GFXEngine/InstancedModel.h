@@ -25,7 +25,8 @@ namespace GFXEngine {
 			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount);
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
-			void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
+			void beforeRender(GFXEngine::Graphics::RenderContext& context) override;
+			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 			void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void updateInstance(const EngineTypes::InstanceData& instanceData, size_t index);
 			void updateInstanceRange(const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex);

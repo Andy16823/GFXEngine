@@ -27,7 +27,7 @@ namespace GFXEngine {
 			
 			virtual void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			virtual void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime) override;
-			virtual void render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) override;
+			virtual void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 
 			virtual size_t getMeshCount() const override { return 1; }

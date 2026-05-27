@@ -4,6 +4,7 @@
 #include "DataTypes.h"
 #include "ISerializable.h"
 #include "GraphicsPipeline.h"
+#include "IRenderContributor.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -12,7 +13,7 @@ namespace GFXEngine {
 		/// DirectionalLight represents a light source that emits parallel rays of light in a specific direction, simulating sunlight or other distant light sources. 
 		/// It is defined by its direction and color, and it affects the entire scene uniformly regardless of the position of objects.
 		/// </summary>
-		class DirectionalLight : public GFXEngine::ISerializable
+		class DirectionalLight : public GFXEngine::ISerializable, public GFXEngine::Graphics::IRenderContributor
 		{
 		public:
 			DirectionalLight() = default;
@@ -26,11 +27,12 @@ namespace GFXEngine {
 
 			void init(Renderer& renderer);
 			void update(Renderer& renderer, const Camera& camera, uint32_t imageIndex);
-			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t firstSet, uint32_t imageIndex) const;
 			void destroy(Renderer& renderer);
 
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
+			
+			void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) override;
 
 			glm::vec3 direction = glm::vec3(-0.5f, -1.0f, -0.3f);
 			glm::vec3 color = glm::vec3(1.0f, 0.95f, 0.9f);

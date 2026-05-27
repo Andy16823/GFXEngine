@@ -5,7 +5,11 @@
 #include <iostream>
 #include "Utils.h"
 #include "AssetManager.h"
+#include "RenderTask.h"
 
+using namespace GFXEngine;
+using namespace GFXEngine::Core;
+using namespace GFXEngine::Graphics;
 
 GFXEngine::Core::InstancedModel::InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount)
 {
@@ -40,36 +44,38 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	m_isDirty = false; // Data is now in sync with GPU
 }
 
-void GFXEngine::Core::InstancedModel::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
+void GFXEngine::Core::InstancedModel::beforeRender(GFXEngine::Graphics::RenderContext& context)
 {
-	// Render the instanced model
-	if (this->isVisible()) {
-		Entity::render(scene, renderer, camera, imageIndex);
+	if (m_isDirty) {
+		context.renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());
+		std::cout << "Updated instance data buffer with " << m_instanceData.size() << " instances." << std::endl;
+		m_isDirty = false;
+	}
+}
 
-		// Update instance data buffer if there are any pending updates
-		if (m_isDirty) {
-			renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());
-			std::cout << "Updated instance data buffer with " << m_instanceData.size() << " instances." << std::endl;
-			m_isDirty = false;
-		}
+void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
+{
+	if (!isVisible())
+		return;
 
-		// Render the instanced model using the appropriate pipeline and descriptor sets
-		auto& scene3D = static_cast<Scene3D&>(scene);
+	Entity::buildRenderTasks(context, renderQueue);
 
-		auto meshCount = this->getMeshCount();
-		auto cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-		auto pipeline = renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
+	auto scene3D = this->getScene()->as<Scene3D>();
+	auto meshCount = this->getMeshCount();
+	auto cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
+	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
 
-		renderer.usePipeline(*pipeline, imageIndex);
-		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-		scene3D.directionalLight.bind(renderer, camera, *pipeline, LIGHTS_UBO_BINDING, imageIndex);
-		renderer.bindDescriptorSet(m_instanceDataDescriptorSet, pipeline->getPipelineLayout(), INSTANCE_SSBO_BINDING, imageIndex);
+	RenderTaskBuilder taskBuilder;
+	taskBuilder.setPipeline(pipeline)
+		.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
+		.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING);
+	
+	scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
 
-		for (size_t i = 0; i < meshCount; ++i) {
-			auto [mesh, material] = this->getMeshAndMaterial(i);
-			material.bind(renderer, camera, *pipeline, imageIndex);
-			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex, static_cast<uint32_t>(m_instanceData.size()));
-		}
+	for (size_t i = 0; i < meshCount; ++i) {
+		auto [mesh, material] = this->getMeshAndMaterial(i);
+		taskBuilder.setMesh(&mesh).setMaterial(&material);
+		renderQueue.addRenderTask(taskBuilder.build());
 	}
 }
 

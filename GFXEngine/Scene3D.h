@@ -5,6 +5,7 @@
 #include "EnviromentMap.h"
 #include "DirectionalLight.h"
 #include "DataTypes.h"
+#include "RenderQueue.h"
 
 #pragma once
 namespace GFXEngine {
@@ -24,7 +25,7 @@ namespace GFXEngine {
 			void init(Graphics::Renderer& renderer) override;
 			void update(Graphics::Camera& camera, float deltaTime) override;
 			void beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
-			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex, const RenderInjections* injections = nullptr) override;
+			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
@@ -123,6 +124,7 @@ namespace GFXEngine {
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
 			EngineTypes::AssetReference m_enviromentMapRef;
+			GFXEngine::Graphics::RenderQueue m_renderQueue;
 		};
 	}
 }
