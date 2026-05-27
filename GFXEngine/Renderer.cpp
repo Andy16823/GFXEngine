@@ -740,3 +740,8 @@ void Renderer::recreate()
 	m_imagesInFlight.resize(m_framebuffers.size(), VK_NULL_HANDLE);	
 	std::cout << "Resized images in flight vector to " << m_imagesInFlight.size() << std::endl;
 }
+
+VkShaderModule Renderer::createShaderModule(const std::vector<char>& code)
+{
+	return m_context->createShaderModule(code);
+}

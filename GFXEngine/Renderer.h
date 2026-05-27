@@ -128,6 +128,9 @@ namespace GFXEngine {
 			VkDescriptorSetLayout createDescriptorSetLayout(uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags);
 			void destroyDescriptorSetLayout(VkDescriptorSetLayout layout);
 
+			// SHADERS
+			VkShaderModule createShaderModule(const std::vector<char>& code);
+
 			// TEXTURES
 			LibGFX::Image createImage(VkExtent2D extent, VkFormat format, VkImageUsageFlags usage, VkMemoryPropertyFlags properties);
 			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
