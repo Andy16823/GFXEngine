@@ -10,11 +10,11 @@ void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0);
 }
 
-void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const
+void GFXEngine::Graphics::UnlitMaterial::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const
 {
-	// Bind the texture descriptor set to the pipeline
-	renderer.bindDescriptorSet(m_textureDescriptorSet, pipeline.getPipelineLayout(), MATERIAL_UBO_BINDING, imageIndex);
+	builder.addDescriptorSet(m_textureDescriptorSet, MATERIAL_UBO_BINDING);
 }
+
 
 void GFXEngine::Graphics::UnlitMaterial::destroy(Renderer& renderer)
 {

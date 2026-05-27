@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "GraphicsPipeline.h"
+#include "IRenderContributor.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -9,7 +10,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Base class for materials.
 		/// </summary>
-		class Material {
+		class Material : public IRenderContributor {
 		public:
 			Material() = default;
 			virtual ~Material() = default;
@@ -20,7 +21,7 @@ namespace GFXEngine {
 			Material& operator=(Material&&) = default;
 
 			virtual void init(Renderer& renderer) = 0;
-			virtual void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const = 0;
+			/*virtual void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const = 0;*/
 			virtual void destroy(Renderer& renderer) = 0;
 		};
 	}

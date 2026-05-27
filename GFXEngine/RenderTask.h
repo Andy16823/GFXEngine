@@ -1,6 +1,5 @@
 #pragma once
 #include "GraphicsPipeline.h"
-#include "Material.h"
 #include "Mesh.h"
 #include "glm/glm.hpp"
 #include "Buffer.h"
@@ -37,7 +36,6 @@ namespace GFXEngine
 			std::vector<PushConstant> pushConstants;
 
 			GFXEngine::Graphics::GraphicsPipeline* pipeline = nullptr;
-			const GFXEngine::Graphics::Material* material = nullptr;
 			const LibGFX::Buffer* vertexBuffer = nullptr;
 			const LibGFX::Buffer* indexBuffer = nullptr;
 			glm::mat4 modelMatrix;
@@ -55,7 +53,6 @@ namespace GFXEngine
 
 		public:
 			RenderTaskBuilder& setPipeline(GFXEngine::Graphics::GraphicsPipeline* pipeline);
-			RenderTaskBuilder& setMaterial(const GFXEngine::Graphics::Material* material);
 			RenderTaskBuilder& setVertexBuffer(const LibGFX::Buffer& vertexBuffer);
 			RenderTaskBuilder& setIndexBuffer(const LibGFX::Buffer& indexBuffer);
 			RenderTaskBuilder& setBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buffer& indexBuffer);

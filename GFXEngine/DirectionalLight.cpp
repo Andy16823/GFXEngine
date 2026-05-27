@@ -20,7 +20,7 @@ void GFXEngine::Graphics::DirectionalLight::init(Renderer& renderer)
 	}
 }
 
-void DirectionalLight::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context)
+void DirectionalLight::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const
 {
 	auto descriptorSet = m_descriptorSets[context.imageIndex];
 	builder.addDescriptorSet(descriptorSet, LIGHTS_UBO_BINDING);

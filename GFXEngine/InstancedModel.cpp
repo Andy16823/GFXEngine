@@ -75,7 +75,8 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 
 	for (size_t i = 0; i < meshCount; ++i) {
 		auto [mesh, material] = this->getMeshAndMaterial(i);
-		taskBuilder.setMesh(&mesh).setMaterial(&material);
+		taskBuilder.setMesh(&mesh);
+		material.contributeToRenderTask(taskBuilder, context);
 		renderQueue.addRenderTask(taskBuilder.build());
 	}
 }

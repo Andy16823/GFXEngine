@@ -78,7 +78,7 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
 			auto [mesh, material] = this->getMeshAndMaterial(i);
 			taskBuilder.setMesh(&mesh);
-			taskBuilder.setMaterial(&material);
+			material.contributeToRenderTask(taskBuilder, context);
 			renderQueue.addRenderTask(taskBuilder.build());
 		}
 	}

@@ -6,12 +6,6 @@ GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::
 	return *this;
 }
 
-GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setMaterial(const GFXEngine::Graphics::Material* material)
-{
-	m_task.material = material;
-	return *this;
-}
-
 GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setVertexBuffer(const LibGFX::Buffer& vertexBuffer)
 {
 	m_task.vertexBuffer = &vertexBuffer;

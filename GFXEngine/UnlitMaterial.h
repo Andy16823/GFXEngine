@@ -20,7 +20,8 @@ namespace GFXEngine {
 				: m_texturePath(texturePath) {}
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const override;
+			//void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const override;
+			void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const override;
 			void destroy(Renderer& renderer) override;
 
 		private:

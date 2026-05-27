@@ -13,7 +13,7 @@ namespace GFXEngine {
 			PBRMaterial() = default;
 
 			void init(Renderer& renderer) override;
-			void bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const override;
+			void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const override;
 			void destroy(Renderer& renderer) override;
 
 			void setAlbedoTexture(LibGFX::ImageData albedoData) { m_albedoData = std::move(albedoData); }

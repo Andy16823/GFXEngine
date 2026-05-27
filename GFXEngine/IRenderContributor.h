@@ -9,7 +9,7 @@ namespace GFXEngine
 		class IRenderContributor {
 		public:
 			virtual ~IRenderContributor() = default;
-			virtual void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) = 0;
+			virtual void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const = 0;
 		};
 
 	}

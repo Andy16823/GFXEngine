@@ -11,9 +11,9 @@ void GFXEngine::Graphics::PBRMaterial::init(Renderer& renderer)
 	m_descriptorSet = renderer.allocatePBRMaterialDescriptorSet(m_albedo, m_normal, m_metallicRoughness, m_ao, 0);
 }
 
-void GFXEngine::Graphics::PBRMaterial::bind(Renderer& renderer, const Camera& camera, const GraphicsPipeline& pipeline, uint32_t imageIndex) const
+void GFXEngine::Graphics::PBRMaterial::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const
 {
-	renderer.bindDescriptorSet(m_descriptorSet, pipeline.getPipelineLayout(), MATERIAL_UBO_BINDING, imageIndex);
+	builder.addDescriptorSet(m_descriptorSet, MATERIAL_UBO_BINDING);
 }
 
 void GFXEngine::Graphics::PBRMaterial::destroy(Renderer& renderer)

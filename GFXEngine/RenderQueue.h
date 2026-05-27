@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <ostream>
 #include <iostream>
+#include "Camera.h"
 
 namespace GFXEngine
 {
@@ -17,9 +18,7 @@ namespace GFXEngine
 
 		public:
 			void addRenderTask(RenderTask task);
-
 			void sort();
-
 			void execute(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex);
 		};
 	}
