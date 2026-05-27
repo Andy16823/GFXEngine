@@ -13,9 +13,9 @@ namespace GFXEngine
 		class IRenderable {
 		public:
 			virtual ~IRenderable() = default;
-			virtual void beforeRender(RenderContext& context) {};
+			virtual void preRender(RenderContext& context) {};
 			virtual void buildRenderTasks(RenderContext& context, RenderQueue& renderQueue) = 0;
-			virtual void afterRender(RenderContext& context) {};
+			virtual void postRender(RenderContext& context) {};
 		};
 	}
 }

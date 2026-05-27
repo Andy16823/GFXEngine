@@ -44,7 +44,7 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	m_isDirty = false; // Data is now in sync with GPU
 }
 
-void GFXEngine::Core::InstancedModel::beforeRender(GFXEngine::Graphics::RenderContext& context)
+void GFXEngine::Core::InstancedModel::preRender(GFXEngine::Graphics::RenderContext& context)
 {
 	if (m_isDirty) {
 		context.renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());

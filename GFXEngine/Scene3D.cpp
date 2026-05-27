@@ -51,7 +51,7 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 	{
 		if (entity->isVisible())
 		{
-			entity->beforeRender(context);
+			entity->preRender(context);
 		}
 	}
 }
@@ -112,7 +112,7 @@ void GFXEngine::Core::Scene3D::afterRender(Graphics::Renderer& renderer, Graphic
 	{
 		if (entity->isVisible())
 		{
-			entity->afterRender(context);
+			entity->postRender(context);
 		}
 	}
 }
