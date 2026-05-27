@@ -32,11 +32,10 @@ namespace GFXEngine {
 
 			Entity();
 			virtual ~Entity() = default;
-
-			Entity(const Entity&) = delete; // Disable copy semantics
-			Entity& operator=(const Entity&) = delete; // Disable copy semantics
-			Entity(Entity&&) = default; // Allow move semantics
-			Entity& operator=(Entity&&) = default; // Allow move semantics
+			Entity(const Entity&) = delete;
+			Entity& operator=(const Entity&) = delete;
+			Entity(Entity&&) = default;
+			Entity& operator=(Entity&&) = default;
 
 			virtual void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 			virtual void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime);

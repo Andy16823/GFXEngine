@@ -26,6 +26,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	GFXEngine::RuntimeContext::get().setBehaviorRegistry(behaviorRegistry.get());
 	GFXEngine::RuntimeContext::get().setEntityFactory(entityFactory.get());
 	GFXEngine::RuntimeContext::get().setInputManager(inputManager.get());
+	GFXEngine::RuntimeContext::get().setEventBus(eventBus.get());
 
 	// Input callback
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {

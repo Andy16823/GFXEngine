@@ -7,6 +7,7 @@
 #include "BehaviorRegistry.h"
 #include "EntityFactory.h"
 #include "InputManager.h"
+#include "EventBus.h"
 
 namespace GFXEngine {
 
@@ -26,6 +27,7 @@ namespace GFXEngine {
 		void setBehaviorRegistry(BehaviorRegistry* registry) { m_behaviorRegistry = registry; }
 		void setEntityFactory(EntityFactory* factory) { m_entityFactory = factory; }
 		void setInputManager(InputManager* manager) { m_inputManager = manager; }
+		void setEventBus(EventBus* eventBus) { m_eventBus = eventBus; }
 
 		GLFWwindow* getWindow() const { return m_window; }
 		ServiceManager* getServiceManager() { return m_serviceManager; }
@@ -33,6 +35,7 @@ namespace GFXEngine {
 		BehaviorRegistry* getBehaviorRegistry() const { return m_behaviorRegistry; }
 		EntityFactory* getEntityFactory() const { return m_entityFactory; }
 		InputManager* getInputManager() const { return m_inputManager; }
+		EventBus* getEventBus() const { return m_eventBus; }
 		
 		SerializationContext createSerializationContext() {
 			AssetManager* assetManager = m_assetManager;
@@ -56,5 +59,6 @@ namespace GFXEngine {
 		BehaviorRegistry* m_behaviorRegistry = nullptr;
 		EntityFactory* m_entityFactory = nullptr;
 		InputManager* m_inputManager = nullptr;
+		EventBus* m_eventBus = nullptr;
 	};
 }
