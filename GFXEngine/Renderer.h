@@ -148,7 +148,9 @@ namespace GFXEngine {
 			void freeStorageBufferDescriptorSet(VkDescriptorSet descriptorSet);
 
 			// PIPELINES
+			[[Deprecated("Use Pipeline Builder to create GraphicsPipeline")]]
 			void createPipeline(LibGFX::Pipeline& pipeline);
+			[[Deprecated("Use Destroy within the GraphicsPipeline class")]]
 			void destroyPipeline(LibGFX::Pipeline& pipeline);
 			void managePipeline(unsigned int pipelineId, std::unique_ptr<GraphicsPipeline> pipeline);
 			template<typename T>

@@ -9,7 +9,6 @@
 #include <utility>
 #include "Material.h"
 #include "Mesh.h"
-#include "Pipeline.h"
 #include <vector>
 #include "Scene.h"
 #include "AABB.h"

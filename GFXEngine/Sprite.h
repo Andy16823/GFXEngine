@@ -2,7 +2,6 @@
 #include "DataTypes.h"
 #include "Entity.h"
 #include <vector>
-#include "Pipeline.h"
 #include "SpriteMaterial.h"
 #include "Mesh.h"
 
