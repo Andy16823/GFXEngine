@@ -13,7 +13,25 @@ namespace GFXEngine {
 	struct Message {
 		std::string type;
 		nlohmann::json data;
-		std::string senderUUID;
+		void* sender = nullptr;
+		std::type_index senderType = typeid(void);
+
+		template<typename T>
+		bool isSender() const
+		{
+			return senderType == typeid(T);
+		}
+
+		template<typename T>
+		T* getSender() const
+		{
+			if (senderType == typeid(T))
+			{
+				return static_cast<T*>(sender);
+			}
+
+			return nullptr;
+		}
 	};
 
 	/// <summary>
