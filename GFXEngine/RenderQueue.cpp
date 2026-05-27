@@ -46,5 +46,4 @@ void GFXEngine::Graphics::RenderQueue::execute(Graphics::Renderer& renderer, Gra
 		renderer.drawBuffers(*task.vertexBuffer, *task.indexBuffer, task.indexCount, imageIndex, task.instanceCount);
 	}
 	m_tasks.clear();
-	std::cout << "Executed render queue with " << pipelineSwitches << " pipeline switches." << std::endl;
 }
