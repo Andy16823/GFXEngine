@@ -58,6 +58,5 @@ namespace GFXEngine {
 		bool unsubscribe(const std::string& listenerId);
 		void emit(const Message& message);
 		void emit(const std::string& messageType, const nlohmann::json& data = {}, void* sender = nullptr, std::type_index senderType = typeid(void));
-		void emit(const std::string& messageType, const std::string& message, void* sender = nullptr, std::type_index senderType = typeid(void));
 	};
 }

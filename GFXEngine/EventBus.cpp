@@ -31,11 +31,6 @@ void GFXEngine::EventBus::emit(const Message& message)
 	}
 }
 
-void GFXEngine::EventBus::emit(const std::string& messageType, const std::string& message, void* sender /*= nullptr*/, std::type_index senderType /*= typeid(void)*/)
-{
-	emit(messageType, nlohmann::json{ {"message", message} }, sender, senderType);
-}
-
 void GFXEngine::EventBus::emit(const std::string& messageType, const nlohmann::json& data /*= {}*/, void* sender /*= nullptr*/, std::type_index senderType /*= typeid(void)*/)
 {
 	Message message{ messageType, data, sender, senderType };
