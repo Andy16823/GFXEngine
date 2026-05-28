@@ -20,7 +20,7 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 {
 	std::vector<GFXEngine::Graphics::RenderQueue> perThreadsQueues(64);
 
-	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
+	this->forEachEntityPar([&context, &perThreadsQueues](Entity& entity, int threadIndex) {
 		if (entity.isVisible())
 		{
 			entity.buildRenderTasks(context, perThreadsQueues[threadIndex]);
@@ -64,21 +64,6 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 {
 	// Update the directional light's uniform buffers and descriptor sets before rendering so that they are up to date when entities build their render tasks
 	directionalLight.update(renderer, camera, imageIndex);
-
-	// Create a render context to pass to entities and render contributors
-	GFXEngine::Graphics::RenderContext context{
-		.renderer = renderer,
-		.camera = camera,
-		.imageIndex = imageIndex
-	};
-
-	// Prepare Entitys for rendering by allowing them to update any necessary data or state before they build their render tasks
-	this->forEachEntityPar([&](Entity& entity, int threadIndex) {
-		if (entity.isVisible())
-		{
-			entity.preRender(context);
-		}
-	});
 }
 
 /// <summary>
@@ -98,15 +83,18 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		.renderPass = Graphics::RenderPassIteration::GeometryPass
 	};
 
-	if (m_useParallelRendering) {
+	if (m_useParallelRendering) 
+	{
 		renderParallel(context);
 	}
-	else {
+	else 
+	{
 		renderSerial(context);
 	}
 
 	// Allow the enviroment map to add its render tasks to the render queue if it exists
-	if (auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) {
+	if (auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) 
+	{
 		envMap->buildRenderTasks(context, m_renderQueue);
 	}
 
@@ -123,21 +111,7 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 /// <param name="imageIndex"></param>
 void GFXEngine::Core::Scene3D::afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
-	// Create a render context to pass to entities and render contributors
-	GFXEngine::Graphics::RenderContext context{
-		.renderer = renderer,
-		.camera = camera,
-		.imageIndex = imageIndex
-	};
-
-	// Allow entities to add their render tasks to the render queue
-	for (auto& entity : m_entities)
-	{
-		if (entity->isVisible())
-		{
-			entity->postRender(context);
-		}
-	}
+	// TODO: Add remove entitys here or add enqued entitys
 }
 
 /// <summary>

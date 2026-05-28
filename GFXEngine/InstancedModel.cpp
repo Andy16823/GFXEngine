@@ -44,19 +44,16 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 	m_isDirty = false; // Data is now in sync with GPU
 }
 
-void GFXEngine::Core::InstancedModel::preRender(GFXEngine::Graphics::RenderContext& context)
+void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
+	if (!isVisible())
+		return;
+
 	if (m_isDirty) {
 		context.renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());
 		std::cout << "Updated instance data buffer with " << m_instanceData.size() << " instances." << std::endl;
 		m_isDirty = false;
 	}
-}
-
-void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
-{
-	if (!isVisible())
-		return;
 
 	Entity::buildRenderTasks(context, renderQueue);
 
@@ -64,18 +61,20 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 	auto meshCount = this->getMeshCount();
 	auto cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
-
-	RenderTaskBuilder taskBuilder;
-	taskBuilder.setPipeline(pipeline)
-		.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
-		.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING)
-		.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
-	
-	scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
+	glm::mat4 modelMatrix =	this->transform.getModelMatrix();
 
 	for (size_t i = 0; i < meshCount; ++i) {
-		auto [mesh, material] = this->getMeshAndMaterial(i);
-		taskBuilder.setMesh(&mesh);
+		const auto& [mesh, material] = this->getMeshAndMaterial(i);
+
+		RenderTaskBuilder taskBuilder;
+		taskBuilder.setPipeline(pipeline)
+			.setMesh(&mesh)
+			.setModelMatrix(modelMatrix)
+			.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
+			.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING)
+			.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
+
+		scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
 		material.contributeToRenderTask(taskBuilder, context);
 		renderQueue.addRenderTask(taskBuilder.build());
 	}

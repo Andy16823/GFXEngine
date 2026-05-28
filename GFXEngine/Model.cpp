@@ -66,18 +66,18 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 		glm::mat4 modelMatrix = this->transform.getModelMatrix();
 		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
 
-		// Build render task for each mesh of the model
-		RenderTaskBuilder taskBuilder;
-		taskBuilder.setPipeline(pipeline)
-			.setModelMatrix(modelMatrix)
-			.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
-			.addPushConstant(&modelMatrix, sizeof(glm::mat4));
-		scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
-
 		// For each mesh, set the mesh and material in the render task and add it to the render queue
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
-			auto [mesh, material] = this->getMeshAndMaterial(i);
-			taskBuilder.setMesh(&mesh);
+			const auto& [mesh, material] = this->getMeshAndMaterial(i);
+			// Build render task for each mesh of the model
+			RenderTaskBuilder taskBuilder;
+			taskBuilder.setPipeline(pipeline)
+				.setMesh(&mesh)
+				.setModelMatrix(modelMatrix)
+				.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
+				.addPushConstant(&modelMatrix, sizeof(glm::mat4));
+
+			scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
 			material.contributeToRenderTask(taskBuilder, context);
 			renderQueue.addRenderTask(taskBuilder.build());
 		}

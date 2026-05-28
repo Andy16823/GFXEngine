@@ -25,7 +25,6 @@ namespace GFXEngine {
 			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount);
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
-			void preRender(GFXEngine::Graphics::RenderContext& context) override;
 			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 			void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void updateInstance(const EngineTypes::InstanceData& instanceData, size_t index);
