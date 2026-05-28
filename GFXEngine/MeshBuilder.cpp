@@ -10,9 +10,9 @@ void GFXEngine::Core::MeshBuilder::addVertex(const EngineTypes::Vertex3D& vertex
 	vertices.push_back(vertex);
 }
 
-GFXEngine::Graphics::Mesh MeshBuilder::build() const
+GFXEngine::Graphics::Mesh3D MeshBuilder::build() const
 {
-	Mesh mesh;
+	Mesh3D mesh;
 	mesh.setVertices(vertices);
 	mesh.setIndices(indices);
 	return mesh;	

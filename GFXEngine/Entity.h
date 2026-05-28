@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <utility>
 #include "Material.h"
-#include "Mesh.h"
+#include "Mesh3D.h"
 #include <vector>
 #include "Scene.h"
 #include "AABB.h"
@@ -49,7 +49,7 @@ namespace GFXEngine {
 			void exportToPrefab(const std::filesystem::path& path) const;
 
 			virtual size_t getMeshCount() const = 0;
-			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
+			virtual std::pair<const Graphics::Mesh3D&, const Graphics::Material&> getMeshAndMaterial(size_t index) const = 0;
 
 			Math::AABB getAABB() const { return m_aabb; }
 			Math::AABB getWorldAABB() const { return m_aabb.applyTransform(transform.getModelMatrix()); }

@@ -1,6 +1,6 @@
 #pragma once
 #include "GraphicsPipeline.h"
-#include "Mesh.h"
+#include "Mesh3D.h"
 #include "glm/glm.hpp"
 #include "Buffer.h"
 #include <vector>
@@ -71,7 +71,7 @@ namespace GFXEngine
 			RenderTaskBuilder& setIndexBuffer(const LibGFX::Buffer& indexBuffer);
 			RenderTaskBuilder& setBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buffer& indexBuffer);
 			RenderTaskBuilder& setIndexCount(uint32_t indexCount);
-			RenderTaskBuilder& setMesh(const GFXEngine::Graphics::Mesh* mesh);
+			RenderTaskBuilder& setMesh(const GFXEngine::Graphics::Mesh3D* mesh);
 			RenderTaskBuilder& setModelMatrix(const glm::mat4& modelMatrix);
 			RenderTaskBuilder& addDescriptorSet(const VkDescriptorSet& descriptorSet, uint32_t setIndex);
 			RenderTaskBuilder& addPushConstant(const void* data, size_t size, size_t offset = 0);

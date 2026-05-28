@@ -1,47 +1,52 @@
 #pragma once
-#include "DataTypes.h"
 #include "Renderer.h"
-#include "Buffer.h"
-#include <vector>
 #include "AABB.h"
+#include "DataTypes.h"
+#include <stdexcept>
+#include <typeindex>
+#include <vector>
 
 namespace GFXEngine {
 	namespace Graphics {
 
-		/// <summary>
-		/// Mesh class that encapsulates vertex and index data, along with Vulkan buffers for rendering. 
-		/// It provides methods to initialize the mesh, draw it using a renderer, and clean up resources when done.
-		/// TODO: Add mesh matrix;
-		/// </summary>
-		class Mesh {
-		private:
-			std::vector<EngineTypes::Vertex3D> m_vertices;
-			std::vector<uint32_t> m_indices;
-			LibGFX::Buffer m_vertexBuffer;
-			LibGFX::Buffer m_indexBuffer;
+		struct MeshVertexPointer {
+			const void* vertexData = nullptr;
+			size_t vertexSize = 0;
+			size_t vertexStride = 0;
+			std::type_index vertexType = typeid(void);
 
+			template<typename VertexType>
+			std::span<const VertexType> getVertices() const {
+				if (vertexType != typeid(VertexType)) {
+					throw std::runtime_error("Vertex type mismatch");
+				}
+				size_t vertexCount = vertexSize / sizeof(VertexType);
+				return { static_cast<const VertexType*>(vertexData), vertexCount };
+			}
+		};
+
+		class Mesh
+		{
 		public:
-			Mesh() = default;
 			virtual ~Mesh() = default;
 
-			Mesh(const Mesh&) = delete; // Disable copy semantics
-			Mesh& operator=(const Mesh&) = delete; // Disable copy semantics
-			Mesh(Mesh&&) = default; // Allow move semantics
-			Mesh& operator=(Mesh&&) = default; // Allow move semantics
+			virtual void init(Renderer& renderer) = 0;
+			virtual void destroy(Renderer& renderer) = 0;
+			
+			virtual Math::AABB computeAABB() const = 0;
 
-			void init(Renderer& renderer);
-			void draw(Renderer& renderer, uint32_t imageIndex) const;
-			void destroy(Renderer& renderer);
+			virtual const LibGFX::Buffer& getVertexBuffer() const = 0;
+			virtual const LibGFX::Buffer& getIndexBuffer() const = 0;
+			virtual size_t getIndexCount() const = 0;
 
-			void setVertices(std::vector<EngineTypes::Vertex3D> vertices) { m_vertices = std::move(vertices); }
-			void setIndices(std::vector<uint32_t> indices) { m_indices = std::move(indices); }
-			Math::AABB computeAABB() const;
-
-			const std::vector<EngineTypes::Vertex3D>& getVertices() const { return m_vertices; }
-			const std::vector<uint32_t>& getIndices() const { return m_indices; }
-			const LibGFX::Buffer& getVertexBuffer() const { return m_vertexBuffer; }
-			const LibGFX::Buffer& getIndexBuffer() const { return m_indexBuffer; }
-			size_t getIndexCount() const { return m_indices.size(); }
+			template <typename T>
+			T* as() {
+				static_assert(std::is_base_of_v<Mesh, T>, "T must be a subclass of Mesh");
+				if (typeid(T) != typeid(*this)) {
+					throw std::runtime_error("Mesh type mismatch");
+				}
+				return static_cast<T*>(this);
+			}
 		};
 	}
 }

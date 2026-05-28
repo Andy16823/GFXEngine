@@ -2,6 +2,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <typeindex>
+#include <variant>
 
 namespace GFXEngine {
 

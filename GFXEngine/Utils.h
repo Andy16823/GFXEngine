@@ -5,7 +5,7 @@
 #include "Camera3D.h"
 #include <vector>
 #include <utility>
-#include "Mesh.h"
+#include "Mesh3D.h"
 #include "UnlitMaterial.h"
 #include "PBRMaterial.h"
 #include "GraphicsPipeline.h"
@@ -23,7 +23,7 @@ namespace GFXEngine {
 		static LibGFX::ImageData createSolidColorImage(uint32_t width, uint32_t height, const glm::vec4& color);
 		static LibGFX::CubemapData loadCubemap(const std::vector<std::string>& filePaths, bool flipVertically = true);
 		static std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> createCameraUniformBuffers(Graphics::Renderer& renderer, const GFXEngine::Graphics::Camera3D& camera, VkDescriptorSetLayout descriptorSetLayout);
-		static std::vector<GFXEngine::Graphics::Mesh> loadMeshesFromFile(const std::string& filePath);
+		static std::vector<GFXEngine::Graphics::Mesh3D> loadMeshesFromFile(const std::string& filePath);
 		static std::vector<GFXEngine::Graphics::UnlitMaterial> loadMaterialsFromFile(const std::string& filePath);
 		static std::vector<GFXEngine::Graphics::PBRMaterial> loadPBRMaterialsFromFile(const std::string& filePath);
 		static std::string getBasePath(const std::string& filePath);

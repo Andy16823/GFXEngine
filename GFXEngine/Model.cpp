@@ -133,7 +133,7 @@ size_t GFXEngine::Core::Model::getMeshCount() const
 	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
 }
 
-std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
+std::pair<const GFXEngine::Graphics::Mesh3D&, const GFXEngine::Graphics::Material&> GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
 {
 	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
 	if (index >= meshModel->getMeshCount()) {

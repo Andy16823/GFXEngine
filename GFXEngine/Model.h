@@ -26,7 +26,7 @@ namespace GFXEngine {
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			size_t getMeshCount() const override;
-			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+			std::pair<const Graphics::Mesh3D&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 
 			const Graphics::MeshModel* getMeshModel() const { return m_meshModelRef.get<Graphics::MeshModel>(); }
 		};

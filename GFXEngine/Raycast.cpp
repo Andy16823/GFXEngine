@@ -59,7 +59,7 @@ bool GFXEngine::Physics::Raycast::rayIntersectsAABB(const Ray& ray, const Math::
 	return true;
 }
 
-bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh& mesh, RaycastHit& hitInfo)
+bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh3D& mesh, RaycastHit& hitInfo)
 {
 	glm::mat4 finalMatrix = transform.getModelMatrix(); // TODO: Add mesh matrix
 	float closestT = std::numeric_limits<float>::max();

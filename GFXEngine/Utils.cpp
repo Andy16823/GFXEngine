@@ -92,14 +92,14 @@ std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> GFXEngine::
 	return { uniformBuffers, descriptorSets };
 }
 
-std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(const std::string& filePath)
+std::vector<GFXEngine::Graphics::Mesh3D> GFXEngine::Utils::loadMeshesFromFile(const std::string& filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		throw std::runtime_error("ERROR::ASSIMP::" + std::string(importer.GetErrorString()));
 	}
-	std::vector<GFXEngine::Graphics::Mesh> meshes;
+	std::vector<GFXEngine::Graphics::Mesh3D> meshes;
 
 	for (size_t i = 0; i < scene->mNumMeshes; i++) {
 		auto aiMesh = scene->mMeshes[i];
@@ -133,7 +133,7 @@ std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(cons
 			indices.insert(indices.end(), aiFace.mIndices, aiFace.mIndices + aiFace.mNumIndices);
 		}
 
-		GFXEngine::Graphics::Mesh mesh;
+		GFXEngine::Graphics::Mesh3D mesh;
 		mesh.setVertices(std::move(vertices));
 		mesh.setIndices(std::move(indices));
 		meshes.push_back(std::move(mesh));

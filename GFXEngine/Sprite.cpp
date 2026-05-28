@@ -32,7 +32,7 @@ void GFXEngine::Core::Sprite::destroy(Scene& scene, GFXEngine::Graphics::Rendere
 	Entity::destroy(scene, renderer);
 }
 
-std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> Sprite::getMeshAndMaterial(size_t index) const
+std::pair<const GFXEngine::Graphics::Mesh3D&, const GFXEngine::Graphics::Material&> Sprite::getMeshAndMaterial(size_t index) const
 {
 	if(index != 0) {
 		throw std::out_of_range("Sprite only has one mesh and material");
