@@ -59,19 +59,23 @@ bool GFXEngine::Physics::Raycast::rayIntersectsAABB(const Ray& ray, const Math::
 	return true;
 }
 
-bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh3D& mesh, RaycastHit& hitInfo)
+bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh& mesh, RaycastHit& hitInfo)
 {
 	glm::mat4 finalMatrix = transform.getModelMatrix(); // TODO: Add mesh matrix
 	float closestT = std::numeric_limits<float>::max();
 	hitInfo.hit = false;
 
 	auto indices = mesh.getIndices();
-	auto vertices = mesh.getVertexPointer().getVertices<EngineTypes::Vertex3D>();
+	auto positionsView = mesh.getVertexComponent(GFXEngine::EngineTypes::VertexComponent::Position);
+	if (positionsView.isEmpty()) {
+		throw std::runtime_error("Mesh does not contain position vertex component");
+	}
+	auto positions = positionsView.as<glm::vec3>();
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
-		auto v0 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i]].pos, 1.0f));
-		auto v1 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i + 1]].pos, 1.0f));
-		auto v2 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i + 2]].pos, 1.0f));
+		auto v0 = glm::vec3(finalMatrix * glm::vec4(positions[indices[i]], 1.0f));
+		auto v1 = glm::vec3(finalMatrix * glm::vec4(positions[indices[i + 1]], 1.0f));
+		auto v2 = glm::vec3(finalMatrix * glm::vec4(positions[indices[i + 2]], 1.0f));
 
 		float t;
 		glm::vec3 normal;

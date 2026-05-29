@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <typeindex>
 #include <variant>
+#include "StrideSpan.h"
 
 namespace GFXEngine {
 
@@ -39,7 +40,7 @@ namespace GFXEngine {
 		/// </summary>
 		struct Vertex2D
 		{
-			glm::vec2 pos;
+			glm::vec3 pos;
 			glm::vec3 color;
 			glm::vec2 texCoord;
 		};
@@ -64,6 +65,47 @@ namespace GFXEngine {
 		struct PositionVertex
 		{
 			glm::vec3 pos;
+		};
+
+		/// <summary>
+		/// Vertex component class
+		/// </summary>
+		enum class VertexComponent {
+			Position,
+			Color,
+			TexCoord,
+			Normal,
+			Tangent,
+			BoneIDs,
+			BoneWeights
+		};
+
+		/// <summary>
+		/// Vertex Compontent View
+		/// </summary>
+		struct VertexComponentView {
+			const void* data;
+			size_t count;
+			size_t stride;
+			std::type_index type;
+
+			template<typename T>
+			GFXEngine::StrideSpan<T> as() const
+			{
+				if (type != typeid(T)) 
+				{
+					throw std::runtime_error("Vertex component type mismatch");
+				}
+				return GFXEngine::StrideSpan<T>(data, count, stride);
+			}
+
+			bool isEmpty() const {
+				return data == nullptr || count == 0;
+			}
+
+			static VertexComponentView empty() {
+				return { nullptr, 0, 0, typeid(void) };
+			}
 		};
 
 		/// <summary>

@@ -58,3 +58,57 @@ GFXEngine::Graphics::MeshVertexPointer GFXEngine::Graphics::Mesh3D::getVertexPoi
 	};
 	return pointer;
 }
+
+GFXEngine::EngineTypes::VertexComponentView GFXEngine::Graphics::Mesh3D::getVertexComponent(GFXEngine::EngineTypes::VertexComponent component) const
+{
+	if (!m_vertices.empty())
+	{
+		switch (component)
+		{
+		case GFXEngine::EngineTypes::VertexComponent::Position:
+			return {
+				.data = &m_vertices[0].pos,
+				.count = m_vertices.size(),
+				.stride = sizeof(EngineTypes::Vertex3D),
+				.type = typeid(glm::vec3)
+			};
+			break;
+		case GFXEngine::EngineTypes::VertexComponent::Color:
+			return {
+				.data = &m_vertices[0].color,
+				.count = m_vertices.size(),
+				.stride = sizeof(EngineTypes::Vertex3D),
+				.type = typeid(glm::vec3)
+			};
+			break;
+		case GFXEngine::EngineTypes::VertexComponent::TexCoord:
+			return {
+				.data = &m_vertices[0].texCoord,
+				.count = m_vertices.size(),
+				.stride = sizeof(EngineTypes::Vertex3D),
+				.type = typeid(glm::vec2)
+			};
+			break;
+		case GFXEngine::EngineTypes::VertexComponent::Normal:
+			return {
+				.data = &m_vertices[0].normal,
+				.count = m_vertices.size(),
+				.stride = sizeof(EngineTypes::Vertex3D),
+				.type = typeid(glm::vec3)
+			};
+			break;
+		case GFXEngine::EngineTypes::VertexComponent::Tangent:
+			return {
+				.data = &m_vertices[0].tangent,
+				.count = m_vertices.size(),
+				.stride = sizeof(EngineTypes::Vertex3D),
+				.type = typeid(glm::vec4)
+			};
+			break;
+		default:
+			return GFXEngine::EngineTypes::VertexComponentView::empty();
+			break;
+		}
+	}
+	return GFXEngine::EngineTypes::VertexComponentView::empty();
+}

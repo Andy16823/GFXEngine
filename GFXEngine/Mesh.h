@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <typeindex>
 #include <vector>
+#include "StrideSpan.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -50,8 +51,10 @@ namespace GFXEngine {
 			virtual const LibGFX::Buffer& getIndexBuffer() const = 0;
 			virtual size_t getIndexCount() const = 0;
 
+			virtual GFXEngine::EngineTypes::VertexComponentView getVertexComponent(GFXEngine::EngineTypes::VertexComponent component) const = 0;
 			virtual MeshVertexPointer getVertexPointer() const = 0;
 			virtual std::span<const uint32_t> getIndices() const = 0;
+
 
 			template<typename VertexType>
 			std::span<const VertexType> getVertices() const {
