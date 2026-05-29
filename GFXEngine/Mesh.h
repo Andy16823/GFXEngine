@@ -64,6 +64,12 @@ namespace GFXEngine {
 				static_assert(std::is_base_of_v<Mesh, T>, "T must be a subclass of Mesh");
 				return dynamic_cast<T*>(this);
 			}
+
+			template<typename T>
+			const T* as() const {
+				static_assert(std::is_base_of_v<Mesh, T>, "T must be a subclass of Mesh");
+				return dynamic_cast<const T*>(this);
+			}
 		};
 	}
 }
