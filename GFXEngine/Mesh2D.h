@@ -5,6 +5,11 @@
 
 namespace GFXEngine {
 	namespace Graphics {
+
+		/// <summary>
+		/// Mesh2D is a concrete implementation of the Mesh interface, representing a 2D mesh with vertices containing position, color, texture coordinates. 
+		/// It manages its own vertex and index buffers and provides functionality to compute its axis-aligned bounding box (AABB) and access vertex components.
+		/// </summary>
 		class Mesh2D : public Mesh
 		{
 		private:
