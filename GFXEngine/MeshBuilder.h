@@ -2,6 +2,7 @@
 #include "DataTypes.h"
 #include "Mesh3D.h"
 #include "PositionMesh.h"
+#include "Mesh2D.h"
 
 namespace GFXEngine
 {
@@ -27,6 +28,7 @@ namespace GFXEngine
 			uint32_t getCurrentVertexIndex() const { return static_cast<uint32_t>(vertices.size()); }
 			GFXEngine::Graphics::Mesh3D buildMesh3D() const;
 			GFXEngine::Graphics::PositionMesh buildPositionMesh() const;
+			GFXEngine::Graphics::Mesh2D buildMesh2D() const;
 		};
 	}
 }

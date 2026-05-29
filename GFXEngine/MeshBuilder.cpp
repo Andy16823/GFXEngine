@@ -10,6 +10,19 @@ void GFXEngine::Core::MeshBuilder::addVertex(const EngineTypes::Vertex3D& vertex
 	vertices.push_back(vertex);
 }
 
+GFXEngine::Graphics::Mesh2D MeshBuilder::buildMesh2D() const
+{
+	Mesh2D mesh;
+	std::vector<EngineTypes::Vertex2D> vertices2D;
+	vertices2D.reserve(vertices.size());
+	for (const auto& vertex : vertices) {
+		vertices2D.push_back({ vertex.pos, vertex.color, vertex.texCoord });
+	}
+	mesh.setVertices(std::move(vertices2D));
+	mesh.setIndices(indices);
+	return mesh;
+}
+
 GFXEngine::Graphics::PositionMesh MeshBuilder::buildPositionMesh() const
 {
 	PositionMesh mesh;
