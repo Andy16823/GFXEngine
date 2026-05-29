@@ -31,10 +31,10 @@ namespace GFXEngine {
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 
 			virtual size_t getMeshCount() const override { return 1; }
-			virtual std::pair<const Graphics::Mesh3D&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 		private:
 			const Graphics::SpriteMaterial& m_material;
-			const Graphics::Mesh3D& m_mesh;
+			const Graphics::Mesh3D& m_mesh; // TODO: Change to Mesh2D when implemented
 		};
 	}
 }

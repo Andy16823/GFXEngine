@@ -31,7 +31,7 @@ GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::
 	return *this;
 }
 
-GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setMesh(const GFXEngine::Graphics::Mesh3D* mesh)
+GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setMesh(const GFXEngine::Graphics::Mesh* mesh)
 {
 	m_task.vertexBuffer = &mesh->getVertexBuffer();
 	m_task.indexBuffer = &mesh->getIndexBuffer();

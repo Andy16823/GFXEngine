@@ -35,7 +35,7 @@ namespace GFXEngine {
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 
 			size_t getMeshCount() const override;
-			std::pair<const Graphics::Mesh3D&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
 
 			size_t getInstanceCount() const { return m_instanceData.size(); }
 			GFXEngine::Math::AABB computeInstanceAABB(size_t instanceIndex) const;
