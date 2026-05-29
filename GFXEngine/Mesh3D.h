@@ -36,8 +36,8 @@ namespace GFXEngine {
 			void setIndices(std::vector<uint32_t> indices) { m_indices = std::move(indices); }
 			Math::AABB computeAABB() const override;
 
-			const std::vector<EngineTypes::Vertex3D>& getVertices() const { return m_vertices; }
-			const std::vector<uint32_t>& getIndices() const { return m_indices; }
+			MeshVertexPointer getVertexPointer() const override;
+			std::span<const uint32_t> getIndices() const override { return m_indices; }
 			const LibGFX::Buffer& getVertexBuffer() const override { return m_vertexBuffer; }
 			const LibGFX::Buffer& getIndexBuffer() const override { return m_indexBuffer; }
 			size_t getIndexCount() const override { return m_indices.size(); }

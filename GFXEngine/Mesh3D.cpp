@@ -47,3 +47,14 @@ GFXEngine::Math::AABB GFXEngine::Graphics::Mesh3D::computeAABB() const
 	}
 	return aabb;
 }
+
+GFXEngine::Graphics::MeshVertexPointer GFXEngine::Graphics::Mesh3D::getVertexPointer() const
+{
+	MeshVertexPointer pointer{
+		.vertexData = m_vertices.data(),
+		.vertexCount = m_vertices.size(),
+		.vertexStride = sizeof(EngineTypes::Vertex3D),
+		.vertexType = typeid(EngineTypes::Vertex3D)
+	};
+	return pointer;
+}

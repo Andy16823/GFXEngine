@@ -66,7 +66,7 @@ bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::
 	hitInfo.hit = false;
 
 	auto indices = mesh.getIndices();
-	auto vertices = mesh.getVertices();
+	auto vertices = mesh.getVertexPointer().getVertices<EngineTypes::Vertex3D>();
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
 		auto v0 = glm::vec3(finalMatrix * glm::vec4(vertices[indices[i]].pos, 1.0f));

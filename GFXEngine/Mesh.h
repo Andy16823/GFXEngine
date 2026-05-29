@@ -11,16 +11,27 @@ namespace GFXEngine {
 
 		struct MeshVertexPointer {
 			const void* vertexData = nullptr;
-			size_t vertexSize = 0;
+			size_t vertexCount = 0;
 			size_t vertexStride = 0;
 			std::type_index vertexType = typeid(void);
 
+			size_t getVertexBufferSize() const {
+				return vertexCount * vertexStride;
+			}
+
 			template<typename VertexType>
 			std::span<const VertexType> getVertices() const {
-				if (vertexType != typeid(VertexType)) {
+
+				if (vertexType != typeid(VertexType)) 
+				{
 					throw std::runtime_error("Vertex type mismatch");
 				}
-				size_t vertexCount = vertexSize / sizeof(VertexType);
+
+				if (vertexStride != sizeof(VertexType))
+				{
+					throw std::runtime_error("Vertex stride mismatch");
+				}
+
 				return { static_cast<const VertexType*>(vertexData), vertexCount };
 			}
 		};
@@ -39,14 +50,8 @@ namespace GFXEngine {
 			virtual const LibGFX::Buffer& getIndexBuffer() const = 0;
 			virtual size_t getIndexCount() const = 0;
 
-			template <typename T>
-			T* as() {
-				static_assert(std::is_base_of_v<Mesh, T>, "T must be a subclass of Mesh");
-				if (typeid(T) != typeid(*this)) {
-					throw std::runtime_error("Mesh type mismatch");
-				}
-				return static_cast<T*>(this);
-			}
+			virtual MeshVertexPointer getVertexPointer() const = 0;
+			virtual std::span<const uint32_t> getIndices() const = 0;
 		};
 	}
 }
