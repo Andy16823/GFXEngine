@@ -10,42 +10,8 @@ using namespace GFXEngine::Graphics;
 
 void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 {
-	auto [vertices, indices] = Graphics::Shapes::createSkybox();
-	
-	// Create Vertex Buffer with staging buffer
-	VkDeviceSize vertexBufferSize = vertices.size() * sizeof(EngineTypes::PositionVertex);
-	auto vertexStagingBuffer = renderer.createBuffer(
-		vertexBufferSize, 
-		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	renderer.updateBuffer(vertexStagingBuffer, vertices.data(), vertices.size());
-
-	m_vertexBuffer = renderer.createBuffer(
-		vertexBufferSize, 
-		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.copyBuffer(vertexStagingBuffer, m_vertexBuffer, vertexBufferSize);
-	renderer.destroyBuffer(vertexStagingBuffer);
-
-	// Create Index Buffer with staging buffer
-	VkDeviceSize indexBufferSize = indices.size() * sizeof(uint32_t);
-	auto indexStagingBuffer = renderer.createBuffer(
-		indexBufferSize, 
-		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	renderer.updateBuffer(indexStagingBuffer, indices.data(), indices.size());
-
-	m_indexBuffer = renderer.createBuffer(
-		indexBufferSize, 
-		VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.copyBuffer(indexStagingBuffer, m_indexBuffer, indexBufferSize);
-	renderer.destroyBuffer(indexStagingBuffer);
-
-	// Create descriptor set for cubemap
-	LibGFX::CubemapData cubemapData = GFXEngine::Utils::loadCubemap(m_faceFilepaths, false);
-	m_cubemap = renderer.loadCubemap(cubemapData);
-	m_cubemapDescriptorSet = renderer.allocateCubemapDescriptorSet(m_cubemap, 0);
+	m_mesh->init(renderer);
+	m_envMaterial->init(renderer);
 }
 
 void EnviromentMap::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
@@ -58,17 +24,26 @@ void EnviromentMap::buildRenderTasks(GFXEngine::Graphics::RenderContext& context
 		builder.setPipeline(pipeline)
 			.setRenderLayer(RenderLayer::Skybox)
 			.addDescriptorSet(cameraDescriptorSet, 0)
-			.addDescriptorSet(m_cubemapDescriptorSet, 1)
-			.setBuffers(m_vertexBuffer, m_indexBuffer)
-			.setIndexCount(36);
+			.setMesh(m_mesh.get());
+		m_envMaterial->contributeToRenderTask(builder, context);
 		renderQueue.addRenderTask(builder.build());
 	}
 }
 
-
 void EnviromentMap::destroy(GFXEngine::Graphics::Renderer& renderer)
 {
-	renderer.disposeCubemap(m_cubemap);
-	renderer.destroyBuffer(m_vertexBuffer);
-	renderer.destroyBuffer(m_indexBuffer);
+	m_mesh->destroy(renderer);
+	m_envMaterial->destroy(renderer);
+}
+
+EnviromentMap::EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths) : Asset(name)
+{
+	auto [vertices, indices] = Graphics::Shapes::createSkybox();
+	m_mesh = std::make_unique<PositionMesh>();
+	m_mesh->setVertices(std::move(vertices));
+	m_mesh->setIndices(std::move(indices));
+
+	m_envMaterial = std::make_unique<EnviromentMaterial>();
+	LibGFX::CubemapData cubemapData = GFXEngine::Utils::loadCubemap(faceFilepaths, false);
+	m_envMaterial->setCubemapData(std::move(cubemapData));
 }
