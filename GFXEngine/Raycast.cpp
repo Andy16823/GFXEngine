@@ -67,7 +67,8 @@ bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::
 
 	auto indices = mesh.getIndices();
 	auto positionsView = mesh.getVertexComponent(GFXEngine::EngineTypes::VertexComponent::Position);
-	if (positionsView.isEmpty()) {
+	if (positionsView.isEmpty()) 
+	{
 		throw std::runtime_error("Mesh does not contain position vertex component");
 	}
 	auto positions = positionsView.as<glm::vec3>();

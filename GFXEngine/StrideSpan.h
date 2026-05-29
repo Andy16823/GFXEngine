@@ -5,6 +5,10 @@
 
 namespace GFXEngine {
 
+	/// <summary>
+	/// Iterator that allows iterating over a buffer with a specified stride, useful for accessing vertex components in interleaved vertex buffers.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	template<typename T>
 	class StrideIterator {
 	private:
@@ -39,6 +43,10 @@ namespace GFXEngine {
 		}
 	};
 
+	/// <summary>
+	/// StrideSpan is a non-owning view over a contiguous block of memory with a specified stride, allowing access to elements of type T that are interleaved in the buffer.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	template<typename T>
 	class StrideSpan {
 	public:

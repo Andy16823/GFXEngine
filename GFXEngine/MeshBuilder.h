@@ -1,6 +1,7 @@
 #pragma once
 #include "DataTypes.h"
 #include "Mesh3D.h"
+#include "PositionMesh.h"
 
 namespace GFXEngine
 {
@@ -24,7 +25,8 @@ namespace GFXEngine
 			void addTriangle(uint32_t index1, uint32_t index2, uint32_t index3);
 			void addQuad(uint32_t index1, uint32_t index2, uint32_t index3, uint32_t index4);
 			uint32_t getCurrentVertexIndex() const { return static_cast<uint32_t>(vertices.size()); }
-			GFXEngine::Graphics::Mesh3D build() const;
+			GFXEngine::Graphics::Mesh3D buildMesh3D() const;
+			GFXEngine::Graphics::PositionMesh buildPositionMesh() const;
 		};
 	}
 }

@@ -10,6 +10,9 @@
 namespace GFXEngine {
 	namespace Graphics {
 
+		/// <summary>
+		/// MeshVertexPointer is a structure that provides a non-owning view of vertex data in memory.
+		/// </summary>
 		struct MeshVertexPointer {
 			const void* vertexData = nullptr;
 			size_t vertexCount = 0;
@@ -37,6 +40,9 @@ namespace GFXEngine {
 			}
 		};
 
+		/// <summary>
+		/// Mesh is an abstract base class that defines the interface for a renderable mesh in the graphics engine.
+		/// </summary>
 		class Mesh
 		{
 		public:
@@ -54,7 +60,6 @@ namespace GFXEngine {
 			virtual GFXEngine::EngineTypes::VertexComponentView getVertexComponent(GFXEngine::EngineTypes::VertexComponent component) const = 0;
 			virtual MeshVertexPointer getVertexPointer() const = 0;
 			virtual std::span<const uint32_t> getIndices() const = 0;
-
 
 			template<typename VertexType>
 			std::span<const VertexType> getVertices() const {
