@@ -52,6 +52,18 @@ namespace GFXEngine {
 
 			virtual MeshVertexPointer getVertexPointer() const = 0;
 			virtual std::span<const uint32_t> getIndices() const = 0;
+
+			template<typename VertexType>
+			std::span<const VertexType> getVertices() const {
+				auto pointer = getVertexPointer();
+				return pointer.getVertices<VertexType>();
+			}
+
+			template<typename T>
+			T* as() {
+				static_assert(std::is_base_of_v<Mesh, T>, "T must be a subclass of Mesh");
+				return dynamic_cast<T*>(this);
+			}
 		};
 	}
 }
