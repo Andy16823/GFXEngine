@@ -7,7 +7,12 @@
 #include <iostream>
 #include "EngineDefinitions.h"
 #include "PipelineBuilder.h"
-
+#include "PBRGeometryPass.h"
+#include "UnlitGeometryPass.h"
+#include "InstancedPBRGeometryPass.h"
+#include "InstancedUnlitGeometryPass.h"
+#include "EnvironmentPass.h"
+#include "DebugPass.h"
 
 using namespace std;
 using namespace GFXEngine::Graphics;
@@ -576,12 +581,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	std::filesystem::path fragPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_frag.spv";
 	RenderShader meshShaderPBR = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(meshShaderPBR)
-		.useVertex3DInput(0)
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
-		.addDescriptorSetLayout(m_pbrMaterialLayout) // PBR Material textures
-		.addDescriptorSetLayout(m_uniformBuffferLayout)
-		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
-	auto geometryPipelinePBR = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
+		.useVertex3DInput(0);
+	auto geometryPipelinePBR = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<PBRGeometryPass>());
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
 	pipelineBuilder.clear();
 
@@ -590,12 +591,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_frag.spv";
 	RenderShader meshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(meshShaderUnlit)
-		.useVertex3DInput(0)
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
-		.addDescriptorSetLayout(m_samplerLayout) // Texture sampler
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Model matrix UBO
-		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
-	auto geometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
+		.useVertex3DInput(0);
+	auto geometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<UnlitGeometryPass>());
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(geometryPipelineUnlit));
 	pipelineBuilder.clear();
 
@@ -604,12 +601,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_frag.spv";
 	RenderShader instancedMeshShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(instancedMeshShader)
-		.useVertex3DInput(0)
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
-		.addDescriptorSetLayout(m_pbrMaterialLayout) // PBR Material textures
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Model matrix UBO
-		.addDescriptorSetLayout(m_storageBufferLayout); // Instance data storage buffer
-	auto instancedGeometryPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
+		.useVertex3DInput(0);
+	auto instancedGeometryPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<InstancedPBRGeometryPass>());
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
 	pipelineBuilder.clear();
 
@@ -618,12 +611,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_frag.spv";
 	RenderShader instancedMeshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(instancedMeshShaderUnlit)
-		.useVertex3DInput(0)
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
-		.addDescriptorSetLayout(m_samplerLayout) // Texture sampler
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Model matrix UBO
-		.addDescriptorSetLayout(m_storageBufferLayout); // Instance data storage buffer
-	auto instancedGeometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
+		.useVertex3DInput(0);
+	auto instancedGeometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<InstancedUnlitGeometryPass>());
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedGeometryPipelineUnlit));
 	pipelineBuilder.clear();
 
@@ -635,10 +624,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.usePositionInput(0)
 		.setDepthTestEnable(VK_TRUE)
 		.setDepthWriteEnable(VK_FALSE)
-		.setDepthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL)
-		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
-		.addDescriptorSetLayout(m_cubemapSamplerLayout); // Cubemap sampler
-	auto enviromentPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
+		.setDepthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL);
+	auto enviromentPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<EnvironmentPass>());
 	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
 	pipelineBuilder.clear();
 
@@ -647,10 +634,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	fragPath = std::filesystem::path(shadersDirectory) / "debug_frag.spv";
 	RenderShader debugShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(debugShader)
-		.usePositionInput(0)
-		.addDescriptorSetLayout(m_uniformBuffferLayout)
-		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
-	auto debugPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
+		.usePositionInput(0);
+	auto debugPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<DebugPass>());
 	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
 	pipelineBuilder.clear();
 
@@ -661,8 +646,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	pipelineBuilder.addShaderStage(defaultShader)
 		.useFramebufferInput(0)
 		.setDepthTestEnable(VK_FALSE)
-		.setFrontFace(VK_FRONT_FACE_CLOCKWISE)
-		.addDescriptorSetLayout(m_samplerLayout);
+		.setFrontFace(VK_FRONT_FACE_CLOCKWISE);
 	auto presentPipeline = pipelineBuilder.buildPresentPipeline(m_renderPass->getRenderPass());
 	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
 	pipelineBuilder.clear();

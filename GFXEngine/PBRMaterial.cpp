@@ -11,11 +11,6 @@ void GFXEngine::Graphics::PBRMaterial::init(Renderer& renderer)
 	m_descriptorSet = renderer.allocatePBRMaterialDescriptorSet(m_albedo, m_normal, m_metallicRoughness, m_ao, 0);
 }
 
-void GFXEngine::Graphics::PBRMaterial::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const
-{
-	builder.addDescriptorSet(m_descriptorSet, MATERIAL_UBO_BINDING);
-}
-
 void GFXEngine::Graphics::PBRMaterial::destroy(Renderer& renderer)
 {
 	renderer.disposeTexture(m_albedo);

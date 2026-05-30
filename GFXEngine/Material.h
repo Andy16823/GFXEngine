@@ -1,4 +1,5 @@
 #pragma once
+#include <vulkan/vulkan.h>
 #include "Renderer.h"
 #include "IRenderContributor.h"
 
@@ -8,7 +9,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// Base class for materials.
 		/// </summary>
-		class Material : public IRenderContributor {
+		class Material {
 		public:
 			Material() = default;
 			virtual ~Material() = default;
@@ -20,6 +21,8 @@ namespace GFXEngine {
 
 			virtual void init(Renderer& renderer) = 0;
 			virtual void destroy(Renderer& renderer) = 0;
+			virtual VkDescriptorSet getDescriptorSet() const = 0;
+
 		};
 	}
 }

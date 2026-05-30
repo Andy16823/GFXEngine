@@ -20,12 +20,6 @@ void GFXEngine::Graphics::DirectionalLight::init(Renderer& renderer)
 	}
 }
 
-void DirectionalLight::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const
-{
-	auto descriptorSet = m_descriptorSets[context.imageIndex];
-	builder.addDescriptorSet(descriptorSet, LIGHTS_UBO_BINDING);
-}
-
 void DirectionalLight::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	direction = glm::vec3(data["direction"][0], data["direction"][1], data["direction"][2]);

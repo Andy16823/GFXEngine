@@ -3,6 +3,7 @@
 #include "EntityFactory.h"
 #include "Utils.h"
 #include "EngineDefinitions.h"
+#include "IGraphicsPass.h"
 
 void GFXEngine::Core::Scene3D::renderSerial(GFXEngine::Graphics::RenderContext& context)
 {
@@ -32,14 +33,16 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 
 void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap)
 {
+	std::unordered_map<unsigned int, VkDescriptorSet> resources;
+	resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, directionalLight.getDescriptorSet(context.imageIndex));
+
 	VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
 	GFXEngine::Graphics::RenderTaskBuilder builder;
 	builder.setPipeline(pipeline)
 		.setMesh(&envMap.getMesh())
-		.setRenderLayer(Graphics::RenderLayer::Skybox)
-		.addDescriptorSet(cameraDescriptorSet, 0);
-	envMap.getMaterial().contributeToRenderTask(builder, context);
+		.setRenderLayer(Graphics::RenderLayer::Skybox);
+	pipeline->getGraphicsPass().buildRenderTask(context, envMap.getMaterial(), builder, resources);
 	m_renderQueue.addRenderTask(builder.build());
 }
 

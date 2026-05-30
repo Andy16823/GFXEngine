@@ -15,7 +15,7 @@ namespace GFXEngine {
 		public:
 			void init(Renderer& renderer) override;
 			void destroy(Renderer& renderer) override;
-			void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const override;
+			VkDescriptorSet getDescriptorSet() const override { return m_cubemapDescriptorSet; }
 
 			void setCubemapData(LibGFX::CubemapData data) { m_cubemapData = std::move(data); }
 		};

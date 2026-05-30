@@ -12,7 +12,7 @@ namespace GFXEngine {
 		/// DirectionalLight represents a light source that emits parallel rays of light in a specific direction, simulating sunlight or other distant light sources. 
 		/// It is defined by its direction and color, and it affects the entire scene uniformly regardless of the position of objects.
 		/// </summary>
-		class DirectionalLight : public GFXEngine::ISerializable, public GFXEngine::Graphics::IRenderContributor
+		class DirectionalLight : public GFXEngine::ISerializable
 		{
 		public:
 			DirectionalLight() = default;
@@ -31,7 +31,10 @@ namespace GFXEngine {
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 			
-			void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const override;
+			VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const 
+			{
+				return m_descriptorSets[imageIndex];
+			}
 
 			glm::vec3 direction = glm::vec3(-0.5f, -1.0f, -0.3f);
 			glm::vec3 color = glm::vec3(1.0f, 0.95f, 0.9f);

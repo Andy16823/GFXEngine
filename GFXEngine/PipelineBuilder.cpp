@@ -235,7 +235,7 @@ void PipelineBuilder::clear()
 	m_depthCompareOp = VK_COMPARE_OP_LESS;
 }
 
-std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRenderPass renderPass)
+std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRenderPass renderPass, std::unique_ptr<IGraphicsPass> graphicsPass)
 {
 	if (m_shaderStages.empty()) {
 		throw std::runtime_error("At least one shader stage must be added to the pipeline");
@@ -310,19 +310,6 @@ std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRende
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
 
-	// Pipeline layout
-	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
-	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
-	pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
-	pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(m_pushConstantRanges.size());
-	pipelineLayoutInfo.pPushConstantRanges = m_pushConstantRanges.data();
-
-	VkPipelineLayout pipelineLayout;
-	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create pipeline layout");
-	}
-
 	// Depth stencil state
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -331,6 +318,9 @@ std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRende
 	depthStencil.depthCompareOp = m_depthCompareOp;
 	depthStencil.depthBoundsTestEnable = VK_FALSE;
 	depthStencil.stencilTestEnable = VK_FALSE;
+
+	// Pipeline Layout
+	VkPipelineLayout pipelineLayout = graphicsPass->buildLayout(renderer);
 
 	// Pipeline create info
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
@@ -362,7 +352,7 @@ std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRende
 
 	// Return the created pipeline and layout
 	std::cout << "Graphics Pipeline created successfully!" << std::endl;
-	return std::make_unique<GraphicsPipeline>(pipeline, pipelineLayout);
+	return std::make_unique<GraphicsPipeline>(pipeline, pipelineLayout, std::move(graphicsPass));
 }
 
 std::unique_ptr<GFXEngine::Graphics::PresentPipeline> PipelineBuilder::buildPresentPipeline(VkRenderPass renderPass)
@@ -441,12 +431,13 @@ std::unique_ptr<GFXEngine::Graphics::PresentPipeline> PipelineBuilder::buildPres
 	colorBlending.pAttachments = &colorBlendAttachment;
 
 	// Pipeline layout
+	std::array<VkDescriptorSetLayout, 1> descriptorSetLayouts { renderer.getSamplerLayout() };
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
-	pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
-	pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(m_pushConstantRanges.size());
-	pipelineLayoutInfo.pPushConstantRanges = m_pushConstantRanges.data();
+	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
+	pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
+	pipelineLayoutInfo.pushConstantRangeCount = 0;
+	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
 	VkPipelineLayout pipelineLayout;
 	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {

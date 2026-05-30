@@ -1,5 +1,7 @@
 #pragma once
 #include "RenderPipeline.h"
+#include "IGraphicsPass.h"
+#include <memory>
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -9,10 +11,11 @@ namespace GFXEngine {
 		private:
 			VkPipelineLayout m_pipelineLayout;
 			VkPipeline m_pipeline;
+			std::unique_ptr<IGraphicsPass> m_graphicsPass;
 
 		public:
-			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout layout)
-				: RenderPipeline(), m_pipeline(pipeline), m_pipelineLayout(layout) {}
+			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout layout, std::unique_ptr<IGraphicsPass> graphicsPass)
+				: RenderPipeline(), m_pipeline(pipeline), m_pipelineLayout(layout), m_graphicsPass(std::move(graphicsPass)) {}
 
 			VkPipelineLayout getPipelineLayout() const override 
 			{
@@ -24,6 +27,11 @@ namespace GFXEngine {
 			{
 				assert(m_pipeline != VK_NULL_HANDLE);
 				return m_pipeline;
+			}
+
+			const IGraphicsPass& getGraphicsPass() const 
+			{
+				return *m_graphicsPass;
 			}
 
 			void bindViewport(VkCommandBuffer commandBuffer, const VkViewport& viewport) const override;

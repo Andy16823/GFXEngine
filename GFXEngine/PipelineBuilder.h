@@ -87,7 +87,7 @@ namespace GFXEngine
 			PipelineBuilder& setDepthWriteEnable(VkBool32 depthWriteEnable);
 			PipelineBuilder& setDepthCompareOp(VkCompareOp depthCompareOp);
 
-			std::unique_ptr<GraphicsPipeline> buildGraphicsPipeline(VkRenderPass renderPass);
+			std::unique_ptr<GraphicsPipeline> buildGraphicsPipeline(VkRenderPass renderPass, std::unique_ptr<IGraphicsPass> graphicsPass);
 			std::unique_ptr<PresentPipeline> buildPresentPipeline(VkRenderPass renderPass);
 			void clear();
 		};

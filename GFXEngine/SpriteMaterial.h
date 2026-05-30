@@ -18,7 +18,7 @@ namespace GFXEngine {
 				: m_texturePath(texturePath) {}
 
 			void init(Renderer& renderer) override;
-			void contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const override;
+			VkDescriptorSet getDescriptorSet() const override { return m_textureDescriptorSet; }
 			void destroy(Renderer& renderer) override;
 
 		private:

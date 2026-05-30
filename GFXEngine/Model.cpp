@@ -55,15 +55,15 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 	if (!isVisible())
 		return;
 
-	Entity::buildRenderTasks(context, renderQueue);
-
 	if (context.renderPass == RenderPassIteration::GeometryPass) {
 		// Get scene as scene3d
 		Scene3D* scene3D = this->getScene()->as<Scene3D>();
 
-		// Get Descriptor Sets, model matrix, and pipeline
-		VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
-		glm::mat4 modelMatrix = this->transform.getModelMatrix();
+		// Add light data to the resources
+		std::unordered_map<unsigned int, VkDescriptorSet> resources;
+		resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, scene3D->directionalLight.getDescriptorSet(context.imageIndex));
+
+		// Get the Pipeline for the render
 		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
 
 		// For each mesh, set the mesh and material in the render task and add it to the render queue
@@ -73,15 +73,13 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 			RenderTaskBuilder taskBuilder;
 			taskBuilder.setPipeline(pipeline)
 				.setMesh(&mesh)
-				.setModelMatrix(modelMatrix)
-				.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
-				.addPushConstant(&modelMatrix, sizeof(glm::mat4));
-
-			scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
-			material.contributeToRenderTask(taskBuilder, context);
+				.setModelMatrix(this->transform.getModelMatrix());
+			pipeline->getGraphicsPass().buildRenderTask(context, material, taskBuilder, resources);
 			renderQueue.addRenderTask(taskBuilder.build());
 		}
 	}
+
+	Entity::buildRenderTasks(context, renderQueue);
 }
 
 std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Model::getProperties()

@@ -63,9 +63,21 @@ namespace GFXEngine
 		/// </summary>
 		class RenderTaskBuilder {
 		private:
+			bool m_hasModelMatrix = false;
 			RenderTask m_task;
 
 		public:
+
+			bool hasModelMatrix() const
+			{
+				return m_hasModelMatrix;
+			}
+
+			glm::mat4 getModelMatrix() const 
+			{ 
+				return m_task.modelMatrix; 
+			}
+
 			RenderTaskBuilder& setPipeline(GFXEngine::Graphics::GraphicsPipeline* pipeline);
 			RenderTaskBuilder& setVertexBuffer(const LibGFX::Buffer& vertexBuffer);
 			RenderTaskBuilder& setIndexBuffer(const LibGFX::Buffer& indexBuffer);

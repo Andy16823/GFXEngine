@@ -55,29 +55,32 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 		m_isDirty = false;
 	}
 
-	Entity::buildRenderTasks(context, renderQueue);
-
+	// Convert scene to scene3D
 	auto scene3D = this->getScene()->as<Scene3D>();
-	auto meshCount = this->getMeshCount();
-	auto cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
-	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
-	glm::mat4 modelMatrix =	this->transform.getModelMatrix();
 
+	// Build render resources
+	std::unordered_map<unsigned int, VkDescriptorSet> resources;
+	resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, scene3D->directionalLight.getDescriptorSet(context.imageIndex));
+	resources.emplace(Defintions::INSTANCE_DATA_SSBO, m_instanceDataDescriptorSet);
+
+	// Get pipeline to render with
+	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
+
+	// Create render task for every mesh
+	auto meshCount = this->getMeshCount();
 	for (size_t i = 0; i < meshCount; ++i) {
 		const auto& [mesh, material] = this->getMeshAndMaterial(i);
 
 		RenderTaskBuilder taskBuilder;
 		taskBuilder.setPipeline(pipeline)
 			.setMesh(&mesh)
-			.setModelMatrix(modelMatrix)
-			.addDescriptorSet(cameraDescriptorSet, CAMERA_UBO_BINDING)
-			.addDescriptorSet(m_instanceDataDescriptorSet, INSTANCE_SSBO_BINDING)
 			.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
-
-		scene3D->directionalLight.contributeToRenderTask(taskBuilder, context);
-		material.contributeToRenderTask(taskBuilder, context);
+		pipeline->getGraphicsPass().buildRenderTask(context, material, taskBuilder, resources);
 		renderQueue.addRenderTask(taskBuilder.build());
 	}
+
+	// Create child render tasks
+	Entity::buildRenderTasks(context, renderQueue);
 }
 
 size_t GFXEngine::Core::InstancedModel::getMeshCount() const

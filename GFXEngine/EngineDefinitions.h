@@ -13,5 +13,10 @@ namespace GFXEngine {
 			DEBUG_PIPELINE						= 'DEBG'
 		};
 
+		enum RenderResource : unsigned int {
+			INSTANCE_DATA_SSBO					= 'INST',
+			DIRECTIONAL_LIGHT_RESOURCE			= 'DLIT',
+			POINT_LIGHTS_RESOURCE				= 'PLIT'
+		};
 	}
 }

@@ -41,6 +41,7 @@ GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::
 
 GFXEngine::Graphics::RenderTaskBuilder& GFXEngine::Graphics::RenderTaskBuilder::setModelMatrix(const glm::mat4& modelMatrix)
 {
+	m_hasModelMatrix = true;
 	m_task.modelMatrix = modelMatrix;
 	return *this;
 }

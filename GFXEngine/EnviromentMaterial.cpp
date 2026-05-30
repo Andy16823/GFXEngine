@@ -11,8 +11,3 @@ void GFXEngine::Graphics::EnviromentMaterial::destroy(Renderer& renderer)
 {
 	renderer.disposeCubemap(m_cubemap);
 }
-
-void GFXEngine::Graphics::EnviromentMaterial::contributeToRenderTask(RenderTaskBuilder& builder, const RenderContext& context) const
-{
-	builder.addDescriptorSet(m_cubemapDescriptorSet, 1);
-}
