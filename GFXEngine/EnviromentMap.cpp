@@ -14,22 +14,6 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 	m_envMaterial->init(renderer);
 }
 
-void EnviromentMap::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
-{
-	if (context.renderPass == RenderPassIteration::GeometryPass) {
-		VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
-		auto pipeline = context.renderer.getPipeline<GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
-
-		GFXEngine::Graphics::RenderTaskBuilder builder;
-		builder.setPipeline(pipeline)
-			.setRenderLayer(RenderLayer::Skybox)
-			.addDescriptorSet(cameraDescriptorSet, 0)
-			.setMesh(m_mesh.get());
-		m_envMaterial->contributeToRenderTask(builder, context);
-		renderQueue.addRenderTask(builder.build());
-	}
-}
-
 void EnviromentMap::destroy(GFXEngine::Graphics::Renderer& renderer)
 {
 	m_mesh->destroy(renderer);

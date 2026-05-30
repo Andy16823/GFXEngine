@@ -1,10 +1,8 @@
 #include "Scene3D.h"
-#include <fstream>
-#include "Model.h"
-#include "InstancedModel.h"
 #include "AssetManager.h"
 #include "EntityFactory.h"
 #include "Utils.h"
+#include "EngineDefinitions.h"
 
 void GFXEngine::Core::Scene3D::renderSerial(GFXEngine::Graphics::RenderContext& context)
 {
@@ -30,6 +28,19 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 	for (auto& queue : perThreadsQueues) {
 		m_renderQueue.append(std::move(queue));
 	}
+}
+
+void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap)
+{
+	VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
+	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
+	GFXEngine::Graphics::RenderTaskBuilder builder;
+	builder.setPipeline(pipeline)
+		.setMesh(&envMap.getMesh())
+		.setRenderLayer(Graphics::RenderLayer::Skybox)
+		.addDescriptorSet(cameraDescriptorSet, 0);
+	envMap.getMaterial().contributeToRenderTask(builder, context);
+	m_renderQueue.addRenderTask(builder.build());
 }
 
 /// <summary>
@@ -92,10 +103,10 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		renderSerial(context);
 	}
 
-	// Allow the enviroment map to add its render tasks to the render queue if it exists
-	if (auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) 
+	// Renders an enviorment map if exist
+	if (const auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) 
 	{
-		envMap->buildRenderTasks(context, m_renderQueue);
+		this->renderEnvMap(context, *envMap);
 	}
 
 	// Create a render context to pass to entities and render contributors

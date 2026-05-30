@@ -25,6 +25,7 @@ namespace GFXEngine {
 
 			void renderSerial(GFXEngine::Graphics::RenderContext& context);
 			void renderParallel(GFXEngine::Graphics::RenderContext& context);
+			void renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap);
 		public:
 			Graphics::DirectionalLight directionalLight;
 
