@@ -22,34 +22,6 @@ void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& r
 	}
 }
 
-
-//void GFXEngine::Core::Model::render(Scene& scene, GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex)
-//{
-//	if (isVisible()) {
-//		Entity::render(scene, renderer, camera, imageIndex);
-//
-//		auto& scene3D = static_cast<Scene3D&>(scene);
-//
-//		// Get camera descriptor set and model matrix
-//		VkDescriptorSet cameraDescriptorSet = camera.getDescriptorSet(imageIndex);
-//		glm::mat4 modelMatrix = this->transform.getModelMatrix();
-//
-//		// TODO: Create an render mode flag to switch between different pipelines (e.g. wireframe, unlit, pbr, etc.)
-//		auto pipeline = renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
-//		renderer.usePipeline(*pipeline, imageIndex);
-//		renderer.bindDescriptorSet(cameraDescriptorSet, pipeline->getPipelineLayout(), CAMERA_UBO_BINDING, imageIndex);
-//		renderer.bindPushConstants(&modelMatrix, sizeof(glm::mat4), pipeline->getPipelineLayout(), imageIndex);
-//		scene3D.directionalLight.bind(renderer, camera, *pipeline, LIGHTS_UBO_BINDING, imageIndex);
-//
-//		// Render each mesh of the entity
-//		for (size_t i = 0; i < this->getMeshCount(); ++i) {
-//			auto [mesh, material] = this->getMeshAndMaterial(i);
-//			material.bind(renderer, camera, *pipeline, imageIndex);
-//			renderer.drawBuffers(mesh.getVertexBuffer(), mesh.getIndexBuffer(), mesh.getIndexCount(), imageIndex);
-//		}
-//	}
-//}
-
 void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
 	if (!isVisible())
@@ -62,7 +34,7 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 
 		// Build graphic resources for the render task, starting with camera and scene-level resources
 		Graphics::GraphicResources resources;
-		resources.emplace(Defintions::CAMERA_RESOURCE, context.camera.getDescriptorSet(context.imageIndex));
+		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(resources, context.imageIndex);
 
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
@@ -130,13 +102,6 @@ void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::
 	m_meshModelRef.set(meshModelAsset);
 }
 
-void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
-{
-	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
-	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources.emplace(Defintions::MATERIAL_RESOURCE, material.getDescriptorSet());
-}
-
 size_t GFXEngine::Core::Model::getMeshCount() const
 {
 	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
@@ -149,4 +114,11 @@ std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&
 		throw std::out_of_range("Mesh index out of range");
 	}
 	return { meshModel->getMesh(index), meshModel->getMeshMaterial(index) };
+}
+
+void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+{
+	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
+	const auto& material = getMeshAndMaterial(meshIndex).second;
+	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet();
 }

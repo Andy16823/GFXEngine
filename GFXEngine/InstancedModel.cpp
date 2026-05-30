@@ -62,7 +62,7 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 		
 		// Build render resources
 		Graphics::GraphicResources resources;
-		resources.emplace(Defintions::CAMERA_RESOURCE, context.camera.getDescriptorSet(context.imageIndex));
+		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(resources, context.imageIndex);
 
 		// Create render task for every mesh
@@ -265,6 +265,6 @@ void InstancedModel::getGraphicResources(GFXEngine::Graphics::GraphicResources& 
 {
 	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
 	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources.emplace(Defintions::MATERIAL_RESOURCE, material.getDescriptorSet());
-	resources.emplace(Defintions::INSTANCE_DATA_RESOURCE, m_instanceDataDescriptorSet);
+	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet();
+	resources[Defintions::INSTANCE_DATA_RESOURCE] = m_instanceDataDescriptorSet;
 }

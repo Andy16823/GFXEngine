@@ -38,8 +38,8 @@ void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& 
 	
 	// Build graphic resources for the render task, starting with camera and scene-level resources
 	Graphics::GraphicResources resources;
-	resources.emplace(Defintions::CAMERA_RESOURCE, context.camera.getDescriptorSet(context.imageIndex));
-	resources.emplace(Defintions::MATERIAL_RESOURCE, envMap.getMaterial().getDescriptorSet());
+	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+	resources[Defintions::MATERIAL_RESOURCE] = envMap.getMaterial().getDescriptorSet();
 	this->getGraphicResources(resources, context.imageIndex);
 	
 	// Build render task for the enviroment map
@@ -248,7 +248,7 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 
 void GFXEngine::Core::Scene3D::getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const
 {
-	resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, directionalLight.getDescriptorSet(imageIndex));
+	resources[Defintions::DIRECTIONAL_LIGHT_RESOURCE] = directionalLight.getDescriptorSet(imageIndex);
 }
 
 GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context)
