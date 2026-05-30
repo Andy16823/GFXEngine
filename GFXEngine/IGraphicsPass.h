@@ -8,8 +8,7 @@ namespace GFXEngine {
 		using GraphicResources = std::unordered_map<unsigned int, VkDescriptorSet>;
 
 		class Renderer;
-		class RenderContext;
-		class Mesh;
+		struct RenderContext;
 		class Material;
 		class RenderTaskBuilder;
 
