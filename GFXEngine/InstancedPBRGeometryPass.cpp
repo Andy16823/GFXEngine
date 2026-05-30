@@ -6,6 +6,9 @@
 #include "EngineDefinitions.h"
 #include <stdexcept>
 
+using namespace GFXEngine;
+using namespace GFXEngine::Graphics;
+
 VkPipelineLayout GFXEngine::Graphics::InstancedPBRGeometryPass::buildLayout(Renderer& renderer) const
 {
 	std::array<VkDescriptorSetLayout, 4> descriptorSetLayouts{

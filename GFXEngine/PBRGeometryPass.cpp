@@ -6,6 +6,9 @@
 #include "EngineDefinitions.h"
 #include <stdexcept>
 
+using namespace GFXEngine;
+using namespace GFXEngine::Graphics;
+
 VkPipelineLayout GFXEngine::Graphics::PBRGeometryPass::buildLayout(Renderer& renderer) const
 {
 	VkPushConstantRange pushConstantRange = {};

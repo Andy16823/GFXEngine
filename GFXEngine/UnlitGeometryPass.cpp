@@ -5,6 +5,9 @@
 #include "RenderTask.h"
 #include <stdexcept>
 
+using namespace GFXEngine;
+using namespace GFXEngine::Graphics;
+
 VkPipelineLayout GFXEngine::Graphics::UnlitGeometryPass::buildLayout(Renderer& renderer) const
 {
 	VkPushConstantRange pushConstantRange = {};

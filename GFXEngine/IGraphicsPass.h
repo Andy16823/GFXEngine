@@ -18,7 +18,7 @@ namespace GFXEngine {
 		public:
 			virtual ~IGraphicsPass() = default;
 			virtual VkPipelineLayout buildLayout(Renderer& renderer) const = 0;
-			virtual bool buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const = 0;
+			virtual bool buildRenderTask(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::Material& material, GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const = 0;
 		};
 	}
 }
