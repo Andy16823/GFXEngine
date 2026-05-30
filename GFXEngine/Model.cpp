@@ -56,25 +56,29 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 		return;
 
 	if (context.renderPass == RenderPassIteration::GeometryPass) {
-		// Get scene as scene3d
-		Scene3D* scene3D = this->getScene()->as<Scene3D>();
-
-		// Add light data to the resources
-		std::unordered_map<unsigned int, VkDescriptorSet> resources;
-		resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, scene3D->directionalLight.getDescriptorSet(context.imageIndex));
 
 		// Get the Pipeline for the render
 		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
 
-		// For each mesh, set the mesh and material in the render task and add it to the render queue
+		// Build graphic resources for the render task, starting with camera and scene-level resources
+		Graphics::GraphicResources resources;
+		resources.emplace(Defintions::CAMERA_RESOURCE, context.camera.getDescriptorSet(context.imageIndex));
+		this->getScene()->getGraphicResources(resources, context.imageIndex);
+
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
 			const auto& [mesh, material] = this->getMeshAndMaterial(i);
-			// Build render task for each mesh of the model
+
+			// Create render task builder and set common properties
 			RenderTaskBuilder taskBuilder;
 			taskBuilder.setPipeline(pipeline)
 				.setMesh(&mesh)
 				.setModelMatrix(this->transform.getModelMatrix());
-			pipeline->getGraphicsPass().buildRenderTask(context, material, taskBuilder, resources);
+
+			// Get entity-specific graphic resources
+			this->getGraphicResources(resources, context.imageIndex, i);
+
+			// Bind resources to the pipeline (this will throw if required resources are missing)
+			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
 			renderQueue.addRenderTask(taskBuilder.build());
 		}
 	}
@@ -124,6 +128,13 @@ void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::
 		throw std::runtime_error("Model deserialization error: MeshModel asset '" + modelName + "' not found");
 	}
 	m_meshModelRef.set(meshModelAsset);
+}
+
+void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+{
+	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
+	const auto& material = getMeshAndMaterial(meshIndex).second;
+	resources.emplace(Defintions::MATERIAL_RESOURCE, material.getDescriptorSet());
 }
 
 size_t GFXEngine::Core::Model::getMeshCount() const

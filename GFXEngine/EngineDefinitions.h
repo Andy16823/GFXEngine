@@ -14,9 +14,11 @@ namespace GFXEngine {
 		};
 
 		enum RenderResource : unsigned int {
-			INSTANCE_DATA_SSBO					= 'INST',
-			DIRECTIONAL_LIGHT_RESOURCE			= 'DLIT',
-			POINT_LIGHTS_RESOURCE				= 'PLIT'
+			CAMERA_RESOURCE						= 'CAMR',
+			MATERIAL_RESOURCE					= 'MATR',
+			INSTANCE_DATA_RESOURCE				= 'INSR',
+			DIRECTIONAL_LIGHT_RESOURCE			= 'DLIR',
+			POINT_LIGHTS_RESOURCE				= 'PLIR'
 		};
 	}
 }

@@ -34,15 +34,20 @@ VkPipelineLayout GFXEngine::Graphics::DebugPass::buildLayout(Renderer& renderer)
 	return pipelineLayout;
 }
 
-bool GFXEngine::Graphics::DebugPass::buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const
+bool GFXEngine::Graphics::DebugPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
+	if (!resources.contains(Defintions::CAMERA_RESOURCE))
+	{
+		throw std::runtime_error("DebugPass requires CAMERA_RESOURCE");
+	}
+
 	if (!builder.hasModelMatrix())
 	{
 		throw std::runtime_error("DebugPass missing ModelMatrix for push_constnat");
 	}
 
 	glm::mat4 modelMatrix = builder.getModelMatrix();
-	VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
+	VkDescriptorSet cameraDescriptorSet = resources[Defintions::CAMERA_RESOURCE];
 
 	builder.addDescriptorSet(cameraDescriptorSet, 0)
 		.addPushConstant(&modelMatrix, sizeof(glm::mat4), 0);

@@ -7,7 +7,7 @@ namespace GFXEngine {
 		{
 		public:
 			VkPipelineLayout buildLayout(Renderer& renderer) const override;
-			bool buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const override;
+			bool bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const override;
 		};
 	}
 }

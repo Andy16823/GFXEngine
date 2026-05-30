@@ -55,28 +55,31 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 		m_isDirty = false;
 	}
 
-	// Convert scene to scene3D
-	auto scene3D = this->getScene()->as<Scene3D>();
+	if (context.renderPass == RenderPassIteration::GeometryPass) {
 
-	// Build render resources
-	std::unordered_map<unsigned int, VkDescriptorSet> resources;
-	resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, scene3D->directionalLight.getDescriptorSet(context.imageIndex));
-	resources.emplace(Defintions::INSTANCE_DATA_SSBO, m_instanceDataDescriptorSet);
+		// Get pipeline to render with
+		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
+		
+		// Build render resources
+		Graphics::GraphicResources resources;
+		resources.emplace(Defintions::CAMERA_RESOURCE, context.camera.getDescriptorSet(context.imageIndex));
+		this->getScene()->getGraphicResources(resources, context.imageIndex);
 
-	// Get pipeline to render with
-	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
+		// Create render task for every mesh
+		auto meshCount = this->getMeshCount();
+		for (size_t i = 0; i < meshCount; ++i) {
+			const auto& [mesh, material] = this->getMeshAndMaterial(i);
 
-	// Create render task for every mesh
-	auto meshCount = this->getMeshCount();
-	for (size_t i = 0; i < meshCount; ++i) {
-		const auto& [mesh, material] = this->getMeshAndMaterial(i);
+			RenderTaskBuilder taskBuilder;
+			taskBuilder.setPipeline(pipeline)
+				.setMesh(&mesh)
+				.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
 
-		RenderTaskBuilder taskBuilder;
-		taskBuilder.setPipeline(pipeline)
-			.setMesh(&mesh)
-			.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
-		pipeline->getGraphicsPass().buildRenderTask(context, material, taskBuilder, resources);
-		renderQueue.addRenderTask(taskBuilder.build());
+			this->getGraphicResources(resources, context.imageIndex, i);
+			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
+
+			renderQueue.addRenderTask(taskBuilder.build());
+		}
 	}
 
 	// Create child render tasks
@@ -256,4 +259,12 @@ void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GF
 			}
 		}
 	}
+}
+
+void InstancedModel::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+{
+	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
+	const auto& material = getMeshAndMaterial(meshIndex).second;
+	resources.emplace(Defintions::MATERIAL_RESOURCE, material.getDescriptorSet());
+	resources.emplace(Defintions::INSTANCE_DATA_RESOURCE, m_instanceDataDescriptorSet);
 }

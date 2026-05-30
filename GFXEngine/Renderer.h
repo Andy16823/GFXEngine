@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 #include "RenderPipeline.h"
+#include "GraphicResources.h"
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
@@ -29,6 +30,7 @@ const uint32_t INSTANCE_SSBO_BINDING = 3;
 
 namespace GFXEngine {
 	namespace Graphics {
+
 		class Renderer
 		{
 		private:

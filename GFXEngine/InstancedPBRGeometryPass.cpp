@@ -33,22 +33,32 @@ VkPipelineLayout GFXEngine::Graphics::InstancedPBRGeometryPass::buildLayout(Rend
 	return pipelineLayout;
 }
 
-bool GFXEngine::Graphics::InstancedPBRGeometryPass::buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const
+bool GFXEngine::Graphics::InstancedPBRGeometryPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
+	if (!resources.contains(Defintions::CAMERA_RESOURCE))
+	{
+		throw std::runtime_error("InstancedPBRGeometryPass requires CAMERA_RESOURCE");
+	}
+
+	if (!resources.contains(Defintions::MATERIAL_RESOURCE))
+	{
+		throw std::runtime_error("InstancedPBRGeometryPass requires MATERIAL_RESOURCE");
+	}
+
 	if (!resources.contains(Defintions::DIRECTIONAL_LIGHT_RESOURCE)) 
 	{
 		throw std::runtime_error("InstancedPBRGeometryPass requires DIRECTIONAL_LIGHT_RESOURCE");
 	}
 
-	if (!resources.contains(Defintions::INSTANCE_DATA_SSBO))
+	if (!resources.contains(Defintions::INSTANCE_DATA_RESOURCE))
 	{
-		throw std::runtime_error("InstancedPBRGeometryPass requires INSTANCE_DATA_SSBO");
+		throw std::runtime_error("InstancedPBRGeometryPass requires INSTANCE_DATA_RESOURCE");
 	}
 
-	VkDescriptorSet cameraSet = context.camera.getDescriptorSet(context.imageIndex);
-	VkDescriptorSet materialSet = material.getDescriptorSet();
+	VkDescriptorSet cameraSet = resources[Defintions::CAMERA_RESOURCE];
+	VkDescriptorSet materialSet = resources[Defintions::MATERIAL_RESOURCE];
 	VkDescriptorSet lightSet = resources[Defintions::DIRECTIONAL_LIGHT_RESOURCE];
-	VkDescriptorSet instanceDataSet = resources[Defintions::INSTANCE_DATA_SSBO];
+	VkDescriptorSet instanceDataSet = resources[Defintions::INSTANCE_DATA_RESOURCE];
 
 	builder.addDescriptorSet(cameraSet, 0)
 		.addDescriptorSet(materialSet, 1)

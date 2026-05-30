@@ -33,16 +33,23 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 
 void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap)
 {
-	std::unordered_map<unsigned int, VkDescriptorSet> resources;
-	resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, directionalLight.getDescriptorSet(context.imageIndex));
-
-	VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
+	// Get the Pipeline for the render
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
+	
+	// Build graphic resources for the render task, starting with camera and scene-level resources
+	Graphics::GraphicResources resources;
+	resources.emplace(Defintions::CAMERA_RESOURCE, context.camera.getDescriptorSet(context.imageIndex));
+	resources.emplace(Defintions::MATERIAL_RESOURCE, envMap.getMaterial().getDescriptorSet());
+	this->getGraphicResources(resources, context.imageIndex);
+	
+	// Build render task for the enviroment map
 	GFXEngine::Graphics::RenderTaskBuilder builder;
 	builder.setPipeline(pipeline)
 		.setMesh(&envMap.getMesh())
 		.setRenderLayer(Graphics::RenderLayer::Skybox);
-	pipeline->getGraphicsPass().buildRenderTask(context, envMap.getMaterial(), builder, resources);
+
+	// Bind resources to the pipeline (this will throw if required resources are missing)
+	pipeline->getGraphicsPass().bindResources(builder, resources);
 	m_renderQueue.addRenderTask(builder.build());
 }
 
@@ -237,6 +244,11 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		entity->deserialize(entityData, context, flags);
 		addEntity(std::move(entity));
 	}
+}
+
+void GFXEngine::Core::Scene3D::getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const
+{
+	resources.emplace(Defintions::DIRECTIONAL_LIGHT_RESOURCE, directionalLight.getDescriptorSet(imageIndex));
 }
 
 GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context)

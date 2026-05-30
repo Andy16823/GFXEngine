@@ -32,6 +32,8 @@ namespace GFXEngine {
 
 			virtual size_t getMeshCount() const override { return 1; }
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+			virtual void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
+
 		private:
 			const Graphics::SpriteMaterial& m_material;
 			const Graphics::Mesh3D& m_mesh; // TODO: Change to Mesh2D when implemented

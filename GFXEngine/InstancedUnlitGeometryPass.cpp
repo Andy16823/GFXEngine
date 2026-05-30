@@ -32,16 +32,26 @@ VkPipelineLayout GFXEngine::Graphics::InstancedUnlitGeometryPass::buildLayout(Re
 	return pipelineLayout;
 }
 
-bool GFXEngine::Graphics::InstancedUnlitGeometryPass::buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const
+bool GFXEngine::Graphics::InstancedUnlitGeometryPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
-	if (!resources.contains(Defintions::INSTANCE_DATA_SSBO))
+	if (!resources.contains(Defintions::CAMERA_RESOURCE))
 	{
-		throw std::runtime_error("InstancedPBRGeometryPass requires INSTANCE_DATA_SSBO");
+		throw std::runtime_error("InstancedUnlitGeometryPass requires CAMERA_RESOURCE");
 	}
 
-	VkDescriptorSet cameraSet = context.camera.getDescriptorSet(context.imageIndex);
-	VkDescriptorSet materialSet = material.getDescriptorSet();
-	VkDescriptorSet instanceDataSet = resources[Defintions::INSTANCE_DATA_SSBO];
+	if (!resources.contains(Defintions::MATERIAL_RESOURCE))
+	{
+		throw std::runtime_error("InstancedUnlitGeometryPass requires MATERIAL_RESOURCE");
+	}
+
+	if (!resources.contains(Defintions::INSTANCE_DATA_RESOURCE))
+	{
+		throw std::runtime_error("InstancedUnlitGeometryPass requires INSTANCE_DATA_RESOURCE");
+	}
+
+	VkDescriptorSet cameraSet = resources[Defintions::CAMERA_RESOURCE];
+	VkDescriptorSet materialSet = resources[Defintions::MATERIAL_RESOURCE];
+	VkDescriptorSet instanceDataSet = resources[Defintions::INSTANCE_DATA_RESOURCE];
 
 	builder.addDescriptorSet(cameraSet, 0)
 		.addDescriptorSet(materialSet, 1)

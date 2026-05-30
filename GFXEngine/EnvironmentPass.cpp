@@ -1,8 +1,7 @@
 #include "EnvironmentPass.h"
 #include "Renderer.h"
-#include "RenderContext.h"
-#include "Material.h"
 #include "RenderTask.h"
+#include "EngineDefinitions.h"
 #include <stdexcept>
 
 using namespace GFXEngine;
@@ -30,10 +29,20 @@ VkPipelineLayout GFXEngine::Graphics::EnvironmentPass::buildLayout(Renderer& ren
 	return pipelineLayout;
 }
 
-bool GFXEngine::Graphics::EnvironmentPass::buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const
+bool GFXEngine::Graphics::EnvironmentPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
-	VkDescriptorSet cameraSet = context.camera.getDescriptorSet(context.imageIndex);
-	VkDescriptorSet cubemapSet = material.getDescriptorSet();
+	if (!resources.contains(Defintions::CAMERA_RESOURCE))
+	{
+		throw std::runtime_error("EnvironmentPass requires CAMERA_RESOURCE");
+	}
+
+	if (!resources.contains(Defintions::MATERIAL_RESOURCE))
+	{
+		throw std::runtime_error("EnvironmentPass requires MATERIAL_RESOURCE");
+	}
+
+	VkDescriptorSet cameraSet = resources[Defintions::CAMERA_RESOURCE];
+	VkDescriptorSet cubemapSet = resources[Defintions::MATERIAL_RESOURCE];
 
 	builder.addDescriptorSet(cameraSet, 0)
 		.addDescriptorSet(cubemapSet, 1);

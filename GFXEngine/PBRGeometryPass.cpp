@@ -36,21 +36,31 @@ VkPipelineLayout GFXEngine::Graphics::PBRGeometryPass::buildLayout(Renderer& ren
 	return pipelineLayout;
 }
 
-bool GFXEngine::Graphics::PBRGeometryPass::buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const
+bool GFXEngine::Graphics::PBRGeometryPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
+	if (!resources.contains(Defintions::CAMERA_RESOURCE)) 
+	{
+		throw std::runtime_error("PBRGeometryPass requires CAMERA_RESOURCE");
+	}
+
+	if (!resources.contains(Defintions::MATERIAL_RESOURCE))
+	{
+		throw std::runtime_error("PBRGeometryPass requires MATERIAL_RESOURCE");
+	}
+
 	if (!resources.contains(Defintions::DIRECTIONAL_LIGHT_RESOURCE))
 	{
-		throw std::runtime_error("PBRGeometryPass missing DIRECTIONAL_LIGHT_RESOURCE");
+		throw std::runtime_error("PBRGeometryPass requires DIRECTIONAL_LIGHT_RESOURCE");
 	}
 
 	if (!builder.hasModelMatrix()) 
 	{
-		throw std::runtime_error("PBRGeometryPass missing ModelMatrix for push_constnat");
+		throw std::runtime_error("PBRGeometryPass requires ModelMatrix for push_constnat");
 	}
 	
 	glm::mat4 modelMatrix = builder.getModelMatrix();
-	VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
-	VkDescriptorSet materialDescriptorSet = material.getDescriptorSet();
+	VkDescriptorSet cameraDescriptorSet = resources[Defintions::CAMERA_RESOURCE];
+	VkDescriptorSet materialDescriptorSet = resources[Defintions::MATERIAL_RESOURCE];
 	VkDescriptorSet dirLightDescriptorSet = resources[Defintions::DIRECTIONAL_LIGHT_RESOURCE];
 
 	builder.addDescriptorSet(cameraDescriptorSet, 0)

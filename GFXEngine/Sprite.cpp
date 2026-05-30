@@ -1,7 +1,9 @@
 #include "Sprite.h"
 #include "Utils.h"
-#include "Shapes.h"
-#include "RenderTask.h"
+#include "Scene.h"
+#include "Renderer.h"
+#include "Camera.h"
+#include "EngineDefinitions.h"
 
 using namespace GFXEngine;
 using namespace GFXEngine::Graphics;
@@ -30,6 +32,13 @@ void Sprite::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEn
 void GFXEngine::Core::Sprite::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	Entity::destroy(scene, renderer);
+}
+
+void Sprite::getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+{
+	assert(meshIndex == 0); // Sprite only has one mesh and material
+	const auto& material = getMeshAndMaterial(meshIndex).second;
+	resources.emplace(Defintions::MATERIAL_RESOURCE, material.getDescriptorSet());
 }
 
 std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> Sprite::getMeshAndMaterial(size_t index) const

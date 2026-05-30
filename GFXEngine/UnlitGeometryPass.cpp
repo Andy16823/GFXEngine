@@ -1,7 +1,6 @@
 #include "UnlitGeometryPass.h"
 #include "Renderer.h"
-#include "RenderContext.h"
-#include "Material.h"
+#include "EngineDefinitions.h"
 #include "RenderTask.h"
 #include <stdexcept>
 
@@ -34,16 +33,26 @@ VkPipelineLayout GFXEngine::Graphics::UnlitGeometryPass::buildLayout(Renderer& r
 	return pipelineLayout;
 }
 
-bool GFXEngine::Graphics::UnlitGeometryPass::buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const
+bool GFXEngine::Graphics::UnlitGeometryPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
+	if (!resources.contains(Defintions::CAMERA_RESOURCE))
+	{
+		throw std::runtime_error("UnlitGeometryPass requires CAMERA_RESOURCE");
+	}
+
+	if (!resources.contains(Defintions::MATERIAL_RESOURCE))
+	{
+		throw std::runtime_error("UnlitGeometryPass requires MATERIAL_RESOURCE");
+	}
+
 	if (!builder.hasModelMatrix())
 	{
 		throw std::runtime_error("PBRGeometryPass missing ModelMatrix for push_constnat");
 	}
 
 	glm::mat4 modelMatrix = builder.getModelMatrix();
-	VkDescriptorSet cameraDescriptorSet = context.camera.getDescriptorSet(context.imageIndex);
-	VkDescriptorSet materialDescriptorSet = material.getDescriptorSet();
+	VkDescriptorSet cameraDescriptorSet = resources[Defintions::CAMERA_RESOURCE];
+	VkDescriptorSet materialDescriptorSet = resources[Defintions::MATERIAL_RESOURCE];
 
 	builder.addDescriptorSet(cameraDescriptorSet, 0)
 		.addDescriptorSet(materialDescriptorSet, 1)

@@ -43,6 +43,7 @@ namespace GFXEngine {
 			std::vector<PropertyInfo> getProperties() override;
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
+			void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
 
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
 
