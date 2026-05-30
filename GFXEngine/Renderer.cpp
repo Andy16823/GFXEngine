@@ -352,17 +352,7 @@ void Renderer::freePBRMaterialDescriptorSet(VkDescriptorSet descriptorSet)
 	m_context->freeDescriptorSet(m_samplerDescriptorPool, descriptorSet);
 }
 
-void Renderer::createPipeline(LibGFX::Pipeline& pipeline)
-{
-	pipeline.create(*m_context);
-}
-
-void Renderer::destroyPipeline(LibGFX::Pipeline& pipeline)
-{
-	pipeline.destroy(*m_context);
-}
-
-void Renderer::usePipeline(const GraphicsPipeline& pipeline, uint32_t imageIndex)
+void Renderer::usePipeline(const RenderPipeline& pipeline, uint32_t imageIndex)
 {
 	//m_context->bindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline); TODO: Change this in LibGFX to use VkPipeline
 	vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getPipeline());
@@ -591,7 +581,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.addDescriptorSetLayout(m_pbrMaterialLayout) // PBR Material textures
 		.addDescriptorSetLayout(m_uniformBuffferLayout)
 		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
-	auto geometryPipelinePBR = pipelineBuilder.build(m_offscreenRenderPass->getRenderPass());
+	auto geometryPipelinePBR = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
 	pipelineBuilder.clear();
 
@@ -605,7 +595,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.addDescriptorSetLayout(m_samplerLayout) // Texture sampler
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Model matrix UBO
 		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
-	auto geometryPipelineUnlit = pipelineBuilder.build(m_offscreenRenderPass->getRenderPass());
+	auto geometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(geometryPipelineUnlit));
 	pipelineBuilder.clear();
 
@@ -619,7 +609,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.addDescriptorSetLayout(m_pbrMaterialLayout) // PBR Material textures
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Model matrix UBO
 		.addDescriptorSetLayout(m_storageBufferLayout); // Instance data storage buffer
-	auto instancedGeometryPipeline = pipelineBuilder.build(m_offscreenRenderPass->getRenderPass());
+	auto instancedGeometryPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
 	pipelineBuilder.clear();
 
@@ -633,7 +623,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.addDescriptorSetLayout(m_samplerLayout) // Texture sampler
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Model matrix UBO
 		.addDescriptorSetLayout(m_storageBufferLayout); // Instance data storage buffer
-	auto instancedGeometryPipelineUnlit = pipelineBuilder.build(m_offscreenRenderPass->getRenderPass());
+	auto instancedGeometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedGeometryPipelineUnlit));
 	pipelineBuilder.clear();
 
@@ -648,7 +638,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.setDepthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL)
 		.addDescriptorSetLayout(m_uniformBuffferLayout) // Camera UBO
 		.addDescriptorSetLayout(m_cubemapSamplerLayout); // Cubemap sampler
-	auto enviromentPipeline = pipelineBuilder.build(m_offscreenRenderPass->getRenderPass());
+	auto enviromentPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
 	pipelineBuilder.clear();
 
@@ -660,7 +650,7 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.usePositionInput(0)
 		.addDescriptorSetLayout(m_uniformBuffferLayout)
 		.addPushConstantRange(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4));
-	auto debugPipeline = pipelineBuilder.build(m_offscreenRenderPass->getRenderPass());
+	auto debugPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
 	pipelineBuilder.clear();
 
@@ -673,14 +663,14 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.setDepthTestEnable(VK_FALSE)
 		.setFrontFace(VK_FRONT_FACE_CLOCKWISE)
 		.addDescriptorSetLayout(m_samplerLayout);
-	auto presentPipeline = pipelineBuilder.build(m_renderPass->getRenderPass());
+	auto presentPipeline = pipelineBuilder.buildPresentPipeline(m_renderPass->getRenderPass());
 	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
 	pipelineBuilder.clear();
 
 	std::cout << "Finished creating pipelines" << std::endl;
 }
 
-void Renderer::managePipeline(unsigned int pipelineId, std::unique_ptr<GraphicsPipeline> pipeline)
+void Renderer::managePipeline(unsigned int pipelineId, std::unique_ptr<RenderPipeline> pipeline)
 {
 	m_pipelineManager.managePipeline(pipelineId, std::move(pipeline));
 }

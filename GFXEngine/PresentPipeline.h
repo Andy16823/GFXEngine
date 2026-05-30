@@ -3,26 +3,22 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-
-		class GraphicsPipeline : public RenderPipeline
+		class PresentPipeline : public RenderPipeline
 		{
 		private:
-			VkPipelineLayout m_pipelineLayout;
-			VkPipeline m_pipeline;
+			VkPipeline m_pipeline = VK_NULL_HANDLE;
+			VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
 
 		public:
-			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout layout)
-				: RenderPipeline(), m_pipeline(pipeline), m_pipelineLayout(layout) {}
+			PresentPipeline(VkPipeline pipeline, VkPipelineLayout layout) : m_pipeline(pipeline), m_pipelineLayout(layout) {}
 
-			VkPipelineLayout getPipelineLayout() const override 
+			VkPipelineLayout getPipelineLayout() const override
 			{
-				assert(m_pipelineLayout != VK_NULL_HANDLE);
 				return m_pipelineLayout;
 			}
 
 			VkPipeline getPipeline() const override
 			{
-				assert(m_pipeline != VK_NULL_HANDLE);
 				return m_pipeline;
 			}
 

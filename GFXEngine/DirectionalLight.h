@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "DataTypes.h"
 #include "ISerializable.h"
-#include "GraphicsPipeline.h"
 #include "IRenderContributor.h"
 
 namespace GFXEngine {

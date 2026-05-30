@@ -1,6 +1,5 @@
 #pragma once
 #include "Material.h"
-#include "GraphicsPipeline.h"
 #include "Imaging.h"
 #include <string>
 

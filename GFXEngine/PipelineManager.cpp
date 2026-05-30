@@ -1,6 +1,6 @@
 #include "PipelineManager.h"
 
-void GFXEngine::Graphics::PipelineManager::managePipeline(unsigned int pipelineId, std::unique_ptr<GraphicsPipeline> pipeline)
+void GFXEngine::Graphics::PipelineManager::managePipeline(unsigned int pipelineId, std::unique_ptr<RenderPipeline> pipeline)
 {
 	m_pipelines[pipelineId] = std::move(pipeline);
 }

@@ -8,7 +8,6 @@
 #include "Mesh3D.h"
 #include "UnlitMaterial.h"
 #include "PBRMaterial.h"
-#include "GraphicsPipeline.h"
 #include <nlohmann/json.hpp>
 
 namespace GFXEngine {

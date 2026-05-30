@@ -1,6 +1,6 @@
 #pragma once
 #include "VkContext.h"
-#include "GraphicsPipeline.h"
+#include "RenderPipeline.h"
 #include <map>
 #include <string>
 #include <memory>
@@ -13,7 +13,7 @@ namespace GFXEngine {
 			PipelineManager() = default;
 			~PipelineManager() = default;
 
-			void managePipeline(unsigned int pipelineId, std::unique_ptr<GraphicsPipeline> pipeline);
+			void managePipeline(unsigned int pipelineId, std::unique_ptr<RenderPipeline> pipeline);
 			void disposePipelines(LibGFX::VkContext& context);
 
 			template<typename T>
@@ -26,7 +26,7 @@ namespace GFXEngine {
 			}
 
 		private:
-			std::map<unsigned int, std::unique_ptr<GraphicsPipeline>> m_pipelines;
+			std::map<unsigned int, std::unique_ptr<RenderPipeline>> m_pipelines;
 		};
 	}
 

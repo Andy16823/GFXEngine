@@ -13,7 +13,7 @@
 #include "Imaging.h"
 #include <vector>
 #include <string>
-#include "GraphicsPipeline.h"
+#include "RenderPipeline.h"
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
@@ -105,7 +105,7 @@ namespace GFXEngine {
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, VkExtent2D extent, uint32_t imageIndex);
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, const VkViewport& viewport, const VkRect2D& scissors, uint32_t imageIndex);
-			void usePipeline(const GraphicsPipeline& pipeline, uint32_t imageIndex);
+			void usePipeline(const RenderPipeline& pipeline, uint32_t imageIndex);
 			void endRenderPass(uint32_t imageIndex);
 			void endFrame(uint32_t imageIndex);
 			void submitFrame(uint32_t imageIndex);
@@ -149,11 +149,7 @@ namespace GFXEngine {
 			void freeStorageBufferDescriptorSet(VkDescriptorSet descriptorSet);
 
 			// PIPELINES
-			[[Deprecated("Use Pipeline Builder to create GraphicsPipeline")]]
-			void createPipeline(LibGFX::Pipeline& pipeline);
-			[[Deprecated("Use Destroy within the GraphicsPipeline class")]]
-			void destroyPipeline(LibGFX::Pipeline& pipeline);
-			void managePipeline(unsigned int pipelineId, std::unique_ptr<GraphicsPipeline> pipeline);
+			void managePipeline(unsigned int pipelineId, std::unique_ptr<RenderPipeline> pipeline);
 			template<typename T>
 			T* getPipeline(unsigned int pipelineId) const {
 				return m_pipelineManager.getPipeline<T>(pipelineId);

@@ -1,9 +1,7 @@
 #pragma once
 #include "Material.h"
 #include "Imaging.h"
-#include <string>
 #include "Renderer.h"
-#include "GraphicsPipeline.h"
 
 namespace GFXEngine {
 	namespace Graphics {

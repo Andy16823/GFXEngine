@@ -134,7 +134,108 @@ PipelineBuilder& PipelineBuilder::setDepthCompareOp(VkCompareOp depthCompareOp)
 	return *this;
 }
 
-std::unique_ptr<GraphicsPipeline> PipelineBuilder::build(VkRenderPass renderPass)
+PipelineBuilder& PipelineBuilder::useVertex3DInput(uint32_t binding)
+{
+	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::Vertex3D));
+	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, pos));
+	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, color));
+	this->addVertexInputAttribute(binding, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, texCoord));
+	this->addVertexInputAttribute(binding, 3, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, normal));
+	this->addVertexInputAttribute(binding, 4, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, tangent));
+	return *this;
+}
+
+PipelineBuilder& PipelineBuilder::useVertex2DInput(uint32_t binding)
+{
+	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::Vertex2D));
+	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, pos));
+	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, color));
+	this->addVertexInputAttribute(binding, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, texCoord));
+	return *this;
+}
+
+
+PipelineBuilder& PipelineBuilder::usePositionInput(uint32_t binding)
+{
+	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::PositionVertex));
+	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::PositionVertex, pos));
+	return *this;
+}
+
+PipelineBuilder& PipelineBuilder::useFramebufferInput(uint32_t binding)
+{
+	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::FramebufferVertex));
+	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::FramebufferVertex, pos));
+	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::FramebufferVertex, texCoord));
+	return *this;
+}
+
+
+PipelineBuilder& PipelineBuilder::enableAlphaBlending()
+{
+	m_blendEnable = VK_TRUE;
+	m_srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	m_colorBlendOp = VK_BLEND_OP_ADD;
+	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+	m_alphaBlendOp = VK_BLEND_OP_ADD;
+	return *this;
+}
+
+PipelineBuilder& PipelineBuilder::enableAdditiveBlending()
+{
+	m_blendEnable = VK_TRUE;
+	m_srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_colorBlendOp = VK_BLEND_OP_ADD;
+	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_alphaBlendOp = VK_BLEND_OP_ADD;
+	return *this;
+}
+
+PipelineBuilder& PipelineBuilder::disableBlending()
+{
+	m_blendEnable = VK_FALSE;
+	return *this;
+}
+
+void PipelineBuilder::clear()
+{
+	m_shaderStages.clear();
+	m_bindingDescriptions.clear();
+	m_attributeDescriptions.clear();
+
+	// Input assembly
+	VkPrimitiveTopology m_primitiveTopology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
+	// Rasterization state
+	m_polygonMode = VK_POLYGON_MODE_FILL;
+	m_cullMode = VK_CULL_MODE_BACK_BIT;
+	m_frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+
+	// Color blending state
+	m_colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+	m_blendEnable = VK_TRUE;
+	m_srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	m_colorBlendOp = VK_BLEND_OP_ADD;
+	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+	m_alphaBlendOp = VK_BLEND_OP_ADD;
+
+	// Pipeline layout
+	m_descriptorSetLayouts.clear();
+	m_pushConstantRanges.clear();
+
+	// Depth stencil state
+	m_depthTestEnable = VK_TRUE;
+	m_depthWriteEnable = VK_TRUE;
+	m_depthCompareOp = VK_COMPARE_OP_LESS;
+}
+
+std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRenderPass renderPass)
 {
 	if (m_shaderStages.empty()) {
 		throw std::runtime_error("At least one shader stage must be added to the pipeline");
@@ -260,107 +361,136 @@ std::unique_ptr<GraphicsPipeline> PipelineBuilder::build(VkRenderPass renderPass
 	}
 
 	// Return the created pipeline and layout
-	std::cout << "Pipeline created successfully!" << std::endl;
+	std::cout << "Graphics Pipeline created successfully!" << std::endl;
 	return std::make_unique<GraphicsPipeline>(pipeline, pipelineLayout);
 }
 
-PipelineBuilder& PipelineBuilder::useVertex3DInput(uint32_t binding)
+std::unique_ptr<GFXEngine::Graphics::PresentPipeline> PipelineBuilder::buildPresentPipeline(VkRenderPass renderPass)
 {
-	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::Vertex3D));
-	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, pos));
-	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, color));
-	this->addVertexInputAttribute(binding, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, texCoord));
-	this->addVertexInputAttribute(binding, 3, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, normal));
-	this->addVertexInputAttribute(binding, 4, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex3D, tangent));
-	return *this;
-}
+	if (m_shaderStages.empty()) {
+		throw std::runtime_error("At least one shader stage must be added to the pipeline");
+	}
 
-PipelineBuilder& PipelineBuilder::useVertex2DInput(uint32_t binding)
-{
-	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::Vertex2D));
-	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, pos));
-	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, color));
-	this->addVertexInputAttribute(binding, 2, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::Vertex2D, texCoord));
-	return *this;
-}
+	if (m_bindingDescriptions.empty()) {
+		throw std::runtime_error("At least one vertex input binding must be added to the pipeline");
+	}
 
+	if (m_attributeDescriptions.empty()) {
+		throw std::runtime_error("At least one vertex input attribute must be added to the pipeline");
+	}
 
-PipelineBuilder& PipelineBuilder::usePositionInput(uint32_t binding)
-{
-	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::PositionVertex));
-	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(GFXEngine::EngineTypes::PositionVertex, pos));
-	return *this;
-}
+	// Vertex input state
+	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(m_bindingDescriptions.size());
+	vertexInputInfo.pVertexBindingDescriptions = m_bindingDescriptions.data();
+	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_attributeDescriptions.size());
+	vertexInputInfo.pVertexAttributeDescriptions = m_attributeDescriptions.data();
 
-PipelineBuilder& PipelineBuilder::useFramebufferInput(uint32_t binding)
-{
-	this->addVertexInputBinding(binding, sizeof(GFXEngine::EngineTypes::FramebufferVertex));
-	this->addVertexInputAttribute(binding, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::FramebufferVertex, pos));
-	this->addVertexInputAttribute(binding, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(GFXEngine::EngineTypes::FramebufferVertex, texCoord));
-	return *this;
-}
+	// Input assembly state
+	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+	inputAssembly.topology = m_primitiveTopology;
+	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
+	// Viewport state (dynamic)
+	VkPipelineViewportStateCreateInfo viewportState = {};
+	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	viewportState.viewportCount = 1;
+	viewportState.scissorCount = 1;
 
-PipelineBuilder& PipelineBuilder::enableAlphaBlending()
-{
-	m_blendEnable = VK_TRUE;
-	m_srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-	m_colorBlendOp = VK_BLEND_OP_ADD;
-	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-	m_alphaBlendOp = VK_BLEND_OP_ADD;
-	return *this;
-}
-
-PipelineBuilder& PipelineBuilder::enableAdditiveBlending()
-{
-	m_blendEnable = VK_TRUE;
-	m_srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
-	m_colorBlendOp = VK_BLEND_OP_ADD;
-	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	m_alphaBlendOp = VK_BLEND_OP_ADD;
-	return *this;
-}
-
-PipelineBuilder& PipelineBuilder::disableBlending()
-{
-	m_blendEnable = VK_FALSE;
-	return *this;
-}
-
-void PipelineBuilder::clear()
-{
-	m_shaderStages.clear();
-	m_bindingDescriptions.clear();
-	m_attributeDescriptions.clear();
-
-	// Input assembly
-	VkPrimitiveTopology m_primitiveTopology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	// Dynamic state (viewport and scissor)
+	std::vector<VkDynamicState> dynamicStates = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+	VkPipelineDynamicStateCreateInfo dynamicState = {};
+	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	dynamicState.pDynamicStates = dynamicStates.data();
 
 	// Rasterization state
-	m_polygonMode = VK_POLYGON_MODE_FILL;
-	m_cullMode = VK_CULL_MODE_BACK_BIT;
-	m_frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	VkPipelineRasterizationStateCreateInfo rasterizer = {};
+	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	rasterizer.depthClampEnable = VK_FALSE;
+	rasterizer.rasterizerDiscardEnable = VK_FALSE;
+	rasterizer.polygonMode = m_polygonMode;
+	rasterizer.cullMode = m_cullMode;
+	rasterizer.frontFace = m_frontFace;
+	rasterizer.depthBiasEnable = VK_FALSE;
+	rasterizer.lineWidth = 1.0f;
+
+	// Multisampling state
+	VkPipelineMultisampleStateCreateInfo multisampling = {};
+	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+	multisampling.sampleShadingEnable = VK_FALSE;
+	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
 	// Color blending state
-	m_colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-	m_blendEnable = VK_TRUE;
-	m_srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-	m_dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-	m_colorBlendOp = VK_BLEND_OP_ADD;
-	m_srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	m_dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-	m_alphaBlendOp = VK_BLEND_OP_ADD;
+	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+	colorBlendAttachment.colorWriteMask = m_colorWriteMask;
+	colorBlendAttachment.blendEnable = m_blendEnable;
+	colorBlendAttachment.srcColorBlendFactor = m_srcColorBlendFactor;
+	colorBlendAttachment.dstColorBlendFactor = m_dstColorBlendFactor;
+	colorBlendAttachment.colorBlendOp = m_colorBlendOp;
+	colorBlendAttachment.srcAlphaBlendFactor = m_srcAlphaBlendFactor;
+	colorBlendAttachment.dstAlphaBlendFactor = m_dstAlphaBlendFactor;
+	colorBlendAttachment.alphaBlendOp = m_alphaBlendOp;
+
+	VkPipelineColorBlendStateCreateInfo colorBlending = {};
+	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	colorBlending.logicOpEnable = VK_FALSE;
+	colorBlending.attachmentCount = 1;
+	colorBlending.pAttachments = &colorBlendAttachment;
 
 	// Pipeline layout
-	m_descriptorSetLayouts.clear();
-	m_pushConstantRanges.clear();
+	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
+	pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
+	pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(m_pushConstantRanges.size());
+	pipelineLayoutInfo.pPushConstantRanges = m_pushConstantRanges.data();
+
+	VkPipelineLayout pipelineLayout;
+	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+		throw std::runtime_error("Failed to create pipeline layout");
+	}
 
 	// Depth stencil state
-	m_depthTestEnable = VK_TRUE;
-	m_depthWriteEnable = VK_TRUE;
-	m_depthCompareOp = VK_COMPARE_OP_LESS;
+	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
+	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	depthStencil.depthTestEnable = m_depthTestEnable;
+	depthStencil.depthWriteEnable = m_depthWriteEnable;
+	depthStencil.depthCompareOp = m_depthCompareOp;
+	depthStencil.depthBoundsTestEnable = VK_FALSE;
+	depthStencil.stencilTestEnable = VK_FALSE;
+
+	// Pipeline create info
+	VkGraphicsPipelineCreateInfo pipelineInfo = {};
+	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	pipelineInfo.stageCount = static_cast<uint32_t>(m_shaderStages.size());
+	pipelineInfo.pStages = m_shaderStages.data();
+	pipelineInfo.pVertexInputState = &vertexInputInfo;
+	pipelineInfo.pInputAssemblyState = &inputAssembly;
+	pipelineInfo.pViewportState = &viewportState;
+	pipelineInfo.pRasterizationState = &rasterizer;
+	pipelineInfo.pMultisampleState = &multisampling;
+	pipelineInfo.pColorBlendState = &colorBlending;
+	pipelineInfo.pDepthStencilState = &depthStencil;
+	pipelineInfo.pDynamicState = &dynamicState;
+	pipelineInfo.layout = pipelineLayout;
+	pipelineInfo.renderPass = renderPass;
+	pipelineInfo.subpass = 0;
+
+	// Create the graphics pipeline
+	VkPipeline pipeline;
+	if (vkCreateGraphicsPipelines(renderer.getContext().getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS) {
+		throw std::runtime_error("Failed to create graphics pipeline");
+	}
+
+	// Clean up shader modules (they can be destroyed after pipeline creation)
+	for (const auto& shaderStage : m_shaderStages) {
+		renderer.getContext().destroyShaderModule(shaderStage.module);
+	}
+
+	// Return the created pipeline and layout
+	std::cout << "Present Pipeline created successfully!" << std::endl;
+	return std::make_unique<PresentPipeline>(pipeline, pipelineLayout);
 }
