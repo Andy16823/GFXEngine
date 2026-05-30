@@ -5,6 +5,8 @@
 namespace GFXEngine {
 	namespace Graphics {
 		
+		using GraphicResources = std::unordered_map<unsigned int, VkDescriptorSet>;
+
 		class Renderer;
 		class RenderContext;
 		class Mesh;
@@ -14,7 +16,6 @@ namespace GFXEngine {
 		class IGraphicsPass 
 		{
 		public:
-			using GraphicResources = std::unordered_map<unsigned int, VkDescriptorSet>; 
 			virtual ~IGraphicsPass() = default;
 			virtual VkPipelineLayout buildLayout(Renderer& renderer) const = 0;
 			virtual bool buildRenderTask(RenderContext& context, const Material& material, RenderTaskBuilder& builder, GraphicResources& resources) const = 0;
