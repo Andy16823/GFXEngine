@@ -20,7 +20,9 @@ void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& dir
 		{
 			std::string extension = entry.path().extension().string();
 			std::string filename = entry.path().filename().string();
-			std::string name = entry.path().stem().string();			
+			std::string name = entry.path().stem().string();		
+
+			std::cout << "Found file: " << entry.path() << " with extension: " << extension << std::endl;
 
 			if (m_loaders.contains(extension)) 
 			{
