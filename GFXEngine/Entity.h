@@ -127,11 +127,17 @@ namespace GFXEngine {
 				this->propertyChanged(PropertyComponentType::Transform);
 			}
 
+			virtual void setTransform(const Math::Transform& transform) {
+				m_transform = transform;
+				this->propertyChanged(PropertyComponentType::Transform);
+			}
+
 			virtual const glm::vec3& getPosition() const { return m_transform.position; }
 			virtual const glm::quat& getRotation() const { return m_transform.rotation; }
 			virtual glm::vec3 getEulerRotation() const { return m_transform.getEulerRotation(); }
 			virtual const glm::vec3& getScale() const { return m_transform.scale; }
 			virtual const glm::mat4& getModelMatrix() const { return m_transform.getModelMatrix(); }
+			virtual const Math::Transform& getTransform() const { return m_transform; }
 
 			virtual void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
 			virtual void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime);
