@@ -204,18 +204,18 @@ void GFXEngine::Core::InstancedModel::updateInstanceRange(const std::span<const 
 	m_isDirty = true;
 }
 
-std::unique_ptr<GFXEngine::Core::InstanceHandle> InstancedModel::instantiate()
+std::unique_ptr<GFXEngine::Core::InstanceHandle> InstancedModel::instantiate(const std::string& name)
 {
 	auto freeIndex = findNextFreeInstance();
 	if (freeIndex == static_cast<size_t>(-1)) {
 		throw std::runtime_error("No free instance slots available in InstancedModel");
 	}
-	return instantiate(freeIndex);
+	return instantiate(name, freeIndex);
 }
 
-std::unique_ptr<GFXEngine::Core::InstanceHandle> InstancedModel::instantiate(size_t instanceIndex)
+std::unique_ptr<GFXEngine::Core::InstanceHandle> InstancedModel::instantiate(const std::string& name, size_t instanceIndex)
 {
-	return std::make_unique<InstanceHandle>(this, instanceIndex);
+	return std::make_unique<InstanceHandle>(name, this, instanceIndex);
 }
 
 std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::InstancedModel::getProperties()

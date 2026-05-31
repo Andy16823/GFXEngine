@@ -32,8 +32,8 @@ namespace GFXEngine {
 			void updateInstance(const EngineTypes::InstanceData& instanceData, size_t index);
 			void updateInstanceRange(const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex);
 			
-			std::unique_ptr<InstanceHandle> instantiate();
-			std::unique_ptr<InstanceHandle> instantiate(size_t instanceIndex);
+			std::unique_ptr<InstanceHandle> instantiate(const std::string& name);
+			std::unique_ptr<InstanceHandle> instantiate(const std::string& name, size_t instanceIndex);
 
 			std::vector<PropertyInfo> getProperties() override;
 			nlohmann::json serialize() const override;

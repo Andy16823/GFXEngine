@@ -47,6 +47,7 @@ namespace GFXEngine {
 		   --------------------------------------------------------------------- */
 		public:
 			Entity();
+			Entity(const std::string& name);
 			virtual ~Entity() = default;
 
 			Entity(const Entity&) = delete;

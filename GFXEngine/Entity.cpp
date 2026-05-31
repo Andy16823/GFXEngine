@@ -8,6 +8,12 @@ GFXEngine::Core::Entity::Entity()
 	uuid = GFXEngine::Utils::generateUUID();
 }
 
+GFXEngine::Core::Entity::Entity(const std::string& name)
+	: name(name)
+{
+	uuid = GFXEngine::Utils::generateUUID();
+}
+
 void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	// Compute AABB based on meshes
