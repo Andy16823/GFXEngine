@@ -7,7 +7,7 @@ nlohmann::json Core::InstanceHandle::serialize() const
 {
 	auto data = Entity::serialize();
 	data["instanceIndex"] = m_instanceIndex;
-	data["instanceModel"] = m_parentModel.isResolved() ? m_parentModel.get().getUUID() : "";
+	data["instanceModel"] = m_parentModel.isResolved() ? m_parentModel.getEntity().getUUID() : "";
 	return data;
 }
 
@@ -22,7 +22,7 @@ void Core::InstanceHandle::resolveReferences(SerializationContext& context)
 {
 	Entity::resolveReferences(context);
 	if (m_parentModel.hasUUID() && context.entityRegistry.contains(m_parentModel.getUUID())) {
-		m_parentModel.set(context.getEntity(m_parentModel.getUUID()));
+		m_parentModel.setEntity(context.getEntity(m_parentModel.getUUID()));
 	}
 	else {
 		std::cerr << "Warning: Failed to resolve parent model reference for InstanceHandle with UUID " << this->uuid << ". Parent model UUID: " << m_parentModel.getUUID() << std::endl;
@@ -33,7 +33,7 @@ void GFXEngine::Core::InstanceHandle::propertyChanged(PropertyComponentType comp
 {
 	if (component == PropertyComponentType::Transform || component == PropertyComponentType::Visibility) {
 		if (m_parentModel.isResolved()) {
-			m_parentModel.getAs<InstancedModel>().updateInstance({
+			m_parentModel.getEntityAs<InstancedModel>().updateInstance({
 				.model = this->getModelMatrix(),
 				.extras = glm::vec4(this->isVisible() ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f) // Use extras.x to store visibility
 				}, m_instanceIndex);
@@ -44,7 +44,7 @@ void GFXEngine::Core::InstanceHandle::propertyChanged(PropertyComponentType comp
 size_t GFXEngine::Core::InstanceHandle::getMeshCount() const
 {
 	if (m_parentModel.isResolved()) {
-		return m_parentModel.getAs<InstancedModel>().getMeshCount();
+		return m_parentModel.getEntityAs<InstancedModel>().getMeshCount();
 	}
 	return 0;
 }
@@ -52,7 +52,7 @@ size_t GFXEngine::Core::InstanceHandle::getMeshCount() const
 GFXEngine::Core::MeshMaterialPair GFXEngine::Core::InstanceHandle::getMeshAndMaterial(size_t index) const
 {
 	if (m_parentModel.isResolved()) {
-		return m_parentModel.getAs<InstancedModel>().getMeshAndMaterial(index);
+		return m_parentModel.getEntityAs<InstancedModel>().getMeshAndMaterial(index);
 	}
 	return std::nullopt;
 }

@@ -150,100 +150,93 @@ namespace GFXEngine {
 		/// </summary>
 		struct EntityReference
 		{
-		protected:
-			std::string uuid = "";
-			Core::Entity* entity = nullptr;
-			ReferenceState state = ReferenceState::Uninitialized;
+		private:
+			std::string m_uuid = "";
+			Core::Entity* m_entity = nullptr;
 
 		public:
 			EntityReference() = default;
-			EntityReference(const std::string& uuidStr) : uuid(uuidStr), entity(nullptr), state(ReferenceState::Unresolved) {}
-			EntityReference(Core::Entity* entityPtr) : uuid(""), entity(entityPtr), state(ReferenceState::Resolved) {}
+			explicit EntityReference(const std::string& uuid) : m_uuid(uuid) {}
+			explicit EntityReference(Core::Entity* entityPtr) : m_entity(entityPtr) {}
 
-			operator bool() const {
-				return entity != nullptr;
+			explicit operator bool() const
+			{
+				return m_entity != nullptr;
 			}
 
-			Core::Entity& get() const
+			void clear() 
 			{
-				return *entity;
+				m_uuid.clear();
+				m_entity = nullptr;
 			}
 
-			Core::Entity* getPtr() const
+			void setUUID(const std::string& uuidStr) 
 			{
-				return entity;
+				m_uuid = uuidStr;
+				m_entity = nullptr;
 			}
 
-			void set(Core::Entity* entityPtr)
+			void setEntity(Core::Entity* entityPtr)
 			{
-				// Set the entity pointer and clear the UUID since we now have a direct reference
-				entity = entityPtr;
-				uuid.clear();
-				if (entityPtr) 
-				{
-					state = ReferenceState::Resolved;
-				}
-				else {
-					state = ReferenceState::Uninitialized;
-				}
-			}
-
-			void clear()
-			{
-				uuid.clear();
-				entity = nullptr;
-				state = ReferenceState::Uninitialized;
-			}
-
-			void setUUID(const std::string& uuidStr)
-			{
-				// Set the UUID string and clear the entity pointer since we are now referencing by UUID
-				uuid = uuidStr;
-				entity = nullptr;
-				state = ReferenceState::Unresolved;
-			}
-
-			template<typename T>
-			T& getAs() const
-			{
-				assert(entity);
-				T* casted = dynamic_cast<T*>(entity);
-				assert(casted && "EntityReference: Failed to cast entity to requested type");
-				return *casted;
-			}
-
-			template<typename T>
-			T* getPtrAs() const
-			{
-				assert(entity);
-				T* casted = dynamic_cast<T*>(entity);
-				assert(casted && "EntityReference: Failed to cast entity to requested type");
-				return casted;
-			}
-
-			const std::string& getUUID() const
-			{
-				return uuid;
+				m_entity = entityPtr;
+				m_uuid.clear();
 			}
 
 			bool isResolved() const
 			{
-				return state == ReferenceState::Resolved;
+				return m_entity != nullptr;
 			}
 
 			bool hasUUID() const
 			{
-				return state == ReferenceState::Unresolved;
+				return !m_uuid.empty();
 			}
 
-			bool hasAny() const
+			bool isEmpty() const
 			{
-				return state != ReferenceState::Uninitialized;
+				return m_uuid.empty() && m_entity == nullptr;
 			}
 
-			ReferenceState getState() const
+			const std::string& getUUID() const
 			{
-				return state;
+				return m_uuid;
+			}
+
+			Core::Entity& getEntity() const
+			{
+				assert(m_entity && "EntityReference: Attempted to get entity pointer but it is null");
+				return *m_entity;
+			}
+
+			Core::Entity* getEntityPtr() const
+			{
+				return m_entity;
+			}
+
+			template<typename T>
+			T& getEntityAs() const
+			{
+#ifndef NDEBUG
+				assert(m_entity && "EntityReference: Attempted to get entity pointer but it is null");
+				T* casted = dynamic_cast<T*>(m_entity);
+				assert(casted && "EntityReference: Failed to cast entity to requested type");
+				return *casted;
+#else
+				return static_cast<T&>(*m_entity);
+#endif
+			}
+
+			template<typename T>
+			T* getEntityPtrAs() const
+			{
+#ifndef NDEBUG
+				assert(m_entity && "EntityReference: Attempted to get entity pointer but it is null");
+				T* casted = dynamic_cast<T*>(m_entity);
+				assert(casted && "EntityReference: Failed to cast entity to requested type");
+				return casted;
+#else
+				return static_cast<T*>(m_entity);
+#endif
 			}
 		};
 
