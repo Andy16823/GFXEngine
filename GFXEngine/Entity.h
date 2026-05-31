@@ -97,11 +97,13 @@ namespace GFXEngine {
 				this->propertyChanged(PropertyComponentType::Transform);
 			}
 			virtual void setRotation(const glm::vec3& eulerRotation) {
-				m_transform.rotation = glm::quat(eulerRotation);
+				//m_transform.rotation = glm::quat(eulerRotation);
+				m_transform.setRotationFromEuler(eulerRotation);
 				this->propertyChanged(PropertyComponentType::Transform);
 			}
 			virtual void setRotation(float pitch, float yaw, float roll) {
-				m_transform.rotation = glm::quat(glm::vec3(pitch, yaw, roll));
+				//m_transform.rotation = glm::quat(glm::vec3(pitch, yaw, roll)); // TODO: Check if this is correct
+				m_transform.setRotationFromEuler(glm::vec3(pitch, yaw, roll));
 				this->propertyChanged(PropertyComponentType::Transform);
 			}
 			virtual void rotateWorld(float pitch, float yaw, float roll) {
