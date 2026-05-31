@@ -136,6 +136,13 @@ namespace GFXEngine {
 			glm::vec4 color;     // w component can be used for intensity
 		};
 
+		enum class ReferenceState 
+		{
+			Uninitialized,
+			Unresolved,
+			Resolved
+		};
+
 		/// <summary>
 		/// EntityReference is a structure that holds either a UUID string reference to an entity or a direct pointer to the entity. 
 		/// This allows for flexible referencing of entities, where the reference can be resolved to an actual pointer at runtime, 
@@ -143,18 +150,44 @@ namespace GFXEngine {
 		/// </summary>
 		struct EntityReference
 		{
+		protected:
 			std::string uuid = "";
 			Core::Entity* entity = nullptr;
+			ReferenceState state = ReferenceState::Uninitialized;
+
+		public:
+			EntityReference() = default;
+			EntityReference(const std::string& uuidStr) : uuid(uuidStr), entity(nullptr), state(ReferenceState::Unresolved) {}
+			EntityReference(Core::Entity* entityPtr) : uuid(""), entity(entityPtr), state(ReferenceState::Resolved) {}
+
+			operator bool() const {
+				return entity != nullptr;
+			}
 
 			Core::Entity& get() const
 			{
 				return *entity;
 			}
 
+			Core::Entity* getPtr() const
+			{
+				return entity;
+			}
+
 			void set(Core::Entity* entityPtr)
 			{
+				// Set the entity pointer and clear the UUID since we now have a direct reference
 				entity = entityPtr;
 				uuid.clear();
+				state = ReferenceState::Resolved;
+			}
+
+			void setUUID(const std::string& uuidStr)
+			{
+				// Set the UUID string and clear the entity pointer since we are now referencing by UUID
+				uuid = uuidStr;
+				entity = nullptr;
+				state = ReferenceState::Unresolved;
 			}
 
 			template<typename T>
@@ -166,14 +199,38 @@ namespace GFXEngine {
 				return *casted;
 			}
 
+			template<typename T>
+			T* getPtrAs() const
+			{
+				assert(entity);
+				T* casted = dynamic_cast<T*>(entity);
+				assert(casted && "EntityReference: Failed to cast entity to requested type");
+				return casted;
+			}
+
+			const std::string& getUUID() const
+			{
+				return uuid;
+			}
+
 			bool isResolved() const
 			{
-				return entity != nullptr;
+				return state == ReferenceState::Resolved;
 			}
 
 			bool hasUUID() const
 			{
-				return !uuid.empty();
+				return state == ReferenceState::Unresolved;
+			}
+
+			bool hasAny() const
+			{
+				return state != ReferenceState::Uninitialized;
+			}
+
+			ReferenceState getState() const
+			{
+				return state;
 			}
 		};
 

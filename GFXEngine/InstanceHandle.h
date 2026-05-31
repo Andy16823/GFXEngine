@@ -15,7 +15,7 @@ namespace GFXEngine {
 		public:
 			InstanceHandle() = default;
 			InstanceHandle(InstancedModel* parentModel, size_t instanceIndex) 
-				: m_parentModel({parentModel->getUUID(), parentModel}), m_instanceIndex(instanceIndex) {}
+				: m_parentModel(parentModel), m_instanceIndex(instanceIndex) {}
 
 			virtual ~InstanceHandle() = default;
 			InstanceHandle(const InstanceHandle&) = delete;
