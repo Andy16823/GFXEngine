@@ -30,8 +30,8 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	GFXEngine::RuntimeContext::get().setEventBus(eventBus.get());
 
 	// Builtin asset loaders
-	assetManager->registerLoader(".env", [](const std::string& name, const nlohmann::json& data) {
-		return std::make_unique<Graphics::EnviromentMap>(name, data);
+	assetManager->registerLoader(".env", [](const std::string& name, const std::filesystem::path& filePath) {
+		return std::make_unique<Graphics::EnviromentMap>(name, filePath);
 		});
 
 	// Input callback

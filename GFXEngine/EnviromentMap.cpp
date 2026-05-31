@@ -20,8 +20,9 @@ EnviromentMap::EnviromentMap(const std::string& name, const std::vector<std::str
 	m_envMaterial->setCubemapData(std::move(cubemapData));
 }
 
-EnviromentMap::EnviromentMap(const std::string& name, const nlohmann::json& data) : Asset(name)
+EnviromentMap::EnviromentMap(const std::string& name, const std::filesystem::path& filePath) : Asset(name)
 {
+	nlohmann::json data = GFXEngine::Utils::loadJsonFromFile(filePath.string());
 	if (!data.contains("faces") || !data["faces"].is_array() || data["faces"].size() != 6) {
 		throw std::runtime_error("EnviromentMap JSON data must contain a 'faces' array with 6 file paths.");
 	}
@@ -31,9 +32,13 @@ EnviromentMap::EnviromentMap(const std::string& name, const nlohmann::json& data
 	m_mesh->setVertices(std::move(vertices));
 	m_mesh->setIndices(std::move(indices));
 
+	std::filesystem::path basePath = GFXEngine::Utils::getBasePath(filePath);
+
 	std::vector<std::string> faceFilepaths;
 	for (const auto& face : data["faces"]) {
-		faceFilepaths.push_back(face.get<std::string>());
+		auto faceStr = face.get<std::string>();
+		auto fullPath = basePath / faceStr;
+		faceFilepaths.push_back(fullPath.string());
 	}
 
 	m_envMaterial = std::make_unique<EnviromentMaterial>();

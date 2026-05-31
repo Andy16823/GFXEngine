@@ -231,6 +231,15 @@ std::string GFXEngine::Utils::getBasePath(const std::string& filePath)
 	return filePath.substr(0, lastSlashPos + 1);
 }
 
+std::filesystem::path GFXEngine::Utils::getBasePath(const std::filesystem::path& filePath)
+{
+	const auto& parentPath = filePath.parent_path();
+	if (parentPath.empty()) {
+		return std::filesystem::path(); // No directory part in the path
+	}
+	return parentPath;
+}
+
 std::string GFXEngine::Utils::getFileName(const std::string& filePath)
 {
 	size_t lastSlashPos = filePath.find_last_of("/\\");

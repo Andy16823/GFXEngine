@@ -25,8 +25,8 @@ void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& dir
 			if (m_loaders.contains(extension)) 
 			{
 				// If a loader exists we assume the file is a JSON file containing the necessary data to create the asset.
-				nlohmann::json data = Utils::loadJsonFromFile(entry.path().string());
-				m_loaders[extension](name, data);
+				auto asset = m_loaders[extension](name, entry.path());
+				this->addAsset(std::move(asset));
 				std::cout << "Loaded asset '" << name << "' from file: " << entry.path() << std::endl;
 			}
 		}

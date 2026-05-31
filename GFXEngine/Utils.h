@@ -25,6 +25,7 @@ namespace GFXEngine {
 		static std::vector<GFXEngine::Graphics::Mesh3D> loadMeshesFromFile(const std::string& filePath);
 		static std::vector<GFXEngine::Graphics::UnlitMaterial> loadMaterialsFromFile(const std::string& filePath);
 		static std::vector<GFXEngine::Graphics::PBRMaterial> loadPBRMaterialsFromFile(const std::string& filePath);
+		static std::filesystem::path getBasePath(const std::filesystem::path& filePath);
 		static std::string getBasePath(const std::string& filePath);
 		static std::string getFileName(const std::string& filePath);
 		static std::string generateUUID();

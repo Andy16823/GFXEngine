@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 
 namespace GFXEngine {
-	using AssetLoaderFunc = std::function<std::unique_ptr<Asset>(const std::string&, const nlohmann::json&)>;
+	using AssetLoaderFunc = std::function<std::unique_ptr<Asset>(const std::string&, const std::filesystem::path&)>;
 
 	/// <summary>
 	/// AssetManager is responsible for managing the lifecycle of assets in the engine. 
