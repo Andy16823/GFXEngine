@@ -5,6 +5,7 @@
 #include "InstancedModel.h"
 #include "Sprite.h"
 #include "InputManager.h"
+#include "EnviromentMap.h"
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
 {
@@ -27,6 +28,11 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	GFXEngine::RuntimeContext::get().setEntityFactory(entityFactory.get());
 	GFXEngine::RuntimeContext::get().setInputManager(inputManager.get());
 	GFXEngine::RuntimeContext::get().setEventBus(eventBus.get());
+
+	// Builtin asset loaders
+	assetManager->registerLoader("env", [](const std::string& name, const nlohmann::json& data) {
+		return std::make_unique<Graphics::EnviromentMap>(name, data);
+		});
 
 	// Input callback
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {

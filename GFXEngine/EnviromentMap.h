@@ -20,6 +20,7 @@ namespace GFXEngine {
 			std::unique_ptr<EnviromentMaterial> m_envMaterial;
 
 		public:
+			EnviromentMap(const std::string& name, const nlohmann::json& data);
 			EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths);
 
 			void init(GFXEngine::Graphics::Renderer& renderer);

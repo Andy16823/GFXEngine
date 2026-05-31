@@ -3,8 +3,10 @@
 #include <unordered_map>
 #include <memory>
 #include <functional>
+#include <nlohmann/json.hpp>
 
 namespace GFXEngine {
+	using AssetLoaderFunc = std::function<std::unique_ptr<Asset>(const std::string&, const nlohmann::json&)>;
 
 	/// <summary>
 	/// AssetManager is responsible for managing the lifecycle of assets in the engine. 
@@ -13,8 +15,11 @@ namespace GFXEngine {
 	{
 	private:
 		std::unordered_map<std::string, std::unique_ptr<Asset>> m_assets;
+		std::unordered_map<std::string, AssetLoaderFunc> m_loaders;
 
 	public:
+		void loadFromDirectory(const std::filesystem::path& directory, bool recursive = true);
+
 		bool addAsset(std::unique_ptr<Asset> asset) {
 			auto name = asset->getName();
 			return m_assets.emplace(name, std::move(asset)).second;
@@ -64,6 +69,11 @@ namespace GFXEngine {
 
 		void clear() {
 			m_assets.clear();
+			m_loaders.clear();
+		}
+
+		void registerLoader(const std::string& type, AssetLoaderFunc loader) {
+			m_loaders[type] = std::move(loader);
 		}
 	};
 }
