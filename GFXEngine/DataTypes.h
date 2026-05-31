@@ -179,7 +179,20 @@ namespace GFXEngine {
 				// Set the entity pointer and clear the UUID since we now have a direct reference
 				entity = entityPtr;
 				uuid.clear();
-				state = ReferenceState::Resolved;
+				if (entityPtr) 
+				{
+					state = ReferenceState::Resolved;
+				}
+				else {
+					state = ReferenceState::Uninitialized;
+				}
+			}
+
+			void clear()
+			{
+				uuid.clear();
+				entity = nullptr;
+				state = ReferenceState::Uninitialized;
 			}
 
 			void setUUID(const std::string& uuidStr)
