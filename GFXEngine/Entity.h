@@ -25,6 +25,13 @@ namespace GFXEngine {
 		/// </summary>
 		class Entity : public GFXEngine::ISerializable, public GFXEngine::Graphics::IRenderable
 		{
+		public:
+			enum PropertyComponentType
+			{
+				Transform,
+				Name,
+				Visibility
+			};
 
 		public:
 			std::string name;
@@ -42,6 +49,7 @@ namespace GFXEngine {
 			virtual void update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime);
 			virtual void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer);
+			virtual void propertyChanged(PropertyComponentType componentType) {};
 
 			virtual std::vector<PropertyInfo> getProperties();
 			nlohmann::json serialize() const override;

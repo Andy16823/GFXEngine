@@ -55,6 +55,7 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Entity::getPropertie
 	properties.push_back({
 			.name = "Name",
 			.data = &name,
+			.onChanged = [this]() { propertyChanged(PropertyComponentType::Name); }
 		});
 
 	properties.push_back({
@@ -66,21 +67,25 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Entity::getPropertie
 	properties.push_back({
 			.name = "Position",
 			.data = &transform.position,
+			.onChanged = [this]() { propertyChanged(PropertyComponentType::Transform); }
 		});
 
 	properties.push_back({
 			.name = "Rotation",
 			.data = &transform.rotation,
+			.onChanged = [this]() { propertyChanged(PropertyComponentType::Transform); }
 		});
 
 	properties.push_back({
 			.name = "Scale",
 			.data = &transform.scale,
+			.onChanged = [this]() { propertyChanged(PropertyComponentType::Transform); }
 		});
 
 	properties.push_back({
 			.name = "Visible",
 			.data = &m_visible,
+			.onChanged = [this]() { propertyChanged(PropertyComponentType::Visibility); }
 		});
 
 	return properties;
