@@ -39,14 +39,12 @@ namespace GFXEngine {
 			void afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
-
-			std::vector<PropertyInfo> getProperties() override;
-			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
 			void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
 
+			std::vector<PropertyInfo> getProperties() override;
+			nlohmann::json serialize() const override;
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
-
 			bool isUsingParallelRendering() const { return m_useParallelRendering; }
 			void setUseParallelRendering(bool useParallel) { m_useParallelRendering = useParallel; }
 
