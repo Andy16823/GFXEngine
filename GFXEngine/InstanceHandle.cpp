@@ -15,17 +15,17 @@ void Core::InstanceHandle::deserialize(const nlohmann::json& data, Serialization
 {
 	Entity::deserialize(data, context, flags);
 	m_instanceIndex = data.value("instanceIndex", static_cast<size_t>(-1));
-	m_parentModel = EngineTypes::EntityReference{ data.value("instanceModel", ""), nullptr };
+	m_parentModel = EngineTypes::EntityReference(data.value("instanceModel", ""));
 }
 
 void Core::InstanceHandle::resolveReferences(SerializationContext& context)
 {
 	Entity::resolveReferences(context);
-	if (context.entityRegistry.contains(m_parentModel.uuid)) {
-		m_parentModel.set(context.getEntity(m_parentModel.uuid));
+	if (m_parentModel.hasUUID() && context.entityRegistry.contains(m_parentModel.getUUID())) {
+		m_parentModel.set(context.getEntity(m_parentModel.getUUID()));
 	}
 	else {
-		std::cerr << "Warning: Failed to resolve parent model reference for InstanceHandle with UUID " << this->uuid << ". Parent model UUID: " << m_parentModel.uuid << std::endl;
+		std::cerr << "Warning: Failed to resolve parent model reference for InstanceHandle with UUID " << this->uuid << ". Parent model UUID: " << m_parentModel.getUUID() << std::endl;
 	}
 }
 
