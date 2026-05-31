@@ -190,7 +190,18 @@ namespace GFXEngine {
 						return casted;
 					}
 				}
-				throw std::runtime_error("Behavior not found");
+				nullptr;
+			}
+
+			template<typename T>
+			bool hasBehavior() const {
+				static_assert(std::is_base_of<Behavior, T>::value, "T must be a subclass of Behavior");
+				for (const auto& behavior : m_behaviors) {
+					if (dynamic_cast<T*>(behavior.get())) {
+						return true;
+					}
+				}
+				return false;
 			}
 
 			void removeBehavior(const std::string& behaviorUUID) {
