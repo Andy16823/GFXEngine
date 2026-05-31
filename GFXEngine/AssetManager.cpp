@@ -22,8 +22,6 @@ void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& dir
 			std::string filename = entry.path().filename().string();
 			std::string name = entry.path().stem().string();		
 
-			std::cout << "Found file: " << entry.path() << " with extension: " << extension << std::endl;
-
 			if (m_loaders.contains(extension)) 
 			{
 				// If a loader exists we assume the file is a JSON file containing the necessary data to create the asset.
