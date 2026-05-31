@@ -1,9 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Camera.h"
-#include "DataTypes.h"
 #include "ISerializable.h"
-#include "IRenderContributor.h"
 
 namespace GFXEngine {
 	namespace Graphics {

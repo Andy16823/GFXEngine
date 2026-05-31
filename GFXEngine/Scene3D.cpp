@@ -39,7 +39,7 @@ void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& 
 	// Build graphic resources for the render task, starting with camera and scene-level resources
 	Graphics::GraphicResources resources;
 	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
-	resources[Defintions::MATERIAL_RESOURCE] = envMap.getMaterial().getDescriptorSet();
+	resources[Defintions::MATERIAL_RESOURCE] = envMap.getMaterial().getDescriptorSet(context.imageIndex);
 	this->getGraphicResources(resources, context.imageIndex);
 	
 	// Build render task for the enviroment map

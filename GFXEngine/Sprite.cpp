@@ -38,7 +38,7 @@ void Sprite::getGraphicResources(Graphics::GraphicResources& resources, uint32_t
 {
 	assert(meshIndex == 0); // Sprite only has one mesh and material
 	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources.emplace(Defintions::MATERIAL_RESOURCE, material.getDescriptorSet());
+	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
 }
 
 std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> Sprite::getMeshAndMaterial(size_t index) const

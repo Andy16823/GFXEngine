@@ -11,7 +11,7 @@ namespace GFXEngine {
 			PBRMaterial() = default;
 
 			void init(Renderer& renderer) override;
-			VkDescriptorSet getDescriptorSet() const override { return m_descriptorSet; }
+			VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const override { return m_descriptorSet; }
 			void destroy(Renderer& renderer) override;
 
 			void setAlbedoTexture(LibGFX::ImageData albedoData) { m_albedoData = std::move(albedoData); }

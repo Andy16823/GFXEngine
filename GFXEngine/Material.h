@@ -1,7 +1,6 @@
 #pragma once
 #include <vulkan/vulkan.h>
 #include "Renderer.h"
-#include "IRenderContributor.h"
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -21,7 +20,7 @@ namespace GFXEngine {
 
 			virtual void init(Renderer& renderer) = 0;
 			virtual void destroy(Renderer& renderer) = 0;
-			virtual VkDescriptorSet getDescriptorSet() const = 0;
+			virtual VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const = 0;
 
 		};
 	}

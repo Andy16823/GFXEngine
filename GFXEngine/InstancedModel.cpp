@@ -265,6 +265,6 @@ void InstancedModel::getGraphicResources(GFXEngine::Graphics::GraphicResources& 
 {
 	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
 	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet();
+	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
 	resources[Defintions::INSTANCE_DATA_RESOURCE] = m_instanceDataDescriptorSet;
 }
