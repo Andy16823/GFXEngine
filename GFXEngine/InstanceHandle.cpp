@@ -43,10 +43,16 @@ void GFXEngine::Core::InstanceHandle::propertyChanged(PropertyComponentType comp
 
 size_t GFXEngine::Core::InstanceHandle::getMeshCount() const
 {
+	if (m_parentModel.isResolved()) {
+		return m_parentModel.getAs<InstancedModel>().getMeshCount();
+	}
 	return 0;
 }
 
 GFXEngine::Core::MeshMaterialPair GFXEngine::Core::InstanceHandle::getMeshAndMaterial(size_t index) const
 {
+	if (m_parentModel.isResolved()) {
+		return m_parentModel.getAs<InstancedModel>().getMeshAndMaterial(index);
+	}
 	return std::nullopt;
 }
