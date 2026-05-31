@@ -14,9 +14,12 @@ void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& 
 	Math::AABB combinedAABB;
 	size_t meshCount = getMeshCount();
 	for (size_t i = 0; i < meshCount; ++i) {
-		auto [mesh, material] = getMeshAndMaterial(i);
-		Math::AABB meshAABB = mesh.computeAABB(); // Dont call this every frame, only on init or when mesh data changes
-		combinedAABB = combinedAABB.unionWith(meshAABB);
+		auto meshMaterialPair = getMeshAndMaterial(i);
+		if (meshMaterialPair.has_value()) {
+			const auto& [mesh, material] = meshMaterialPair.value();
+			Math::AABB meshAABB = mesh.computeAABB(); // Dont call this every frame, only on init or when mesh data changes
+			combinedAABB = combinedAABB.unionWith(meshAABB);
+		}
 	}
 	setAABB(combinedAABB);
 

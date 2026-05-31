@@ -69,7 +69,12 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 		// Create render task for every mesh
 		auto meshCount = this->getMeshCount();
 		for (size_t i = 0; i < meshCount; ++i) {
-			const auto& [mesh, material] = this->getMeshAndMaterial(i);
+			auto meshMaterialPair = this->getMeshAndMaterial(i);
+			if (!meshMaterialPair.has_value()) {
+				std::cerr << "Warning: Mesh " << i << " in InstancedModel '" << this->name << "' is missing a valid mesh/material pair. Skipping render task for this mesh." << std::endl;
+				continue;
+			}
+			const auto& [mesh, material] = meshMaterialPair.value();
 
 			RenderTaskBuilder taskBuilder;
 			taskBuilder.setPipeline(pipeline)
@@ -94,13 +99,15 @@ size_t GFXEngine::Core::InstancedModel::getMeshCount() const
 	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
 }
 
-std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::InstancedModel::getMeshAndMaterial(size_t index) const
+GFXEngine::Core::MeshMaterialPair GFXEngine::Core::InstancedModel::getMeshAndMaterial(size_t index) const
 {
 	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
 	if (index >= meshModel->getMeshCount()) {
 		throw std::out_of_range("Mesh index out of range");
 	}
-	return { meshModel->getMesh(index), meshModel->getMeshMaterial(index) };
+	return std::make_optional(
+		std::make_pair(std::ref(meshModel->getMesh(index)), std::ref(meshModel->getMeshMaterial(index)))
+	);
 }
 
 GFXEngine::Math::AABB GFXEngine::Core::InstancedModel::computeInstanceAABB(size_t instanceIndex) const
@@ -272,6 +279,11 @@ void InstancedModel::getGraphicResources(GFXEngine::Graphics::GraphicResources& 
 void InstancedModel::getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
 {
 	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
-	const auto& material = getMeshAndMaterial(meshIndex).second;
+	auto meshMaterialPair = getMeshAndMaterial(meshIndex);
+	if (!meshMaterialPair.has_value()) {
+		std::cerr << "Warning: Mesh " << meshIndex << " in InstancedModel '" << this->name << "' is missing a valid mesh/material pair. Cannot get graphic resources for this mesh." << std::endl;
+		return;
+	}
+	const auto& material = meshMaterialPair->second;
 	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
 }

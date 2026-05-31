@@ -29,7 +29,7 @@ namespace GFXEngine {
 			void getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
 
 			size_t getMeshCount() const override;
-			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+			MeshMaterialPair getMeshAndMaterial(size_t index) const override;
 
 			const Graphics::MeshModel* getMeshModel() const { return m_meshModelRef.get<Graphics::MeshModel>(); }
 		};

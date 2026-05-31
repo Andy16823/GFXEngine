@@ -31,7 +31,7 @@ namespace GFXEngine {
 			virtual void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 
 			virtual size_t getMeshCount() const override { return 1; }
-			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
+			virtual MeshMaterialPair getMeshAndMaterial(size_t index) const override;
 			virtual void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
 			virtual void getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
 

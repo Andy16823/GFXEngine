@@ -42,14 +42,17 @@ void Sprite::getGraphicResources(Graphics::GraphicResources& resources, uint32_t
 void Sprite::getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
 {
 	assert(meshIndex == 0); // Sprite only has one mesh and material
-	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
+	auto MeshMaterialPair = getMeshAndMaterial(meshIndex);
+	if (MeshMaterialPair.has_value()) {
+		const auto& material = MeshMaterialPair->second;
+		resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
+	}
 }
 
-std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> Sprite::getMeshAndMaterial(size_t index) const
+GFXEngine::Core::MeshMaterialPair Sprite::getMeshAndMaterial(size_t index) const
 {
 	if(index != 0) {
 		throw std::out_of_range("Sprite only has one mesh and material");
 	}
-	return { m_mesh, m_material };
+	return std::make_optional(std::make_pair(std::ref(m_mesh), std::ref(m_material)));
 }

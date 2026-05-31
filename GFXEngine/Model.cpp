@@ -39,7 +39,12 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 		this->getGraphicResources(resources, context.imageIndex);
 
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
-			const auto& [mesh, material] = this->getMeshAndMaterial(i);
+			auto meshMaterialPair = this->getMeshAndMaterial(i);
+			if (!meshMaterialPair.has_value()) {
+				std::cerr << "Warning: Mesh " << i << " in Model '" << this->name << "' is missing a valid mesh/material pair. Skipping render task for this mesh." << std::endl;
+				continue;
+			}
+			const auto& [mesh, material] = meshMaterialPair.value();
 
 			// Create render task builder and set common properties
 			RenderTaskBuilder taskBuilder;
@@ -111,8 +116,11 @@ void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources
 void Model::getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
 {
 	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
-	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
+	auto meshMaterialPair = getMeshAndMaterial(meshIndex);
+	if (meshMaterialPair.has_value()) {
+		const auto& material = meshMaterialPair->second;
+		resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
+	}
 }
 
 size_t GFXEngine::Core::Model::getMeshCount() const
@@ -120,11 +128,13 @@ size_t GFXEngine::Core::Model::getMeshCount() const
 	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
 }
 
-std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&> GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
+GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
 {
 	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
 	if (index >= meshModel->getMeshCount()) {
 		throw std::out_of_range("Mesh index out of range");
 	}
-	return { meshModel->getMesh(index), meshModel->getMeshMaterial(index) };
+	return std::make_optional(
+		std::make_pair(std::ref(meshModel->getMesh(index)), std::ref(meshModel->getMeshMaterial(index)))
+	);
 }
