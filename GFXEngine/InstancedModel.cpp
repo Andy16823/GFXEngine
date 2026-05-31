@@ -60,10 +60,11 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 		// Get pipeline to render with
 		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::INSTANCED_GEOMETRY_PIPELINE);
 		
-		// Build render resources
+		// Build render resources (camera, scene-level, entity-level)
 		Graphics::GraphicResources resources;
 		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(resources, context.imageIndex);
+		this->getGraphicResources(resources, context.imageIndex);
 
 		// Create render task for every mesh
 		auto meshCount = this->getMeshCount();
@@ -73,9 +74,11 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 			RenderTaskBuilder taskBuilder;
 			taskBuilder.setPipeline(pipeline)
 				.setMesh(&mesh)
+				.setModelMatrix(this->getModelMatrix())
 				.setInstanceCount(static_cast<uint32_t>(m_instanceData.size()));
 
-			this->getGraphicResources(resources, context.imageIndex, i);
+			// Get mesh-specific graphic resources (like material descriptor set) and bind to the pipeline
+			this->getMeshMaterialGraphicResources(resources, context.imageIndex, i);
 			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
 
 			renderQueue.addRenderTask(taskBuilder.build());
@@ -261,10 +264,14 @@ void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GF
 	}
 }
 
-void InstancedModel::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+void InstancedModel::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex) const
+{
+	resources[Defintions::INSTANCE_DATA_RESOURCE] = m_instanceDataDescriptorSet;
+}
+
+void InstancedModel::getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
 {
 	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
 	const auto& material = getMeshAndMaterial(meshIndex).second;
 	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
-	resources[Defintions::INSTANCE_DATA_RESOURCE] = m_instanceDataDescriptorSet;
 }

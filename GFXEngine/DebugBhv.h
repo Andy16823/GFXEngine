@@ -2,6 +2,7 @@
 #include "Behavior.h"
 #include "Buffer.h"
 #include "IRenderable.h"
+#include "PositionMesh.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -20,8 +21,7 @@ namespace GFXEngine {
 			std::vector<PropertyInfo> getProperties() override;
 
 		private:
-			LibGFX::Buffer m_debugVertexBuffer;
-			LibGFX::Buffer m_debugIndexBuffer;
+			std::unique_ptr<Graphics::PositionMesh> m_debugMesh;
 			uint32_t m_indexCount;
 			bool m_isEnabled = true;
 		};

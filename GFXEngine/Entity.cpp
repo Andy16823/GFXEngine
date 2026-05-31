@@ -66,19 +66,19 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Entity::getPropertie
 
 	properties.push_back({
 			.name = "Position",
-			.data = &transform.position,
+			.data = &m_transform.position,
 			.onChanged = [this]() { propertyChanged(PropertyComponentType::Transform); }
 		});
 
 	properties.push_back({
 			.name = "Rotation",
-			.data = &transform.rotation,
+			.data = &m_transform.rotation,
 			.onChanged = [this]() { propertyChanged(PropertyComponentType::Transform); }
 		});
 
 	properties.push_back({
 			.name = "Scale",
-			.data = &transform.scale,
+			.data = &m_transform.scale,
 			.onChanged = [this]() { propertyChanged(PropertyComponentType::Transform); }
 		});
 
@@ -98,7 +98,7 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 	data["name"] = name;
 	data["uuid"] = uuid;
 	data["visible"] = m_visible;
-	data["transform"] = transform.serialize();
+	data["transform"] = m_transform.serialize();
 	data["tags"] = m_tags;
 
 	std::vector<nlohmann::json> behaviorsData;
@@ -121,7 +121,7 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 		uuid = data.value("uuid", Utils::generateUUID());
 	}
 	m_visible = data.value("visible", true);
-	transform.deserialize(data.value("transform", nlohmann::json()), context, flags);
+	m_transform.deserialize(data.value("transform", nlohmann::json()), context, flags);
 	m_tags = data.value("tags", std::vector<std::string>());
 
 	auto behaviorsData = data.value("behaviors", std::vector<nlohmann::json>());

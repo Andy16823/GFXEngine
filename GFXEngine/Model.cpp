@@ -32,10 +32,11 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 		// Get the Pipeline for the render
 		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::GEOMETRY_PIPELINE);
 
-		// Build graphic resources for the render task, starting with camera and scene-level resources
+		// Build the common graphic resources for the entity (camera, scene-level, entity resources)
 		Graphics::GraphicResources resources;
 		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(resources, context.imageIndex);
+		this->getGraphicResources(resources, context.imageIndex);
 
 		for (size_t i = 0; i < this->getMeshCount(); ++i) {
 			const auto& [mesh, material] = this->getMeshAndMaterial(i);
@@ -44,10 +45,10 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 			RenderTaskBuilder taskBuilder;
 			taskBuilder.setPipeline(pipeline)
 				.setMesh(&mesh)
-				.setModelMatrix(this->transform.getModelMatrix());
+				.setModelMatrix(this->getModelMatrix());
 
-			// Get entity-specific graphic resources
-			this->getGraphicResources(resources, context.imageIndex, i);
+			// Get mesh-specific graphic resources (like material descriptor set)
+			this->getMeshMaterialGraphicResources(resources, context.imageIndex, i);
 
 			// Bind resources to the pipeline (this will throw if required resources are missing)
 			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
@@ -102,6 +103,18 @@ void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::
 	m_meshModelRef.set(meshModelAsset);
 }
 
+void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex) const
+{
+	
+}
+
+void Model::getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+{
+	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
+	const auto& material = getMeshAndMaterial(meshIndex).second;
+	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
+}
+
 size_t GFXEngine::Core::Model::getMeshCount() const
 {
 	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
@@ -114,11 +127,4 @@ std::pair<const GFXEngine::Graphics::Mesh&, const GFXEngine::Graphics::Material&
 		throw std::out_of_range("Mesh index out of range");
 	}
 	return { meshModel->getMesh(index), meshModel->getMeshMaterial(index) };
-}
-
-void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
-{
-	assert(meshIndex < getMeshCount() && "Mesh index out of range in getGraphicResources");
-	const auto& material = getMeshAndMaterial(meshIndex).second;
-	resources[Defintions::MATERIAL_RESOURCE] = material.getDescriptorSet(imageIndex);
 }

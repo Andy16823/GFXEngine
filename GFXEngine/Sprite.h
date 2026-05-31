@@ -19,9 +19,9 @@ namespace GFXEngine {
 		public:
 			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh3D& mesh)
 				: m_material(material), m_mesh(mesh) {
-				this->transform.position = glm::vec3(0.0f);
-				this->transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-				this->transform.scale = glm::vec3(1.0f);
+				this->setPosition(glm::vec3(0.0f));
+				this->setRotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f));
+				this->setScale(glm::vec3(1.0f));
 			}
 			virtual ~Sprite() = default;
 			
@@ -32,7 +32,8 @@ namespace GFXEngine {
 
 			virtual size_t getMeshCount() const override { return 1; }
 			virtual std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
-			virtual void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
+			virtual void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
+			virtual void getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
 
 		private:
 			const Graphics::SpriteMaterial& m_material;

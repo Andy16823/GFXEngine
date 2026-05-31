@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "GraphicsPipeline.h"
 #include "RenderTask.h"
+#include "GraphicResources.h"
 
 
 using namespace GFXEngine::Core;
@@ -15,36 +16,10 @@ void GFXEngine::Core::DebugBhv::init(Scene& scene, GFXEngine::Graphics::Renderer
 {
 	auto entity = this->getEntity();
 	auto [vertices, indices] = GFXEngine::Graphics::Shapes::createAabbVertices(entity->getAABB());
-	
-	// Create Vertex Buffer with staging buffer
-	VkDeviceSize vertexBufferSize = vertices.size() * sizeof(EngineTypes::PositionVertex);
-	auto vertexStagingBuffer = renderer.createBuffer(
-		vertexBufferSize, 
-		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	renderer.updateBuffer(vertexStagingBuffer, vertices.data(), vertices.size());
-
-	m_debugVertexBuffer = renderer.createBuffer(
-		vertexBufferSize, 
-		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.copyBuffer(vertexStagingBuffer, m_debugVertexBuffer, vertexBufferSize);
-	renderer.destroyBuffer(vertexStagingBuffer);
-
-	// Create Index Buffer with staging buffer
-	VkDeviceSize indexBufferSize = indices.size() * sizeof(uint32_t);
-	auto indexStagingBuffer = renderer.createBuffer(
-		indexBufferSize, 
-		VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	renderer.updateBuffer(indexStagingBuffer, indices.data(), indices.size());
-
-	m_debugIndexBuffer = renderer.createBuffer(
-		indexBufferSize, 
-		VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	renderer.copyBuffer(indexStagingBuffer, m_debugIndexBuffer, indexBufferSize);
-	renderer.destroyBuffer(indexStagingBuffer);
+	m_debugMesh = std::make_unique<PositionMesh>();
+	m_debugMesh->setVertices(std::move(vertices));
+	m_debugMesh->setIndices(std::move(indices));
+	m_debugMesh->init(renderer);
 
 	// Store index count for rendering
 	m_indexCount = static_cast<uint32_t>(indices.size());
@@ -57,8 +32,7 @@ void GFXEngine::Core::DebugBhv::update(Scene& scene, GFXEngine::Graphics::Camera
 
 void GFXEngine::Core::DebugBhv::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
-	renderer.destroyBuffer(m_debugVertexBuffer);
-	renderer.destroyBuffer(m_debugIndexBuffer);
+	m_debugMesh->destroy(renderer);
 }
 
 void DebugBhv::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
@@ -66,17 +40,19 @@ void DebugBhv::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFX
 	if (!m_isEnabled)
 		return;
 
-	VkDescriptorSet descriptorSet = context.camera.getDescriptorSet(context.imageIndex);
-	glm::mat4 modelMatrix = getEntity()->transform.getModelMatrix();
+	// TODO: Rework this to have an mesh
 	auto pipeline = context.renderer.getPipeline<GraphicsPipeline>(Defintions::DEBUG_PIPELINE);
+
+	GraphicResources resources;
+	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+	this->getEntity()->getScene()->getGraphicResources(resources, context.imageIndex);
+	this->getEntity()->getGraphicResources(resources, context.imageIndex);
 
 	RenderTaskBuilder taskBuilder;
 	taskBuilder.setPipeline(pipeline)
-		.setBuffers(m_debugVertexBuffer, m_debugIndexBuffer)
-		.setIndexCount(m_indexCount)
-		.addDescriptorSet(descriptorSet, CAMERA_UBO_BINDING)
-		.addPushConstant(&modelMatrix, sizeof(modelMatrix));
-
+		.setMesh(m_debugMesh.get())
+		.setModelMatrix(this->getEntity()->getModelMatrix());
+	pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
 	renderQueue.addRenderTask(taskBuilder.build());
 }
 

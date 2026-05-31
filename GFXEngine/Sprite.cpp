@@ -34,7 +34,12 @@ void GFXEngine::Core::Sprite::destroy(Scene& scene, GFXEngine::Graphics::Rendere
 	Entity::destroy(scene, renderer);
 }
 
-void Sprite::getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
+void Sprite::getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const
+{
+
+}
+
+void Sprite::getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const
 {
 	assert(meshIndex == 0); // Sprite only has one mesh and material
 	const auto& material = getMeshAndMaterial(meshIndex).second;

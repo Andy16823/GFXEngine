@@ -36,7 +36,8 @@ namespace GFXEngine {
 			
 			size_t getMeshCount() const override;
 			std::pair<const Graphics::Mesh&, const Graphics::Material&> getMeshAndMaterial(size_t index) const override;
-			void getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
+			void getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
+			void getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
 
 			size_t getInstanceCount() const { return m_instanceData.size(); }
 			GFXEngine::Math::AABB computeInstanceAABB(size_t instanceIndex) const;
