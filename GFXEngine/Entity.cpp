@@ -142,6 +142,13 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 	}
 }
 
+void GFXEngine::Core::Entity::resolveReferences(GFXEngine::SerializationContext& context)
+{
+	for (auto& behavior : m_behaviors) {
+		behavior->resolveReferences(context);
+	}
+}
+
 void GFXEngine::Core::Entity::exportToPrefab(const std::filesystem::path& path) const
 {
 	if (!std::filesystem::exists(path.parent_path())) {

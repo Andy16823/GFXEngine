@@ -263,6 +263,7 @@ namespace GFXEngine {
 			virtual std::vector<PropertyInfo> getProperties();
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
+			void resolveReferences(GFXEngine::SerializationContext& context) override;
 			void exportToPrefab(const std::filesystem::path& path) const;
 
 		/* ---------------------------------------------------------------------

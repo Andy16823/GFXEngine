@@ -3,6 +3,7 @@
 #include "RuntimeContext.h"
 #include "Model.h"
 #include "InstancedModel.h"
+#include "InstanceHandle.h"
 #include "Sprite.h"
 #include "InputManager.h"
 #include "EnviromentMap.h"
@@ -14,6 +15,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	// Register core entity types in the entity factory
 	this->entityFactory->registerEntity<GFXEngine::Core::Model>();
 	this->entityFactory->registerEntity<GFXEngine::Core::InstancedModel>();
+	this->entityFactory->registerEntity<GFXEngine::Core::InstanceHandle>();
 	//this->entityFactory->registerEntity<GFXEngine::Core::Sprite>(); TODO: Add a default constructor to Sprite that initializes the material and mesh references, then register it here.
 
 	// Create the window and initialize the renderer

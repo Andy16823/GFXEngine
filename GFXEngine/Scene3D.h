@@ -40,6 +40,7 @@ namespace GFXEngine {
 			void destroy(Graphics::Renderer& renderer) override;
 			void input(int key, int mods, int action) override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
+			void resolveReferences(GFXEngine::SerializationContext& context) override;
 			void getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
 
 			std::vector<PropertyInfo> getProperties() override;

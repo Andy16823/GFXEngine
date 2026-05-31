@@ -44,5 +44,6 @@ namespace GFXEngine {
 		virtual ~ISerializable() = default;
 		virtual nlohmann::json serialize() const = 0;
 		virtual void deserialize(const nlohmann::json& data, SerializationContext& context, SerializationFlags flags = SerializationFlags::None) = 0;
+		virtual void resolveReferences(SerializationContext& context) {};
 	};
 }

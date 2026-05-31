@@ -137,11 +137,44 @@ namespace GFXEngine {
 		};
 
 		/// <summary>
-		/// EntityReference is a simple structure that holds a non-owning pointer to an Entity.
+		/// EntityReference is a structure that holds either a UUID string reference to an entity or a direct pointer to the entity. 
+		/// This allows for flexible referencing of entities, where the reference can be resolved to an actual pointer at runtime, 
+		/// especially during deserialization when entities may not yet be fully constructed.
 		/// </summary>
 		struct EntityReference
 		{
-			GFXEngine::Core::Entity* entity;
+			std::string uuid = "";
+			Core::Entity* entity = nullptr;
+
+			Core::Entity& get() const
+			{
+				return *entity;
+			}
+
+			void set(Core::Entity* entityPtr)
+			{
+				entity = entityPtr;
+				uuid.clear();
+			}
+
+			template<typename T>
+			T& getAs() const
+			{
+				assert(entity);
+				T* casted = dynamic_cast<T*>(entity);
+				assert(casted && "EntityReference: Failed to cast entity to requested type");
+				return *casted;
+			}
+
+			bool isResolved() const
+			{
+				return entity != nullptr;
+			}
+
+			bool hasUUID() const
+			{
+				return !uuid.empty();
+			}
 		};
 
 		/// <summary>

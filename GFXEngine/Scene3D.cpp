@@ -242,7 +242,15 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		}
 
 		entity->deserialize(entityData, context, flags);
-		addEntity(std::move(entity));
+		auto entityPtr = addEntity(std::move(entity));
+		context.registerEntity(entityPtr->uuid, entityPtr);
+	}
+}
+
+void GFXEngine::Core::Scene3D::resolveReferences(GFXEngine::SerializationContext& context)
+{
+	for (auto& entity : m_entities) {
+		entity->resolveReferences(context);
 	}
 }
 
