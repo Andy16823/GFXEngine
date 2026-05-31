@@ -9,6 +9,8 @@
 namespace GFXEngine {
 	namespace Core {
 
+		class InstanceHandle;
+
 		class InstancedModel : public Entity
 		{
 		private:
@@ -29,6 +31,9 @@ namespace GFXEngine {
 			void destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void updateInstance(const EngineTypes::InstanceData& instanceData, size_t index);
 			void updateInstanceRange(const std::span<const EngineTypes::InstanceData>& instanceData, size_t startIndex);
+			
+			std::unique_ptr<InstanceHandle> instantiate();
+			std::unique_ptr<InstanceHandle> instantiate(size_t instanceIndex);
 
 			std::vector<PropertyInfo> getProperties() override;
 			nlohmann::json serialize() const override;

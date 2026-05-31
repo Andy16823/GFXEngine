@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "AssetManager.h"
 #include "RenderTask.h"
+#include "InstanceHandle.h"
 
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
@@ -201,6 +202,20 @@ void GFXEngine::Core::InstancedModel::updateInstanceRange(const std::span<const 
 		m_instanceData[startIndex + i] = instanceData[i];
 	}
 	m_isDirty = true;
+}
+
+std::unique_ptr<GFXEngine::Core::InstanceHandle> InstancedModel::instantiate()
+{
+	auto freeIndex = findNextFreeInstance();
+	if (freeIndex == static_cast<size_t>(-1)) {
+		throw std::runtime_error("No free instance slots available in InstancedModel");
+	}
+	return instantiate(freeIndex);
+}
+
+std::unique_ptr<GFXEngine::Core::InstanceHandle> InstancedModel::instantiate(size_t instanceIndex)
+{
+	return std::make_unique<InstanceHandle>(this, instanceIndex);
 }
 
 std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::InstancedModel::getProperties()
