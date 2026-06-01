@@ -808,8 +808,8 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 	{
 		auto delta = glm::vec2(xpos, ypos) - m_cursorDragInfo.currentPosition;
 		float sensitivity = 0.1f;
-		m_editorCamera->getTransform().rotateWorld(-delta.x * sensitivity, 0.0f, 0.0f);
-		m_editorCamera->getTransform().rotateWorld(0.0f, -delta.y * sensitivity, 0.0f);
+		m_editorCamera->getTransform().rotateWorld(0.0f, -delta.x * sensitivity, 0.0f);
+		m_editorCamera->getTransform().rotateWorld(-delta.y * sensitivity, 0.0f, 0.0f);
 		m_cursorDragInfo.currentPosition = glm::vec2(xpos, ypos);
 	}
 }
