@@ -110,6 +110,7 @@ float calcLinearFogFactor()
 float calcFogFactor() 
 {
     float fogFactor = calcLinearFogFactor();
+    fogFactor = mix(1.0, fogFactor, fog.parameters.z);  // Apply density
     return fogFactor;
 }
 
