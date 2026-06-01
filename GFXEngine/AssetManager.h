@@ -19,6 +19,7 @@ namespace GFXEngine {
 
 	public:
 		void loadFromDirectory(const std::filesystem::path& directory, bool recursive = true);
+		void loadFromFile(const std::filesystem::path& filePath);
 
 		bool addAsset(std::unique_ptr<Asset> asset) {
 			auto name = asset->getName();

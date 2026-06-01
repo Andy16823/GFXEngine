@@ -18,17 +18,27 @@ void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& dir
 		}
 		else if (entry.is_regular_file())
 		{
-			std::string extension = entry.path().extension().string();
-			std::string filename = entry.path().filename().string();
-			std::string name = entry.path().stem().string();		
-
-			if (m_loaders.contains(extension)) 
-			{
-				// If a loader exists we assume the file is a JSON file containing the necessary data to create the asset.
-				auto asset = m_loaders[extension](name, entry.path());
-				this->addAsset(std::move(asset));
-				std::cout << "Loaded asset '" << name << "' from file: " << entry.path() << std::endl;
-			}
+			this->loadFromFile(entry.path());
 		}
+	}
+}
+
+void GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath)
+{
+	if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath))
+	{
+		throw std::runtime_error("File does not exist: " + filePath.string());
+	}
+
+	std::string extension = filePath.extension().string();
+	std::string filename = filePath.filename().string();
+	std::string name = filePath.stem().string();
+
+	if (m_loaders.contains(extension))
+	{
+		// If a loader exists we assume the file is a JSON file containing the necessary data to create the asset.
+		auto asset = m_loaders[extension](name, filePath);
+		this->addAsset(std::move(asset));
+		std::cout << "Loaded asset '" << name << "' from file: " << filePath << std::endl;
 	}
 }

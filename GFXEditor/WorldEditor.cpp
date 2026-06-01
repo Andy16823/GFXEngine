@@ -9,6 +9,7 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include "DataTypes.h"
 #include "PropertyInfo.h"
+#include "FileNameWidget.h"
 
 using namespace GFXEditor;
 using namespace GFXEngine;
@@ -45,16 +46,29 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 
 		if (ImGui::MenuItem("Create Environment")) 
 		{
-			nlohmann::json environment;
-			environment["faces"] = std::vector<std::string> {
-				"right.png",
-				"left.png",
-				"top.png",
-				"bottom.png",
-				"front.png",
-				"back.png"
-			};
-			GFXEngine::Utils::saveJsonToFile(environment, (m_currentExplorerPath / "new_environment.json").string());
+			FileNameWidget widget("Environment Name", [&](const std::string& fileName) {
+				nlohmann::json environment;
+				environment["faces"] = std::vector<std::string>{
+					"right.png",
+					"left.png",
+					"top.png",
+					"bottom.png",
+					"front.png",
+					"back.png"
+				};
+				GFXEngine::Utils::saveJsonToFile(environment, (m_currentExplorerPath / (fileName + ".env")).string());
+				return true;
+			});
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::MenuItem("Import Asset"))
+		{
+			if(!m_selectedFilePath.empty())
+			{
+				m_assetManager->loadFromFile(m_selectedFilePath);
+			}
 		}
 
 		ImGui::EndPopup();
@@ -72,6 +86,7 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 			if (ImGui::Selectable(entry.path().filename().string().c_str())) {
 				std::string extension = entry.path().extension().string();
 				std::cout << "Selected file: " << entry.path() << std::endl;
+				m_selectedFilePath = entry.path();
 			}
 		}
 	}

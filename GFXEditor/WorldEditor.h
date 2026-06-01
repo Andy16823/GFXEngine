@@ -36,6 +36,7 @@ namespace GFXEditor {
 
 		std::filesystem::path m_projectDirectory;
 		std::filesystem::path m_currentExplorerPath;
+		std::filesystem::path m_selectedFilePath;
 		bool m_showCreateDirectoryPopup = false;
 
 		// Helper Vectors

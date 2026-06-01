@@ -1,6 +1,6 @@
 project(GFXEditor)
 
-add_library(GFXEditor STATIC "WorldEditor.h" "WorldEditor.cpp")
+add_library(GFXEditor STATIC "WorldEditor.h" "WorldEditor.cpp" "FileNameWidget.h" "FileNameWidget.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GFXEditor PROPERTY CXX_STANDARD 20)
