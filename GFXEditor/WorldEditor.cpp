@@ -811,9 +811,11 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 		float m_yaw = -delta.x * sensitivity;
 		float m_pitch = -delta.y * sensitivity;
 
-		m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
+		glm::quat rotation = m_editorCamera->getTransform().rotation;
+		glm::quat yaw = glm::angleAxis(glm::radians(m_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::quat pitch = glm::angleAxis(glm::radians(m_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
 
-		m_editorCamera->getTransform().rotateLocal(m_pitch, m_yaw, 0.0f);
+		m_editorCamera->getTransform().rotation = glm::normalize(yaw * pitch * rotation);
 		m_cursorDragInfo.currentPosition = glm::vec2(xpos, ypos);
 	}
 }
