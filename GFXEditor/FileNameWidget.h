@@ -14,6 +14,8 @@ namespace GFXEditor {
 		std::string m_currentFileName;
 		FileNameWidgetCallback m_callback;
 
+		void closeModal();
+
 	public:
 		FileNameWidget() = default;
 		void show(const std::string& label, FileNameWidgetCallback callback);
