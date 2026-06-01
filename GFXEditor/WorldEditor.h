@@ -19,6 +19,12 @@ namespace GFXEditor {
 		bool isHovering;
 	};
 
+	struct CursorDragInfo {
+		glm::vec2 startPosition;
+		glm::vec2 currentPosition;
+		bool isDragging;
+	};
+
 	class WorldEditor : public GFXEngine::Core::UIWidget
 	{
 	private:
@@ -43,6 +49,7 @@ namespace GFXEditor {
 		ViewportCursorInfo m_viewportCursorInfo = { glm::vec2(0.0f), false };
 		bool m_dockspaceInitialized = false;
 		GFXEngine::Core::GuizmoOperation m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
+		CursorDragInfo m_cursorDragInfo = { glm::vec2(0.0f), glm::vec2(0.0f), false };
 
 		void renderProjectExplorer(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer);
 
@@ -75,6 +82,8 @@ namespace GFXEditor {
 		void render(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex) override;
 		void afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex) override;
 		void handleInput(GLFWwindow* window, int key, int mods, int action) override;
+		void handleMouseInput(GLFWwindow* window, int button, int mods, int action) override;
+		void handleMouseMove(GLFWwindow* window, double xpos, double ypos) override;
 		void dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer) override;
 	};
 }

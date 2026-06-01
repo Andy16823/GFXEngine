@@ -776,3 +776,40 @@ void WorldEditor::dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphi
 	m_renderTexture->destroy(renderer);
 	m_editorCamera->destroyDescriptorSets(renderer);
 }
+
+void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int mods, int action)
+{
+	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard) {
+		return;
+	}
+
+	if (action == GLFW_PRESS) {
+		if (button == GLFW_MOUSE_BUTTON_RIGHT) 
+		{
+			m_cursorDragInfo.isDragging = true;
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
+			m_cursorDragInfo.startPosition = glm::vec2(xpos, ypos);
+			m_cursorDragInfo.currentPosition = glm::vec2(xpos, ypos);
+		}
+	}
+
+	if (action == GLFW_RELEASE) {
+		if (button == GLFW_MOUSE_BUTTON_RIGHT)
+		{
+			m_cursorDragInfo.isDragging = false;
+		}
+	}
+}
+
+void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
+{
+	if (m_cursorDragInfo.isDragging) 
+	{
+		auto delta = glm::vec2(xpos, ypos) - m_cursorDragInfo.currentPosition;
+		float sensitivity = 0.1f;
+		m_editorCamera->getTransform().rotateWorld(-delta.x * sensitivity, 0.0f, 0.0f);
+		m_editorCamera->getTransform().rotateWorld(0.0f, -delta.y * sensitivity, 0.0f);
+		m_cursorDragInfo.currentPosition = glm::vec2(xpos, ypos);
+	}
+}
