@@ -22,14 +22,39 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 	// Context menu for the project explorer
 	if (ImGui::BeginPopupContextWindow())
 	{
+		if (ImGui::MenuItem("Go to Parent Directory", nullptr, false, m_currentExplorerPath.has_parent_path()))
+		{
+			m_currentExplorerPath = m_currentExplorerPath.parent_path();
+		}
+
+		ImGui::Separator();
+
 		if (ImGui::MenuItem("Create Directory"))
 		{
 			m_showCreateDirectoryPopup = true;
 		}
 
-		if (ImGui::MenuItem("Option 2"))
+		if (ImGui::MenuItem("Show in Explorer"))
 		{
-			// Aktion
+			// TODO: Windows-specific implementation, need to add support for other platforms
+			std::string command = "explorer.exe /select,\"" + m_currentExplorerPath.string() + "\"";
+			system(command.c_str());
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::MenuItem("Create Environment")) 
+		{
+			nlohmann::json environment;
+			environment["faces"] = std::vector<std::string> {
+				"right.png",
+				"left.png",
+				"top.png",
+				"bottom.png",
+				"front.png",
+				"back.png"
+			};
+			GFXEngine::Utils::saveJsonToFile(environment, (m_currentExplorerPath / "new_environment.json").string());
 		}
 
 		ImGui::EndPopup();
