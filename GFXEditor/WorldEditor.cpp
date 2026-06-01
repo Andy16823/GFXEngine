@@ -813,7 +813,9 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 
 		m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
 
-		m_editorCamera->getTransform().setRotationFromEuler(glm::vec3(m_pitch, m_yaw, 0.0f));
+		m_editorCamera->getTransform().rotateWorld(0.0f, m_yaw, 0.0f);
+		m_editorCamera->getTransform().rotateLocal(m_pitch, 0.0f, 0.0f);
+
 		m_cursorDragInfo.currentPosition = glm::vec2(xpos, ypos);
 	}
 }
