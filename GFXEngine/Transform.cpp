@@ -36,6 +36,8 @@ void GFXEngine::Math::Transform::rotateWorld(float pitch, float yaw, float roll)
 	rotation = glm::angleAxis(glm::radians(pitch), glm::vec3(1.0f, 0.0f, 0.0f)) * rotation;
 	rotation = glm::angleAxis(glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f)) * rotation;
 	rotation = glm::angleAxis(glm::radians(roll), glm::vec3(0.0f, 0.0f, 1.0f)) * rotation;
+
+	rotation = glm::normalize(rotation); // Normalize to prevent drift over time
 }
 
 void GFXEngine::Math::Transform::rotateLocal(float pitch, float yaw, float roll)
@@ -44,6 +46,8 @@ void GFXEngine::Math::Transform::rotateLocal(float pitch, float yaw, float roll)
 	glm::quat qYaw = glm::angleAxis(glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::quat qRoll = glm::angleAxis(glm::radians(roll), glm::vec3(0.0f, 0.0f, 1.0f));
 	rotation = rotation * (qYaw * qPitch * qRoll);
+
+	rotation = glm::normalize(rotation); // Normalize to prevent drift over time
 }
 
 void GFXEngine::Math::Transform::translate(const glm::vec3& delta)
