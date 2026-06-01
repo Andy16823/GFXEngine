@@ -16,10 +16,11 @@ VkPipelineLayout GFXEngine::Graphics::PBRGeometryPass::buildLayout(Renderer& ren
 	pushConstantRange.size = sizeof(glm::mat4);
 	pushConstantRange.offset = 0;
 
-	std::array<VkDescriptorSetLayout, 3> descriptorSetLayouts{ 
-		renderer.getUniformBufferLayout(),
-		renderer.getPBRMaterialLayout(),
-		renderer.getUniformBufferLayout()
+	std::array<VkDescriptorSetLayout, 4> descriptorSetLayouts{ 
+		renderer.getUniformBufferLayout(), // Camera
+		renderer.getPBRMaterialLayout(), // Material
+		renderer.getUniformBufferLayout(), // Directional Light UBO
+		renderer.getUniformBufferLayout() // Fog UBO
 	};
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
@@ -57,15 +58,22 @@ bool GFXEngine::Graphics::PBRGeometryPass::bindResources(GFXEngine::Graphics::Re
 	{
 		throw std::runtime_error("PBRGeometryPass requires ModelMatrix for push_constnat");
 	}
+
+	if (!resources.contains(Defintions::FOG_RESOURCE))
+	{
+		throw std::runtime_error("PBRGeometryPass requires FOG_RESOURCE");
+	}
 	
 	glm::mat4 modelMatrix = builder.getModelMatrix();
 	VkDescriptorSet cameraDescriptorSet = resources[Defintions::CAMERA_RESOURCE];
 	VkDescriptorSet materialDescriptorSet = resources[Defintions::MATERIAL_RESOURCE];
 	VkDescriptorSet dirLightDescriptorSet = resources[Defintions::DIRECTIONAL_LIGHT_RESOURCE];
+	VkDescriptorSet fogDescriptorSet = resources[Defintions::FOG_RESOURCE];
 
 	builder.addDescriptorSet(cameraDescriptorSet, 0)
 		.addDescriptorSet(materialDescriptorSet, 1)
 		.addDescriptorSet(dirLightDescriptorSet, 2)
+		.addDescriptorSet(fogDescriptorSet, 3)
 		.addPushConstant(&modelMatrix, sizeof(glm::mat4), 0);
 
 	return true;

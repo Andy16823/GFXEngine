@@ -136,6 +136,11 @@ namespace GFXEngine {
 			glm::vec4 color;     // w component can be used for intensity
 		};
 
+		struct LinearFogData {
+			glm::vec4 color;
+			glm::vec4 fogParams; // x = start, y = end, z = density, w = padding
+		};
+
 		enum class ReferenceState 
 		{
 			Uninitialized,

@@ -60,6 +60,7 @@ void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& 
 void GFXEngine::Core::Scene3D::init(Graphics::Renderer& renderer)
 {
 	directionalLight.init(renderer);
+	fog.init(renderer);
 	for (auto& entity : m_entities)
 	{
 		entity->init(*this, renderer);
@@ -85,6 +86,7 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 {
 	// Update the directional light's uniform buffers and descriptor sets before rendering so that they are up to date when entities build their render tasks
 	directionalLight.update(renderer, camera, imageIndex);
+	fog.update(renderer, camera, imageIndex);
 }
 
 /// <summary>
@@ -142,6 +144,7 @@ void GFXEngine::Core::Scene3D::afterRender(Graphics::Renderer& renderer, Graphic
 void GFXEngine::Core::Scene3D::destroy(Graphics::Renderer& renderer)
 {
 	directionalLight.destroy(renderer);
+	fog.destroy(renderer);
 	for (auto& entity : m_entities)
 	{
 		entity->destroy(*this, renderer);
@@ -186,6 +189,27 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 		.hint = PropertyHint::Asset,
 		});
 
+	properties.push_back({
+		.name = "Fog Color",
+		.data = &fog.color,
+		.hint = PropertyHint::Color
+		});
+
+	properties.push_back({
+		.name = "Fog Density",
+		.data = &fog.density,
+		});
+
+	properties.push_back({
+		.name = "Fog Min Distance",
+		.data = &fog.minDistance,
+		});
+
+	properties.push_back({
+		.name = "Fog Max Distance",
+		.data = &fog.maxDistance,
+		});
+
 	return properties;
 }
 
@@ -197,12 +221,12 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 {
 	nlohmann::json data;
 	data["directionalLight"] = directionalLight.serialize();
+	data["fog"] = fog.serialize();
 	if (m_enviromentMapRef.isTypeOf<Graphics::EnviromentMap>()) {
 		auto envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>();
 		data["enviromentMap"] = envMap ? envMap->getName() : "";
 	}
 	
-
 	for (const auto& entity : m_entities) {
 		nlohmann::json entityData = entity->serialize();
 		data["entities"].push_back(entityData);
@@ -220,6 +244,10 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 {
 	if (data.contains("directionalLight")) {
 		directionalLight.deserialize(data["directionalLight"], context);
+	}
+
+	if (data.contains("fog")) {
+		fog.deserialize(data["fog"], context);
 	}
 
 	if (data.contains("enviromentMap")) {
@@ -257,6 +285,7 @@ void GFXEngine::Core::Scene3D::resolveReferences(GFXEngine::SerializationContext
 void GFXEngine::Core::Scene3D::getGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex) const
 {
 	resources[Defintions::DIRECTIONAL_LIGHT_RESOURCE] = directionalLight.getDescriptorSet(imageIndex);
+	resources[Defintions::FOG_RESOURCE] = fog.getDescriptorSet(imageIndex);
 }
 
 GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context)

@@ -11,11 +11,12 @@ using namespace GFXEngine::Graphics;
 
 VkPipelineLayout GFXEngine::Graphics::InstancedPBRGeometryPass::buildLayout(Renderer& renderer) const
 {
-	std::array<VkDescriptorSetLayout, 4> descriptorSetLayouts{
-		renderer.getUniformBufferLayout(),
-		renderer.getPBRMaterialLayout(),
-		renderer.getUniformBufferLayout(),
-		renderer.getStorageBufferLayout()
+	std::array<VkDescriptorSetLayout, 5> descriptorSetLayouts{
+		renderer.getUniformBufferLayout(), // Camera
+		renderer.getPBRMaterialLayout(), // Material
+		renderer.getUniformBufferLayout(), // Directional Light UBO
+		renderer.getStorageBufferLayout(), // Instance Data SSBO
+		renderer.getUniformBufferLayout() // Fog UBO
 	};
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
@@ -55,15 +56,22 @@ bool GFXEngine::Graphics::InstancedPBRGeometryPass::bindResources(GFXEngine::Gra
 		throw std::runtime_error("InstancedPBRGeometryPass requires INSTANCE_DATA_RESOURCE");
 	}
 
+	if (!resources.contains(Defintions::FOG_RESOURCE))
+	{
+		throw std::runtime_error("InstancedPBRGeometryPass requires FOG_RESOURCE");
+	}
+
 	VkDescriptorSet cameraSet = resources[Defintions::CAMERA_RESOURCE];
 	VkDescriptorSet materialSet = resources[Defintions::MATERIAL_RESOURCE];
 	VkDescriptorSet lightSet = resources[Defintions::DIRECTIONAL_LIGHT_RESOURCE];
 	VkDescriptorSet instanceDataSet = resources[Defintions::INSTANCE_DATA_RESOURCE];
+	VkDescriptorSet fogSet = resources[Defintions::FOG_RESOURCE];
 
 	builder.addDescriptorSet(cameraSet, 0)
 		.addDescriptorSet(materialSet, 1)
 		.addDescriptorSet(lightSet, 2)
-		.addDescriptorSet(instanceDataSet, 3);
+		.addDescriptorSet(instanceDataSet, 3)
+		.addDescriptorSet(fogSet, 4);
 
 	return true;
 }

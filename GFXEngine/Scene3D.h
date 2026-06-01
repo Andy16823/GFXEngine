@@ -4,6 +4,7 @@
 #include <span>
 #include "EnviromentMap.h"
 #include "DirectionalLight.h"
+#include "Fog.h"
 #include "DataTypes.h"
 #include "RenderQueue.h"
 #include <execution>
@@ -28,6 +29,7 @@ namespace GFXEngine {
 			void renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap);
 		public:
 			Graphics::DirectionalLight directionalLight;
+			Graphics::Fog fog;
 
 			Scene3D() = default;
 			virtual ~Scene3D() = default;
