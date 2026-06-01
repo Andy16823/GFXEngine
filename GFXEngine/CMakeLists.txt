@@ -24,8 +24,7 @@ target_link_libraries(GFXEngine
 
 # Include-Verzeichnisse (falls nötig)
 target_include_directories(GFXEngine 
-    PRIVATE 
-        ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # C++ Standard setzen
