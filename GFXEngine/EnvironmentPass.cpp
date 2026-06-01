@@ -9,9 +9,10 @@ using namespace GFXEngine::Graphics;
 
 VkPipelineLayout GFXEngine::Graphics::EnvironmentPass::buildLayout(Renderer& renderer) const
 {
-	std::array<VkDescriptorSetLayout, 2> descriptorSetLayouts{
-		renderer.getUniformBufferLayout(),
-		renderer.getCubemapSamplerLayout()
+	std::array<VkDescriptorSetLayout, 3> descriptorSetLayouts{
+		renderer.getUniformBufferLayout(), // Camera
+		renderer.getCubemapSamplerLayout(), // Cubemap sampler for environment map
+		renderer.getUniformBufferLayout() // Fog UBO
 	};
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
@@ -41,11 +42,18 @@ bool GFXEngine::Graphics::EnvironmentPass::bindResources(GFXEngine::Graphics::Re
 		throw std::runtime_error("EnvironmentPass requires MATERIAL_RESOURCE");
 	}
 
+	if (!resources.contains(Defintions::FOG_RESOURCE))
+	{
+		throw std::runtime_error("EnvironmentPass requires FOG_RESOURCE");
+	}
+
 	VkDescriptorSet cameraSet = resources[Defintions::CAMERA_RESOURCE];
 	VkDescriptorSet cubemapSet = resources[Defintions::MATERIAL_RESOURCE];
+	VkDescriptorSet fogSet = resources[Defintions::FOG_RESOURCE];
 
 	builder.addDescriptorSet(cameraSet, 0)
-		.addDescriptorSet(cubemapSet, 1);
+		.addDescriptorSet(cubemapSet, 1)
+		.addDescriptorSet(fogSet, 2);
 
 	return true;
 }

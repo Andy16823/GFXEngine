@@ -13,9 +13,9 @@ namespace GFXEngine {
 			std::vector<VkDescriptorSet> m_descriptorSets;
 
 		public:
-			float density = 0.05f;
-			float minDistance = 0.1f;
-			float maxDistance = 100.0f;
+			float density = 0.3f;
+			float minDistance = 25.0f;
+			float maxDistance = 5000.0f;
 			glm::vec4 color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 
