@@ -9,6 +9,7 @@
 #include "AssetManager.h"
 #include "BehaviorRegistry.h"
 #include "StaticMeshModel.h"
+#include "FileNameWidget.h"
 #include <memory>
 #include <string>
 
@@ -51,6 +52,9 @@ namespace GFXEditor {
 		bool m_dockspaceInitialized = false;
 		GFXEngine::Core::GuizmoOperation m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
 		CursorDragInfo m_cursorDragInfo = { glm::vec2(0.0f), glm::vec2(0.0f), false };
+
+		// Dialogs
+		FileNameWidget m_fileWidget;
 
 		void renderProjectExplorer(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer);
 

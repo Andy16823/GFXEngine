@@ -9,11 +9,14 @@ namespace GFXEditor {
 	class FileNameWidget
 	{
 	private:
-		FileNameWidgetCallback m_callback;
-		std::string m_currentFileName;
+		bool m_isOpen = false;
 		std::string m_label;
+		std::string m_currentFileName;
+		FileNameWidgetCallback m_callback;
+
 	public:
-		FileNameWidget(const std::string& label, FileNameWidgetCallback callback) : m_label(label), m_callback(callback) {}
+		FileNameWidget() = default;
+		void show(const std::string& label, FileNameWidgetCallback callback);
 		void render();
 	};
 }

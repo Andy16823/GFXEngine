@@ -46,7 +46,7 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 
 		if (ImGui::MenuItem("Create Environment")) 
 		{
-			FileNameWidget widget("Environment Name", [&](const std::string& fileName) {
+			m_fileWidget.show("Environment Name", [&](const std::string& fileName) {
 				nlohmann::json environment;
 				environment["faces"] = std::vector<std::string>{
 					"right.png",
@@ -59,7 +59,6 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 				GFXEngine::Utils::saveJsonToFile(environment, (m_currentExplorerPath / (fileName + ".env")).string());
 				return true;
 			});
-			widget.render();
 		}
 
 		ImGui::Separator();
@@ -91,6 +90,8 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 			}
 		}
 	}
+
+	m_fileWidget.render();
 
 	if (m_showCreateDirectoryPopup) {
 		ImGui::OpenPopup("CreateDirectoryPopup");
