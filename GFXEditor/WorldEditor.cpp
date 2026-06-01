@@ -59,6 +59,7 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 				GFXEngine::Utils::saveJsonToFile(environment, (m_currentExplorerPath / (fileName + ".env")).string());
 				return true;
 			});
+			widget.render();
 		}
 
 		ImGui::Separator();
