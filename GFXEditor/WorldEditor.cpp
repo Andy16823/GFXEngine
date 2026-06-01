@@ -779,7 +779,7 @@ void WorldEditor::dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphi
 
 void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int mods, int action)
 {
-	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard) {
+	if (ImGui::GetIO().WantCaptureKeyboard) {
 		return;
 	}
 
