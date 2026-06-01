@@ -27,6 +27,16 @@ void GFXEditor::Editor::onInit(Graphics::Renderer& renderer)
 
 	m_scene = std::make_unique<Scene3D>();
 	m_scene->init(renderer);
+
+	m_uiContext = std::make_unique<UIContext>();
+	m_uiContext->init(renderer, this->getWindow());
+
+	m_worldEditor = std::make_unique<WorldEditor>(
+		m_scene.get(),
+		this->assetManager.get(),
+		this->behaviorRegistry.get(),
+		std::filesystem::current_path());
+	m_worldEditor->init(*m_uiContext, renderer);
 }
 
 void GFXEditor::Editor::onStart(Graphics::Renderer & renderer)
@@ -41,15 +51,24 @@ void GFXEditor::Editor::beforeRender(Graphics::Renderer & renderer, uint32_t ima
 void GFXEditor::Editor::onRender(Graphics::Renderer & renderer, uint32_t imageIndex)
 {
 	// Offscreen render pass
-	renderer.beginRenderPass(renderer.getOffscreenRenderPass(), m_renderTexture->getFramebuffer(), imageIndex);
-	m_scene->render(renderer, *m_camera, imageIndex);
-	renderer.endRenderPass(imageIndex);
+	//renderer.beginRenderPass(renderer.getOffscreenRenderPass(), m_renderTexture->getFramebuffer(), imageIndex);
+	//m_scene->render(renderer, *m_camera, imageIndex);
+	//renderer.endRenderPass(imageIndex);
+
+	m_worldEditor->renderSceneToTexture(renderer, m_uiContext.get(), imageIndex);
 
 	// Present render pass
-	auto presentPipeline = renderer.getPipeline<GFXEngine::Graphics::PresentPipeline>(Defintions::PipelineType::PRESENT_PIPELINE);
+	//auto presentPipeline = renderer.getPipeline<GFXEngine::Graphics::PresentPipeline>(Defintions::PipelineType::PRESENT_PIPELINE);
+	
 	renderer.beginRenderPass(renderer.getRenderPass(), imageIndex);
-	renderer.usePipeline(*presentPipeline, imageIndex);
-	m_renderTexture->draw(renderer, *presentPipeline, imageIndex);
+	//renderer.usePipeline(*presentPipeline, imageIndex);
+	//m_renderTexture->draw(renderer, *presentPipeline, imageIndex);
+
+	// Draw the GUI on top of the rendered scene
+	m_uiContext->newFrame();
+	m_worldEditor->render(*m_uiContext, renderer, imageIndex);
+	m_uiContext->render(renderer, imageIndex);
+
 	renderer.endRenderPass(imageIndex);
 
 }
@@ -59,6 +78,8 @@ void GFXEditor::Editor::afterRender(Graphics::Renderer & renderer, uint32_t imag
 
 void GFXEditor::Editor::onDestroy(Graphics::Renderer & renderer)
 {
+	m_uiContext->dispose(renderer);
+	m_worldEditor->dispose(*m_uiContext, renderer);
 	m_camera->destroyDescriptorSets(renderer);
 	m_renderTexture->destroy(renderer);
 	m_scene->destroy(renderer);

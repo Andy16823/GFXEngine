@@ -4,6 +4,8 @@
 #include "Scene3D.h"
 #include "Camera3D.h"
 #include "RenderTexture.h"
+#include "UIContext.h"
+#include "WorldEditor.h"
 
 namespace GFXEditor {
 	class Editor : public GFXEngine::Core::Game
@@ -12,6 +14,8 @@ namespace GFXEditor {
 		std::unique_ptr<GFXEngine::Core::Scene3D> m_scene;
 		std::unique_ptr<GFXEngine::Graphics::Camera3D> m_camera;
 		std::unique_ptr<GFXEngine::Graphics::RenderTexture> m_renderTexture;
+		std::unique_ptr<GFXEngine::Core::UIContext> m_uiContext;
+		std::unique_ptr<WorldEditor> m_worldEditor;
 
 	public:
 		void onInit(GFXEngine::Graphics::Renderer& renderer) override;

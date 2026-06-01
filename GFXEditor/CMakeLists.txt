@@ -1,6 +1,6 @@
 project(GFXEditor)
 
-add_executable(GFXEditor "main.cpp" "WordEditor.h" "WordEditor.cpp" "Editor.h" "Editor.cpp")
+add_executable(GFXEditor "main.cpp" "WorldEditor.h" "WorldEditor.cpp" "Editor.h" "Editor.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GFXEditor PROPERTY CXX_STANDARD 20)
