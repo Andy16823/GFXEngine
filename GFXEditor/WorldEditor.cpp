@@ -746,19 +746,19 @@ void WorldEditor::handleInput(GLFWwindow* window, int key, int mods, int action)
 	{
 		if (key == GLFW_KEY_W)
 		{
-			//GameUtils::moveCameraForward(*m_editorCamera, 1.0f);
+			m_editorCamera->getTransform().forward(1.0f);
 		}
 		else if (key == GLFW_KEY_S)
 		{
-			//GameUtils::moveCameraForward(*m_editorCamera, -1.0f);
+			m_editorCamera->getTransform().forward(-1.0f);
 		}
 		else if (key == GLFW_KEY_A)
 		{
-			//GameUtils::moveCameraRight(*m_editorCamera, -1.0f);
+			m_editorCamera->getTransform().right(-1.0f);
 		}
 		else if (key == GLFW_KEY_D)
 		{
-			//GameUtils::moveCameraRight(*m_editorCamera, 1.0f);
+			m_editorCamera->getTransform().right(1.0f);
 		}
 		else if (key == GLFW_KEY_Q)
 		{
