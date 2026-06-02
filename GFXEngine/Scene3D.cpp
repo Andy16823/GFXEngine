@@ -199,6 +199,8 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 	properties.push_back({
 		.name = "Fog Density",
 		.data = &fog.density,
+		.hint = PropertyHint::Range,
+		.metaData = RangeMetaData {0, 1, 0.01f}
 		});
 
 	properties.push_back({
