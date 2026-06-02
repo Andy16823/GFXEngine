@@ -27,13 +27,18 @@ EnviromentMap::EnviromentMap(const std::string& name, const std::filesystem::pat
 		throw std::runtime_error("EnviromentMap JSON data must contain a 'faces' array with 6 file paths.");
 	}
 
+	// Load optional parameters with default values
+	horizonFactor = data.value("horizonFactor", 1.0f);
+	horizonFogExponent = data.value("horizonFogExponent", 1.5f);
+
+	// Create the mesh for the skybox
 	auto [vertices, indices] = Graphics::Shapes::createSkybox();
 	m_mesh = std::make_unique<PositionMesh>();
 	m_mesh->setVertices(std::move(vertices));
 	m_mesh->setIndices(std::move(indices));
 
+	// Load cubemap textures
 	std::filesystem::path basePath = GFXEngine::Utils::getBasePath(filePath);
-
 	std::vector<std::string> faceFilepaths;
 	for (const auto& face : data["faces"]) {
 		auto faceStr = face.get<std::string>();
@@ -41,6 +46,7 @@ EnviromentMap::EnviromentMap(const std::string& name, const std::filesystem::pat
 		faceFilepaths.push_back(fullPath.string());
 	}
 
+	// Create the material and set the cubemap data
 	m_envMaterial = std::make_unique<EnviromentMaterial>();
 	LibGFX::CubemapData cubemapData = GFXEngine::Utils::loadCubemap(faceFilepaths, false);
 	m_envMaterial->setCubemapData(std::move(cubemapData));
