@@ -286,10 +286,29 @@ void WorldEditor::renderBoolProperty(const std::string& label, const GFXEngine::
 
 void WorldEditor::renderFloatProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, float* value)
 {
-	if (ImGui::InputFloat(label.c_str(), value)) {
-		if (prop.onChanged) {
-			prop.onChanged();
+	switch (prop.hint)
+	{	
+	case PropertyHint::Range:
+		if (auto* meta = std::get_if<GFXEngine::Core::RangeMetaData>(&prop.metaData))
+		{
+			if (ImGui::SliderFloat(label.c_str(), value, meta->min, meta->max, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+			{
+				if (prop.onChanged) {
+					prop.onChanged();
+				}
+			}
 		}
+		else {
+			throw std::runtime_error("Range property missing RangeMetaData. Do you forgot to expose it?");
+		}
+		break;
+	default:
+		if (ImGui::InputFloat(label.c_str(), value)) {
+			if (prop.onChanged) {
+				prop.onChanged();
+			}
+		}
+		break;
 	}
 }
 
