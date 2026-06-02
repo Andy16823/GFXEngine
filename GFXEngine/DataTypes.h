@@ -136,9 +136,19 @@ namespace GFXEngine {
 			glm::vec4 color;     // w component can be used for intensity
 		};
 
+		/// <summary>
+		/// Linear fog data structure, containing the color of the fog and parameters for the linear fog calculation (start distance, end distance, density, and padding).
+		/// </summary>
 		struct LinearFogData {
 			glm::vec4 color;
 			glm::vec4 fogParams; // x = start, y = end, z = density, w = padding
+		};
+
+		/// <summary>
+		/// Environment map data structure, containing parameters for the environment map shader.
+		/// </summary>
+		struct EnviromentMapData {
+			glm::vec4 parameters; // x = horizonFactor, y = horizonFogExponent, z/w = padding
 		};
 
 		enum class ReferenceState 

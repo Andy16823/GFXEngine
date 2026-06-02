@@ -40,6 +40,7 @@ void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& 
 	Graphics::GraphicResources resources;
 	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 	resources[Defintions::MATERIAL_RESOURCE] = envMap.getMaterial().getDescriptorSet(context.imageIndex);
+	resources[Defintions::ENVIRONMENT_MAP_RESOURCE] = envMap.getDescriptorSet(context.imageIndex);
 	this->getGraphicResources(resources, context.imageIndex);
 	
 	// Build render task for the enviroment map
@@ -84,7 +85,7 @@ void GFXEngine::Core::Scene3D::update(Graphics::Camera& camera, float deltaTime)
 
 void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
-	// Update the directional light's uniform buffers and descriptor sets before rendering so that they are up to date when entities build their render tasks
+	// Update scene-level resources like lights and fog before rendering
 	directionalLight.update(renderer, camera, imageIndex);
 	fog.update(renderer, camera, imageIndex);
 }

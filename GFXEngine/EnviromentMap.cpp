@@ -50,10 +50,53 @@ void EnviromentMap::init(GFXEngine::Graphics::Renderer& renderer)
 {
 	m_mesh->init(renderer);
 	m_envMaterial->init(renderer);
+
+	// Create uniform buffers and descriptor sets for each swapchain image
+	size_t swapchainImageCount = renderer.getSwapchainImageCount();
+	VkDeviceSize bufferSize = sizeof(GFXEngine::EngineTypes::EnviromentMapData);
+	m_uniformBuffers.reserve(swapchainImageCount);
+	m_descriptorSets.reserve(swapchainImageCount);
+	for (size_t i = 0; i < swapchainImageCount; i++) {
+		LibGFX::Buffer uniformBuffer = renderer.createBuffer(
+			bufferSize,
+			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+		);
+		VkDescriptorSet descriptorSet = renderer.allocateUniformBufferDescriptorSet(uniformBuffer, 0, renderer.getUniformBufferLayout());
+		m_uniformBuffers.push_back(std::move(uniformBuffer));
+		m_descriptorSets.push_back(descriptorSet);
+
+		// Update after creating the buffer to ensure it has the correct initial data
+		this->updateUniformBuffer(renderer, i);
+	}
+
+}
+
+void EnviromentMap::update(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	this->updateUniformBuffer(renderer, imageIndex);
 }
 
 void EnviromentMap::destroy(GFXEngine::Graphics::Renderer& renderer)
 {
 	m_mesh->destroy(renderer);
 	m_envMaterial->destroy(renderer);
+
+	for (auto& buffer : m_uniformBuffers) {
+		renderer.destroyBuffer(buffer);
+	}
+	m_uniformBuffers.clear();
+
+	for (auto& descriptorSet : m_descriptorSets) {
+		renderer.freeUniformBufferDescriptorSet(descriptorSet);
+	}
+	m_descriptorSets.clear();
+}
+
+void EnviromentMap::updateUniformBuffer(Renderer& renderer, uint32_t imageIndex)
+{
+	EngineTypes::EnviromentMapData envData = {
+		.parameters = glm::vec4(horizonFactor, horizonFogExponent, 0.0f, 0.0f)
+	};
+	renderer.updateBuffer(m_uniformBuffers[imageIndex], &envData, sizeof(envData));
 }

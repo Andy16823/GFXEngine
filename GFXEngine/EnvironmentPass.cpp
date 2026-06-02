@@ -9,9 +9,10 @@ using namespace GFXEngine::Graphics;
 
 VkPipelineLayout GFXEngine::Graphics::EnvironmentPass::buildLayout(Renderer& renderer) const
 {
-	std::array<VkDescriptorSetLayout, 3> descriptorSetLayouts{
+	std::array<VkDescriptorSetLayout, 4> descriptorSetLayouts{
 		renderer.getUniformBufferLayout(), // Camera
 		renderer.getCubemapSamplerLayout(), // Cubemap sampler for environment map
+		renderer.getUniformBufferLayout(), // Environment map UBO
 		renderer.getUniformBufferLayout() // Fog UBO
 	};
 
@@ -47,13 +48,20 @@ bool GFXEngine::Graphics::EnvironmentPass::bindResources(GFXEngine::Graphics::Re
 		throw std::runtime_error("EnvironmentPass requires FOG_RESOURCE");
 	}
 
+	if (!resources.contains(Defintions::ENVIRONMENT_MAP_RESOURCE))
+	{
+		throw std::runtime_error("EnvironmentPass requires ENVIRONMENT_MAP_RESOURCE");
+	}
+
 	VkDescriptorSet cameraSet = resources[Defintions::CAMERA_RESOURCE];
 	VkDescriptorSet cubemapSet = resources[Defintions::MATERIAL_RESOURCE];
+	VkDescriptorSet environmentMapSet = resources[Defintions::ENVIRONMENT_MAP_RESOURCE];
 	VkDescriptorSet fogSet = resources[Defintions::FOG_RESOURCE];
 
 	builder.addDescriptorSet(cameraSet, 0)
 		.addDescriptorSet(cubemapSet, 1)
-		.addDescriptorSet(fogSet, 2);
+		.addDescriptorSet(environmentMapSet, 2)
+		.addDescriptorSet(fogSet, 3);
 
 	return true;
 }
