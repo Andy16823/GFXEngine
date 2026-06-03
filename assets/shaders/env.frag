@@ -20,7 +20,7 @@ float calculateFogFactor(vec3 dir) {
     float fakeDistance = mix(fog.parameters.x, fog.parameters.y, horizonFactor);
     float fogRange = fog.parameters.y - fog.parameters.x;
     float fogFactor = clamp((fog.parameters.y - fakeDistance) / fogRange, 0.0, 1.0);
-    fogFactor = mix(1.0, fogFactor, fog.parameters.z);  // Apply density
+    fogFactor = mix(1.0, fogFactor, envData.parameters.z);  // Apply density
     return fogFactor;
 }
 

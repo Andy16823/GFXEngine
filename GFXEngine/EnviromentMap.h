@@ -26,6 +26,7 @@ namespace GFXEngine {
 		public:
 			float horizonFactor = 1.0f;
 			float horizonFogExponent = 1.5f;
+			float fogDensity = 0.00f;
 
 			EnviromentMap(const std::string& name, const std::filesystem::path& filePath);
 			EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths);

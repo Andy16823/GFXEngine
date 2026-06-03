@@ -102,7 +102,7 @@ void EnviromentMap::destroy(GFXEngine::Graphics::Renderer& renderer)
 void EnviromentMap::updateUniformBuffer(Renderer& renderer, uint32_t imageIndex)
 {
 	EngineTypes::EnviromentMapData envData = {
-		.parameters = glm::vec4(horizonFactor, horizonFogExponent, 0.0f, 0.0f)
+		.parameters = glm::vec4(horizonFactor, horizonFogExponent, fogDensity, 0.0f)
 	};
 	renderer.updateBuffer(m_uniformBuffers[imageIndex], &envData, sizeof(envData));
 }
