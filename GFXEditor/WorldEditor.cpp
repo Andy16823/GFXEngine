@@ -10,6 +10,7 @@
 #include "DataTypes.h"
 #include "PropertyInfo.h"
 #include "FileNameWidget.h"
+#include <filesystem>
 
 using namespace GFXEditor;
 using namespace GFXEngine;
@@ -43,6 +44,17 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 		}
 
 		ImGui::Separator();
+
+		if (ImGui::MenuItem("Create File")) {
+			if (!m_createFileDialog->isOpen()) 
+			{
+				// Show the create file dialog with a callback that creates an empty file with the specified name in the current directory
+				m_createFileDialog->showDialog("Create New File", [&](EditorDialog& dialog) {
+					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
+					std::cout << "Creating file: " << fileName << " in " << m_currentExplorerPath << std::endl;
+				});
+			}
+		}
 
 		if (ImGui::MenuItem("Create Environment")) 
 		{
@@ -472,6 +484,9 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 	{
 		m_editorCamera->updateCameraBuffers(renderer, i);
 	}
+
+	// DIALOGS
+	m_createFileDialog = std::make_unique<TextInputDialog>("Enter Filename:");
 }
 
 void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputManager& input, float deltaTime)
@@ -792,6 +807,9 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		}
 		ImGui::End();
 	}
+
+	// DIALOGS
+	m_createFileDialog->renderDialog();
 }
 
 void WorldEditor::afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
