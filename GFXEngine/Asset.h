@@ -23,6 +23,11 @@ namespace GFXEngine {
 		virtual ~Asset() = default;
 		const std::string& getUUID() const { return m_uuid; }
 		const std::string& getName() const { return m_name; }
+
+		template<typename T>
+		T* as() {
+			return dynamic_cast<T*>(this);
+		}
 	};
 
 	class GraphicsAsset : public Asset
