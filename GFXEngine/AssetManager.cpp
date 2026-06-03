@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include <stdexcept>
 #include <iostream>
+#include "Renderer.h"
 
 void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& directory, bool recursive /*= true*/)
 {
@@ -40,5 +41,14 @@ void GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath
 		auto asset = m_loaders[extension](name, filePath);
 		this->addAsset(std::move(asset));
 		std::cout << "Loaded asset '" << name << "' from file: " << filePath << std::endl;
+	}
+}
+
+void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& renderer)
+{
+	for (auto& pair : m_assets) {
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) {
+			graphicsAsset->init(renderer);
+		}
 	}
 }

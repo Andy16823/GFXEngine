@@ -8,7 +8,7 @@
 
 using namespace GFXEngine::Graphics;
 
-EnviromentMap::EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths) : Asset(name)
+EnviromentMap::EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths) : GraphicsAsset(name)
 {
 	auto [vertices, indices] = Graphics::Shapes::createSkybox();
 	m_mesh = std::make_unique<PositionMesh>();
@@ -20,7 +20,7 @@ EnviromentMap::EnviromentMap(const std::string& name, const std::vector<std::str
 	m_envMaterial->setCubemapData(std::move(cubemapData));
 }
 
-EnviromentMap::EnviromentMap(const std::string& name, const std::filesystem::path& filePath) : Asset(name)
+EnviromentMap::EnviromentMap(const std::string& name, const std::filesystem::path& filePath) : GraphicsAsset(name)
 {
 	nlohmann::json data = GFXEngine::Utils::loadJsonFromFile(filePath.string());
 	if (!data.contains("faces") || !data["faces"].is_array() || data["faces"].size() != 6) {

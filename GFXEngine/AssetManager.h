@@ -21,6 +21,8 @@ namespace GFXEngine {
 		void loadFromDirectory(const std::filesystem::path& directory, bool recursive = true);
 		void loadFromFile(const std::filesystem::path& filePath);
 
+		void initializeGraphicsAssets(Graphics::Renderer& renderer);
+
 		bool addAsset(std::unique_ptr<Asset> asset) {
 			auto name = asset->getName();
 			return m_assets.emplace(name, std::move(asset)).second;

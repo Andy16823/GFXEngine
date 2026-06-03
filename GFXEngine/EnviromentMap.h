@@ -13,7 +13,7 @@ namespace GFXEngine {
 		/// <summary>
 		/// EnviromentMap asset type
 		/// </summary>
-		class EnviromentMap : public GFXEngine::Asset
+		class EnviromentMap : public GFXEngine::GraphicsAsset
 		{
 		private:
 			std::unique_ptr<PositionMesh> m_mesh;
@@ -31,9 +31,9 @@ namespace GFXEngine {
 			EnviromentMap(const std::string& name, const std::filesystem::path& filePath);
 			EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths);
 
-			void init(GFXEngine::Graphics::Renderer& renderer);
+			void init(GFXEngine::Graphics::Renderer& renderer) override;
 			void update(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
-			void destroy(GFXEngine::Graphics::Renderer& renderer);
+			void destroy(GFXEngine::Graphics::Renderer& renderer) override;
 
 			const EnviromentMaterial& getMaterial() const { 
 				assert(m_envMaterial);
