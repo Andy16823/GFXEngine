@@ -67,7 +67,11 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 		{
 			if(!m_selectedFilePath.empty())
 			{
-				m_assetManager->loadFromFile(m_selectedFilePath);
+				auto asset = m_assetManager->loadFromFile(m_selectedFilePath);
+				if (auto graphicsAsset = asset->as<GraphicsAsset>()) {
+					graphicsAsset->init(renderer);
+					std::cout << "Loaded asset: " << asset->getName() << std::endl;
+				}
 			}
 		}
 
