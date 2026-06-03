@@ -52,3 +52,12 @@ void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& rende
 		}
 	}
 }
+
+void GFXEngine::AssetManager::destroyGraphicsAssets(Graphics::Renderer& renderer)
+{
+	for (auto& pair : m_assets) {
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) {
+			graphicsAsset->destroy(renderer);
+		}
+	}
+}
