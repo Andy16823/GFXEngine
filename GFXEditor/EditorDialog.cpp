@@ -6,7 +6,6 @@ void GFXEditor::EditorDialog::showDialog(const std::string& title, EditorDialogC
 	m_title = title;
 	m_callback = callback;
 	m_isOpen = true;
-	ImGui::OpenPopup(m_title.c_str());
 }
 
 void GFXEditor::EditorDialog::close()
@@ -19,6 +18,7 @@ void GFXEditor::EditorDialog::close()
 void GFXEditor::EditorDialog::renderDialog()
 {
 	if (m_isOpen) {
+		ImGui::OpenPopup(m_title.c_str());
 		if (ImGui::BeginPopupModal(m_title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			switch (this->renderContent())
