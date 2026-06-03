@@ -46,6 +46,12 @@ namespace GFXEditor {
 		virtual EditorDialogResult renderContent() = 0;
 
 		/// <summary>
+		/// Function to clear the dialog's results or reset its state.
+		/// Get called after the dialogs callback is executed to reset the dialog for the next time it is opened.
+		/// </summary>
+		virtual void clearResults() = 0;
+
+		/// <summary>
 		/// Shows the dialog with the specified title and callback function.
 		/// </summary>
 		/// <param name="title"></param>

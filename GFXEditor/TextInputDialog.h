@@ -12,6 +12,7 @@ namespace GFXEditor {
 		virtual ~TextInputDialog() = default;
 
 		virtual EditorDialogResult renderContent() override;
+		virtual void clearResults() override { m_inputText.clear(); }
 
 		void setInputText(const std::string& text) { m_inputText = text; }
 		const std::string& getInputText() const { return m_inputText; }

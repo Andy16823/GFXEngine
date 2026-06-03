@@ -13,6 +13,7 @@ void GFXEditor::EditorDialog::close()
 	m_title.clear();
 	m_callback = nullptr;
 	m_isOpen = false;
+	this->clearResults();
 }
 
 void GFXEditor::EditorDialog::renderDialog()
