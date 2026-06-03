@@ -24,7 +24,7 @@ void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& dir
 	}
 }
 
-void GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath)
+GFXEngine::Asset* GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath)
 {
 	if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath))
 	{
@@ -39,9 +39,9 @@ void GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath
 	{
 		// If a loader exists we assume the file is a JSON file containing the necessary data to create the asset.
 		auto asset = m_loaders[extension](name, filePath);
-		this->addAsset(std::move(asset));
-		std::cout << "Loaded asset '" << name << "' from file: " << filePath << std::endl;
+		return this->addAsset(std::move(asset));
 	}
+	return nullptr;
 }
 
 void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& renderer)
