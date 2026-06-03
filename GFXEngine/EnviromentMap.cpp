@@ -30,6 +30,7 @@ EnviromentMap::EnviromentMap(const std::string& name, const std::filesystem::pat
 	// Load optional parameters with default values
 	horizonFactor = data.value("horizonFactor", 1.0f);
 	horizonFogExponent = data.value("horizonFogExponent", 1.5f);
+	fogDensity = data.value("fogDensity", 0.0f);
 
 	// Create the mesh for the skybox
 	auto [vertices, indices] = Graphics::Shapes::createSkybox();

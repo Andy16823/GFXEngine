@@ -35,9 +35,6 @@ namespace GFXEngine {
 			void update(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void destroy(GFXEngine::Graphics::Renderer& renderer);
 
-			void setHorizonFactor(float factor) { horizonFactor = factor; }
-			void setHorizonFogExponent(float exponent) { horizonFogExponent = exponent; }
-
 			const EnviromentMaterial& getMaterial() const { 
 				assert(m_envMaterial);
 				return *m_envMaterial; 

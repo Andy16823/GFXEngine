@@ -5,7 +5,7 @@ layout(location = 0) out vec4 fragColor;
 layout(set = 1, binding = 0) uniform samplerCube skybox;
 
 layout(set = 2, binding = 0) uniform EnviromentData {
-    vec4 parameters; // x = horizonFactor, y = horizonFactorExponent, zw = padding
+    vec4 parameters; // x = horizonFactor, y = horizonFactorExponent, z = fogDensity, w = padding
 } envData;
 
 layout(set = 3, binding = 0) uniform Fog {
