@@ -39,7 +39,6 @@ namespace GFXEditor {
 		std::filesystem::path m_projectDirectory;
 		std::filesystem::path m_currentExplorerPath;
 		std::filesystem::path m_selectedFilePath;
-		bool m_showCreateDirectoryPopup = false;
 
 		// Helper Vectors
 		std::vector<GFXEngine::Core::Behavior*> m_behaviorsToRemove;
@@ -56,7 +55,6 @@ namespace GFXEditor {
 
 		// Dialogs
 		std::unique_ptr<TextInputDialog> m_createFileDialog;
-		FileNameWidget m_fileWidget;
 
 		void renderProjectExplorer(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer);
 

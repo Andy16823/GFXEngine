@@ -33,7 +33,15 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 
 		if (ImGui::MenuItem("Create Directory"))
 		{
-			m_showCreateDirectoryPopup = true;
+			if (!m_createFileDialog->isOpen())
+			{
+				// Open the file dialog to get the new directory name, then create the directory in the callback
+				m_createFileDialog->showDialog("Create New Directory", [&](EditorDialog& dialog) {
+					std::string dirName = static_cast<TextInputDialog&>(dialog).getInputText();
+					std::filesystem::path newDirPath = m_currentExplorerPath / dirName;
+					Utils::createDirectory(newDirPath.string());
+				});
+			}
 		}
 
 		if (ImGui::MenuItem("Show in Explorer"))
@@ -48,29 +56,35 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 		if (ImGui::MenuItem("Create File")) {
 			if (!m_createFileDialog->isOpen()) 
 			{
-				// Show the create file dialog with a callback that creates an empty file with the specified name in the current directory
+				// Open the file dialog to get the new file name, then create the file in the callback
 				m_createFileDialog->showDialog("Create New File", [&](EditorDialog& dialog) {
 					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
-					std::cout << "Creating file: " << fileName << " in " << m_currentExplorerPath << std::endl;
+					std::filesystem::path filePath = m_currentExplorerPath / fileName;
+					Utils::createFile(filePath.string());
 				});
 			}
 		}
 
 		if (ImGui::MenuItem("Create Environment")) 
 		{
-			m_fileWidget.show("Environment Name", [&](const std::string& fileName) {
-				nlohmann::json environment;
-				environment["faces"] = std::vector<std::string>{
-					"right.png",
-					"left.png",
-					"top.png",
-					"bottom.png",
-					"front.png",
-					"back.png"
-				};
-				GFXEngine::Utils::saveJsonToFile(environment, (m_currentExplorerPath / (fileName + ".env")).string());
-				return true;
-			});
+			if (!m_createFileDialog->isOpen())
+			{
+				// Open the file dialog to get the new environment name, then create the .env file with default content in the callback
+				m_createFileDialog->showDialog("Create New Environment", [&](EditorDialog& dialog) {
+					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
+					std::filesystem::path filePath = m_currentExplorerPath / (fileName + ".env");
+					nlohmann::json environment;
+					environment["faces"] = std::vector<std::string>{
+						"right.png",
+						"left.png",
+						"top.png",
+						"bottom.png",
+						"front.png",
+						"back.png"
+					};
+					GFXEngine::Utils::saveJsonToFile(environment, filePath.string());
+				});
+			}
 		}
 
 		ImGui::Separator();
@@ -104,40 +118,6 @@ void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFX
 				std::cout << "Selected file: " << entry.path() << std::endl;
 				m_selectedFilePath = entry.path();
 			}
-		}
-	}
-
-	m_fileWidget.render();
-
-	if (m_showCreateDirectoryPopup) {
-		ImGui::OpenPopup("CreateDirectoryPopup");
-		if (ImGui::BeginPopupModal("CreateDirectoryPopup", &m_showCreateDirectoryPopup, ImGuiWindowFlags_AlwaysAutoResize))
-		{
-			ImGui::Text("Create a new directory");
-			static char newDirectoryName[256] = "";
-			ImGui::InputText("Directory Name", newDirectoryName, sizeof(newDirectoryName));
-			if (ImGui::Button("Create Directory##create_dir_modal_btn")) {
-				std::filesystem::path newDirPath = m_currentExplorerPath / newDirectoryName;
-				if (!std::filesystem::exists(newDirPath)) {
-					try {
-						std::filesystem::create_directory(newDirPath);
-						std::cout << "Directory created: " << newDirPath << std::endl;
-					}
-					catch (const std::filesystem::filesystem_error& e) {
-						std::cerr << "Error creating directory: " << e.what() << std::endl;
-					}
-				}
-				else {
-					std::cerr << "Directory already exists: " << newDirPath << std::endl;
-				}
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel##create_dir_modal_cancel_btn")) {
-				m_showCreateDirectoryPopup = false;
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::EndPopup();
 		}
 	}
 

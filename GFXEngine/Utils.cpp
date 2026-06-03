@@ -301,6 +301,26 @@ void GFXEngine::Utils::saveJsonToFile(const nlohmann::json& jsonData, const std:
 	file.close();
 }
 
+void GFXEngine::Utils::createFile(const std::string& filename)
+{
+	std::ofstream file(filename);
+	if (!file.is_open()) {
+		throw std::runtime_error("Failed to create file: " + filename);
+	}
+	file.close();
+}
+
+void GFXEngine::Utils::createDirectory(const std::string& directoryPath)
+{
+	if (!std::filesystem::exists(directoryPath)) 
+	{
+		if (!std::filesystem::create_directory(directoryPath)) 
+		{
+			throw std::runtime_error("Failed to create directory: " + directoryPath);
+		}
+	}
+}
+
 nlohmann::json GFXEngine::Utils::loadJsonFromFile(const std::string& filename)
 {
 	// Load the JSON data from a file
