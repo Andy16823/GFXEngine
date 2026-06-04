@@ -20,13 +20,15 @@ GFXEngine::Core::InstancedModel::InstancedModel(Graphics::MeshModel* meshModel, 
 
 void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
-	// Ensure we are in a 3D scene
-	if (dynamic_cast<Scene3D*>(&scene) == nullptr) {
-		throw std::runtime_error("InstancedModel can only be initialized in a Scene3D");
-	}
-
 	// Call base entity initialization to initialize behaviors
 	Entity::init(scene, renderer);
+
+	// Ensure the mesh model reference is valid and initialized
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	if (!meshModel) {
+		throw std::runtime_error("InstancedModel initialization error: MeshModel reference is invalid");
+	}
+	assert(meshModel->isInitialized() && "MeshModel must be initialized before initializing InstancedModel");
 
 	// Create storage buffer for instance data
 	auto bufferSize = m_instanceData.size() * sizeof(EngineTypes::InstanceData);
@@ -47,6 +49,13 @@ void GFXEngine::Core::InstancedModel::init(Scene& scene, GFXEngine::Graphics::Re
 
 void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
+	// Ensure the mesh model reference is valid and initialized before building render tasks
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	if (!meshModel) {
+		throw std::runtime_error("InstancedModel render error: MeshModel reference is invalid");
+	}
+	assert(meshModel->isInitialized() && "MeshModel must be initialized before building render tasks for InstancedModel");
+
 	if (!isVisible())
 		return;
 

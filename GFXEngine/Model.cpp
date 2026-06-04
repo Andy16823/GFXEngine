@@ -15,15 +15,26 @@ GFXEngine::Core::Model::Model(Graphics::MeshModel* meshModel)
 
 void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
+	// Call base entity initialization (if any)
 	Entity::init(scene, renderer);
 
-	if (dynamic_cast<Scene3D*>(&scene) == nullptr) {
-		throw std::runtime_error("Model can only be initialized in a Scene3D");
+	// Ensure the mesh model reference is valid and initialized
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	if (!meshModel) {
+		throw std::runtime_error("Model initialization error: MeshModel reference is invalid");
 	}
+	assert(meshModel->isInitialized() && "MeshModel must be initialized before building render tasks");
 }
 
 void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
+	// Ensure the mesh model reference is valid and initialized before building render tasks
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	if (!meshModel) {
+		throw std::runtime_error("Model initialization error: MeshModel reference is invalid");
+	}
+	assert(meshModel->isInitialized() && "MeshModel must be initialized before building render tasks");
+	
 	if (!isVisible())
 		return;
 

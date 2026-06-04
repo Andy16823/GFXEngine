@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include "EngineDefinitions.h"
 #include "IGraphicsPass.h"
+#include <cassert>
 
 void GFXEngine::Core::Scene3D::renderSerial(GFXEngine::Graphics::RenderContext& context)
 {
@@ -33,6 +34,9 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 
 void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnvironmentMap& envMap)
 {
+	// Ensure the environment map is initialized before rendering
+	assert(envMap.isInitialized() && "EnvironmentMap must be initialized before rendering");
+
 	// Get the Pipeline for the render
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
 	
