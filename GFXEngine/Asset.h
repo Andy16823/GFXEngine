@@ -43,6 +43,7 @@ namespace GFXEngine {
 		virtual ~FileAsset() = default;
 		virtual void load() = 0;
 		virtual bool isLoaded() const = 0;
+		virtual void unload() = 0;
 		const std::string& getFilePath() const { return m_filePath; }
 	};
 	

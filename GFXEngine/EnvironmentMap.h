@@ -41,6 +41,7 @@ namespace GFXEngine {
 
 			// FileAsset interface implementation
 			void load() override;
+			void unload() override;
 			bool isLoaded() const override;
 
 			// Own member functions

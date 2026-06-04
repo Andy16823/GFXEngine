@@ -131,3 +131,14 @@ bool EnvironmentMap::isLoaded() const
 {
 	return m_loaded;
 }
+
+void EnvironmentMap::unload()
+{
+	assert(!m_initialized && "Cannot unload EnvironmentMap while it is still initialized. Please destroy it first.");
+	if (m_loaded)
+	{
+		m_mesh.reset();
+		m_envMaterial.reset();
+		m_loaded = false;
+	}
+}

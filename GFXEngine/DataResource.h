@@ -18,6 +18,7 @@ namespace GFXEngine {
 			nlohmann::json data;
 
 			void load() override;
+			void unload() override;
 			bool isLoaded() const override { return m_loaded; }
 
 			bool hasProperty(const std::string& propertyName) const;

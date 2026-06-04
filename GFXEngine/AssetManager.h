@@ -43,6 +43,12 @@ namespace GFXEngine {
 		Asset* loadFromFile(const std::filesystem::path& filePath, bool lazy = false);
 
 		/// <summary>
+		/// Unload all assets that implement the FileAsset interface. 
+		/// This will free any resources associated with the loaded files, but will not remove the assets from the manager.
+		/// </summary>
+		void unloadAssets();
+
+		/// <summary>
 		/// Initialize graphics resources for all assets that implement the GraphicsAsset interface. 
 		/// </summary>
 		/// <param name="renderer"></param>

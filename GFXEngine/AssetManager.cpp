@@ -43,11 +43,26 @@ GFXEngine::Asset* GFXEngine::AssetManager::loadFromFile(const std::filesystem::p
 	return nullptr;
 }
 
+void GFXEngine::AssetManager::unloadAssets()
+{
+	for (auto& pair : m_assets) {
+		if (auto fileAsset = dynamic_cast<FileAsset*>(pair.second.get())) {
+			if (fileAsset->isLoaded()) {
+				fileAsset->unload();
+			}
+		}
+	}
+}
+
 void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& renderer)
 {
 	for (auto& pair : m_assets) {
-		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) {
-			graphicsAsset->init(renderer);
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) 
+		{
+			if (!graphicsAsset->isInitialized()) 
+			{
+				graphicsAsset->init(renderer);
+			}
 		}
 	}
 }

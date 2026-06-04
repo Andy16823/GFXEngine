@@ -56,3 +56,11 @@ bool DataResource::hasProperty(const std::string& propertyName) const
 
 	return data.contains(propertyName);
 }
+
+void DataResource::unload()
+{
+	if (m_loaded) {
+		data.clear();
+		m_loaded = false;
+	}
+}

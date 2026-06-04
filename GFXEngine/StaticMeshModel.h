@@ -28,6 +28,7 @@ namespace GFXEngine {
 
 			// FileAsset interface implementation
 			void load() override;
+			void unload() override;
 			bool isLoaded() const override { return m_loaded; }
 
 			const Mesh3D& getMesh(size_t index) const override { return m_meshes.at(index); }

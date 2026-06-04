@@ -53,3 +53,14 @@ void GFXEngine::Graphics::StaticMeshModel::load()
 
 	m_loaded = true;
 }
+
+void GFXEngine::Graphics::StaticMeshModel::unload()
+{
+	assert(!m_initialized && "Cannot unload StaticMeshModel while it is still initialized");
+	if (m_loaded)
+	{
+		m_meshes.clear();
+		m_materials.clear();
+		m_loaded = false;
+	}
+}
