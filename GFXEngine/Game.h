@@ -9,6 +9,7 @@
 #include "EntityFactory.h"
 #include "InputManager.h"
 #include "EventBus.h"
+#include "BackgroundTask.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -62,9 +63,12 @@ namespace GFXEngine {
 			void setTargetFPS(float fps) { m_targetFPS = fps; }
 			void setResizable(bool resizable) { m_resizable = resizable; }
 
+			void StartBackgroundTask(std::unique_ptr<BackgroundTask> task, TaskCompletionCallback completionCallback);
+
 		private:
 			GLFWwindow* m_window = nullptr;
 			std::unique_ptr<Graphics::Renderer> m_renderer;
+			BackgroundTaskManager m_backgroundTaskManager;
 			glm::ivec2 m_windowSize = { 800, 600 };
 			float m_targetFPS = 120.0f;
 			float m_lastFrameTime = 0.0f;

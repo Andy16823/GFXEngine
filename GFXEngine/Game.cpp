@@ -178,6 +178,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		m_renderer->endFrame(imageIndex);
 		m_renderer->submitFrame(imageIndex);
 		m_renderer->presentFrame(imageIndex);
+		
+		// Update background tasks
+		m_backgroundTaskManager.update();
 
 		// Call user-defined after render
 		this->afterRender(*m_renderer, imageIndex);
@@ -203,4 +206,10 @@ glm::vec2 GFXEngine::Core::Game::getCursorPos() const
 	double x, y;
 	glfwGetCursorPos(m_window, &x, &y);
 	return { static_cast<float>(x), static_cast<float>(y) };
+}
+
+void GFXEngine::Core::Game::StartBackgroundTask(std::unique_ptr<BackgroundTask> task, TaskCompletionCallback completionCallback)
+{
+	auto taskPtr = m_backgroundTaskManager.addTask(std::move(task));
+	taskPtr->start(completionCallback);
 }
