@@ -61,16 +61,16 @@ namespace GFXEditor {
 		void updateRenderTextureSize(GFXEngine::Graphics::Renderer& renderer, float width, float height, GFXEngine::Core::UIContext* ui);
 		void placeModel(GFXEngine::Graphics::Renderer& renderer, const glm::vec3& position, GFXEngine::Graphics::StaticMeshModel* model);
 		void renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine::Graphics::Renderer& renderer);
-		void renderProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop);
-		void renderStringProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, std::string* value);
-		void renderIntProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, int* value);
-		void renderBoolProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, bool* value);
-		void renderFloatProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, float* value);
-		void renderVector2Property(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, glm::vec2* value);
-		void renderVector3Property(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, glm::vec3* value);
-		void renderVector4Property(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, glm::vec4* value);
-		void renderEntityProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::EntityReference* value);
-		void renderAssetProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::AssetReference* value);
+		void renderProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop);
+		void renderStringProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, std::string* value);
+		void renderIntProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, int* value);
+		void renderBoolProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, bool* value);
+		void renderFloatProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, float* value);
+		void renderVector2Property(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, glm::vec2* value);
+		void renderVector3Property(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, glm::vec3* value);
+		void renderVector4Property(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, glm::vec4* value);
+		void renderEntityProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::EntityReference* value);
+		void renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::AssetReference* value);
 
 		void markBehaviorForRemoval(GFXEngine::Core::Behavior* behavior);
 		void cleanupRemovedBehaviors(GFXEngine::Graphics::Renderer& renderer);

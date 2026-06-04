@@ -147,6 +147,23 @@ void WorldEditor::updateRenderTextureSize(GFXEngine::Graphics::Renderer& rendere
 
 void WorldEditor::placeModel(GFXEngine::Graphics::Renderer& renderer, const glm::vec3& position, GFXEngine::Graphics::StaticMeshModel* model)
 {
+	// Check if the model is valid before trying to place it in the scene
+	if (model == nullptr)
+	{
+		std::cerr << "Error: Model is null, cannot place in scene." << std::endl;
+		return;
+	}
+
+	// Ensure the model is loaded and initialized before creating an entity with it
+	if (!model->isLoaded()) {
+		model->load();
+	}
+
+	// The model should be initialized after loading.
+	if (!model->isInitialized()) {
+		model->init(renderer);
+	}
+
 	auto entity = std::make_unique<GFXEngine::Core::Model>(model);
 	entity->setName(model->getName());
 	entity->setPosition(position);
@@ -165,7 +182,7 @@ void WorldEditor::renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine:
 		for (const auto& prop : properties)
 		{
 			const std::string label = UIContext::createLabelID(prop.name, behavior.getUUID());
-			this->renderProperty(label, prop);
+			this->renderProperty(label, renderer, prop);
 		}
 		if (ImGui::Button(GFXEngine::Core::UIContext::createLabelID("Remove Behavior", behavior.getUUID()).c_str())) {
 			this->markBehaviorForRemoval(&behavior);
@@ -173,48 +190,48 @@ void WorldEditor::renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine:
 	}
 }
 
-void WorldEditor::renderProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop)
+void WorldEditor::renderProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop)
 {
 	// std::get_if returns a pointer to the value stored in the variant.
 	// Since the variant stores a std::string*,
 	// get_if returns a std::string**.
 	if (auto* dataPtr = std::get_if<std::string*>(&prop.data)) {
-		this->renderStringProperty(label, prop, *dataPtr);
+		this->renderStringProperty(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<int*>(&prop.data)) {
-		this->renderIntProperty(label, prop, *dataPtr);
+		this->renderIntProperty(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<bool*>(&prop.data)) {
-		this->renderBoolProperty(label, prop, *dataPtr);
+		this->renderBoolProperty(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<float*>(&prop.data)) {
-		this->renderFloatProperty(label, prop, *dataPtr);
+		this->renderFloatProperty(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<glm::vec2*>(&prop.data)) {
-		this->renderVector2Property(label, prop, *dataPtr);
+		this->renderVector2Property(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<glm::vec3*>(&prop.data)) {
-		this->renderVector3Property(label, prop, *dataPtr);
+		this->renderVector3Property(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<glm::vec4*>(&prop.data)) {
-		this->renderVector4Property(label, prop, *dataPtr);
+		this->renderVector4Property(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<glm::quat*>(&prop.data)) {
 		// Quaternions can be represented as Vector4 in the UI for editing purposes
-		this->renderVector4Property(label, prop, reinterpret_cast<glm::vec4*>(*dataPtr));
+		this->renderVector4Property(label, renderer, prop, reinterpret_cast<glm::vec4*>(*dataPtr));
 	}
 	else if (auto* dataPtr = std::get_if<GFXEngine::EngineTypes::EntityReference*>(&prop.data)) {
-		this->renderEntityProperty(label, prop, *dataPtr);
+		this->renderEntityProperty(label, renderer, prop, *dataPtr);
 	}
 	else if (auto* dataPtr = std::get_if<GFXEngine::EngineTypes::AssetReference*>(&prop.data)) {
-		this->renderAssetProperty(label, prop, *dataPtr);
+		this->renderAssetProperty(label, renderer, prop, *dataPtr);
 	}
 	else {
 		ImGui::Text("Unsupported property type");
 	}
 }
 
-void WorldEditor::renderStringProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, std::string* value)
+void WorldEditor::renderStringProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, std::string* value)
 {
 	auto data = value;
 	switch (prop.hint)
@@ -262,7 +279,7 @@ void WorldEditor::renderStringProperty(const std::string& label, const GFXEngine
 	}
 }
 
-void WorldEditor::renderIntProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, int* value)
+void WorldEditor::renderIntProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, int* value)
 {
 	if (ImGui::InputInt(label.c_str(), value)) {
 		if (prop.onChanged) {
@@ -271,7 +288,7 @@ void WorldEditor::renderIntProperty(const std::string& label, const GFXEngine::C
 	}
 }
 
-void WorldEditor::renderBoolProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, bool* value)
+void WorldEditor::renderBoolProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, bool* value)
 {
 	if (ImGui::Checkbox(label.c_str(), value)) {
 		if (prop.onChanged) {
@@ -280,7 +297,7 @@ void WorldEditor::renderBoolProperty(const std::string& label, const GFXEngine::
 	}
 }
 
-void WorldEditor::renderFloatProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, float* value)
+void WorldEditor::renderFloatProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, float* value)
 {
 	switch (prop.hint)
 	{	
@@ -308,7 +325,7 @@ void WorldEditor::renderFloatProperty(const std::string& label, const GFXEngine:
 	}
 }
 
-void WorldEditor::renderVector2Property(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, glm::vec2* value)
+void WorldEditor::renderVector2Property(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, glm::vec2* value)
 {
 	if (ImGui::InputFloat2(label.c_str(), reinterpret_cast<float*>(value))) {
 		if (prop.onChanged) {
@@ -317,7 +334,7 @@ void WorldEditor::renderVector2Property(const std::string& label, const GFXEngin
 	}
 }
 
-void WorldEditor::renderVector3Property(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, glm::vec3* value)
+void WorldEditor::renderVector3Property(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, glm::vec3* value)
 {
 	switch (prop.hint)
 	{
@@ -340,7 +357,7 @@ void WorldEditor::renderVector3Property(const std::string& label, const GFXEngin
 	}
 }
 
-void WorldEditor::renderVector4Property(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, glm::vec4* value)
+void WorldEditor::renderVector4Property(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, glm::vec4* value)
 {
 	switch (prop.hint)
 	{
@@ -363,7 +380,7 @@ void WorldEditor::renderVector4Property(const std::string& label, const GFXEngin
 	}
 }
 
-void WorldEditor::renderEntityProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::EntityReference* ref)
+void WorldEditor::renderEntityProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::EntityReference* ref)
 {
 	std::string currentName = ref->isResolved() ? ref->getEntity().getName() : "None";
 
@@ -392,7 +409,7 @@ void WorldEditor::renderEntityProperty(const std::string& label, const GFXEngine
 	}
 }
 
-void WorldEditor::renderAssetProperty(const std::string& label, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::AssetReference* value)
+void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::AssetReference* value)
 {
 	const auto asset = static_cast<GFXEngine::Asset*>(value->asset);
 	if (ImGui::BeginCombo(label.c_str(), asset ? asset->getName().c_str() : "None"))
@@ -403,6 +420,12 @@ void WorldEditor::renderAssetProperty(const std::string& label, const GFXEngine:
 			m_assetManager->forEachAssetOfType<GFXEngine::Graphics::EnvironmentMap>([&](GFXEngine::Graphics::EnvironmentMap* envMap) {
 				if (ImGui::Selectable(envMap->getName().c_str()))
 				{
+					if (!envMap->isLoaded()) {
+						envMap->load();
+					}
+					if (!envMap->isInitialized()) {
+						envMap->init(renderer);
+					}
 					value->set(envMap);
 					if (prop.onChanged) {
 						prop.onChanged();
@@ -691,7 +714,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	for (const auto& prop : sceneProps)
 	{
 		const std::string label = UIContext::createLabelID(prop.name, "SCENE");
-		this->renderProperty(label, prop);
+		this->renderProperty(label, renderer, prop);
 	}
 
 	UIContext::createButton("Save Scene", [&]() {
@@ -753,7 +776,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		auto props = m_selectedEntity->getProperties();
 		for (const auto& prop : props) {
 			const std::string label = UIContext::createLabelID(prop.name, m_selectedEntity->getUUID());
-			this->renderProperty(label, prop);
+			this->renderProperty(label, renderer, prop);
 		}
 		m_selectedEntity->foreachBehavior([&](GFXEngine::Core::Behavior* behavior) {
 			this->renderBehavior(*behavior, renderer);
