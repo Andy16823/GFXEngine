@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Asset.h"
 #include "PositionMesh.h"
-#include "EnviromentMaterial.h"
+#include "EnvironmentMaterial.h"
 #include <memory>
 #include <cassert>
 #include <filesystem>
@@ -11,31 +11,44 @@ namespace GFXEngine {
 	namespace Graphics {
 
 		/// <summary>
-		/// EnviromentMap asset type
+		/// EnvironmentMap asset type
 		/// </summary>
-		class EnviromentMap : public GFXEngine::GraphicsAsset
+		class EnvironmentMap : public Asset, public GraphicsAsset, public FileAsset
 		{
 		private:
 			std::unique_ptr<PositionMesh> m_mesh;
-			std::unique_ptr<EnviromentMaterial> m_envMaterial;
+			std::unique_ptr<EnvironmentMaterial> m_envMaterial;
 			std::vector<LibGFX::Buffer> m_uniformBuffers;
 			std::vector<VkDescriptorSet> m_descriptorSets;
+			bool m_initialized = false;
+			bool m_loaded = false;
+			std::string m_filePath;
 
 			void updateUniformBuffer(Renderer& renderer, uint32_t imageIndex);
 
 		public:
+			// Configurable parameters for the environment map
 			float horizonFactor = 1.0f;
 			float horizonFogExponent = 1.5f;
 			float fogDensity = 0.00f;
 
-			EnviromentMap(const std::string& name, const std::filesystem::path& filePath);
-			EnviromentMap(const std::string& name, const std::vector<std::string>& faceFilepaths);
+			// Constructors
+			EnvironmentMap(const std::string& name) : Asset(name) {}
 
+			// GraphicsAsset interface implementation
 			void init(GFXEngine::Graphics::Renderer& renderer) override;
-			void update(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 			void destroy(GFXEngine::Graphics::Renderer& renderer) override;
+			bool isInitialized() const override;
 
-			const EnviromentMaterial& getMaterial() const { 
+			// FileAsset interface implementation
+			void load(const std::string& filePath) override;
+			bool isLoaded() const override;
+			const std::string& getFilePath() const override;
+
+			// Own member functions
+			void update(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+			
+			const EnvironmentMaterial& getMaterial() const { 
 				assert(m_envMaterial);
 				return *m_envMaterial; 
 			}

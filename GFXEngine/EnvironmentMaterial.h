@@ -5,7 +5,7 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class EnviromentMaterial : public Material
+		class EnvironmentMaterial : public Material
 		{
 		private:
 			LibGFX::CubemapData m_cubemapData;

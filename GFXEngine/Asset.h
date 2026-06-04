@@ -30,11 +30,28 @@ namespace GFXEngine {
 		}
 	};
 
-	class GraphicsAsset : public Asset
+	/// <summary>
+	/// FileAsset interface represents that the asset can be loaded from a file.
+	/// </summary>
+	class FileAsset
 	{
 	public:
-		GraphicsAsset(const std::string& name) : Asset(name) {}
+		virtual ~FileAsset() = default;
+		virtual void load(const std::string& filePath) = 0;
+		virtual bool isLoaded() const = 0;
+		virtual const std::string& getFilePath() const = 0;
+	};
+	
+	/// <summary>
+	/// GraphicsAsset interface represents that the asset has GPU resources that need to be initialized and destroyed with the renderer.
+	/// </summary>
+	class GraphicsAsset
+	{
+	public:
+		virtual ~GraphicsAsset() = default;
+
 		virtual void init(Graphics::Renderer& renderer) = 0;
 		virtual void destroy(Graphics::Renderer& renderer) = 0;
+		virtual bool isInitialized() const = 0;
 	};
 }

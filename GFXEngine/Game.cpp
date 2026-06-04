@@ -6,7 +6,7 @@
 #include "InstanceHandle.h"
 #include "Sprite.h"
 #include "InputManager.h"
-#include "EnviromentMap.h"
+#include "EnvironmentMap.h"
 #include "StaticMeshModel.h"
 #include "DataResource.h"
 
@@ -35,23 +35,33 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 
 	// Builtin asset loaders
 	assetManager->registerLoader(".env", [](const std::string& name, const std::filesystem::path& filePath) {
-		return std::make_unique<Graphics::EnviromentMap>(name, filePath);
+		auto envMap = std::make_unique<Graphics::EnvironmentMap>(name);
+		envMap->load(filePath.string());
+		return envMap;
 		});
 
 	assetManager->registerLoader(".gltf", [](const std::string& name, const std::filesystem::path& filePath) {
-		return std::make_unique<Graphics::StaticMeshModel>(name, filePath.string(), Graphics::MaterialType::PBR);
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name);
+		model->load(filePath.string());
+		return model;
 		});
 
 	assetManager->registerLoader(".fbx", [](const std::string& name, const std::filesystem::path& filePath) {
-		return std::make_unique<Graphics::StaticMeshModel>(name, filePath.string(), Graphics::MaterialType::PBR);
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name);
+		model->load(filePath.string());
+		return model;
 		});
 
 	assetManager->registerLoader(".obj", [](const std::string& name, const std::filesystem::path& filePath) {
-		return std::make_unique<Graphics::StaticMeshModel>(name, filePath.string(), Graphics::MaterialType::PBR);
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name);
+		model->load(filePath.string());
+		return model;
 		});
 
 	assetManager->registerLoader(".json", [](const std::string& name, const std::filesystem::path& filePath) {
-		return std::make_unique<Core::DataResource>(name, filePath.string());
+		auto dataResource = std::make_unique<DataResource>(name);
+		dataResource->load(filePath.string());
+		return dataResource;
 		});
 
 	// Input callback

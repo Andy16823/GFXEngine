@@ -397,10 +397,10 @@ void WorldEditor::renderAssetProperty(const std::string& label, const GFXEngine:
 	const auto asset = static_cast<GFXEngine::Asset*>(value->asset);
 	if (ImGui::BeginCombo(label.c_str(), asset ? asset->getName().c_str() : "None"))
 	{
-		// Handle EnviromentMap assets
-		if (value->isTypeOf<GFXEngine::Graphics::EnviromentMap>())
+		// Handle EnvironmentMap assets
+		if (value->isTypeOf<GFXEngine::Graphics::EnvironmentMap>())
 		{
-			m_assetManager->forEachAssetOfType<GFXEngine::Graphics::EnviromentMap>([&](GFXEngine::Graphics::EnviromentMap* envMap) {
+			m_assetManager->forEachAssetOfType<GFXEngine::Graphics::EnvironmentMap>([&](GFXEngine::Graphics::EnvironmentMap* envMap) {
 				if (ImGui::Selectable(envMap->getName().c_str()))
 				{
 					value->set(envMap);

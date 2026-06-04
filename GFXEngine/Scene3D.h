@@ -2,7 +2,7 @@
 #include <vector>
 #include "Entity.h"
 #include <span>
-#include "EnviromentMap.h"
+#include "EnvironmentMap.h"
 #include "DirectionalLight.h"
 #include "Fog.h"
 #include "DataTypes.h"
@@ -20,13 +20,13 @@ namespace GFXEngine {
 		{
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
-			EngineTypes::AssetReference m_enviromentMapRef;
+			EngineTypes::AssetReference m_environmentMapRef;
 			GFXEngine::Graphics::RenderQueue m_renderQueue;
 			bool m_useParallelRendering = false;
 
 			void renderSerial(GFXEngine::Graphics::RenderContext& context);
 			void renderParallel(GFXEngine::Graphics::RenderContext& context);
-			void renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap);
+			void renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnvironmentMap& envMap);
 		public:
 			Graphics::DirectionalLight directionalLight;
 			Graphics::Fog fog;
@@ -145,8 +145,8 @@ namespace GFXEngine {
 				m_entities.clear();
 			}
 
-			void setEnviromentMap(Graphics::EnviromentMap* enviromentMap) {
-				m_enviromentMapRef.set(enviromentMap);
+			void setEnvironmentMap(Graphics::EnvironmentMap* environmentMap) {
+				m_environmentMapRef.set(environmentMap);
 			}
 		};
 	}

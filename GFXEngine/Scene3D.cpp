@@ -31,7 +31,7 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 	}
 }
 
-void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnviromentMap& envMap)
+void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnvironmentMap& envMap)
 {
 	// Get the Pipeline for the render
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
@@ -116,8 +116,8 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		renderSerial(context);
 	}
 
-	// Renders an enviorment map if exist
-	if (const auto* envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>()) 
+	// Renders an environment map if exist
+	if (const auto* envMap = m_environmentMapRef.get<Graphics::EnvironmentMap>()) 
 	{
 		this->renderEnvMap(context, *envMap);
 	}
@@ -185,8 +185,8 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 		});
 
 	properties.push_back({
-		.name = "Enviroment Map",
-		.data = &m_enviromentMapRef,
+		.name = "Environment Map",
+		.data = &m_environmentMapRef,
 		.hint = PropertyHint::Asset,
 		});
 
@@ -225,9 +225,9 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 	nlohmann::json data;
 	data["directionalLight"] = directionalLight.serialize();
 	data["fog"] = fog.serialize();
-	if (m_enviromentMapRef.isTypeOf<Graphics::EnviromentMap>()) {
-		auto envMap = m_enviromentMapRef.get<Graphics::EnviromentMap>();
-		data["enviromentMap"] = envMap ? envMap->getName() : "";
+	if (m_environmentMapRef.isTypeOf<Graphics::EnvironmentMap>()) {
+		auto envMap = m_environmentMapRef.get<Graphics::EnvironmentMap>();
+		data["environmentMap"] = envMap ? envMap->getName() : "";
 	}
 	
 	for (const auto& entity : m_entities) {
@@ -253,13 +253,13 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		fog.deserialize(data["fog"], context);
 	}
 
-	if (data.contains("enviromentMap")) {
-		std::string envMapName = data["enviromentMap"].get<std::string>();
-		auto envmap = context.assets.get<GFXEngine::Graphics::EnviromentMap>(envMapName);
+	if (data.contains("environmentMap")) {
+		std::string envMapName = data["environmentMap"].get<std::string>();
+		auto envmap = context.assets.get<GFXEngine::Graphics::EnvironmentMap>(envMapName);
 		if (!envmap) {
-			throw std::runtime_error("Failed to find enviroment map asset with name: " + envMapName);
+			throw std::runtime_error("Failed to find environment map asset with name: " + envMapName);
 		}
-		m_enviromentMapRef.set(envmap);
+		m_environmentMapRef.set(envmap);
 	}
 
 	auto entities = data["entities"];

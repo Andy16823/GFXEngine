@@ -16,10 +16,10 @@ namespace GFXEngine {
 		/// <summary>
 		/// Abstract base class representing a 3D model composed of one or more meshes and materials.
 		/// </summary>
-		class MeshModel : public GraphicsAsset {
+		class MeshModel : public Asset, public GraphicsAsset, public FileAsset {
 		public:
 			MeshModel(const std::string& name)
-				: GraphicsAsset(name) {}
+				: Asset(name) {}
 			virtual ~MeshModel() = default;
 
 			MeshModel(const MeshModel&) = delete;

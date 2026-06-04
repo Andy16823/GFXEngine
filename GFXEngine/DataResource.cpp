@@ -1,16 +1,21 @@
 #include "DataResource.h"
 #include "Utils.h"
 #include <span>
+#include <cassert>
 
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
 
-GFXEngine::Core::DataResource::DataResource(const std::string& name, const std::string& path) : Asset(name)
+void DataResource::load(const std::string& filePath)
 {
-	if (!Utils::fileExists(path)) {
-		throw std::runtime_error("DataResource error: File '" + path + "' does not exist");
+	assert(!m_loaded && "DataResource is already loaded");
+
+	if (!Utils::fileExists(filePath)) {
+		throw std::runtime_error("DataResource error: File '" + filePath + "' does not exist");
 	}
-	data = GFXEngine::Utils::loadJsonFromFile(path);
+	data = GFXEngine::Utils::loadJsonFromFile(filePath);
+	m_filePath = filePath;
+	m_loaded = true;
 }
 
 const nlohmann::json* DataResource::findProperty(std::initializer_list<std::string> path) const
@@ -20,6 +25,8 @@ const nlohmann::json* DataResource::findProperty(std::initializer_list<std::stri
 
 const nlohmann::json* DataResource::findProperty(std::span<const std::string> path) const
 {
+	assert(m_loaded && "DataResource must be loaded before accessing properties");
+
 	const nlohmann::json* current = &data;
 	for (const auto& property : path) {
 		if (!current->contains(property)) {
@@ -32,6 +39,8 @@ const nlohmann::json* DataResource::findProperty(std::span<const std::string> pa
 
 bool DataResource::hasProperty(std::span<std::string> propertyPath) const
 {
+	assert(m_loaded && "DataResource must be loaded before checking properties");
+
 	const nlohmann::json* current = &data;
 	for (const auto& property : propertyPath) {
 		if (!current->contains(property)) {
@@ -44,5 +53,7 @@ bool DataResource::hasProperty(std::span<std::string> propertyPath) const
 
 bool DataResource::hasProperty(const std::string& propertyName) const
 {
+	assert(m_loaded && "DataResource must be loaded before checking properties");
+
 	return data.contains(propertyName);
 }
