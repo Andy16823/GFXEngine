@@ -4,19 +4,24 @@
 
 void GFXEngine::Graphics::StaticMeshModel::init(Renderer& renderer)
 {
-	assert(m_loaded && "StaticMeshModel must be loaded before initialization");
-	assert(!m_initialized && "StaticMeshModel is already initialized");
+	if (m_loaded)
+	{
+		// Ensure we don't initialize more than once without destroying first
+		if (m_initialized) {
+			return;
+		}
 
-	// Initialize materials
-	for (auto& material : m_materials) {
-		material->init(renderer);
-	}
+		// Initialize materials
+		for (auto& material : m_materials) {
+			material->init(renderer);
+		}
 
-	// Initialize meshes
-	for (auto& mesh : m_meshes) {
-		mesh.init(renderer);
+		// Initialize meshes
+		for (auto& mesh : m_meshes) {
+			mesh.init(renderer);
+		}
+		m_initialized = true;
 	}
-	m_initialized = true;
 }
 
 void GFXEngine::Graphics::StaticMeshModel::destroy(Renderer& renderer)
