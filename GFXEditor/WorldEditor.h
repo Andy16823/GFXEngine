@@ -13,6 +13,7 @@
 #include "TextInputDialog.h"
 #include <memory>
 #include <string>
+#include "BackgroundTask.h"
 
 namespace GFXEditor {
 
@@ -39,6 +40,9 @@ namespace GFXEditor {
 		std::filesystem::path m_projectDirectory;
 		std::filesystem::path m_currentExplorerPath;
 		std::filesystem::path m_selectedFilePath;
+
+		// Background task manager for handling asynchronous tasks like asset loading
+		GFXEngine::BackgroundTaskManager m_backgroundTaskManager;
 
 		// Helper Vectors
 		std::vector<GFXEngine::Core::Behavior*> m_behaviorsToRemove;

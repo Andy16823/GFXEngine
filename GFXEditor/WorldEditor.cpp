@@ -156,7 +156,14 @@ void WorldEditor::placeModel(GFXEngine::Graphics::Renderer& renderer, const glm:
 
 	// Ensure the model is loaded and initialized before creating an entity with it
 	if (!model->isLoaded()) {
-		model->load();
+		auto loadTask = std::make_unique<GFXEngine::InlineTask>([model]() {
+			model->load();
+		});
+		auto task = m_backgroundTaskManager.addTask(std::move(loadTask));
+		task->start([this, model, &renderer, position](GFXEngine::BackgroundTask& task) {
+			this->placeModel(renderer, position, model);
+		});
+		return;
 	}
 
 	// The model should be initialized after loading.
@@ -818,6 +825,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 void WorldEditor::afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
 	this->cleanupRemovedBehaviors(renderer);
+	m_backgroundTaskManager.update();
 }
 
 void WorldEditor::handleInput(GLFWwindow* window, int key, int mods, int action)
