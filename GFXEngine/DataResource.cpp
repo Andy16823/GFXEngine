@@ -6,15 +6,14 @@
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
 
-void DataResource::load(const std::string& filePath)
+void DataResource::load()
 {
 	assert(!m_loaded && "DataResource is already loaded");
 
-	if (!Utils::fileExists(filePath)) {
-		throw std::runtime_error("DataResource error: File '" + filePath + "' does not exist");
+	if (!Utils::fileExists(getFilePath())) {
+		throw std::runtime_error("DataResource error: File '" + getFilePath() + "' does not exist");
 	}
-	data = GFXEngine::Utils::loadJsonFromFile(filePath);
-	m_filePath = filePath;
+	data = GFXEngine::Utils::loadJsonFromFile(getFilePath());
 	m_loaded = true;
 }
 

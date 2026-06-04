@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Renderer.h"
 
-void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& directory, bool recursive /*= true*/)
+void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& directory, bool recursive /*= true*/, bool lazy /*= false*/)
 {
 	if (!std::filesystem::exists(directory) || !std::filesystem::is_directory(directory)) 
 	{
@@ -15,16 +15,16 @@ void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& dir
 	{
 		if (entry.is_directory() && recursive)
 		{
-			loadFromDirectory(entry.path(), recursive);
+			loadFromDirectory(entry.path(), recursive, lazy);
 		}
 		else if (entry.is_regular_file())
 		{
-			this->loadFromFile(entry.path());
+			this->loadFromFile(entry.path(), lazy);
 		}
 	}
 }
 
-GFXEngine::Asset* GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath)
+GFXEngine::Asset* GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath, bool lazy /*= false*/)
 {
 	if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath))
 	{
@@ -37,7 +37,7 @@ GFXEngine::Asset* GFXEngine::AssetManager::loadFromFile(const std::filesystem::p
 
 	if (m_loaders.contains(extension))
 	{
-		auto asset = m_loaders[extension](name, filePath);
+		auto asset = m_loaders[extension](name, filePath, lazy);
 		return this->addAsset(std::move(asset));
 	}
 	return nullptr;

@@ -35,11 +35,15 @@ namespace GFXEngine {
 	/// </summary>
 	class FileAsset
 	{
+	private:
+		std::string m_filePath;
+
 	public:
+		FileAsset(const std::string& filePath) : m_filePath(filePath) {}
 		virtual ~FileAsset() = default;
-		virtual void load(const std::string& filePath) = 0;
+		virtual void load() = 0;
 		virtual bool isLoaded() const = 0;
-		virtual const std::string& getFilePath() const = 0;
+		const std::string& getFilePath() const { return m_filePath; }
 	};
 	
 	/// <summary>

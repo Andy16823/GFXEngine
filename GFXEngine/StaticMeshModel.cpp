@@ -36,16 +36,15 @@ void GFXEngine::Graphics::StaticMeshModel::destroy(Renderer& renderer)
 	}
 }
 
-void GFXEngine::Graphics::StaticMeshModel::load(const std::string& filePath)
+void GFXEngine::Graphics::StaticMeshModel::load()
 {
 	assert(!m_loaded && "StaticMeshModel is already loaded");
 
-	m_meshes = GFXEngine::Utils::loadMeshesFromFile(filePath);
-	auto materials = GFXEngine::Utils::loadPBRMaterialsFromFile(filePath);
+	m_meshes = GFXEngine::Utils::loadMeshesFromFile(getFilePath());
+	auto materials = GFXEngine::Utils::loadPBRMaterialsFromFile(getFilePath());
 	for (auto& material : materials) {
 		m_materials.push_back(std::make_unique<PBRMaterial>(std::move(material)));
 	}
 
-	m_filePath = filePath;
 	m_loaded = true;
 }

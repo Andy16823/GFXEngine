@@ -34,33 +34,43 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	GFXEngine::RuntimeContext::get().setEventBus(eventBus.get());
 
 	// Builtin asset loaders
-	assetManager->registerLoader(".env", [](const std::string& name, const std::filesystem::path& filePath) {
-		auto envMap = std::make_unique<Graphics::EnvironmentMap>(name);
-		envMap->load(filePath.string());
+	assetManager->registerLoader(".env", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto envMap = std::make_unique<Graphics::EnvironmentMap>(name, filePath.string());
+		if (!lazy) {
+			envMap->load();
+		}
 		return envMap;
 		});
 
-	assetManager->registerLoader(".gltf", [](const std::string& name, const std::filesystem::path& filePath) {
-		auto model = std::make_unique<Graphics::StaticMeshModel>(name);
-		model->load(filePath.string());
+	assetManager->registerLoader(".gltf", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name, filePath.string());
+		if (!lazy) {
+			model->load();
+		}
 		return model;
 		});
 
-	assetManager->registerLoader(".fbx", [](const std::string& name, const std::filesystem::path& filePath) {
-		auto model = std::make_unique<Graphics::StaticMeshModel>(name);
-		model->load(filePath.string());
+	assetManager->registerLoader(".fbx", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name, filePath.string());
+		if (!lazy) {
+			model->load();
+		}
 		return model;
 		});
 
-	assetManager->registerLoader(".obj", [](const std::string& name, const std::filesystem::path& filePath) {
-		auto model = std::make_unique<Graphics::StaticMeshModel>(name);
-		model->load(filePath.string());
+	assetManager->registerLoader(".obj", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name, filePath.string());
+		if (!lazy) {
+			model->load();
+		}
 		return model;
 		});
 
-	assetManager->registerLoader(".json", [](const std::string& name, const std::filesystem::path& filePath) {
-		auto dataResource = std::make_unique<DataResource>(name);
-		dataResource->load(filePath.string());
+	assetManager->registerLoader(".json", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto dataResource = std::make_unique<DataResource>(name, filePath.string());
+		if (!lazy) {
+			dataResource->load();
+		}
 		return dataResource;
 		});
 

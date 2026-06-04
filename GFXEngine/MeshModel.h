@@ -18,8 +18,8 @@ namespace GFXEngine {
 		/// </summary>
 		class MeshModel : public Asset, public GraphicsAsset, public FileAsset {
 		public:
-			MeshModel(const std::string& name)
-				: Asset(name) {}
+			MeshModel(const std::string& name, const std::string& filePath)
+				: Asset(name), FileAsset(filePath) {}
 			virtual ~MeshModel() = default;
 
 			MeshModel(const MeshModel&) = delete;

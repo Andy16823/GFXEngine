@@ -22,7 +22,6 @@ namespace GFXEngine {
 			std::vector<VkDescriptorSet> m_descriptorSets;
 			bool m_initialized = false;
 			bool m_loaded = false;
-			std::string m_filePath;
 
 			void updateUniformBuffer(Renderer& renderer, uint32_t imageIndex);
 
@@ -33,7 +32,7 @@ namespace GFXEngine {
 			float fogDensity = 0.00f;
 
 			// Constructors
-			EnvironmentMap(const std::string& name) : Asset(name) {}
+			EnvironmentMap(const std::string& name, const std::string& filePath) : Asset(name), FileAsset(filePath) {}
 
 			// GraphicsAsset interface implementation
 			void init(GFXEngine::Graphics::Renderer& renderer) override;
@@ -41,9 +40,8 @@ namespace GFXEngine {
 			bool isInitialized() const override;
 
 			// FileAsset interface implementation
-			void load(const std::string& filePath) override;
+			void load() override;
 			bool isLoaded() const override;
-			const std::string& getFilePath() const override;
 
 			// Own member functions
 			void update(GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);

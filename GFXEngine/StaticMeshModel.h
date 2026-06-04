@@ -17,10 +17,9 @@ namespace GFXEngine {
 			std::vector<Mesh3D> m_meshes;
 			bool m_initialized = false;
 			bool m_loaded = false;
-			std::string m_filePath;
 
 		public:
-			StaticMeshModel(const std::string& name) : MeshModel(name) {}
+			StaticMeshModel(const std::string& name, const std::string& filePath) : MeshModel(name, filePath) {}
 			
 			// GraphicsAsset interface implementation
 			void init(Renderer& renderer) override;
@@ -28,9 +27,8 @@ namespace GFXEngine {
 			bool isInitialized() const override { return m_initialized; }
 
 			// FileAsset interface implementation
-			void load(const std::string& filePath) override;
+			void load() override;
 			bool isLoaded() const override { return m_loaded; }
-			const std::string& getFilePath() const override { return m_filePath; }
 
 			const Mesh3D& getMesh(size_t index) const override { return m_meshes.at(index); }
 			const Material& getMeshMaterial(size_t index) const override { return *m_materials.at(index % m_materials.size()); }

@@ -84,13 +84,13 @@ bool EnvironmentMap::isInitialized() const
 	return m_initialized;
 }
 
-void EnvironmentMap::load(const std::string& filePath)
+void EnvironmentMap::load()
 {
 	// Ensure we don't load more than once without destroying first
 	assert(!m_loaded && "EnvironmentMap is already loaded");
 
 	// Load the JSON data from the specified file path
-	nlohmann::json data = GFXEngine::Utils::loadJsonFromFile(filePath);
+	nlohmann::json data = GFXEngine::Utils::loadJsonFromFile(getFilePath());
 	if (!data.contains("faces") || !data["faces"].is_array() || data["faces"].size() != 6) {
 		throw std::runtime_error("EnviromentMap JSON data must contain a 'faces' array with 6 file paths.");
 	}
@@ -107,7 +107,7 @@ void EnvironmentMap::load(const std::string& filePath)
 	m_mesh->setIndices(std::move(indices));
 
 	// Load cubemap textures
-	std::filesystem::path basePath = GFXEngine::Utils::getBasePath(filePath);
+	std::filesystem::path basePath = GFXEngine::Utils::getBasePath(getFilePath());
 	std::vector<std::string> faceFilepaths;
 	for (const auto& face : data["faces"]) {
 		auto faceStr = face.get<std::string>();
@@ -122,15 +122,9 @@ void EnvironmentMap::load(const std::string& filePath)
 
 	// Mark as loaded and store the file path
 	m_loaded = true;
-	m_filePath = filePath;
 }
 
 bool EnvironmentMap::isLoaded() const
 {
 	return m_loaded;
-}
-
-const std::string& EnvironmentMap::getFilePath() const
-{
-	return m_filePath;
 }
