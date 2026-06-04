@@ -26,7 +26,13 @@ namespace GFXEngine
 		TaskCompletionCallback m_completionCallback;
 
 	public:
-		virtual ~BackgroundTask() = default;
+		virtual ~BackgroundTask()
+		{
+			if (m_thread.joinable())
+			{
+				m_thread.join();
+			}
+		}
 		void start(TaskCompletionCallback completionCallback);
 		bool isCompleted() const { return m_completed; }
 		void complete() { if (m_completionCallback) m_completionCallback(*this); }
