@@ -497,6 +497,11 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 
 	// DIALOGS
 	m_createFileDialog = std::make_unique<TextInputDialog>("Enter Filename:");
+
+	// PLUGINS
+	for (auto& plugin : m_plugins) {
+		plugin->init(*this, context, renderer);
+	}
 }
 
 void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputManager& input, float deltaTime)
@@ -540,11 +545,19 @@ void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputMa
 			m_selectedEntity = closestEntity;
 		}
 	}
+
+	// Update plugins
+	for (auto& plugin : m_plugins) {
+		plugin->update(*this, context, input, deltaTime);
+	}
 }
 
 void WorldEditor::beforeRender(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
 	m_scene->beforeRender(renderer, *m_editorCamera, imageIndex);
+	for (auto& plugin : m_plugins) {
+		plugin->beforeRender(*this, context, renderer, imageIndex);
+	}
 }
 
 void WorldEditor::renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Core::UIContext* ui, uint32_t imageIndex)
@@ -818,6 +831,11 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		ImGui::End();
 	}
 
+	// PLUGINS
+	for (auto& plugin : m_plugins) {
+		plugin->render(*this, context, renderer, imageIndex);
+	}
+
 	// DIALOGS
 	m_createFileDialog->renderDialog();
 }
@@ -826,6 +844,9 @@ void WorldEditor::afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Gr
 {
 	this->cleanupRemovedBehaviors(renderer);
 	m_backgroundTaskManager.update();
+	for (auto& plugin : m_plugins) {
+		plugin->afterRender(*this, context, renderer, imageIndex);
+	}
 }
 
 void WorldEditor::handleInput(GLFWwindow* window, int key, int mods, int action)
@@ -863,12 +884,20 @@ void WorldEditor::handleInput(GLFWwindow* window, int key, int mods, int action)
 			m_editorCamera->getTransform().rotateWorld(0.0f, 1.0f, 0.0f);
 		}
 	}
+
+	for (auto& plugin : m_plugins) {
+		plugin->handleInput(*this, window, key, mods, action);
+	}
 }
 
 void WorldEditor::dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer)
 {
 	m_renderTexture->destroy(renderer);
 	m_editorCamera->destroyDescriptorSets(renderer);
+
+	for (auto& plugin : m_plugins) {
+		plugin->dispose(*this, context, renderer);
+	}
 }
 
 void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int mods, int action)
@@ -894,6 +923,10 @@ void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int mods, int
 			m_cursorDragInfo.isDragging = false;
 		}
 	}
+
+	for (auto& plugin : m_plugins) {
+		plugin->handleMouseInput(*this, window, button, mods, action);
+	}
 }
 
 void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
@@ -911,5 +944,9 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 		m_editorCamera->getTransform().rotateLocal(m_pitch, 0.0f, 0.0f);
 
 		m_cursorDragInfo.currentPosition = glm::vec2(xpos, ypos);
+	}
+
+	for (auto& plugin : m_plugins) {
+		plugin->handleMouseMove(*this, window, xpos, ypos);
 	}
 }
