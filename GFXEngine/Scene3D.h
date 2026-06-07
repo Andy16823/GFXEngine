@@ -34,6 +34,12 @@ namespace GFXEngine {
 			Scene3D() = default;
 			virtual ~Scene3D() = default;
 
+			Scene3D(Scene3D&&) noexcept = default;
+			Scene3D& operator=(Scene3D&&) noexcept = default;
+
+			Scene3D(const Scene3D&) = delete;
+			Scene3D& operator=(const Scene3D&) = delete;
+
 			void init(Graphics::Renderer& renderer) override;
 			void update(Graphics::Camera& camera, float deltaTime) override;
 			void beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
