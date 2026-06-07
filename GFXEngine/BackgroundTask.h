@@ -2,6 +2,10 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <optional>
+#include <thread>
+#include <atomic>
+#include <vector>
 
 namespace GFXEngine
 {
@@ -51,6 +55,27 @@ namespace GFXEngine
 	public:
 		InlineTask(std::function<void()> taskFunction) : m_taskFunction(taskFunction) {}
 		virtual void process() override { if (m_taskFunction) m_taskFunction(); }
+	};
+
+	/// <summary>
+	/// CreationTask is a template class that extends BackgroundTask, allowing you to define a task that creates an object of type T using a std::function.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	template<typename T>
+	class CreationTask : public BackgroundTask
+	{
+	private:
+		std::function<T()> m_creationFunction;
+		std::optional<T> m_result;
+	public:
+		CreationTask(std::function<T()> creationFunction) : m_creationFunction(creationFunction) {}
+		virtual void process() override { if (m_creationFunction) m_result = m_creationFunction(); }
+		std::optional<T> getResult() const { return m_result; }
+		std::optional<T> moveResult() { 
+			auto result = std::move(m_result);
+			m_result.reset();
+			return result;
+		}
 	};
 
 	/// <summary>
