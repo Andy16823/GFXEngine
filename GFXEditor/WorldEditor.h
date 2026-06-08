@@ -18,7 +18,7 @@
 
 namespace GFXEditor {
 
-	struct ViewportCursorInfo {
+	struct ViewportCursorInfo { 
 		glm::vec2 position;
 		bool isHovering;
 	};

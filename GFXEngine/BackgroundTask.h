@@ -79,6 +79,22 @@ namespace GFXEngine
 	};
 
 	/// <summary>
+	/// FetcherTask is a template class that extends BackgroundTask, allowing you to define a 
+	/// task that fetches an object of type T using a std::function.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	template<typename T>
+	class FetcherTask : public BackgroundTask
+	{
+		std::function<T*()> m_fetchFunction;
+		T* m_result = nullptr;
+	public:
+		FetcherTask(std::function<T*()> fetchFunction) : m_fetchFunction(fetchFunction) {}
+		virtual void process() override { if (m_fetchFunction) m_result = m_fetchFunction(); }
+		T* getResult() const { return m_result; }
+	};
+
+	/// <summary>
 	/// BackgroundTaskManager manages a collection of BackgroundTask instances, allowing you to add new tasks, update their status, and clear completed tasks.
 	/// </summary>
 	class BackgroundTaskManager
