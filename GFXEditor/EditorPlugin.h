@@ -1,6 +1,7 @@
 #pragma once
 #include "UIContext.h"
 #include "Renderer.h"
+#include "InputManager.h"
 
 
 namespace GFXEditor

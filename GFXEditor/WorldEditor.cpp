@@ -9,120 +9,13 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include "DataTypes.h"
 #include "PropertyInfo.h"
-#include "FileNameWidget.h"
+#include "ProjectExplorer.h"
 #include <filesystem>
 
 using namespace GFXEditor;
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Graphics;
-
-void WorldEditor::renderProjectExplorer(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer)
-{
-	ImGui::Begin("Project Explorer");
-
-	// Context menu for the project explorer
-	if (ImGui::BeginPopupContextWindow())
-	{
-		if (ImGui::MenuItem("Go to Parent Directory", nullptr, false, m_currentExplorerPath.has_parent_path()))
-		{
-			m_currentExplorerPath = m_currentExplorerPath.parent_path();
-		}
-
-		ImGui::Separator();
-
-		if (ImGui::MenuItem("Create Directory"))
-		{
-			if (!m_createFileDialog->isOpen())
-			{
-				// Open the file dialog to get the new directory name, then create the directory in the callback
-				m_createFileDialog->showDialog("Create New Directory", [&](EditorDialog& dialog) {
-					std::string dirName = static_cast<TextInputDialog&>(dialog).getInputText();
-					std::filesystem::path newDirPath = m_currentExplorerPath / dirName;
-					Utils::createDirectory(newDirPath.string());
-				});
-			}
-		}
-
-		if (ImGui::MenuItem("Show in Explorer"))
-		{
-			// TODO: Windows-specific implementation, need to add support for other platforms
-			std::string command = "explorer.exe /select,\"" + m_currentExplorerPath.string() + "\"";
-			system(command.c_str());
-		}
-
-		ImGui::Separator();
-
-		if (ImGui::MenuItem("Create File")) {
-			if (!m_createFileDialog->isOpen()) 
-			{
-				// Open the file dialog to get the new file name, then create the file in the callback
-				m_createFileDialog->showDialog("Create New File", [&](EditorDialog& dialog) {
-					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
-					std::filesystem::path filePath = m_currentExplorerPath / fileName;
-					Utils::createFile(filePath.string());
-				});
-			}
-		}
-
-		if (ImGui::MenuItem("Create Environment")) 
-		{
-			if (!m_createFileDialog->isOpen())
-			{
-				// Open the file dialog to get the new environment name, then create the .env file with default content in the callback
-				m_createFileDialog->showDialog("Create New Environment", [&](EditorDialog& dialog) {
-					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
-					std::filesystem::path filePath = m_currentExplorerPath / (fileName + ".env");
-					nlohmann::json environment;
-					environment["faces"] = std::vector<std::string>{
-						"right.png",
-						"left.png",
-						"top.png",
-						"bottom.png",
-						"front.png",
-						"back.png"
-					};
-					GFXEngine::Utils::saveJsonToFile(environment, filePath.string());
-				});
-			}
-		}
-
-		ImGui::Separator();
-
-		if (ImGui::MenuItem("Import Asset"))
-		{
-			if(!m_selectedFilePath.empty())
-			{
-				auto asset = m_assetManager->loadFromFile(m_selectedFilePath);
-				if (auto graphicsAsset = asset->as<GraphicsAsset>()) {
-					graphicsAsset->init(renderer);
-					std::cout << "Loaded asset: " << asset->getName() << std::endl;
-				}
-			}
-		}
-
-		ImGui::EndPopup();
-	}
-
-	// Entries in the current directory
-	for (const auto& entry : std::filesystem::directory_iterator(m_currentExplorerPath)) {
-		if (entry.is_directory())
-		{
-			if (ImGui::Selectable((entry.path().filename().string() + "/").c_str())) {
-				m_currentExplorerPath = entry.path();
-			}
-		}
-		else if (entry.is_regular_file()) {
-			if (ImGui::Selectable(entry.path().filename().string().c_str())) {
-				std::string extension = entry.path().extension().string();
-				std::cout << "Selected file: " << entry.path() << std::endl;
-				m_selectedFilePath = entry.path();
-			}
-		}
-	}
-
-	ImGui::End();
-}
 
 void WorldEditor::updateRenderTextureSize(GFXEngine::Graphics::Renderer& renderer, float width, float height, GFXEngine::Core::UIContext* ui)
 {
@@ -498,6 +391,10 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 	// DIALOGS
 	m_createFileDialog = std::make_unique<TextInputDialog>("Enter Filename:");
 
+	// Create predefined plugins
+	auto projectExplorer = std::make_unique<Plugins::ProjectExplorer>(m_projectDirectory);
+	m_plugins.push_back(std::move(projectExplorer));
+
 	// PLUGINS
 	for (auto& plugin : m_plugins) {
 		plugin->init(*this, context, renderer);
@@ -817,8 +714,6 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		ImGui::Text("No entity selected");
 	}
 	ImGui::End();
-
-	this->renderProjectExplorer(context, renderer);
 
 	// Instances from InstancedModel
 	if (auto instancedModel = dynamic_cast<GFXEngine::Core::InstancedModel*>(m_selectedEntity)) {
