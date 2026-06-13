@@ -110,6 +110,25 @@ void GFXEditor::Plugins::ProjectExplorer::render(GFXEditor::WorldEditor& editor,
 
 		ImGui::EndPopup();
 	}
+
+	// Entries in the current directory
+	for (const auto& entry : std::filesystem::directory_iterator(m_currentExplorerPath)) {
+		if (entry.is_directory())
+		{
+			if (ImGui::Selectable((entry.path().filename().string() + "/").c_str())) {
+				m_currentExplorerPath = entry.path();
+			}
+		}
+		else if (entry.is_regular_file()) {
+			if (ImGui::Selectable(entry.path().filename().string().c_str())) {
+				std::string extension = entry.path().extension().string();
+				std::cout << "Selected file: " << entry.path() << std::endl;
+				m_selectedFilePath = entry.path();
+			}
+		}
+	}
+
+	ImGui::End();
 }
 
 void GFXEditor::Plugins::ProjectExplorer::afterRender(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
