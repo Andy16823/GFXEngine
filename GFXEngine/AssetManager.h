@@ -110,6 +110,27 @@ namespace GFXEngine {
 			return asset;
 		}
 
+		template<typename T>
+		AssetHandle<T> getHandle(const std::string& name) {
+			auto it = m_assets.find(name);
+			if (it == m_assets.end()) {
+				return AssetHandle<T>(nullptr);
+			}
+
+			auto* asset = dynamic_cast<T*>(it->second.get());
+			if (!asset) {
+				return AssetHandle<T>(nullptr);
+			}
+
+			if (auto* fileAsset = dynamic_cast<FileAsset*>(asset)) {
+				if (!fileAsset->isLoaded()) {
+					fileAsset->load();
+				}
+			}
+
+			return AssetHandle<T>(asset);
+		}
+
 		/// <summary>
 		/// Iterate over all assets and apply the given function to each asset. 
 		/// This can be used for operations that need to be performed on all assets, such as initialization or cleanup.

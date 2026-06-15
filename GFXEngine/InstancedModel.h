@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Asset.h"
 #include "MeshModel.h"
 #include "Buffer.h"
 #include <vector>
@@ -15,7 +16,7 @@ namespace GFXEngine {
 		{
 		private:
 			std::vector<EngineTypes::InstanceData> m_instanceData;
-			EngineTypes::AssetReference m_meshModelRef;
+			GFXEngine::AssetHandle<Graphics::MeshModel> m_meshModelRef;
 			bool m_isDirty = true;
 
 			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;
@@ -24,7 +25,7 @@ namespace GFXEngine {
 
 		public:
 			InstancedModel() = default;
-			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount);
+			InstancedModel(GFXEngine::AssetHandle<Graphics::MeshModel> meshModel, size_t instanceCount);
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;

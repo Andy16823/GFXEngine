@@ -5,6 +5,8 @@
 #include <vector>
 #include <functional>
 
+#include "MeshModel.h"
+
 namespace GFXEngine {
 
 	namespace Core {
@@ -66,7 +68,8 @@ namespace GFXEngine {
 			glm::vec4*, 
 			glm::quat*, 
 			GFXEngine::EngineTypes::EntityReference*,
-			GFXEngine::EngineTypes::AssetReference*
+			GFXEngine::EngineTypes::AssetReference*,
+			GFXEngine::Graphics::MeshModel*
 		>;
 
 		/// <summary>
