@@ -142,6 +142,58 @@ namespace GFXEngine {
 			return *this;
 		}
 
+		// Template conversion constructor for derived types (copy)
+		template<typename U>
+		AssetHandle(const AssetHandle<U>& other, 
+			std::enable_if_t<std::is_base_of_v<T, U>, void*> = nullptr)
+			: m_asset(static_cast<T*>(other.get()))
+		{
+			if (m_asset)
+			{
+				m_asset->incrementRefCount();
+			}
+		}
+
+		// Template conversion assignment operator for derived types
+		template<typename U>
+		std::enable_if_t<std::is_base_of_v<T, U>, AssetHandle&>
+		operator=(const AssetHandle<U>& other) 
+		{
+			if (m_asset)
+			{
+				m_asset->decrementRefCount();
+			}
+			m_asset = static_cast<T*>(other.get());
+			if (m_asset)
+			{
+				m_asset->incrementRefCount();
+			}
+			return *this;
+		}
+
+		// Template conversion constructor for move semantics
+		template<typename U>
+		AssetHandle(AssetHandle<U>&& other, 
+			std::enable_if_t<std::is_base_of_v<T, U>, void*> = nullptr) noexcept
+			: m_asset(static_cast<T*>(other.get()))
+		{
+			other.release();
+		}
+
+		// Template conversion assignment operator for move semantics
+		template<typename U>
+		std::enable_if_t<std::is_base_of_v<T, U>, AssetHandle&>
+		operator=(AssetHandle<U>&& other) noexcept
+		{
+			if (m_asset)
+			{
+				m_asset->decrementRefCount();
+			}
+			m_asset = static_cast<T*>(other.get());
+			other.release();
+			return *this;
+		}
+
 		~AssetHandle()
 		{
 			if (m_asset)

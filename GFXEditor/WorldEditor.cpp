@@ -64,7 +64,8 @@ void WorldEditor::placeModel(GFXEngine::Graphics::Renderer& renderer, const glm:
 		model->init(renderer);
 	}
 
-	auto entity = std::make_unique<GFXEngine::Core::Model>(model);
+	auto modelAsset = m_assetManager->makeHandle(model);
+	auto entity = std::make_unique<GFXEngine::Core::Model>(modelAsset);
 	entity->setName(model->getName());
 	entity->setPosition(position);
 	entity->setScale(glm::vec3(0.1f));

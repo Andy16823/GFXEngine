@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "MeshModel.h"
-#include "DataTypes.h"
+#include "Asset.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -12,11 +12,11 @@ namespace GFXEngine {
 		class Model : public Entity
 		{
 		private:
-			EngineTypes::AssetReference m_meshModelRef;
+			GFXEngine::AssetHandle<Graphics::MeshModel> m_meshModelRef;
 
 		public:
 			Model() = default;
-			Model(Graphics::MeshModel* meshModel);
+			Model(GFXEngine::AssetHandle<Graphics::MeshModel> meshModelRef);
 
 			void init(Scene& scene, GFXEngine::Graphics::Renderer& renderer) override;
 			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
@@ -30,8 +30,6 @@ namespace GFXEngine {
 
 			size_t getMeshCount() const override;
 			MeshMaterialPair getMeshAndMaterial(size_t index) const override;
-
-			const Graphics::MeshModel* getMeshModel() const { return m_meshModelRef.get<Graphics::MeshModel>(); }
 		};
 	}
 }

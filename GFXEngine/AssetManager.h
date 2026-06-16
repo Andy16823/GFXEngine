@@ -131,6 +131,18 @@ namespace GFXEngine {
 			return AssetHandle<T>(asset);
 		}
 
+		template<typename T>
+		AssetHandle<T> makeHandle(T* asset) {
+
+			for (auto& pair : m_assets) {
+				if (pair.second.get() == asset) {
+					return AssetHandle<T>(asset);
+				}
+			}
+
+			return AssetHandle<T>(nullptr);
+		}
+
 		/// <summary>
 		/// Iterate over all assets and apply the given function to each asset. 
 		/// This can be used for operations that need to be performed on all assets, such as initialization or cleanup.

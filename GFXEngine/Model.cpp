@@ -8,9 +8,9 @@ using namespace GFXEngine;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Graphics;
 
-GFXEngine::Core::Model::Model(Graphics::MeshModel* meshModel)
+GFXEngine::Core::Model::Model(GFXEngine::AssetHandle<Graphics::MeshModel> meshModelRef)
 {
-	m_meshModelRef.set(meshModel);
+	m_meshModelRef = meshModelRef;
 }
 
 void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
@@ -19,21 +19,19 @@ void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& r
 	Entity::init(scene, renderer);
 
 	// Ensure the mesh model reference is valid and initialized
-	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
-	if (!meshModel) {
+	if (!m_meshModelRef) {
 		throw std::runtime_error("Model initialization error: MeshModel reference is invalid");
 	}
-	assert(meshModel->isInitialized() && "MeshModel must be initialized before building render tasks");
+	assert(m_meshModelRef->isInitialized() && "MeshModel must be initialized before building render tasks");
 }
 
 void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
 	// Ensure the mesh model reference is valid and initialized before building render tasks
-	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
-	if (!meshModel) {
+	if (!m_meshModelRef) {
 		throw std::runtime_error("Model initialization error: MeshModel reference is invalid");
 	}
-	assert(meshModel->isInitialized() && "MeshModel must be initialized before building render tasks");
+	assert(m_meshModelRef->isInitialized() && "MeshModel must be initialized before building render tasks");
 	
 	if (!isVisible())
 		return;
@@ -83,7 +81,7 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Model::getProperties
 	// Add mesh model reference property
 	properties.push_back({
 		.name = "Mesh Model",
-		.data = &m_meshModelRef,
+		.data = m_meshModelRef.get(),
 		.hint = PropertyHint::Asset
 		});
 
@@ -96,7 +94,7 @@ nlohmann::json GFXEngine::Core::Model::serialize() const
 	nlohmann::json data = Entity::serialize();
 
 	// Serialize mesh model reference by storing the name of the referenced mesh model asset
-	data["meshModel"] = m_meshModelRef.get<Graphics::MeshModel>()->getName();
+	data["meshModel"] = m_meshModelRef->getName();
 	return data;
 }
 
@@ -112,11 +110,10 @@ void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::
 	auto modelName = data["meshModel"].get<std::string>();
 
 	// Look up the mesh model asset by name and set the reference
-	auto meshModelAsset = context.assets.get<Graphics::MeshModel>(modelName);
-	if (!meshModelAsset) {
-		throw std::runtime_error("Model deserialization error: MeshModel asset '" + modelName + "' not found");
+	m_meshModelRef = context.assets.getHandle<Graphics::MeshModel>(modelName);
+	if (!m_meshModelRef) {
+		throw std::runtime_error("Model deserialization error: Referenced MeshModel asset '" + modelName + "' not found in AssetManager");
 	}
-	m_meshModelRef.set(meshModelAsset);
 }
 
 void Model::getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex) const
@@ -136,16 +133,15 @@ void Model::getMeshMaterialGraphicResources(Graphics::GraphicResources& resource
 
 size_t GFXEngine::Core::Model::getMeshCount() const
 {
-	return m_meshModelRef.get<Graphics::MeshModel>()->getMeshCount();
+	return m_meshModelRef->getMeshCount();
 }
 
 GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Model::getMeshAndMaterial(size_t index) const
 {
-	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
-	if (index >= meshModel->getMeshCount()) {
+	if (index >= m_meshModelRef->getMeshCount()) {
 		throw std::out_of_range("Mesh index out of range");
 	}
 	return std::make_optional(
-		std::make_pair(std::ref(meshModel->getMesh(index)), std::ref(meshModel->getMeshMaterial(index)))
+		std::make_pair(std::ref(m_meshModelRef->getMesh(index)), std::ref(m_meshModelRef->getMeshMaterial(index)))
 	);
 }
