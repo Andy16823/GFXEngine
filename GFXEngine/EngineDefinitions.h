@@ -10,7 +10,8 @@ namespace GFXEngine {
 			INSTANCED_GEOMETRY_PIPELINE			= 'INST',
 			INSTANCED_GEOMETRY_PIPELINE_UNLIT	= 'IULI',	
 			ENVIRONMENT_PIPELINE				= 'ENVI',
-			DEBUG_PIPELINE						= 'DEBG'
+			DEBUG_PIPELINE						= 'DEBG',
+			SPRITE_PIPELINE						= 'SPRT'
 		};
 
 		enum RenderResource : unsigned int {

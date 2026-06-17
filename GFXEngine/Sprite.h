@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include <vector>
 #include "SpriteMaterial.h"
-#include "Mesh3D.h"
+#include "Mesh2D.h"
 
 // TODO: Add Serialization support for Sprite (including material and mesh references) make mesh and material an pointer and add an standard constructor.
 namespace GFXEngine {
@@ -17,7 +17,7 @@ namespace GFXEngine {
 		class Sprite : public Entity
 		{
 		public:
-			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh3D& mesh)
+			Sprite(const Graphics::SpriteMaterial& material, const Graphics::Mesh2D& mesh)
 				: m_material(material), m_mesh(mesh) {
 				this->setPosition(glm::vec3(0.0f));
 				this->setRotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f));
@@ -37,7 +37,7 @@ namespace GFXEngine {
 
 		private:
 			const Graphics::SpriteMaterial& m_material;
-			const Graphics::Mesh3D& m_mesh; // TODO: Change to Mesh2D when implemented
+			const Graphics::Mesh2D& m_mesh; // TODO: Change to Mesh2D when implemented
 		};
 	}
 }

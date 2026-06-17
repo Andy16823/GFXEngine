@@ -13,6 +13,7 @@
 #include "InstancedUnlitGeometryPass.h"
 #include "EnvironmentPass.h"
 #include "DebugPass.h"
+#include "SpritePass.h"
 
 using namespace std;
 using namespace GFXEngine::Graphics;
@@ -637,6 +638,16 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.usePositionInput(0);
 	auto debugPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<DebugPass>());
 	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
+	pipelineBuilder.clear();
+
+	// Sprite Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "sprite_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "sprite_frag.spv";
+	RenderShader spriteShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	pipelineBuilder.addShaderStage(spriteShader)
+		.useVertex2DInput(0);
+	auto spritePipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SpritePass>());
+	this->managePipeline(PipelineType::SPRITE_PIPELINE, std::move(spritePipeline));
 	pipelineBuilder.clear();
 
 	// Create Present Pipeline

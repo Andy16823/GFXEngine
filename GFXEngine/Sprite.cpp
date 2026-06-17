@@ -22,11 +22,36 @@ void GFXEngine::Core::Sprite::update(Scene& scene, GFXEngine::Graphics::Camera& 
 
 void Sprite::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
-	Entity::buildRenderTasks(context, renderQueue);
 	if (context.renderPass == Graphics::RenderPassIteration::GeometryPass) 
 	{
 		// TODO: Render Sprites!
+		auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::SPRITE_PIPELINE);
+		Graphics::GraphicResources resources;
+		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+		this->getScene()->getGraphicResources(resources, context.imageIndex);
+		this->getGraphicResources(resources, context.imageIndex);
+
+		for (size_t i = 0; i < this->getMeshCount(); ++i) {
+			this->getMeshMaterialGraphicResources(resources, context.imageIndex, i);
+			auto meshMaterialPair = this->getMeshAndMaterial(i);
+			if (!meshMaterialPair.has_value()) {
+				std::cerr << "Warning: Mesh " << i << " in Sprite '" << this->name << "' is missing a valid mesh/material pair. Skipping render task for this mesh." << std::endl;
+				continue;
+			}
+			const auto& [mesh, material] = meshMaterialPair.value();
+
+			RenderTaskBuilder taskBuilder;
+			taskBuilder.setPipeline(pipeline)
+				.setMesh(&mesh)
+				.setModelMatrix(this->getTransform().getModelMatrix())
+				.setRenderLayer(RenderLayer::Opaque);
+
+			// Bind material descriptor set and push constant for model matrix
+			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
+			renderQueue.addRenderTask(taskBuilder.build());
+		}
 	}
+	Entity::buildRenderTasks(context, renderQueue);
 }
 
 void GFXEngine::Core::Sprite::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
