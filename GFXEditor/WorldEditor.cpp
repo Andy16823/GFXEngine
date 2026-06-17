@@ -699,19 +699,20 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 			const std::string label = UIContext::createLabelID(prop.name, m_selectedEntity->getUUID());
 			this->renderProperty(label, renderer, prop);
 		}
-		m_selectedEntity->foreachBehavior([&](GFXEngine::Core::Behavior* behavior) {
-			this->renderBehavior(*behavior, renderer);
-			});
-
-		ImGui::Separator();
-		if (ImGui::BeginCombo("Add Behavior", "")) {
-			m_behaviorRegistry->foreachBehavior([&](const std::string& behaviorName) {
-				if (ImGui::Selectable(behaviorName.c_str())) {
-					auto bhv = m_selectedEntity->addBehavior(m_behaviorRegistry->createBehavior(behaviorName));
-					bhv->init(*m_scene, renderer);
-				}
+		if (ImGui::CollapsingHeader("Behaviors")) {
+			m_selectedEntity->foreachBehavior([&](GFXEngine::Core::Behavior* behavior) {
+				this->renderBehavior(*behavior, renderer);
 				});
-			ImGui::EndCombo();
+
+			if (ImGui::BeginCombo("Add Behavior", "")) {
+				m_behaviorRegistry->foreachBehavior([&](const std::string& behaviorName) {
+					if (ImGui::Selectable(behaviorName.c_str())) {
+						auto bhv = m_selectedEntity->addBehavior(m_behaviorRegistry->createBehavior(behaviorName));
+						bhv->init(*m_scene, renderer);
+					}
+					});
+				ImGui::EndCombo();
+			}
 		}
 	}
 	else {
