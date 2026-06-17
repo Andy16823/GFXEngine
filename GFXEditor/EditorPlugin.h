@@ -2,7 +2,7 @@
 #include "UIContext.h"
 #include "Renderer.h"
 #include "InputManager.h"
-
+#include <unordered_map>
 
 namespace GFXEditor
 {
@@ -26,5 +26,6 @@ namespace GFXEditor
 		virtual void handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int mods, int action) = 0;
 		virtual void handleMouseMove(GFXEditor::WorldEditor& editor, GLFWwindow* window, double xpos, double ypos) = 0;
 		virtual void dispose(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer) = 0;
+		virtual void dockspace(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context) {};
 	};
 }

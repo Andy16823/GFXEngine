@@ -111,6 +111,13 @@ void GFXEditor::Plugins::ProjectExplorer::render(GFXEditor::WorldEditor& editor,
 		ImGui::EndPopup();
 	}
 
+	// Go to parent directory option
+	std::string labelId = GFXEngine::Core::UIContext::createLabelID("...", GFXEngine::Utils::generateUUID());
+	if (ImGui::Selectable(labelId.c_str()))
+	{
+		m_currentExplorerPath = m_currentExplorerPath.parent_path();
+	}
+
 	// Entries in the current directory
 	for (const auto& entry : std::filesystem::directory_iterator(m_currentExplorerPath)) {
 		if (entry.is_directory())
@@ -154,4 +161,9 @@ void GFXEditor::Plugins::ProjectExplorer::handleMouseMove(GFXEditor::WorldEditor
 void GFXEditor::Plugins::ProjectExplorer::dispose(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer)
 {
 	
+}
+
+void GFXEditor::Plugins::ProjectExplorer::dockspace(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context)
+{
+	ImGui::DockBuilderDockWindow("Project Explorer", editor.getBottomDockID());
 }

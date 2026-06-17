@@ -40,7 +40,13 @@ namespace GFXEditor {
 
 		std::filesystem::path m_projectDirectory;
 		std::filesystem::path m_currentExplorerPath;
-		std::filesystem::path m_selectedFilePath;
+
+		// Dock Areas
+		ImGuiID m_topDockID;
+		ImGuiID m_leftDockID;
+		ImGuiID m_leftBottomDockID;
+		ImGuiID m_centerDockID;
+		ImGuiID m_bottomDockID;
 
 		// Background task manager for handling asynchronous tasks like asset loading
 		GFXEngine::BackgroundTaskManager m_backgroundTaskManager;
@@ -87,6 +93,12 @@ namespace GFXEditor {
 		GFXEngine::Core::GuizmoOperation getCurrentGuizmoOperation() const { return m_currentGuizmoOperation; }
 		CursorDragInfo getCursorDragInfo() const { return m_cursorDragInfo; }
 		TextInputDialog* getCreateFileDialog() const { return m_createFileDialog.get(); }
+		
+		ImGuiID getTopDockID() const { return m_topDockID; }
+		ImGuiID getLeftDockID() const { return m_leftDockID; }
+		ImGuiID getLeftBottomDockID() const { return m_leftBottomDockID; }
+		ImGuiID getCenterDockID() const { return m_centerDockID; }
+		ImGuiID getBottomDockID() const { return m_bottomDockID; }
 
 		void setSelectedEntity(GFXEngine::Core::Entity* entity) { m_selectedEntity = entity; }
 		void setCurrentGuizmoOperation(GFXEngine::Core::GuizmoOperation operation) { m_currentGuizmoOperation = operation; }

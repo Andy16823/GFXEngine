@@ -507,80 +507,84 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 		// DOCKING LAYOUT
 		ImGuiID mainDockID = dockspaceID;
-		ImGuiID topDockID, leftDockID, leftBottomDockID, centerDockID, bottomDockID;
 
 		// TOP
 		ImGui::DockBuilderSplitNode(
 			mainDockID,
 			ImGuiDir_Up,
 			0.06f,
-			&topDockID,
+			&m_topDockID,
 			&mainDockID
 		);
 
-		ImGui::DockBuilderGetNode(topDockID)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+		ImGui::DockBuilderGetNode(m_topDockID)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
 
 		// LEFT
 		ImGui::DockBuilderSplitNode(
 			mainDockID,
 			ImGuiDir_Left,
 			0.4f,
-			&leftDockID,
-			&centerDockID
+			&m_leftDockID,
+			&m_centerDockID
 		);
 
 		// LEFT BOTTOM
 		ImGui::DockBuilderSplitNode(
-			leftDockID,
+			m_leftDockID,
 			ImGuiDir_Down,
 			0.5f,
-			&leftBottomDockID,
-			&leftDockID
+			&m_leftBottomDockID,
+			&m_leftDockID
 		);
 
 		// BOTTOM
 		ImGui::DockBuilderSplitNode(
-			centerDockID,
+			m_centerDockID,
 			ImGuiDir_Down,
 			0.35f,
-			&bottomDockID,
-			&centerDockID
+			&m_bottomDockID,
+			&m_centerDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"World Editor Toolbar",
-			topDockID
+			m_topDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"Scene Hierarchy",
-			leftBottomDockID
+			m_leftBottomDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"Selected Entity",
-			leftDockID
+			m_leftDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"Scene Settings",
-			leftDockID
+			m_leftDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"Assets",
-			bottomDockID
+			m_bottomDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"Debug",
-			bottomDockID
+			m_bottomDockID
 		);
 
 		ImGui::DockBuilderDockWindow(
 			"Scene Viewport",
-			centerDockID
+			m_centerDockID
 		);
+
+		// Allow plugins to add their own windows to the dockspace
+		for (auto& plugin : m_plugins) {
+			plugin->dockspace(*this, context);
+		}
 
 		ImGui::DockBuilderFinish(dockspaceID);
 

@@ -23,6 +23,7 @@ namespace GFXEditor {
 			void handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int mods, int action) override;
 			void handleMouseMove(GFXEditor::WorldEditor& editor, GLFWwindow* window, double xpos, double ypos) override;
 			void dispose(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer) override;
+			void dockspace(GFXEditor::WorldEditor& editor, GFXEngine::Core::UIContext& context) override;
 		};
 	}
 }
