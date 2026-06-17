@@ -44,7 +44,7 @@ void Sprite::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEn
 			taskBuilder.setPipeline(pipeline)
 				.setMesh(&mesh)
 				.setModelMatrix(this->getTransform().getModelMatrix())
-				.setRenderLayer(RenderLayer::Opaque);
+				.setRenderLayer(RenderLayer::Transparent);
 
 			// Bind material descriptor set and push constant for model matrix
 			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
