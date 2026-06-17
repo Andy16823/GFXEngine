@@ -9,5 +9,7 @@ layout(location = 0) out vec4 fragColor;
 
 void main() {
 	vec4 texColor = texture(spriteTexture, fragTexCoord);
-	fragColor = texColor * color;
+	float alpha = texColor.a;
+	vec4 solidColor = texColor * color;
+	fragColor = vec4(solidColor.rgb, alpha);
 }
