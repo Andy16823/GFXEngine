@@ -657,7 +657,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	pipelineBuilder.addShaderStage(defaultShader)
 		.useFramebufferInput(0)
 		.setDepthTestEnable(VK_FALSE)
-		.setFrontFace(VK_FRONT_FACE_CLOCKWISE);
+		.setFrontFace(VK_FRONT_FACE_CLOCKWISE)
+		.disableBlending();	// DISABLE BLENDING FOR TESTING. WE MAY NEED TO MAKE IT DYNAMIC LATER DEPENDING ON THE USE CASES. CURRENTLY A TRANSPARENT SPRITE IN 3D SCENES HAS BLACK BACKGROUND
 	auto presentPipeline = pipelineBuilder.buildPresentPipeline(m_renderPass->getRenderPass());
 	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
 	pipelineBuilder.clear();
