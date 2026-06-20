@@ -1,8 +1,16 @@
 #pragma once
 #include <vector>
 #include <glm/glm.hpp>
+#include <typeindex>
+#include <variant>
+#include "StrideSpan.h"
 
 namespace GFXEngine {
+
+	namespace Core {
+		class Entity;
+	}
+
 	namespace EngineTypes {
 
 		/// <summary>
@@ -32,7 +40,7 @@ namespace GFXEngine {
 		/// </summary>
 		struct Vertex2D
 		{
-			glm::vec2 pos;
+			glm::vec3 pos;
 			glm::vec3 color;
 			glm::vec2 texCoord;
 		};
@@ -57,6 +65,47 @@ namespace GFXEngine {
 		struct PositionVertex
 		{
 			glm::vec3 pos;
+		};
+
+		/// <summary>
+		/// Vertex component class
+		/// </summary>
+		enum class VertexComponent {
+			Position,
+			Color,
+			TexCoord,
+			Normal,
+			Tangent,
+			BoneIDs,
+			BoneWeights
+		};
+
+		/// <summary>
+		/// Vertex Compontent View
+		/// </summary>
+		struct VertexComponentView {
+			const void* data;
+			size_t count;
+			size_t stride;
+			std::type_index type;
+
+			template<typename T>
+			GFXEngine::StrideSpan<T> as() const
+			{
+				if (type != typeid(T)) 
+				{
+					throw std::runtime_error("Vertex component type mismatch");
+				}
+				return GFXEngine::StrideSpan<T>(data, count, stride);
+			}
+
+			bool isEmpty() const {
+				return data == nullptr || count == 0;
+			}
+
+			static VertexComponentView empty() {
+				return { nullptr, 0, 0, typeid(void) };
+			}
 		};
 
 		/// <summary>
@@ -85,6 +134,163 @@ namespace GFXEngine {
 		{
 			glm::vec4 direction; // w component can be used for padding
 			glm::vec4 color;     // w component can be used for intensity
+		};
+
+		/// <summary>
+		/// Linear fog data structure, containing the color of the fog and parameters for the linear fog calculation (start distance, end distance, density, and padding).
+		/// </summary>
+		struct LinearFogData {
+			glm::vec4 color;
+			glm::vec4 fogParams; // x = start, y = end, z = density, w = padding
+		};
+
+		/// <summary>
+		/// Environment map data structure, containing parameters for the environment map shader.
+		/// </summary>
+		struct EnviromentMapData {
+			glm::vec4 parameters; // x = horizonFactor, y = horizonFogExponent, z/w = padding
+		};
+
+		enum class ReferenceState 
+		{
+			Uninitialized,
+			Unresolved,
+			Resolved
+		};
+
+		/// <summary>
+		/// EntityReference is a structure that holds either a UUID string reference to an entity or a direct pointer to the entity. 
+		/// This allows for flexible referencing of entities, where the reference can be resolved to an actual pointer at runtime, 
+		/// especially during deserialization when entities may not yet be fully constructed.
+		/// </summary>
+		struct EntityReference
+		{
+		private:
+			std::string m_uuid = "";
+			Core::Entity* m_entity = nullptr;
+
+		public:
+			EntityReference() = default;
+			explicit EntityReference(const std::string& uuid) : m_uuid(uuid) {}
+			explicit EntityReference(Core::Entity* entityPtr) : m_entity(entityPtr) {}
+
+			explicit operator bool() const
+			{
+				return m_entity != nullptr;
+			}
+
+			void clear() 
+			{
+				m_uuid.clear();
+				m_entity = nullptr;
+			}
+
+			void setUUID(const std::string& uuidStr) 
+			{
+				m_uuid = uuidStr;
+				m_entity = nullptr;
+			}
+
+			void setEntity(Core::Entity* entityPtr)
+			{
+				m_entity = entityPtr;
+				m_uuid.clear();
+			}
+
+			bool isResolved() const
+			{
+				return m_entity != nullptr;
+			}
+
+			bool hasUUID() const
+			{
+				return !m_uuid.empty();
+			}
+
+			bool isEmpty() const
+			{
+				return m_uuid.empty() && m_entity == nullptr;
+			}
+
+			const std::string& getUUID() const
+			{
+				return m_uuid;
+			}
+
+			Core::Entity& getEntity() const
+			{
+				assert(m_entity && "EntityReference: Attempted to get entity pointer but it is null");
+				return *m_entity;
+			}
+
+			Core::Entity* getEntityPtr() const
+			{
+				return m_entity;
+			}
+
+			template<typename T>
+			T& getEntityAs() const
+			{
+#ifndef NDEBUG
+				assert(m_entity && "EntityReference: Attempted to get entity pointer but it is null");
+				T* casted = dynamic_cast<T*>(m_entity);
+				assert(casted && "EntityReference: Failed to cast entity to requested type");
+				return *casted;
+#else
+				return static_cast<T&>(*m_entity);
+#endif
+			}
+
+			template<typename T>
+			T* getEntityPtrAs() const
+			{
+#ifndef NDEBUG
+				assert(m_entity && "EntityReference: Attempted to get entity pointer but it is null");
+				T* casted = dynamic_cast<T*>(m_entity);
+				assert(casted && "EntityReference: Failed to cast entity to requested type");
+				return casted;
+#else
+				return static_cast<T*>(m_entity);
+#endif
+			}
+		};
+
+		/// <summary>
+		/// AssetReference is a simple structure that holds a non-owning pointer to an Asset, allowing entities to reference assets without owning them directly.
+		/// </summary>
+		struct AssetReference
+		{
+			std::type_index assetType = typeid(void);
+			void* asset = nullptr;
+
+			operator bool() const {
+				return asset != nullptr;
+			} 
+
+			template<typename T>
+			void set(T* assetPtr) {
+				static_assert(std::derived_from<T, class GFXEngine::Asset>, "AssetReference can only hold pointers to Asset-derived types");
+				assetType = typeid(T);
+				asset = assetPtr;
+			}
+
+			template <typename T>
+			T* get() const {
+				if (assetType == typeid(T)) {
+					return static_cast<T*>(asset);
+				}
+				return nullptr;
+			}
+
+			template <typename T>
+			bool isTypeOf() const {
+				return assetType == typeid(T);
+			}
+
+			void clear() {
+				assetType = typeid(void);
+				asset = nullptr;
+			}
 		};
 	}
 }

@@ -92,14 +92,14 @@ std::pair<std::vector<LibGFX::Buffer>, std::vector<VkDescriptorSet>> GFXEngine::
 	return { uniformBuffers, descriptorSets };
 }
 
-std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(const std::string& filePath)
+std::vector<GFXEngine::Graphics::Mesh3D> GFXEngine::Utils::loadMeshesFromFile(const std::string& filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		throw std::runtime_error("ERROR::ASSIMP::" + std::string(importer.GetErrorString()));
 	}
-	std::vector<GFXEngine::Graphics::Mesh> meshes;
+	std::vector<GFXEngine::Graphics::Mesh3D> meshes;
 
 	for (size_t i = 0; i < scene->mNumMeshes; i++) {
 		auto aiMesh = scene->mMeshes[i];
@@ -133,7 +133,7 @@ std::vector<GFXEngine::Graphics::Mesh> GFXEngine::Utils::loadMeshesFromFile(cons
 			indices.insert(indices.end(), aiFace.mIndices, aiFace.mIndices + aiFace.mNumIndices);
 		}
 
-		GFXEngine::Graphics::Mesh mesh;
+		GFXEngine::Graphics::Mesh3D mesh;
 		mesh.setVertices(std::move(vertices));
 		mesh.setIndices(std::move(indices));
 		meshes.push_back(std::move(mesh));
@@ -231,6 +231,15 @@ std::string GFXEngine::Utils::getBasePath(const std::string& filePath)
 	return filePath.substr(0, lastSlashPos + 1);
 }
 
+std::filesystem::path GFXEngine::Utils::getBasePath(const std::filesystem::path& filePath)
+{
+	const auto& parentPath = filePath.parent_path();
+	if (parentPath.empty()) {
+		return std::filesystem::path(); // No directory part in the path
+	}
+	return parentPath;
+}
+
 std::string GFXEngine::Utils::getFileName(const std::string& filePath)
 {
 	size_t lastSlashPos = filePath.find_last_of("/\\");
@@ -290,6 +299,26 @@ void GFXEngine::Utils::saveJsonToFile(const nlohmann::json& jsonData, const std:
 	}
 	file << jsonData.dump(4);
 	file.close();
+}
+
+void GFXEngine::Utils::createFile(const std::string& filename)
+{
+	std::ofstream file(filename);
+	if (!file.is_open()) {
+		throw std::runtime_error("Failed to create file: " + filename);
+	}
+	file.close();
+}
+
+void GFXEngine::Utils::createDirectory(const std::string& directoryPath)
+{
+	if (!std::filesystem::exists(directoryPath)) 
+	{
+		if (!std::filesystem::create_directory(directoryPath)) 
+		{
+			throw std::runtime_error("Failed to create directory: " + directoryPath);
+		}
+	}
 }
 
 nlohmann::json GFXEngine::Utils::loadJsonFromFile(const std::string& filename)

@@ -1,0 +1,60 @@
+#include "RenderQueue.h"
+
+using namespace GFXEngine;
+using namespace GFXEngine::Graphics;
+
+void RenderQueue::addRenderTask(RenderTask task)
+{
+	m_tasks.push_back(std::move(task));
+}
+
+void RenderQueue::sort()
+{
+	std::sort(m_tasks.begin(), m_tasks.end(), [](const RenderTask& a, const RenderTask& b) {
+
+		if (a.layer != b.layer) {
+			return a.layer < b.layer; // Sort by render layer first
+		}
+
+		return a.pipeline->getId() < b.pipeline->getId(); // Sort by pipeline ID within the same layer to minimize pipeline switches
+		});
+}
+
+void RenderQueue::append(RenderQueue&& other)
+{
+	// move tasks from the other queue into this one
+	m_tasks.insert(
+		m_tasks.end(),
+		std::make_move_iterator(other.m_tasks.begin()),
+		std::make_move_iterator(other.m_tasks.end())
+	);
+	other.m_tasks.clear();
+}
+
+void GFXEngine::Graphics::RenderQueue::execute(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
+{
+	int pipelineSwitches = 0;
+	GraphicsPipeline* currentPipeline = nullptr;
+	for (const auto& task : m_tasks)
+	{
+		if (task.pipeline != currentPipeline) {
+			currentPipeline = task.pipeline;
+			renderer.usePipeline(*task.pipeline, imageIndex);
+			pipelineSwitches++;
+		}
+
+		// Bind descriptor sets
+		for (const auto& descriptorSet : task.descriptorSets) {
+			renderer.bindDescriptorSet(descriptorSet.descriptorSet, task.pipeline->getPipelineLayout(), descriptorSet.setIndex, imageIndex);
+		}
+
+		// Bind push constants
+		for (const auto& pushConstant : task.pushConstants) {
+			renderer.bindPushConstants(pushConstant.data.data(), pushConstant.size, pushConstant.offset, task.pipeline->getPipelineLayout(), imageIndex);
+		}
+
+		// Draw the mesh
+		renderer.drawBuffers(*task.vertexBuffer, *task.indexBuffer, task.indexCount, imageIndex, task.instanceCount);
+	}
+	m_tasks.clear();
+}

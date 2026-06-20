@@ -36,6 +36,12 @@ layout(set = 2, binding = 0) uniform DirectionalLight {
     vec4 colorIntensity;  // rgb = color, a = intensity
 } dirLight;
 
+// Binding for fog
+layout(set = 3, binding = 0) uniform Fog {
+    vec4 color;
+    vec4 parameters; // x = minDistance, y = maxDistance, z = density, w = unused
+} fog;
+
 layout(location = 0) out vec4 outColor;
 
 // ═══════════════════════════════════════════════════════════════
@@ -87,6 +93,27 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 vec3 fresnelSchlick(float cosTheta, vec3 F0) {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
+
+
+// ═══════════════════════════════════════════════════════════════
+// Fog Calculation
+// ═══════════════════════════════════════════════════════════════
+float calcLinearFogFactor() 
+{
+    float cameraToFragmentDistance = length(fragWorldPos - uboViewProjection.cameraPos.xyz);
+    float fogRange = fog.parameters.y - fog.parameters.x;
+    float fogDistance = fog.parameters.y - cameraToFragmentDistance;
+    float fogFactor = clamp(fogDistance / fogRange, 0.0, 1.0);
+    return fogFactor;
+}
+
+float calcFogFactor() 
+{
+    float fogFactor = calcLinearFogFactor();
+    fogFactor = mix(1.0, fogFactor, fog.parameters.z);  // Apply density
+    return fogFactor;
+}
+
 
 // ═══════════════════════════════════════════════════════════════
 // MAIN PBR LIGHTING
@@ -158,6 +185,10 @@ void main() {
     
     // Final color
     vec3 finalColor = ambient + Lo;
+
+    // Apply fog
+    float fogFactor = calcFogFactor();
+    finalColor = mix(fog.color.rgb, finalColor, fogFactor);
     
     // ═══════════════════════════════════════════════════════════════
     // TONE MAPPING & GAMMA CORRECTION

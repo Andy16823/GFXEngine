@@ -104,8 +104,9 @@ void GFXEngine::Graphics::RenderTexture::updateDescriptorSet(Renderer& renderer,
 	m_descriptorSet = renderer.allocateTextureDescriptorSet(m_colorAttachment, binding);
 }
 
-void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, LibGFX::Pipeline& pipeline, uint32_t imageIndex)
+void GFXEngine::Graphics::RenderTexture::draw(Renderer& renderer, RenderPipeline& pipeline, uint32_t imageIndex)
 {
+	// TODO: Remove this -> renderer.presentRenderTexture()
 	renderer.bindDescriptorSet(m_descriptorSet, pipeline.getPipelineLayout(), 0, imageIndex);
 	renderer.drawBuffers(m_vertexBuffer, m_indexBuffer, 6, imageIndex);
 }

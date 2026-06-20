@@ -114,4 +114,5 @@ target_link_libraries(imguizmo PUBLIC
 )
 
 # Schließen Sie Unterprojekte ein.
-add_subdirectory ("GFXEngine")
+add_subdirectory("GFXEngine")
+add_subdirectory("GFXEditor")

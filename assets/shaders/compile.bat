@@ -18,4 +18,8 @@ C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V mesh_pbr.frag -o mesh_pbr_fra
 
 C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V debug.vert -o debug_vert.spv
 C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V debug.frag -o debug_frag.spv
+
+C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V sprite.vert -o sprite_vert.spv
+C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V sprite.frag -o sprite_frag.spv
+
 pause

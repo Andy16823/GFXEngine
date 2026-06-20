@@ -20,10 +20,10 @@ std::pair<std::vector<GFXEngine::EngineTypes::Vertex3D>, std::vector<uint32_t>> 
 std::pair<std::vector<GFXEngine::EngineTypes::Vertex2D>, std::vector<uint32_t>> GFXEngine::Graphics::Shapes::createQuad()
 {
 	std::vector<EngineTypes::Vertex2D> vertices = {
-		{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-		{{ 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-		{{ 0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-		{{-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+		{{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
+		{{ 0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
+		{{ 0.5f,  0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+		{{-0.5f,  0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
 	};
 
 	std::vector<uint32_t> indices = {

@@ -1,65 +1,66 @@
 #include "StaticMeshModel.h"
 #include "Utils.h"
-
-GFXEngine::Graphics::StaticMeshModel::StaticMeshModel(const std::string& name, const std::string& filePath, MaterialType materialType)
-	: MeshModel(name)
-{
-	this->loadFromFile(filePath, materialType);
-}
+#include <cassert>
 
 void GFXEngine::Graphics::StaticMeshModel::init(Renderer& renderer)
 {
-	// Initialize materials
-	for (auto& material : m_materials) {
-		material->init(renderer);
-	}
+	if (m_loaded)
+	{
+		// Ensure we don't initialize more than once without destroying first
+		if (m_initialized) {
+			return;
+		}
 
-	// Initialize meshes
-	for (auto& mesh : m_meshes) {
-		mesh.init(renderer);
+		// Initialize materials
+		for (auto& material : m_materials) {
+			material->init(renderer);
+		}
+
+		// Initialize meshes
+		for (auto& mesh : m_meshes) {
+			mesh.init(renderer);
+		}
+		m_initialized = true;
 	}
 }
 
 void GFXEngine::Graphics::StaticMeshModel::destroy(Renderer& renderer)
 {
-	// Destroy materials
-	for (auto& material : m_materials) {
-		material->destroy(renderer);
-	}
+	if (m_initialized) 
+	{
+		// Destroy materials
+		for (auto& material : m_materials) {
+			material->destroy(renderer);
+		}
 
-	// Destroy meshes
-	for (auto& mesh : m_meshes) {
-		mesh.destroy(renderer);
-	}
-}
-
-void GFXEngine::Graphics::StaticMeshModel::loadFromFile(const std::string& filePath, MaterialType materialType)
-{
-	m_meshes = GFXEngine::Utils::loadMeshesFromFile(filePath);
-	switch (materialType) {
-	case MaterialType::Unlit:
-		loadAsUnlit(filePath);
-		break;
-	case MaterialType::PBR:
-		loadAsPBR(filePath);
-		break;
-	default:
-		loadAsPBR(filePath);
+		// Destroy meshes
+		for (auto& mesh : m_meshes) {
+			mesh.destroy(renderer);
+		}
+		m_initialized = false;
 	}
 }
 
-void GFXEngine::Graphics::StaticMeshModel::loadAsUnlit(const std::string& filePath)
+void GFXEngine::Graphics::StaticMeshModel::load()
 {
-	auto materials = GFXEngine::Utils::loadMaterialsFromFile(filePath);
-	for (auto& material : materials) {
-		m_materials.push_back(std::make_unique<UnlitMaterial>(std::move(material)));
-	}
-}
+	assert(!m_loaded && "StaticMeshModel is already loaded");
 
-void GFXEngine::Graphics::StaticMeshModel::loadAsPBR(const std::string& filePath)
-{
-	auto materials = GFXEngine::Utils::loadPBRMaterialsFromFile(filePath);
+	m_meshes = GFXEngine::Utils::loadMeshesFromFile(getFilePath());
+	auto materials = GFXEngine::Utils::loadPBRMaterialsFromFile(getFilePath());
 	for (auto& material : materials) {
 		m_materials.push_back(std::make_unique<PBRMaterial>(std::move(material)));
+	}
+
+	m_loaded = true;
+}
+
+void GFXEngine::Graphics::StaticMeshModel::unload()
+{
+	assert(!m_initialized && "Cannot unload StaticMeshModel while it is still initialized");
+	if (m_loaded)
+	{
+		m_meshes.clear();
+		m_materials.clear();
+		m_loaded = false;
 	}
 }

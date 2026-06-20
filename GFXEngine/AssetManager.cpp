@@ -1,1 +1,77 @@
 #include "AssetManager.h"
+#include "Utils.h"
+#include <stdexcept>
+#include <iostream>
+#include "Renderer.h"
+
+void GFXEngine::AssetManager::loadFromDirectory(const std::filesystem::path& directory, bool recursive /*= true*/, bool lazy /*= false*/)
+{
+	if (!std::filesystem::exists(directory) || !std::filesystem::is_directory(directory)) 
+	{
+		throw std::runtime_error("Directory does not exist: " + directory.string());
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(directory))
+	{
+		if (entry.is_directory() && recursive)
+		{
+			loadFromDirectory(entry.path(), recursive, lazy);
+		}
+		else if (entry.is_regular_file())
+		{
+			this->loadFromFile(entry.path(), lazy);
+		}
+	}
+}
+
+GFXEngine::Asset* GFXEngine::AssetManager::loadFromFile(const std::filesystem::path& filePath, bool lazy /*= false*/)
+{
+	if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath))
+	{
+		throw std::runtime_error("File does not exist: " + filePath.string());
+	}
+
+	std::string extension = filePath.extension().string();
+	std::string filename = filePath.filename().string();
+	std::string name = filePath.stem().string();
+
+	if (m_loaders.contains(extension))
+	{
+		auto asset = m_loaders[extension](name, filePath, lazy);
+		return this->addAsset(std::move(asset));
+	}
+	return nullptr;
+}
+
+void GFXEngine::AssetManager::unloadAssets()
+{
+	for (auto& pair : m_assets) {
+		if (auto fileAsset = dynamic_cast<FileAsset*>(pair.second.get())) {
+			if (fileAsset->isLoaded()) {
+				fileAsset->unload();
+			}
+		}
+	}
+}
+
+void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& renderer)
+{
+	for (auto& pair : m_assets) {
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) 
+		{
+			if (!graphicsAsset->isInitialized()) 
+			{
+				graphicsAsset->init(renderer);
+			}
+		}
+	}
+}
+
+void GFXEngine::AssetManager::destroyGraphicsAssets(Graphics::Renderer& renderer)
+{
+	for (auto& pair : m_assets) {
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) {
+			graphicsAsset->destroy(renderer);
+		}
+	}
+}

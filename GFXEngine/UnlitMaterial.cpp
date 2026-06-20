@@ -10,12 +10,6 @@ void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0);
 }
 
-void GFXEngine::Graphics::UnlitMaterial::bind(Renderer& renderer, const Camera& camera, const LibGFX::Pipeline& pipeline, uint32_t imageIndex) const
-{
-	// Bind the texture descriptor set to the pipeline
-	renderer.bindDescriptorSet(m_textureDescriptorSet, pipeline.getPipelineLayout(), MATERIAL_UBO_BINDING, imageIndex);
-}
-
 void GFXEngine::Graphics::UnlitMaterial::destroy(Renderer& renderer)
 {
 	// Free the texture descriptor set and destroy the Vulkan texture

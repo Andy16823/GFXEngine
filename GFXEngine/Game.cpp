@@ -1,24 +1,112 @@
 #include "Game.h"
 #include <thread>
 #include "RuntimeContext.h"
+#include "Model.h"
+#include "InstancedModel.h"
+#include "InstanceHandle.h"
+#include "Sprite.h"
+#include "InputManager.h"
+#include "EnvironmentMap.h"
+#include "StaticMeshModel.h"
+#include "DataResource.h"
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
 {
-	// Register core services in the runtime context so they can be accessed globally
-	GFXEngine::RuntimeContext::getInstance().addService(ASSET_MANAGER_SERVICE_ID, assetManager.get());
-	GFXEngine::RuntimeContext::getInstance().addService(BEHAVIOR_REGISTRY_SERVICE_ID, behaviorRegistry.get());
+	// Register core entity types in the entity factory
+	this->entityFactory->registerEntity<GFXEngine::Core::Model>();
+	this->entityFactory->registerEntity<GFXEngine::Core::InstancedModel>();
+	this->entityFactory->registerEntity<GFXEngine::Core::InstanceHandle>();
+	//this->entityFactory->registerEntity<GFXEngine::Core::Sprite>(); TODO: Add a default constructor to Sprite that initializes the material and mesh references, then register it here.
 
+	// Create the window and initialize the renderer
 	m_windowSize = { static_cast<int>(width), static_cast<int>(height) };
-
-	// Create window and renderer
-	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen);
+	m_window = LibGFX::GFX::createWindow(width, height, title.c_str(), fullscreen, m_resizable);
 	glfwSetWindowUserPointer(m_window, this);
+	this->inputManager->init(m_window);
+
+	// Create the static runtime context and register core services
+	GFXEngine::RuntimeContext::get().setWindow(m_window);
+	GFXEngine::RuntimeContext::get().setServiceManager(serviceManager.get());
+	GFXEngine::RuntimeContext::get().setAssetManager(assetManager.get());
+	GFXEngine::RuntimeContext::get().setBehaviorRegistry(behaviorRegistry.get());
+	GFXEngine::RuntimeContext::get().setEntityFactory(entityFactory.get());
+	GFXEngine::RuntimeContext::get().setInputManager(inputManager.get());
+	GFXEngine::RuntimeContext::get().setEventBus(eventBus.get());
+
+	// Builtin asset loaders
+	assetManager->registerLoader(".env", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto envMap = std::make_unique<Graphics::EnvironmentMap>(name, filePath.string());
+		if (!lazy) {
+			envMap->load();
+		}
+		return envMap;
+		});
+
+	assetManager->registerLoader(".gltf", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name, filePath.string());
+		if (!lazy) {
+			model->load();
+		}
+		return model;
+		});
+
+	assetManager->registerLoader(".fbx", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name, filePath.string());
+		if (!lazy) {
+			model->load();
+		}
+		return model;
+		});
+
+	assetManager->registerLoader(".obj", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto model = std::make_unique<Graphics::StaticMeshModel>(name, filePath.string());
+		if (!lazy) {
+			model->load();
+		}
+		return model;
+		});
+
+	assetManager->registerLoader(".json", [](const std::string& name, const std::filesystem::path& filePath, bool lazy) {
+		auto dataResource = std::make_unique<DataResource>(name, filePath.string());
+		if (!lazy) {
+			dataResource->load();
+		}
+		return dataResource;
+		});
 
 	// Input callback
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) {
 			game->onInput(key, mods, action);
+			game->inputManager->handleInput(key, mods, action);
+		}
+	});
+
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) 
+		{ 
+			game->onMouseInput(button, mods, action);
+			game->inputManager->handleMouseButton(button, mods, action);
+		}
+	});
+
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) 
+		{
+			game->onMouseMove(xpos, ypos);
+			game->inputManager->handleMouseMove(xpos, ypos);
+		}
+	});
+
+	glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game) 
+		{
+			game->onScroll(xoffset, yoffset);
+			game->inputManager->handleScroll(xoffset, yoffset);
 		}
 	});
 
@@ -28,10 +116,13 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 
 	// Register swapchain recreation callbacks
 	m_renderer->registerSwapchainCleanupCallback([this](Graphics::Renderer& renderer) {
-		this->onSwpachainRecreate(renderer);
+		this->onSwapchainRecreate(renderer);
 		});
 
 	m_renderer->registerSwapchainRecreationCallback([this](Graphics::Renderer& renderer, VkViewport viewport, VkRect2D scissor) {
+		int width, height;
+		glfwGetWindowSize(m_window, &width, &height);
+		m_windowSize = { width, height };
 		this->afterSwapchainRecreate(renderer, viewport, scissor);
 		});
 
@@ -76,6 +167,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		// Call user-defined update
 		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);
 
+		// Call user-defined before render
+		this->beforeRender(*m_renderer, imageIndex);
+
 		// Start recording commands for the current frame
 		m_renderer->beginFrame(imageIndex);
 		this->onRender(*m_renderer, imageIndex);
@@ -84,6 +178,12 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		m_renderer->endFrame(imageIndex);
 		m_renderer->submitFrame(imageIndex);
 		m_renderer->presentFrame(imageIndex);
+		
+		// Update background tasks
+		m_backgroundTaskManager.update();
+
+		// Call user-defined after render
+		this->afterRender(*m_renderer, imageIndex);
 
 		// Advance to the next frame
 		m_renderer->advanceFrame();
@@ -97,8 +197,8 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	// Clean up assets and behaviors
 	assetManager->clear();
 	behaviorRegistry->clear();
-	GFXEngine::RuntimeContext::getInstance().removeService(ASSET_MANAGER_SERVICE_ID);
-	GFXEngine::RuntimeContext::getInstance().removeService(BEHAVIOR_REGISTRY_SERVICE_ID);
+	entityFactory->clear();
+	inputManager->clearCallbacks();
 }
 
 glm::vec2 GFXEngine::Core::Game::getCursorPos() const
@@ -106,4 +206,10 @@ glm::vec2 GFXEngine::Core::Game::getCursorPos() const
 	double x, y;
 	glfwGetCursorPos(m_window, &x, &y);
 	return { static_cast<float>(x), static_cast<float>(y) };
+}
+
+void GFXEngine::Core::Game::StartBackgroundTask(std::unique_ptr<BackgroundTask> task, TaskCompletionCallback completionCallback)
+{
+	auto taskPtr = m_backgroundTaskManager.addTask(std::move(task));
+	taskPtr->start(completionCallback);
 }
