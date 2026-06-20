@@ -7,9 +7,6 @@ namespace GFXEditor {
 	class EditorDialog;
 	using EditorDialogCallback = std::function<void(EditorDialog&)>;
 
-	/// <summary>
-	/// Dialog result enum to indicate the result of a dialog submission, such as whether the user clicked OK or Cancel.
-	/// </summary>
 	enum class EditorDialogResult
 	{
 		None,
@@ -17,10 +14,6 @@ namespace GFXEditor {
 		Cancel
 	};
 
-	/// <summary>
-	/// EditorDialog is an abstract base class for creating modal dialogs in the editor. 
-	/// It manages the dialog's open/close state, title, and callback function that will be called when the dialog is submitted.
-	/// </summary>
 	class EditorDialog
 	{
 	private:
@@ -32,42 +25,60 @@ namespace GFXEditor {
 		EditorDialog() = default;
 		virtual ~EditorDialog() = default;
 
-		/// <summary>
-		/// Renders the dialog using ImGui. 
-		/// This function should be called every frame in the editor's render loop.
-		/// </summary>
+		//************************************
+		// Method:    renderDialog
+		// FullName:  GFXEditor::EditorDialog::renderDialog
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void renderDialog();
 
-		/// <summary>
-		/// Renders the content of the dialog. 
-		/// This function should be implemented by derived classes to define the dialog's UI.
-		/// </summary>
-		/// <returns>The result of the dialog submission.</returns>
+		//************************************
+		// Method:    renderContent
+		// FullName:  GFXEditor::EditorDialog::renderContent
+		// Access:    virtual public 
+		// Returns:   GFXEditor::EditorDialogResult
+		// Qualifier:
+		//************************************
 		virtual EditorDialogResult renderContent() = 0;
 
-		/// <summary>
-		/// Function to clear the dialog's results or reset its state.
-		/// Get called after the dialogs callback is executed to reset the dialog for the next time it is opened.
-		/// </summary>
+		//************************************
+		// Method:    clearResults
+		// FullName:  GFXEditor::EditorDialog::clearResults
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		virtual void clearResults() = 0;
 
-		/// <summary>
-		/// Shows the dialog with the specified title and callback function.
-		/// </summary>
-		/// <param name="title"></param>
-		/// <param name="callback"></param>
+		//************************************
+		// Method:    showDialog
+		// FullName:  GFXEditor::EditorDialog::showDialog
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::string & title
+		// Parameter: EditorDialogCallback callback
+		//************************************
 		void showDialog(const std::string& title, EditorDialogCallback callback);
 
-		/// <summary>
-		/// Closes the dialog and resets its state. 
-		/// This should be called when the dialog is submitted or cancelled.
-		/// </summary>
+		//************************************
+		// Method:    close
+		// FullName:  GFXEditor::EditorDialog::close
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void close();
 
-		/// <summary>
-		/// Returns whether the dialog is currently open.
-		/// </summary>
-		/// <returns>True if the dialog is open, false otherwise.</returns>
+		//************************************
+		// Method:    isOpen
+		// FullName:  GFXEditor::EditorDialog::isOpen
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier: const
+		//************************************
 		bool isOpen() const { return m_isOpen; }
 	};
 }
