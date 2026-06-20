@@ -34,34 +34,25 @@ void GFXEngine::Core::Scene3D::renderParallel(GFXEngine::Graphics::RenderContext
 
 void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& context, const GFXEngine::Graphics::EnvironmentMap& envMap)
 {
-	// Ensure the environment map is initialized before rendering
 	assert(envMap.isInitialized() && "EnvironmentMap must be initialized before rendering");
 
-	// Get the Pipeline for the render
 	auto pipeline = context.renderer.getPipeline<Graphics::GraphicsPipeline>(Defintions::ENVIRONMENT_PIPELINE);
 	
-	// Build graphic resources for the render task, starting with camera and scene-level resources
 	Graphics::GraphicResources resources;
 	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 	resources[Defintions::MATERIAL_RESOURCE] = envMap.getMaterial().getDescriptorSet(context.imageIndex);
 	resources[Defintions::ENVIRONMENT_MAP_RESOURCE] = envMap.getDescriptorSet(context.imageIndex);
 	this->getGraphicResources(resources, context.imageIndex);
 	
-	// Build render task for the enviroment map
 	GFXEngine::Graphics::RenderTaskBuilder builder;
 	builder.setPipeline(pipeline)
 		.setMesh(&envMap.getMesh())
 		.setRenderLayer(Graphics::RenderLayer::Skybox);
 
-	// Bind resources to the pipeline (this will throw if required resources are missing)
 	pipeline->getGraphicsPass().bindResources(builder, resources);
 	m_renderQueue.addRenderTask(builder.build());
 }
 
-/// <summary>
-/// Initializes the scene by initializing the directional light and all entities in the scene.
-/// </summary>
-/// <param name="renderer"></param>
 void GFXEngine::Core::Scene3D::init(Graphics::Renderer& renderer)
 {
 	directionalLight.init(renderer);
@@ -72,13 +63,6 @@ void GFXEngine::Core::Scene3D::init(Graphics::Renderer& renderer)
 	}
 }
 
-/// <summary>
-/// Updates the scene by updating the directional light and all entities in the scene.
-/// </summary>
-/// <param name="renderer"></param>
-/// <param name="camera"></param>
-/// <param name="imageIndex"></param>
-/// <param name="deltaTime"></param>
 void GFXEngine::Core::Scene3D::update(Graphics::Camera& camera, float deltaTime)
 {
 	for (auto& entity : m_entities)
@@ -89,21 +73,12 @@ void GFXEngine::Core::Scene3D::update(Graphics::Camera& camera, float deltaTime)
 
 void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
-	// Update scene-level resources like lights and fog before rendering
 	directionalLight.update(renderer, camera, imageIndex);
 	fog.update(renderer, camera, imageIndex);
 }
 
-/// <summary>
-/// Renders the scene
-/// </summary>
-/// <param name="renderer"></param>
-/// <param name="camera"></param>
-/// <param name="imageIndex"></param>
-/// <param name="injections"></param>
 void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
-	// Create a render context to pass to entities and render contributors
 	GFXEngine::Graphics::RenderContext context{
 		.renderer = renderer,
 		.camera = camera,
@@ -120,32 +95,20 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		renderSerial(context);
 	}
 
-	// Renders an environment map if exist
 	if (const auto* envMap = m_environmentMapRef.get<Graphics::EnvironmentMap>()) 
 	{
 		this->renderEnvMap(context, *envMap);
 	}
 
-	// Create a render context to pass to entities and render contributors
 	m_renderQueue.sort();
 	m_renderQueue.execute(renderer, camera, imageIndex);
 }
 
-/// <summary>
-/// After rendering the scene, this function can be used to perform any necessary operations such as post-processing effects or cleanup. 
-/// </summary>
-/// <param name="renderer"></param>
-/// <param name="camera"></param>
-/// <param name="imageIndex"></param>
 void GFXEngine::Core::Scene3D::afterRender(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
 {
 	// TODO: Add remove entitys here or add enqued entitys
 }
 
-/// <summary>
-/// Destroys the scene by destroying the directional light and all entities in the scene, then clearing the entity list.
-/// </summary>
-/// <param name="renderer"></param>
 void GFXEngine::Core::Scene3D::destroy(Graphics::Renderer& renderer)
 {
 	directionalLight.destroy(renderer);
@@ -157,12 +120,6 @@ void GFXEngine::Core::Scene3D::destroy(Graphics::Renderer& renderer)
 	m_entities.clear();
 }
 
-/// <summary>
-/// Inputs are currently not handled at the scene level, but this function can be used to handle any scene-wide input if needed in the future.
-/// </summary>
-/// <param name="key"></param>
-/// <param name="mods"></param>
-/// <param name="action"></param>
 void GFXEngine::Core::Scene3D::input(int key, int mods, int action)
 {
 
@@ -220,10 +177,6 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 	return properties;
 }
 
-/// <summary>
-/// Serializes the scene by serializing each entity and storing its type information.
-/// </summary>
-/// <returns></returns>
 nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 {
 	nlohmann::json data;
@@ -241,12 +194,6 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 	return data;
 }
 
-/// <summary>
-/// Deserializes the scene by reading each entity's type information, creating an instance of the correct type, and deserializing its data.
-/// </summary>
-/// <param name="data"></param>
-/// <param name="context"></param>
-/// <param name="flags"></param>
 void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	if (data.contains("directionalLight")) {
@@ -272,7 +219,6 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 		std::unique_ptr<Entity> entity = context.entityFactory.createEntity(typeName);
 	
 		if (!entity) {
-			// Continue to the next entity if the type is unknown.
 			continue;
 		}
 
@@ -297,18 +243,15 @@ void GFXEngine::Core::Scene3D::getGraphicResources(Graphics::GraphicResources& r
 
 GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context)
 {
-	// Ensure the path exists before trying to load it
 	if (!std::filesystem::exists(path)) {
 		throw std::runtime_error("Prefab file does not exist: " + path.string());
 	}
 
-	// Load the prefab JSON data from the file and ensure it contains the necessary "prefab" field
 	auto json = Utils::loadJsonFromFile(path.string());
 	if (!json.contains("prefab")) {
 		throw std::runtime_error("Invalid prefab file: " + path.string());
 	}
 
-	// Ensure the prefab JSON data contains the necessary "type" field to determine which entity type to instantiate
 	if (!json["prefab"].contains("type")) {
 		throw std::runtime_error("Invalid prefab file: " + path.string());
 	}
@@ -318,7 +261,8 @@ GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::
 	if (!entity) {
 		throw std::runtime_error("Unknown entity type in prefab: " + typeName);
 	}
-	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID); // When instantiating a prefab, we want to generate new UUIDs for the entities to avoid conflicts with existing entities in the scene
+	// When instantiating a prefab, we want to generate new UUIDs for the entities to avoid conflicts with existing entities in the scene
+	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID);
 	
 	return addEntity(std::move(entity));
 }

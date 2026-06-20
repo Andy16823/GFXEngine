@@ -9,19 +9,8 @@
 
 namespace GFXEngine
 {
-	/// <summary>
-	/// Task completion callback type, called when a background task is completed. 
-	/// The callback receives a reference to the completed task.
-	/// </summary>
 	using TaskCompletionCallback = std::function<void(class BackgroundTask&)>;
 
-	/// <summary>
-	/// BackgroundTask represents a unit of work that can be processed in a separate thread.
-	/// The Process method should be overridden to define the specific work to be done.
-	/// The Task needs to be added to the BackgroundTaskManager to be executed, and the completion callback will be called once the task is completed.
-	/// The Task Process method will be called in a separate thread, so it should not interact with the main thread directly. 
-	/// The completion callback will be called in the main thread when the task is completed, allowing for safe interaction with the main thread if needed.
-	/// </summary>
 	class BackgroundTask
 	{
 	private:
@@ -30,6 +19,14 @@ namespace GFXEngine
 		TaskCompletionCallback m_completionCallback;
 
 	public:
+		
+		//************************************
+		// Method:    ~BackgroundTask
+		// FullName:  GFXEngine::BackgroundTask::~BackgroundTask
+		// Access:    virtual public 
+		// Returns:   
+		// Qualifier:
+		//************************************
 		virtual ~BackgroundTask()
 		{
 			if (m_thread.joinable())
@@ -37,30 +34,72 @@ namespace GFXEngine
 				m_thread.join();
 			}
 		}
+		
+		//************************************
+		// Method:    start
+		// FullName:  GFXEngine::BackgroundTask::start
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: TaskCompletionCallback completionCallback
+		//************************************
 		void start(TaskCompletionCallback completionCallback);
+		
+		//************************************
+		// Method:    isCompleted
+		// FullName:  GFXEngine::BackgroundTask::isCompleted
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier: const
+		//************************************
 		bool isCompleted() const { return m_completed; }
+		
+		//************************************
+		// Method:    complete
+		// FullName:  GFXEngine::BackgroundTask::complete
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void complete() { if (m_completionCallback) m_completionCallback(*this); }
 
+		//************************************
+		// Method:    process
+		// FullName:  GFXEngine::BackgroundTask::process
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		virtual void process() = 0;
-
 	};
 
-	/// <summary>
-	/// InlineTask is a simple implementation of BackgroundTask that allows you to define the task work using a std::function.
-	/// </summary>
 	class InlineTask : public BackgroundTask
 	{
 	private:
 		std::function<void()> m_taskFunction;
 	public:
+
+		//************************************
+		// Method:    InlineTask
+		// FullName:  GFXEngine::InlineTask::InlineTask
+		// Access:    public 
+		// Returns:   
+		// Qualifier: : m_taskFunction(taskFunction)
+		// Parameter: std::function<void
+		// Parameter: > taskFunction
+		//************************************
 		InlineTask(std::function<void()> taskFunction) : m_taskFunction(taskFunction) {}
+		
+		//************************************
+		// Method:    process
+		// FullName:  GFXEngine::InlineTask::process
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		virtual void process() override { if (m_taskFunction) m_taskFunction(); }
 	};
 
-	/// <summary>
-	/// CreationTask is a template class that extends BackgroundTask, allowing you to define a task that creates an object of type T using a std::function.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	template<typename T>
 	class CreationTask : public BackgroundTask
 	{
@@ -68,9 +107,43 @@ namespace GFXEngine
 		std::function<T()> m_creationFunction;
 		std::optional<T> m_result;
 	public:
+
+		//************************************
+		// Method:    CreationTask
+		// FullName:  GFXEngine::CreationTask<T>::CreationTask
+		// Access:    public 
+		// Returns:   
+		// Qualifier: : m_creationFunction(creationFunction)
+		// Parameter: std::function<T
+		// Parameter: > creationFunction
+		//************************************
 		CreationTask(std::function<T()> creationFunction) : m_creationFunction(creationFunction) {}
+
+		//************************************
+		// Method:    process
+		// FullName:  GFXEngine::CreationTask<T>::process
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		virtual void process() override { if (m_creationFunction) m_result = m_creationFunction(); }
+		
+		//************************************
+		// Method:    getResult
+		// FullName:  GFXEngine::CreationTask<T>::getResult
+		// Access:    public 
+		// Returns:   std::optional<T>
+		// Qualifier: const
+		//************************************
 		std::optional<T> getResult() const { return m_result; }
+		
+		//************************************
+		// Method:    moveResult
+		// FullName:  GFXEngine::CreationTask<T>::moveResult
+		// Access:    public 
+		// Returns:   std::optional<T>
+		// Qualifier:
+		//************************************
 		std::optional<T> moveResult() { 
 			auto result = std::move(m_result);
 			m_result.reset();
@@ -78,33 +151,76 @@ namespace GFXEngine
 		}
 	};
 
-	/// <summary>
-	/// FetcherTask is a template class that extends BackgroundTask, allowing you to define a 
-	/// task that fetches an object of type T using a std::function.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	template<typename T>
 	class FetcherTask : public BackgroundTask
 	{
 		std::function<T*()> m_fetchFunction;
 		T* m_result = nullptr;
 	public:
+
+		//************************************
+		// Method:    FetcherTask
+		// FullName:  GFXEngine::FetcherTask<T>::FetcherTask
+		// Access:    public 
+		// Returns:   
+		// Qualifier: : m_fetchFunction(fetchFunction)
+		// Parameter: std::function<T * 
+		// Parameter: > fetchFunction
+		//************************************
 		FetcherTask(std::function<T*()> fetchFunction) : m_fetchFunction(fetchFunction) {}
+		
+		//************************************
+		// Method:    process
+		// FullName:  GFXEngine::FetcherTask<T>::process
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		virtual void process() override { if (m_fetchFunction) m_result = m_fetchFunction(); }
+		
+		//************************************
+		// Method:    getResult
+		// FullName:  GFXEngine::FetcherTask<T>::getResult
+		// Access:    public 
+		// Returns:   T*
+		// Qualifier: const
+		//************************************
 		T* getResult() const { return m_result; }
 	};
 
-	/// <summary>
-	/// BackgroundTaskManager manages a collection of BackgroundTask instances, allowing you to add new tasks, update their status, and clear completed tasks.
-	/// </summary>
 	class BackgroundTaskManager
 	{
 	private:
 		std::vector<std::unique_ptr<BackgroundTask>> m_tasks;
 		std::mutex m_mutex;
 	public:
+
+		//************************************
+		// Method:    addTask
+		// FullName:  GFXEngine::BackgroundTaskManager::addTask
+		// Access:    public 
+		// Returns:   GFXEngine::BackgroundTask*
+		// Qualifier:
+		// Parameter: std::unique_ptr<BackgroundTask> task
+		//************************************
 		BackgroundTask* addTask(std::unique_ptr<BackgroundTask> task);
+		
+		//************************************
+		// Method:    update
+		// FullName:  GFXEngine::BackgroundTaskManager::update
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void update();
+		
+		//************************************
+		// Method:    clear
+		// FullName:  GFXEngine::BackgroundTaskManager::clear
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void clear();
 	};
 }

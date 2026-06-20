@@ -18,9 +18,31 @@ namespace GFXEngine
 		std::unordered_map<std::string, FactoryFunction> m_entityCreators;
 
 	public:
+		//************************************
+		// Method:    EntityFactory
+		// FullName:  GFXEngine::EntityFactory::EntityFactory
+		// Access:    public 
+		// Returns:   
+		// Qualifier:
+		//************************************
 		EntityFactory() = default;
+		
+		//************************************
+		// Method:    ~EntityFactory
+		// FullName:  GFXEngine::EntityFactory::~EntityFactory
+		// Access:    public 
+		// Returns:   
+		// Qualifier:
+		//************************************
 		~EntityFactory() = default;
 
+		//************************************
+		// Method:    registerEntity
+		// FullName:  GFXEngine::EntityFactory::registerEntity
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
 		template<typename T>
 		bool registerEntity()
 		{
@@ -32,6 +54,14 @@ namespace GFXEngine
 			return result.second;
 		}
 
+		//************************************
+		// Method:    registerEntity
+		// FullName:  GFXEngine::EntityFactory::registerEntity
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: const std::string & name
+		//************************************
 		template<typename T>
 		bool registerEntity(const std::string& name) 
 		{
@@ -44,6 +74,15 @@ namespace GFXEngine
 			return result.second;
 		}
 
+		//************************************
+		// Method:    registerEntity
+		// FullName:  GFXEngine::EntityFactory::registerEntity
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: const std::string & name
+		// Parameter: FactoryFunction factory
+		//************************************
 		template<typename T>
 		bool registerEntity(const std::string& name, FactoryFunction factory) 
 		{
@@ -52,6 +91,14 @@ namespace GFXEngine
 			return result.second;
 		}
 
+		//************************************
+		// Method:    createEntity
+		// FullName:  GFXEngine::EntityFactory::createEntity
+		// Access:    public 
+		// Returns:   std::unique_ptr<GFXEngine::Core::Entity>
+		// Qualifier: const
+		// Parameter: const std::string & name
+		//************************************
 		std::unique_ptr<GFXEngine::Core::Entity> createEntity(const std::string& name) const 
 		{
 			auto it = m_entityCreators.find(name);
@@ -62,6 +109,13 @@ namespace GFXEngine
 			return nullptr;
 		}
 
+		//************************************
+		// Method:    clear
+		// FullName:  GFXEngine::EntityFactory::clear
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void clear()
 		{
 			m_entityCreators.clear();

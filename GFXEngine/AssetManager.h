@@ -7,18 +7,8 @@
 
 namespace GFXEngine {
 
-	/// <summary>
-	/// Function type for asset loaders. An asset loader is a function that takes a file path and returns a unique pointer to an Asset.
-	/// Parameters:
-	/// 1: The name of the asset (derived from the file name without extension).
-	/// 2: The file path of the asset to load.
-	/// 3: Whether to load the asset lazily (i.e., defer loading until the asset is accessed).
-	/// </summary>
 	using AssetLoaderFunc = std::function<std::unique_ptr<Asset>(const std::string&, const std::filesystem::path&, bool)>;
 
-	/// <summary>
-	/// AssetManager is responsible for managing the lifecycle of assets in the engine. 
-	/// </summary>
 	class AssetManager
 	{
 	private:
@@ -26,66 +16,92 @@ namespace GFXEngine {
 		std::unordered_map<std::string, AssetLoaderFunc> m_loaders;
 
 	public:
-		/// <summary>
-		/// Load all assets from the specified directory.
-		/// </summary>
-		/// <param name="directory">The directory to load assets from.</param>
-		/// <param name="recursive">Whether to load assets from subdirectories.</param>
-		/// <param name="lazy">Whether to load assets lazily.</param>
+		
+		//************************************
+		// Method:    loadFromDirectory
+		// FullName:  GFXEngine::AssetManager::loadFromDirectory
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::filesystem::path & directory
+		// Parameter: bool recursive
+		// Parameter: bool lazy
+		//************************************
 		void loadFromDirectory(const std::filesystem::path& directory, bool recursive = true, bool lazy = false);
 
-		/// <summary>
-		/// Load a single asset from the specified file path. The type of asset is determined by the file extension and the registered loaders.
-		/// </summary>
-		/// <param name="filePath">The file path of the asset to load.</param>
-		/// <param name="lazy">Whether to load the asset lazily.</param>
-		/// <returns>The loaded asset, or nullptr if the asset could not be loaded.</returns>
+		//************************************
+		// Method:    loadFromFile
+		// FullName:  GFXEngine::AssetManager::loadFromFile
+		// Access:    public 
+		// Returns:   GFXEngine::Asset*
+		// Qualifier:
+		// Parameter: const std::filesystem::path & filePath
+		// Parameter: bool lazy
+		//************************************
 		Asset* loadFromFile(const std::filesystem::path& filePath, bool lazy = false);
 
-		/// <summary>
-		/// Unload all assets that implement the FileAsset interface. 
-		/// This will free any resources associated with the loaded files, but will not remove the assets from the manager.
-		/// </summary>
+		//************************************
+		// Method:    unloadAssets
+		// FullName:  GFXEngine::AssetManager::unloadAssets
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void unloadAssets();
 
-		/// <summary>
-		/// Initialize graphics resources for all assets that implement the GraphicsAsset interface. 
-		/// </summary>
-		/// <param name="renderer"></param>
+		//************************************
+		// Method:    initializeGraphicsAssets
+		// FullName:  GFXEngine::AssetManager::initializeGraphicsAssets
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: Graphics::Renderer & renderer
+		//************************************
 		void initializeGraphicsAssets(Graphics::Renderer& renderer);
 
-		/// <summary>
-		/// Destroy graphics resources for all assets that implement the GraphicsAsset interface.
-		/// </summary>
-		/// <param name="renderer"></param>
+		//************************************
+		// Method:    destroyGraphicsAssets
+		// FullName:  GFXEngine::AssetManager::destroyGraphicsAssets
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: Graphics::Renderer & renderer
+		//************************************
 		void destroyGraphicsAssets(Graphics::Renderer& renderer);
 
-		/// <summary>
-		/// Add an asset to the manager. The asset will be stored with its name as the key. If an asset with the same name already exists, it will be replaced.
-		/// </summary>
-		/// <param name="asset">The asset to add.</param>
-		/// <returns>The added asset.</returns>
+		//************************************
+		// Method:    addAsset
+		// FullName:  GFXEngine::AssetManager::addAsset
+		// Access:    public 
+		// Returns:   GFXEngine::Asset*
+		// Qualifier:
+		// Parameter: std::unique_ptr<Asset> asset
+		//************************************
 		Asset* addAsset(std::unique_ptr<Asset> asset) {
 			auto name = asset->getName();
 			return m_assets.emplace(name, std::move(asset)).first->second.get();
 		}
 
-		/// <summary>
-		/// Remove an asset from the manager by name. If the asset does not exist, this function does nothing.
-		/// </summary>
-		/// <param name="name">The name of the asset to remove.</param>
+		//************************************
+		// Method:    removeAsset
+		// FullName:  GFXEngine::AssetManager::removeAsset
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::string & name
+		//************************************
 		void removeAsset(const std::string& name) {
 			m_assets.erase(name);
 		}
 
-		/// <summary>
-		/// Get an asset by name and cast it to the specified type. 
-		/// If the asset does not exist or cannot be cast to the specified type, this function returns nullptr. 
-		/// If the asset is a FileAsset and is not loaded, it will be loaded before being returned.
-		/// </summary>
-		/// <typeparam name="T">The type to cast the asset to.</typeparam>
-		/// <param name="name">The name of the asset to retrieve.</param>
-		/// <returns>The asset cast to the specified type, or nullptr if the asset does not exist or cannot be cast.</returns>
+		//************************************
+		// Method:    get
+		// FullName:  GFXEngine::AssetManager::get
+		// Access:    public 
+		// Returns:   T*
+		// Qualifier:
+		// Parameter: const std::string & name
+		//************************************
 		template<typename T>
 		T* get(const std::string& name) {
 			auto it = m_assets.find(name);
@@ -110,23 +126,32 @@ namespace GFXEngine {
 			return asset;
 		}
 
-		/// <summary>
-		/// Iterate over all assets and apply the given function to each asset. 
-		/// This can be used for operations that need to be performed on all assets, such as initialization or cleanup.
-		/// </summary>
-		/// <param name="func">The function to apply to each asset.</param>
+		//************************************
+		// Method:    forEachAsset
+		// FullName:  GFXEngine::AssetManager::forEachAsset
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::function<void
+		// Parameter: Asset * 
+		// Parameter: > & func
+		//************************************
 		void forEachAsset(const std::function<void(Asset*)>& func) {
 			for (auto& pair : m_assets) {
 				func(pair.second.get());
 			}
 		}
 
-		/// <summary>
-		/// Iterate over all assets of the specified type and apply the given function to each asset.
-		/// This can be used for operations that need to be performed on all assets of a specific type, such as initialization or cleanup.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="func"></param>
+		//************************************
+		// Method:    forEachAssetOfType
+		// FullName:  GFXEngine::AssetManager::forEachAssetOfType
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::function<void
+		// Parameter: T * 
+		// Parameter: > & func
+		//************************************
 		template<typename T>
 		void forEachAssetOfType(const std::function<void(T*)>& func) {
 			for (auto& pair : m_assets) {
@@ -136,28 +161,39 @@ namespace GFXEngine {
 			}
 		}
 
-		/// <summary>
-		/// Check if an asset with the given name exists in the manager.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
+		//************************************
+		// Method:    contains
+		// FullName:  GFXEngine::AssetManager::contains
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier: const
+		// Parameter: const std::string & name
+		//************************************
 		bool contains(const std::string& name) const {
 			return m_assets.contains(name);
 		}
 
-		/// <summary>
-		/// Clear all assets from the manager.
-		/// </summary>
+		//************************************
+		// Method:    clear
+		// FullName:  GFXEngine::AssetManager::clear
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void clear() {
 			m_assets.clear();
 			m_loaders.clear();
 		}
 
-		/// <summary>
-		/// Register a loader function for a specific file extension.
-		/// </summary>
-		/// <param name="type">The file extension for which to register the loader.</param>
-		/// <param name="loader">The loader function to register.</param>
+		//************************************
+		// Method:    registerLoader
+		// FullName:  GFXEngine::AssetManager::registerLoader
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::string & type
+		// Parameter: AssetLoaderFunc loader
+		//************************************
 		void registerLoader(const std::string& type, AssetLoaderFunc loader) {
 			m_loaders[type] = std::move(loader);
 		}
