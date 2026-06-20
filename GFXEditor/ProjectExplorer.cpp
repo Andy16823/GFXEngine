@@ -112,8 +112,8 @@ void GFXEditor::Plugins::ProjectExplorer::render(GFXEditor::WorldEditor& editor,
 	}
 
 	// Go to parent directory option
-	std::string labelId = GFXEngine::Core::UIContext::createLabelID("...", GFXEngine::Utils::generateUUID());
-	if (ImGui::Selectable(labelId.c_str()))
+	auto parentPathId = GFXEngine::Core::UIContext::createLabelID("Parent Directory", GFXEngine::Utils::generateUUID());
+	if (ImGui::Selectable(parentPathId.c_str()))
 	{
 		m_currentExplorerPath = m_currentExplorerPath.parent_path();
 	}
