@@ -100,6 +100,13 @@ nlohmann::json GFXEngine::Core::Model::serialize() const
 	return data;
 }
 
+void Model::requireAsset(RequiredAssets& assets)
+{
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	assert(meshModel && "MeshModel reference is invalid in requireAsset");
+	assets.emplace(meshModel->getName());
+}
+
 void GFXEngine::Core::Model::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	// Deserialize base entity data first

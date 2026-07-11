@@ -187,10 +187,14 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 		data["environmentMap"] = envMap ? envMap->getName() : "";
 	}
 	
+	RequiredAssets assets;
 	for (const auto& entity : m_entities) {
-		nlohmann::json entityData = entity->serialize();
-		data["entities"].push_back(entityData);
+		entity->requireAsset(assets);	// Let the entity specify which assets it requires
+		nlohmann::json entityData = entity->serialize(); // Serialize the entity
+		data["entities"].push_back(entityData); // Add the serialized entity data to the entities array
 	}
+
+	data["requiredAssets"] = assets; // Add the required assets to the JSON data
 	return data;
 }
 

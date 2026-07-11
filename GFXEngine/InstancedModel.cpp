@@ -262,6 +262,14 @@ nlohmann::json GFXEngine::Core::InstancedModel::serialize() const
 	return data;
 }
 
+void GFXEngine::Core::InstancedModel::requireAsset(RequiredAssets& assets)
+{
+	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
+	assert(meshModel && "MeshModel reference is invalid in requireAsset");
+
+	assets.emplace(meshModel->getName());
+}
+
 void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	// Deserialize base entity data first
