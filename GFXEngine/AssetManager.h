@@ -197,5 +197,65 @@ namespace GFXEngine {
 		void registerLoader(const std::string& type, AssetLoaderFunc loader) {
 			m_loaders[type] = std::move(loader);
 		}
+
+		//************************************
+		// Method:    isAssetLoaded
+		// FullName:  GFXEngine::AssetManager::isAssetLoaded
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier: const
+		// Parameter: const std::string & name
+		//************************************
+		bool isAssetLoaded(const std::string& name) const {
+			auto it = m_assets.find(name);
+			if (it == m_assets.end()) {
+				return false;
+			}
+			if (auto* fileAsset = dynamic_cast<FileAsset*>(it->second.get())) {
+				return fileAsset->isLoaded();
+			}
+			return true; // Non-file assets are considered always loaded
+		}
+
+		//************************************
+		// Method:    loadAsset
+		// FullName:  GFXEngine::AssetManager::loadAsset
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: const std::string & name
+		//************************************
+		bool loadAsset(const std::string& name) {
+			auto it = m_assets.find(name);
+			if (it != m_assets.end()) {
+				if (auto* fileAsset = dynamic_cast<FileAsset*>(it->second.get())) {
+					fileAsset->load();
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		//************************************
+		// Method:    filterAssets
+		// FullName:  GFXEngine::AssetManager::filterAssets
+		// Access:    public 
+		// Returns:   std::vector<GFXEngine::Asset*>
+		// Qualifier:
+		// Parameter: std::function<bool
+		// Parameter: GFXEngine::Asset * 
+		// Parameter: > predicate
+		// Description: Filters assets based on a given predicate function and returns a vector of matching assets.
+		//************************************
+		std::vector<GFXEngine::Asset*> filterAssets(std::function<bool(GFXEngine::Asset*)> predicate) {
+			std::vector<GFXEngine::Asset*> filteredAssets;
+			for (auto& pair : m_assets) {
+				if (predicate(pair.second.get())) {
+					filteredAssets.push_back(pair.second.get());
+				}
+			}
+			return filteredAssets;
+		}
 	};
 }

@@ -20,6 +20,10 @@ target_link_libraries(GFXEngine
     PRIVATE imgui
     PRIVATE imguizmo
     PRIVATE nlohmann_json::nlohmann_json
+
+    PRIVATE BulletDynamics
+    PRIVATE BulletCollision
+    PRIVATE LinearMath
 )
 
 # Include-Verzeichnisse (falls nötig)

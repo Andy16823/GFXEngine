@@ -42,6 +42,19 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
+# Bullet3 von GitHub laden
+FetchContent_Declare(
+    bullet
+    GIT_REPOSITORY https://github.com/bulletphysics/bullet3
+    GIT_TAG master
+)
+# Bullet-Tests/Demos deaktivieren (verhindert Build-Fehler mit altem gtest/tr1 unter MSVC)
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_CPU_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(bullet)
+
 #ImGUI Laden
 FetchContent_Declare(
     imgui

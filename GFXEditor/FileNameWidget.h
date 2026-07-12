@@ -14,11 +14,44 @@ namespace GFXEditor {
 		std::string m_currentFileName;
 		FileNameWidgetCallback m_callback;
 
+	private:
+		//************************************
+		// Method:    closeModal
+		// FullName:  GFXEditor::FileNameWidget::closeModal
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void closeModal();
 
 	public:
+		//************************************
+		// Method:    FileNameWidget
+		// FullName:  GFXEditor::FileNameWidget::FileNameWidget
+		// Access:    public 
+		// Returns:   
+		// Qualifier:
+		//************************************
 		FileNameWidget() = default;
+		
+		//************************************
+		// Method:    show
+		// FullName:  GFXEditor::FileNameWidget::show
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::string & label
+		// Parameter: FileNameWidgetCallback callback
+		//************************************
 		void show(const std::string& label, FileNameWidgetCallback callback);
+		
+		//************************************
+		// Method:    render
+		// FullName:  GFXEditor::FileNameWidget::render
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
 		void render();
 	};
 }

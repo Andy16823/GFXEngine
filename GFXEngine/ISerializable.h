@@ -2,9 +2,24 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include "SerializationContext.h"
+#include <unordered_set>
 
 namespace GFXEngine {
 
+	//************************************
+	// Class:     RequiredAssets
+	// FullName:  GFXEngine::RequiredAssets
+	// Access:    public
+	// Qualifier:
+	//************************************
+	using RequiredAssets = std::unordered_set<std::string>;
+
+	//************************************
+	// Class:     SerializationFlags
+	// FullName:  GFXEngine::SerializationFlags
+	// Access:    public
+	// Qualifier:
+	//************************************
 	enum class SerializationFlags
 	{
 		None = 0,
@@ -125,5 +140,17 @@ namespace GFXEngine {
 		// Parameter: SerializationContext & context
 		//************************************
 		virtual void resolveReferences(SerializationContext& context) {};
+
+
+		//************************************
+		// Method:    requireAsset
+		// FullName:  GFXEngine::ISerializable::requireAsset
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: RequiredAssets & assets
+		// Description: This method can be overridden by derived classes to specify which assets are required for the object. The default implementation does nothing.
+		//************************************
+		virtual void requireAsset(RequiredAssets& assets) {};
 	};
 }

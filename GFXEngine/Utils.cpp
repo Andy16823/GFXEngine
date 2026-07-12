@@ -6,6 +6,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include "assimp/pbrmaterial.h"
+#include "AssetManager.h"
 #include <iostream>
 #include <cstring>
 #include <sstream>
@@ -428,4 +429,38 @@ glm::quat GFXEngine::Utils::deserializeQuat(const nlohmann::json& jsonData)
 	quat.z = jsonData[2].get<float>();
 	quat.w = jsonData[3].get<float>();
 	return quat;
+}
+
+void GFXEngine::Utils::loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager)
+{
+	// Check if the scene data contains the "requiredAssets" key
+	if (!sceneData.contains("requiredAssets")) {
+		throw std::runtime_error("Invalid scene data: 'requiredAssets' key not found.");
+	}
+
+	// Get the required assets from the scene data
+	auto requiredAssets = sceneData["requiredAssets"];
+	if (!requiredAssets.is_array()) {
+		throw std::runtime_error("Invalid scene data: 'requiredAssets' is not an array.");
+	}
+
+	// Load each required asset
+	log("Utils", "Loading required assets for the scene...");
+	for (const std::string& assetName : requiredAssets) {
+		// Check if the asset exists in the AssetManager
+		if (!assetManager.contains(assetName)) {
+			throw std::runtime_error("Required asset not found in AssetManager: " + assetName);
+		}
+
+		// Load the asset if it's not already loaded
+		if (!assetManager.isAssetLoaded(assetName)) {
+			log("Utils", "Loading required asset: " + assetName);
+			if (!assetManager.loadAsset(assetName)) {
+				throw std::runtime_error("Failed to load required asset: " + assetName);
+			}
+		}
+		else {
+			log("Utils", "Asset already loaded: " + assetName);
+		}
+	}
 }

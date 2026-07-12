@@ -71,6 +71,17 @@ namespace GFXEngine {
 			// Qualifier: const 
 			//************************************
 			nlohmann::json serialize() const override;
+
+
+			//************************************
+			// Method:    requireAsset
+			// FullName:  GFXEngine::Core::Model::requireAsset
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			// Parameter: RequiredAssets & assets
+			//************************************
+			void requireAsset(RequiredAssets& assets) override;
 			
 			//************************************
 			// Method:    deserialize
