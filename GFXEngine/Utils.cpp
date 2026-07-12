@@ -431,7 +431,7 @@ glm::quat GFXEngine::Utils::deserializeQuat(const nlohmann::json& jsonData)
 	return quat;
 }
 
-void GFXEngine::Utils::loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager, GFXEngine::Graphics::Renderer& renderer)
+void GFXEngine::Utils::loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager)
 {
 	auto requiredAssets = sceneData["requiredAssets"];
 	if (!requiredAssets.is_array()) {
@@ -443,7 +443,6 @@ void GFXEngine::Utils::loadSceneAssets(const nlohmann::json& sceneData, GFXEngin
 		if (!assetManager.isAssetLoaded(assetName)) {
 			log("Utils", "Loading required asset: " + assetName);
 			assetManager.loadAsset(assetName);
-			assetManager.initializeGraphicsAsset(renderer, assetName);
 		}
 		else {
 			log("Utils", "Asset already loaded: " + assetName);

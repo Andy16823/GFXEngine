@@ -59,8 +59,6 @@ namespace GFXEngine {
 		//************************************
 		void initializeGraphicsAssets(Graphics::Renderer& renderer);
 
-		void initializeGraphicsAsset(Graphics::Renderer& renderer, const std::string& name);
-
 		//************************************
 		// Method:    destroyGraphicsAssets
 		// FullName:  GFXEngine::AssetManager::destroyGraphicsAssets

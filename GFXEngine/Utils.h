@@ -312,8 +312,7 @@ namespace GFXEngine {
 		// Qualifier:
 		// Parameter: const nlohmann::json & sceneData
 		// Parameter: GFXEngine::AssetManager & assetManager
-		// Parameter: GFXEngine::Graphics::Renderer & renderer
 		//************************************
-		static void loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager, GFXEngine::Graphics::Renderer& renderer);
+		static void loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager);
 	};
 }
