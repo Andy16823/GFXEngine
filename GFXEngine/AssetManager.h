@@ -233,5 +233,27 @@ namespace GFXEngine {
 				}
 			}
 		}
+
+
+		//************************************
+		// Method:    filterAssets
+		// FullName:  GFXEngine::AssetManager::filterAssets
+		// Access:    public 
+		// Returns:   std::vector<GFXEngine::Asset*>
+		// Qualifier:
+		// Parameter: std::function<bool
+		// Parameter: GFXEngine::Asset * 
+		// Parameter: > predicate
+		// Description: Filters assets based on a given predicate function and returns a vector of matching assets.
+		//************************************
+		std::vector<GFXEngine::Asset*> filterAssets(std::function<bool(GFXEngine::Asset*)> predicate) {
+			std::vector<GFXEngine::Asset*> filteredAssets;
+			for (auto& pair : m_assets) {
+				if (predicate(pair.second.get())) {
+					filteredAssets.push_back(pair.second.get());
+				}
+			}
+			return filteredAssets;
+		}
 	};
 }
