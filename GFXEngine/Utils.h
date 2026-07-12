@@ -12,6 +12,8 @@
 
 namespace GFXEngine {
 
+	class AssetManager; // Forward declaration of AssetManager class
+
 	class Utils
 	{
 	public:
@@ -301,5 +303,16 @@ namespace GFXEngine {
 		// Parameter: const nlohmann::json & jsonData
 		//************************************
 		static glm::quat deserializeQuat(const nlohmann::json& jsonData);
+
+		//************************************
+		// Method:    loadSceneAssets
+		// FullName:  GFXEngine::Utils::loadSceneAssets
+		// Access:    public static 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const nlohmann::json & sceneData
+		// Parameter: GFXEngine::AssetManager & assetManager
+		//************************************
+		static void loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager);
 	};
 }

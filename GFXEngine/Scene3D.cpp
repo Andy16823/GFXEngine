@@ -182,12 +182,14 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 	nlohmann::json data;
 	data["directionalLight"] = directionalLight.serialize();
 	data["fog"] = fog.serialize();
+
+	RequiredAssets assets;
 	if (m_environmentMapRef.isTypeOf<Graphics::EnvironmentMap>()) {
 		auto envMap = m_environmentMapRef.get<Graphics::EnvironmentMap>();
+		assets.emplace(envMap->getName());
 		data["environmentMap"] = envMap ? envMap->getName() : "";
 	}
 	
-	RequiredAssets assets;
 	for (const auto& entity : m_entities) {
 		entity->requireAsset(assets);	// Let the entity specify which assets it requires
 		nlohmann::json entityData = entity->serialize(); // Serialize the entity

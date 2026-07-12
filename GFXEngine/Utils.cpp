@@ -6,6 +6,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include "assimp/pbrmaterial.h"
+#include "AssetManager.h"
 #include <iostream>
 #include <cstring>
 #include <sstream>
@@ -428,4 +429,23 @@ glm::quat GFXEngine::Utils::deserializeQuat(const nlohmann::json& jsonData)
 	quat.z = jsonData[2].get<float>();
 	quat.w = jsonData[3].get<float>();
 	return quat;
+}
+
+void GFXEngine::Utils::loadSceneAssets(const nlohmann::json& sceneData, GFXEngine::AssetManager& assetManager)
+{
+	auto requiredAssets = sceneData["requiredAssets"];
+	if (!requiredAssets.is_array()) {
+		throw std::runtime_error("Invalid scene data: 'requiredAssets' is not an array.");
+	}
+
+	log("Utils", "Loading required assets for the scene...");
+	for (const std::string& assetName : requiredAssets) {
+		if (!assetManager.isAssetLoaded(assetName)) {
+			log("Utils", "Loading required asset: " + assetName);
+			assetManager.loadAsset(assetName);
+		}
+		else {
+			log("Utils", "Asset already loaded: " + assetName);
+		}
+	}
 }

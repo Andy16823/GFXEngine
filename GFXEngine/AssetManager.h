@@ -197,5 +197,41 @@ namespace GFXEngine {
 		void registerLoader(const std::string& type, AssetLoaderFunc loader) {
 			m_loaders[type] = std::move(loader);
 		}
+
+		//************************************
+		// Method:    isAssetLoaded
+		// FullName:  GFXEngine::AssetManager::isAssetLoaded
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier: const
+		// Parameter: const std::string & name
+		//************************************
+		bool isAssetLoaded(const std::string& name) const {
+			auto it = m_assets.find(name);
+			if (it == m_assets.end()) {
+				return false;
+			}
+			if (auto* fileAsset = dynamic_cast<FileAsset*>(it->second.get())) {
+				return fileAsset->isLoaded();
+			}
+			return true; // Non-file assets are considered always loaded
+		}
+
+		//************************************
+		// Method:    loadAsset
+		// FullName:  GFXEngine::AssetManager::loadAsset
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: const std::string & name
+		//************************************
+		void loadAsset(const std::string& name) {
+			auto it = m_assets.find(name);
+			if (it != m_assets.end()) {
+				if (auto* fileAsset = dynamic_cast<FileAsset*>(it->second.get())) {
+					fileAsset->load();
+				}
+			}
+		}
 	};
 }
