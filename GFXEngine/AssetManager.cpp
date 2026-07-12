@@ -67,6 +67,17 @@ void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& rende
 	}
 }
 
+void GFXEngine::AssetManager::initializeGraphicsAsset(Graphics::Renderer& renderer, const std::string& name)
+{
+	auto it = m_assets.find(name);
+	if (it != m_assets.end()) {
+		auto graphicsAsset = dynamic_cast<GraphicsAsset*>(it->second.get());
+		if (graphicsAsset && !graphicsAsset->isInitialized()) {
+			graphicsAsset->init(renderer);
+		}
+	}
+}
+
 void GFXEngine::AssetManager::destroyGraphicsAssets(Graphics::Renderer& renderer)
 {
 	for (auto& pair : m_assets) {
