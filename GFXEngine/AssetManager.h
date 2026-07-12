@@ -221,17 +221,19 @@ namespace GFXEngine {
 		// Method:    loadAsset
 		// FullName:  GFXEngine::AssetManager::loadAsset
 		// Access:    public 
-		// Returns:   void
+		// Returns:   bool
 		// Qualifier:
 		// Parameter: const std::string & name
 		//************************************
-		void loadAsset(const std::string& name) {
+		bool loadAsset(const std::string& name) {
 			auto it = m_assets.find(name);
 			if (it != m_assets.end()) {
 				if (auto* fileAsset = dynamic_cast<FileAsset*>(it->second.get())) {
 					fileAsset->load();
+					return true;
 				}
 			}
+			return false;
 		}
 
 
