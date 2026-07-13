@@ -15,6 +15,16 @@ namespace GFXEngine
 			std::vector<uint32_t> indices;
 
 		public:
+
+			//************************************
+			// Method:    vertexCount
+			// FullName:  GFXEngine::Core::MeshBuilder::vertexCount
+			// Access:    public 
+			// Returns:   uint32_t
+			// Qualifier: const
+			//************************************
+			uint32_t vertexCount() const { return static_cast<uint32_t>(vertices.size()); }
+
 			//************************************
 			// Method:    addVertex
 			// FullName:  GFXEngine::Core::MeshBuilder::addVertex
@@ -135,6 +145,51 @@ namespace GFXEngine
 			// Qualifier: const
 			//************************************
 			GFXEngine::Graphics::Mesh2D buildMesh2D() const;
+
+			//************************************
+			// Method:    createCube
+			// FullName:  GFXEngine::Core::MeshBuilder::createCube
+			// Access:    public static 
+			// Returns:   MeshBuilder
+			// Qualifier:
+			// Parameter: float size
+			//************************************
+			static MeshBuilder createCube(float size = 1.0f);
+
+			//************************************
+			// Method:    createQuad
+			// FullName:  GFXEngine::Core::MeshBuilder::createQuad
+			// Access:    public static 
+			// Returns:   MeshBuilder
+			// Qualifier:
+			// Parameter: float width
+			// Parameter: float height
+			//************************************
+			static MeshBuilder createQuad(float width = 1.0f, float height = 1.0f);
+
+			//************************************
+			// Method:    createSphere
+			// FullName:  GFXEngine::Core::MeshBuilder::createSphere
+			// Access:    public static 
+			// Returns:   MeshBuilder
+			// Qualifier:
+			// Parameter: float radius
+			// Parameter: uint32_t sectorCount
+			// Parameter: uint32_t stackCount
+			//************************************
+			static MeshBuilder createSphere(float radius = 1.0f, uint32_t sectorCount = 36, uint32_t stackCount = 18);
+
+			//************************************
+			// Method:    createCylinder
+			// FullName:  GFXEngine::Core::MeshBuilder::createCylinder
+			// Access:    public static 
+			// Returns:   MeshBuilder
+			// Qualifier:
+			// Parameter: float radius
+			// Parameter: float height
+			// Parameter: uint32_t sectorCount
+			//************************************
+			static MeshBuilder createCylinder(float radius = 1.0f, float height = 1.0f, uint32_t sectorCount = 36);
 		};
 	}
 }
