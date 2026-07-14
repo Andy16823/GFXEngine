@@ -50,7 +50,7 @@ GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Primitive::getMeshAndMaterial
 {
 	if (index == 0)
 	{
-		return std::make_pair(std::ref(m_mesh), std::ref(m_material));
+		return std::make_pair(std::ref(*m_mesh), std::ref(*m_material));
 	}
 	else
 	{

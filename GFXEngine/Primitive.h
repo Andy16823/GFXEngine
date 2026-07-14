@@ -9,8 +9,12 @@ namespace GFXEngine
 		class Primitive : public Entity
 		{
 		private:
-			Graphics::Mesh3D m_mesh;
-			Graphics::SolidMaterial m_material;
+			Graphics::Mesh3D* m_mesh = nullptr;
+			Graphics::SolidMaterial* m_material = nullptr;
+
+		public:
+			Primitive(Graphics::Mesh3D* mesh, Graphics::SolidMaterial* material)
+				: m_mesh(mesh), m_material(material) {}
 
 		public:
 			// Geerbt über Entity
