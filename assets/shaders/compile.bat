@@ -22,4 +22,7 @@ C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V debug.frag -o debug_frag.spv
 C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V sprite.vert -o sprite_vert.spv
 C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V sprite.frag -o sprite_frag.spv
 
+C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V solid.vert -o solid_vert.spv
+C:\VulkanSDK\1.4.328.1\Bin\glslangValidator.exe -V solid.frag -o solid_frag.spv
+
 pause
