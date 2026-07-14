@@ -728,7 +728,7 @@ namespace GFXEngine {
 			// Returns:   std::size_t
 			// Qualifier: const
 			//************************************
-			virtual size_t getMeshCount() const = 0;
+			virtual size_t getMeshCount() const { return 0; }
 			
 			//************************************
 			// Method:    getMeshAndMaterial
@@ -738,7 +738,7 @@ namespace GFXEngine {
 			// Qualifier: const
 			// Parameter: size_t index
 			//************************************
-			virtual MeshMaterialPair getMeshAndMaterial(size_t index) const = 0;
+			virtual MeshMaterialPair getMeshAndMaterial(size_t index) const { return MeshMaterialPair(); }
 
 		public:
 			
