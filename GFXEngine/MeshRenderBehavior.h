@@ -1,20 +1,24 @@
 #pragma once
 #include "Behavior.h"
 #include "IRenderable.h"
-#include "Mesh.h"
+#include "DataTypes.h"
+#include "MeshAsset.h"
 
 namespace GFXEngine {
 	namespace Core {
 		class MeshRenderBehavior : public Behavior, public Graphics::IRenderable
 		{
 		private:
-			Graphics::Mesh* m_mesh = nullptr;
+			EngineTypes::AssetReference m_meshRef;
 			Graphics::Material* m_material = nullptr;
 			Graphics::GraphicsPipeline* m_pipeline = nullptr;
 
 		public:
-			MeshRenderBehavior(Graphics::Mesh* mesh, Graphics::Material* material, Graphics::GraphicsPipeline* pipeline)
-				: m_mesh(mesh), m_material(material), m_pipeline(pipeline) {}
+			MeshRenderBehavior(Graphics::MeshAsset* mesh, Graphics::Material* material, Graphics::GraphicsPipeline* pipeline)
+				: m_material(material), m_pipeline(pipeline) 
+			{
+				m_meshRef.set(mesh);
+			}
 
 		public:
 			// Geerbt über Behavior

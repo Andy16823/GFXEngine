@@ -23,7 +23,13 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::MeshRenderBehavior::
 
 void GFXEngine::Core::MeshRenderBehavior::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
+	if (!m_meshRef) {
+		std::cerr << "Warning: MeshRenderBehavior has no valid mesh reference. Skipping render task." << std::endl;
+		return;
+	}
+
 	auto entity = this->getEntity();
+	auto mesh = m_meshRef.get<Graphics::MeshAsset>()->getMesh();
 
 	Graphics::GraphicResources resources;
 	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
@@ -33,7 +39,7 @@ void GFXEngine::Core::MeshRenderBehavior::buildRenderTasks(GFXEngine::Graphics::
 
 	Graphics::RenderTaskBuilder taskBuilder;
 	taskBuilder.setPipeline(m_pipeline)
-		.setMesh(m_mesh)
+		.setMesh(mesh)
 		.setModelMatrix(entity->getModelMatrix());
 
 	m_pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
