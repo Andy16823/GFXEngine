@@ -28,12 +28,18 @@ void GFXEngine::Core::MeshRenderBehavior::buildRenderTasks(GFXEngine::Graphics::
 		return;
 	}
 
+	if (!m_materialRef) {
+		std::cerr << "Warning: MeshRenderBehavior has no valid material reference. Skipping render task." << std::endl;
+		return;
+	}
+
 	auto entity = this->getEntity();
 	auto mesh = m_meshRef.get<Graphics::MeshAsset>()->getMesh();
+	auto material = m_materialRef.get<Graphics::MaterialAsset>()->getMaterial();
 
 	Graphics::GraphicResources resources;
 	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
-	resources[Defintions::MATERIAL_RESOURCE] = m_material->getDescriptorSet(context.imageIndex);
+	resources[Defintions::MATERIAL_RESOURCE] = material->getDescriptorSet(context.imageIndex);
 	entity->getScene()->getGraphicResources(resources, context.imageIndex);
 	entity->getGraphicResources(resources, context.imageIndex);
 

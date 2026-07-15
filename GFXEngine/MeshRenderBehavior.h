@@ -3,6 +3,7 @@
 #include "IRenderable.h"
 #include "DataTypes.h"
 #include "MeshAsset.h"
+#include "MaterialAsset.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -10,13 +11,14 @@ namespace GFXEngine {
 		{
 		private:
 			EngineTypes::AssetReference m_meshRef;
-			Graphics::Material* m_material = nullptr;
+			EngineTypes::AssetReference m_materialRef;
 			Graphics::GraphicsPipeline* m_pipeline = nullptr;
 
 		public:
-			MeshRenderBehavior(Graphics::MeshAsset* mesh, Graphics::Material* material, Graphics::GraphicsPipeline* pipeline)
-				: m_material(material), m_pipeline(pipeline) 
+			MeshRenderBehavior(Graphics::MeshAsset* mesh, Graphics::MaterialAsset* material, Graphics::GraphicsPipeline* pipeline)
+				: m_pipeline(pipeline) 
 			{
+				m_materialRef.set(material);
 				m_meshRef.set(mesh);
 			}
 
