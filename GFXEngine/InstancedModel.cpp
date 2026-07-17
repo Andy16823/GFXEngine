@@ -236,7 +236,8 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::InstancedModel::getP
 	properties.push_back({
 		.name = "Mesh Model",
 		.data = &m_meshModelRef,
-		.hint = PropertyHint::Asset
+		.hint = PropertyHint::Asset,
+		.metaData = AssetMetaData { AssetType::MeshModel }
 		});
 
 	return properties;

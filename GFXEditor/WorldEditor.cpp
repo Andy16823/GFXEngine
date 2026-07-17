@@ -370,6 +370,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 						}
 					}
 					});
+				break;
 			case GFXEngine::Core::AssetType::Material:
 				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MaterialAsset>([&](GFXEngine::Graphics::MaterialAsset* material) {
 					if (ImGui::Selectable(UIContext::createLabelID(material->getName(), material->getUUID()).c_str()))
@@ -384,6 +385,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 						}
 					}
 					});
+				break;
 			default:
 				GFXEngine::Utils::log("World Editor", "Undefined asset type");
 				m_assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
