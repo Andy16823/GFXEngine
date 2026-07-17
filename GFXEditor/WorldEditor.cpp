@@ -10,7 +10,10 @@
 #include "DataTypes.h"
 #include "PropertyInfo.h"
 #include "ProjectExplorer.h"
+#include "MeshAsset.h"
+#include "MaterialAsset.h"
 #include <filesystem>
+
 
 using namespace GFXEditor;
 using namespace GFXEngine;
@@ -314,37 +317,99 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 	const auto asset = static_cast<GFXEngine::Asset*>(value->asset);
 	if (ImGui::BeginCombo(label.c_str(), asset ? asset->getName().c_str() : "None"))
 	{
-		// Handle EnvironmentMap assets
-		if (value->isTypeOf<GFXEngine::Graphics::EnvironmentMap>())
-		{
-			m_assetManager->forEachAssetOfType<GFXEngine::Graphics::EnvironmentMap>([&](GFXEngine::Graphics::EnvironmentMap* envMap) {
-				if (ImGui::Selectable(envMap->getName().c_str()))
-				{
-					if (!envMap->isLoaded()) {
-						envMap->load();
+		if (auto* meta = std::get_if<GFXEngine::Core::AssetMetaData>(&prop.metaData)) {
+			switch (meta->type)
+			{
+			case GFXEngine::Core::AssetType::EnvironmentMap:
+				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::EnvironmentMap>([&](GFXEngine::Graphics::EnvironmentMap* envMap) {
+					if (ImGui::Selectable(envMap->getName().c_str()))
+					{
+						if (!envMap->isLoaded()) {
+							envMap->load();
+						}
+						if (!envMap->isInitialized()) {
+							envMap->init(renderer);
+						}
+						value->set(envMap);
+						if (prop.onChanged) {
+							prop.onChanged();
+						}
 					}
-					if (!envMap->isInitialized()) {
-						envMap->init(renderer);
+					});
+				break;
+			case GFXEngine::Core::AssetType::MeshModel:
+				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshModel>([&](GFXEngine::Graphics::MeshModel* model) {
+					if (ImGui::Selectable(UIContext::createLabelID(model->getName(), model->getUUID()).c_str()))
+					{
+						if (!model->isLoaded()) {
+							model->load();
+						}
+
+						if (!model->isInitialized()) {
+							model->init(renderer);
+						}
+
+						value->set(model);
+						if (prop.onChanged) {
+							prop.onChanged();
+						}
 					}
-					value->set(envMap);
-					if (prop.onChanged) {
-						prop.onChanged();
+					});
+				break;
+			case GFXEngine::Core::AssetType::Mesh:
+				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshAsset>([&](GFXEngine::Graphics::MeshAsset* mesh) {
+					if (ImGui::Selectable(UIContext::createLabelID(mesh->getName(), mesh->getUUID()).c_str()))
+					{
+						if (!mesh->isInitialized()) {
+							mesh->init(renderer);
+						}
+
+						value->set(mesh);
+						if (prop.onChanged) {
+							prop.onChanged();
+						}
 					}
-				}
-				});
-		}
-		// Handle MeshModel assets
-		else if (value->isTypeOf<GFXEngine::Graphics::MeshModel>())
-		{
-			m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshModel>([&](GFXEngine::Graphics::MeshModel* model) {
-				if (ImGui::Selectable(UIContext::createLabelID(model->getName(), model->getUUID()).c_str()))
-				{
-					value->set(model);
-					if (prop.onChanged) {
-						prop.onChanged();
+					});
+			case GFXEngine::Core::AssetType::Material:
+				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MaterialAsset>([&](GFXEngine::Graphics::MaterialAsset* material) {
+					if (ImGui::Selectable(UIContext::createLabelID(material->getName(), material->getUUID()).c_str()))
+					{
+						if (!material->isInitialized()) {
+							material->init(renderer);
+						}
+
+						value->set(material);
+						if (prop.onChanged) {
+							prop.onChanged();
+						}
 					}
-				}
-				});
+					});
+			default:
+				GFXEngine::Utils::log("World Editor", "Undefined asset type");
+				m_assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
+					if (ImGui::Selectable(asset->getName().c_str()))
+					{
+						if (auto fileAsset = dynamic_cast<GFXEngine::FileAsset*>(asset)) {
+							if (!fileAsset->isLoaded())
+							{
+								fileAsset->load();
+							}
+						}
+
+						if (auto graphicsAsset = dynamic_cast<GFXEngine::GraphicsAsset*>(asset)) {
+							if (!graphicsAsset->isInitialized()) {
+								graphicsAsset->init(renderer);
+							}
+						}
+
+						value->set(asset);
+						if (prop.onChanged) {
+							prop.onChanged();
+						}
+					}
+					});
+				break;
+			}
 		}
 		ImGui::EndCombo();
 	}

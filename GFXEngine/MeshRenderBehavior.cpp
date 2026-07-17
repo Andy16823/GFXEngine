@@ -18,7 +18,23 @@ std::string GFXEngine::Core::MeshRenderBehavior::getName() const
 
 std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::MeshRenderBehavior::getProperties()
 {
-    return std::vector<PropertyInfo>();
+    std::vector<GFXEngine::Core::PropertyInfo> props;
+
+	props.push_back({
+		.name = "Mesh",
+		.data = &m_meshRef,
+		.hint = PropertyHint::None,
+		.metaData = AssetMetaData{ AssetType::Mesh }
+		});
+
+	props.push_back({
+		.name = "Material",
+		.data = &m_materialRef,
+		.hint = PropertyHint::None,
+		.metaData = AssetMetaData{ AssetType::Material }
+		});
+
+	return props;
 }
 
 void GFXEngine::Core::MeshRenderBehavior::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
