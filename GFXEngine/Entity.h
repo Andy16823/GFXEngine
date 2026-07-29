@@ -414,7 +414,12 @@ namespace GFXEngine {
 			// Qualifier:
 			// Parameter: Scene * scene
 			//************************************
-			void setScene(Scene* scene) { m_scene = scene; }
+			void setScene(Scene* scene) { 
+				m_scene = scene; 
+				for (auto& child : m_childs) {
+					child->setScene(scene);
+				}
+			}
 			
 			//************************************
 			// Method:    getScene
