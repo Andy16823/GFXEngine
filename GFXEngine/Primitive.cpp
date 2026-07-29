@@ -3,16 +3,21 @@
 #include "AssetManager.h"
 
 using namespace GFXEngine;
+using namespace GFXEngine::Core;
 using namespace GFXEngine::Graphics;
 
 void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
+	// Build Geometrypass Task
 	if (context.renderPass == RenderPassIteration::GeometryPass) {
+
+		// Gather resources needed for the render task
 		Graphics::GraphicResources ressources;
 		ressources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(ressources, context.imageIndex);
 		this->getGraphicResources(ressources, context.imageIndex);
 
+		// Create an render task for each mesh :) in this case its only 1
 		for (size_t i = 0; i < this->getMeshCount(); i++) {
 			auto meshMaterial = this->getMeshAndMaterial(i);
 			if (meshMaterial.has_value()) {
@@ -29,6 +34,8 @@ void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderCon
 			}
 		}
 	}
+
+	// Build render task for the children and behaviors
 	Entity::buildRenderTasks(context, renderQueue);
 }
 
@@ -53,12 +60,13 @@ size_t GFXEngine::Core::Primitive::getMeshCount() const
 
 GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Primitive::getMeshAndMaterial(size_t index) const
 {
+	// Index must be 0
 	if (index != 0) {
 		throw std::out_of_range("Mesh index out of range");
 	}
 
-	auto* meshAsset = m_meshReference.get<Graphics::MeshAsset>();
-	auto* materialAsset = m_materialReference.get<Graphics::MaterialAsset>();
+	MeshAsset* meshAsset = m_meshReference.get<Graphics::MeshAsset>();
+	MaterialAsset* materialAsset = m_materialReference.get<Graphics::MaterialAsset>();
 	Graphics::Mesh& mesh = *meshAsset->getMesh();
 	Graphics::Material& material = *materialAsset->getMaterial();
 
@@ -69,8 +77,7 @@ nlohmann::json Core::Primitive::serialize() const
 {
 	nlohmann::json data = Entity::serialize();
 	data["mesh"] = m_meshReference.get<MeshAsset>()->getName();
-	data["material"] = m_meshReference.get<MaterialAsset>()->getName();
-
+	data["material"] = m_materialReference.get<MaterialAsset>()->getName();
 	return data;
 }
 
@@ -106,13 +113,15 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 
 void Core::Primitive::requireAsset(RequiredAssets& assets)
 {
-	auto meshAsset = m_meshReference.get<MeshAsset>();
+	// Require Mesh
+	MeshAsset* meshAsset = m_meshReference.get<MeshAsset>();
 	if (!meshAsset) {
 		throw std::runtime_error("Primitive requireAsset error: MeshAsset reference is invalid");
 	}
 	assets.emplace(meshAsset->getName());
 
-	auto materialAsset = m_meshReference.get<MaterialAsset>();
+	// Require Material
+	MaterialAsset* materialAsset = m_meshReference.get<MaterialAsset>();
 	if (!materialAsset) {
 		throw std::runtime_error("Primitive requireAsset error: MaterialAsset reference is invalid");
 	}
