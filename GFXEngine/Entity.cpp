@@ -33,12 +33,21 @@ void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& 
 	for (auto& behavior : m_behaviors) {
 		behavior->init(scene, renderer);
 	}
+
+	// Initialize Child
+	for (const auto& child : m_childs) {
+		child->init(scene, renderer);
+	}
 }
 
 void GFXEngine::Core::Entity::update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime)
 {
 	for (auto& behavior : m_behaviors) {
 		behavior->update(scene, camera, deltaTime);
+	}
+
+	for (const auto& child : m_childs) {
+		child->update(scene, camera, deltaTime);
 	}
 }
 
@@ -49,12 +58,20 @@ void GFXEngine::Core::Entity::buildRenderTasks(GFXEngine::Graphics::RenderContex
 			renderableBehavior->buildRenderTasks(context, renderQueue);
 		}
 	}
+
+	for (const auto& child : m_childs) {
+		child->buildRenderTasks(context, renderQueue);
+	}
 }
 
 void GFXEngine::Core::Entity::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	for (auto& behavior : m_behaviors) {
 		behavior->destroy(scene, renderer);
+	}
+
+	for (const auto& child : m_childs) {
+		child->destroy(scene, renderer);
 	}
 }
 
