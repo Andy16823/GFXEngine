@@ -668,6 +668,11 @@ namespace GFXEngine {
 			T* addChild(std::unique_ptr<T> entity) {
 				static_assert(std::is_base_of<Entity, T>::value, "T must be a subclass of Entity");
 				entity->setParent(this);
+
+				if (m_scene != nullptr) {
+					entity->setScene(m_scene);
+				}
+
 				m_childs.push_back(std::move(entity));
 				return static_cast<T*>(m_childs.back().get());
 			}
