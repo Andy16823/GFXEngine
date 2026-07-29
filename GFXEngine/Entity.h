@@ -31,10 +31,12 @@ namespace GFXEngine {
 		private:
 			std::vector<std::string> m_tags;
 			std::vector<std::unique_ptr<Behavior>> m_behaviors;
+			std::vector<std::unique_ptr<Entity>> m_childs;
 			Math::AABB m_aabb;
 			Scene* m_scene = nullptr;
 			bool m_visible = true;
 			GFXEngine::Math::Transform m_transform;
+			Entity* m_parent;
 
 		public:
 			enum PropertyComponentType
@@ -385,7 +387,14 @@ namespace GFXEngine {
 			// Returns:   const glm::mat4&
 			// Qualifier: const
 			//************************************
-			virtual const glm::mat4& getModelMatrix() const { return m_transform.getModelMatrix(); }
+			virtual glm::mat4 getModelMatrix() const { 
+
+				glm::mat4 modelMatrix = m_transform.getModelMatrix();
+				if (this->hasParent()) {
+					modelMatrix = this->getParent()->getModelMatrix() * modelMatrix;
+				}
+				return modelMatrix;
+			}
 			
 			//************************************
 			// Method:    getTransform
@@ -639,6 +648,38 @@ namespace GFXEngine {
 						func(behavior.get());
 					}
 				}
+			}
+
+		public:
+			void setParent(Entity* entity) {
+				m_parent = entity;
+			}
+
+			Entity* getParent() const {
+				return m_parent;
+			}
+
+			template<typename T>
+			T* addChild(std::unique_ptr<T> entity) {
+				static_assert(std::is_base_of<Entity, T>::value, "T must be a subclass of Entity");
+				entity->setParent(this);
+				m_childs.push_back(std::move(entity));
+				return static_cast<T*>(m_childs.back().get());
+			}
+
+			template<typename T>
+			T* findChild(const std::string& name) {
+				for (const auto& entity : m_childs) {
+					if (entity->getName() == name)
+					{
+						return dynamic_cast<T*>(entity.get());
+					}
+				}
+				return nullptr;
+			}
+
+			bool hasParent() const {
+				return m_parent != nullptr;
 			}
 
 		public:
