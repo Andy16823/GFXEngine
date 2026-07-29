@@ -36,7 +36,7 @@ namespace GFXEngine {
 			Scene* m_scene = nullptr;
 			bool m_visible = true;
 			GFXEngine::Math::Transform m_transform;
-			Entity* m_parent;
+			Entity* m_parent = nullptr;
 
 		public:
 			enum PropertyComponentType
