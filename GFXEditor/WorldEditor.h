@@ -98,6 +98,8 @@ namespace GFXEditor {
 		void renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine::Graphics::Renderer& renderer);
 
 		void renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+		void renderSceneEntity(GFXEngine::Core::Entity& entity);
+		void renderEntityContextMenu(GFXEngine::Core::Entity& entity);
 		
 		//************************************
 		// Method:    markBehaviorForRemoval

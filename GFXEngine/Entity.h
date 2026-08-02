@@ -702,6 +702,13 @@ namespace GFXEngine {
 				return nullptr;
 			}
 
+			template<typename Func>
+			void foreachChild(Func&& func) {
+				for (auto& entity : m_childs) {
+					func(*entity);
+				}
+			}
+
 			template<typename T>
 			std::unique_ptr<T> detachChild(Entity* target)
 			{

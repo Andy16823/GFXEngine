@@ -914,21 +914,33 @@ void WorldEditor::renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine
 	if (ImGui::CollapsingHeader("Entities"))
 	{
 		m_scene->forEachEntity([&](GFXEngine::Core::Entity& entity) {
-			bool isSelected = (m_selectedEntity == &entity);
-
-			ImGui::Selectable(entity.getName().c_str(), isSelected);
-
-			if (ImGui::IsItemClicked()) {
-				m_selectedEntity = &entity;
-			}
-
-			if (ImGui::BeginPopupContextItem()) {
-				if (ImGui::MenuItem("Delete")) {
-					GFXEngine::Utils::log("GFXEditor", "Delete entity");
-				}
-				ImGui::EndPopup();
-			}
+			this->renderSceneEntity(entity);
 			});
 	}
 	ImGui::End();
+}
+
+void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
+{
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+	if (m_selectedEntity == &entity) {
+		flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	if (ImGui::TreeNode(entity.getName().c_str())) {
+		this->renderEntityContextMenu(entity);
+		entity.foreachChild([&](GFXEngine::Core::Entity& child) {
+			this->renderSceneEntity(child);
+			});
+	}
+}
+
+void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
+{
+	if (ImGui::BeginPopupContextItem()) {
+		if (ImGui::MenuItem("Delete")) {
+			GFXEngine::Utils::log("GFXEditor", "Delete entity");
+		}
+		ImGui::EndPopup();
+	}
 }
