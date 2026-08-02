@@ -15,6 +15,7 @@
 #include <string>
 #include "BackgroundTask.h"
 #include "EditorPlugin.h"
+#include "PostRenderAction.h"
 
 namespace GFXEditor {
 
@@ -50,6 +51,7 @@ namespace GFXEditor {
 		std::unique_ptr<GFXEngine::Graphics::Camera3D> m_editorCamera;
 		std::unique_ptr<TextInputDialog> m_createFileDialog;
 		std::vector<GFXEngine::Core::Behavior*> m_behaviorsToRemove;
+		std::vector<GFXEditor::PostRenderAction> m_postRenderActions; // TODO: Move behaviors to remove into this system
 		GFXEngine::BackgroundTaskManager m_backgroundTaskManager;
 		std::vector<std::unique_ptr<EditorPlugin>> m_plugins;
 		glm::vec2 m_sceneViewportWindowSize = glm::vec2(1024.0f, 1024.0f);
@@ -475,6 +477,16 @@ namespace GFXEditor {
 		// Parameter: GFXEngine::Graphics::Renderer & renderer
 		//************************************
 		void dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer) override;
+
+		//************************************
+		// Method:    addPostRenderAction
+		// FullName:  GFXEditor::WorldEditor::addPostRenderAction
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: PostRenderAction action
+		//************************************
+		void addPostRenderAction(PostRenderAction action);
 
 	public:
 		//************************************

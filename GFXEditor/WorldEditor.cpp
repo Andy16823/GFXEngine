@@ -799,6 +799,13 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 void WorldEditor::afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
+	auto actions = std::move(m_postRenderActions);
+	for (auto& action : actions) {
+		if (action.callback) {
+			action.callback();
+		}
+	}
+
 	this->cleanupRemovedBehaviors(renderer);
 	m_backgroundTaskManager.update();
 	for (auto& plugin : m_plugins) {
@@ -974,22 +981,31 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 					return;
 				}
 
-				// Check if the selected entity has an parent or if the scene owns it
-				if (m_selectedEntity->hasParent()) {
-					auto entityPtr = m_selectedEntity->getParent()->detachChild<GFXEngine::Core::Entity>(m_selectedEntity);
-					entity.addChild(std::move(entityPtr));
-				}
-				else {
-					if (m_scene->ownEntity(m_selectedEntity, false)) {
-						auto entityPtr = m_scene->detachEntity<GFXEngine::Core::Entity>(m_selectedEntity);
-						entity.addChild(std::move(entityPtr));
+				PostRenderAction action = {
+					.callback = [this, parent = &entity, child = m_selectedEntity, scene = m_scene]() {
+						if (child->hasParent()) {
+							auto childUniquePtr = child->getParent()->detachChild<GFXEngine::Core::Entity>(child);
+							parent->addChild(std::move(childUniquePtr));
+						}
+						else {
+							if (scene->ownEntity(child, false)) {
+								auto childUniquePtr = scene->detachEntity<GFXEngine::Core::Entity>(child);
+								parent->addChild(std::move(childUniquePtr));
+							}
+							else {
+								assert(false && "Entity has no parent but is not owned by the scene.");
+							}
+						}
 					}
-					else {
-						assert(m_scene->ownEntity(m_selectedEntity, false) && "Entity has no parent but is not owned by the scene.");
-					}
-				}
+				};
+				this->addPostRenderAction(std::move(action));
 			}
 		}
 		ImGui::EndPopup();
 	}
+}
+
+void WorldEditor::addPostRenderAction(PostRenderAction action)
+{
+	m_postRenderActions.emplace_back(std::move(action));
 }
