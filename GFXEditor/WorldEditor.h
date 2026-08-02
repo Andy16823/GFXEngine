@@ -97,8 +97,39 @@ namespace GFXEditor {
 		//************************************
 		void renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine::Graphics::Renderer& renderer);
 
+		//************************************
+		// Method:    renderSceneTree
+		// FullName:  GFXEditor::WorldEditor::renderSceneTree
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: GFXEngine::Core::UIContext & context
+		// Parameter: GFXEngine::Graphics::Renderer & renderer
+		// Parameter: uint32_t imageIndex
+		// Description: diyplays the scene tree
+		//************************************
 		void renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+
+		//************************************
+		// Method:    renderSceneEntity
+		// FullName:  GFXEditor::WorldEditor::renderSceneEntity
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: GFXEngine::Core::Entity & entity
+		// Description: renders an scene tree entry
+		//************************************
 		void renderSceneEntity(GFXEngine::Core::Entity& entity);
+
+		//************************************
+		// Method:    renderEntityContextMenu
+		// FullName:  GFXEditor::WorldEditor::renderEntityContextMenu
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: GFXEngine::Core::Entity & entity
+		// Description: Renders an context menu for an scene entity in the scene tree
+		//************************************
 		void renderEntityContextMenu(GFXEngine::Core::Entity& entity);
 		
 		//************************************

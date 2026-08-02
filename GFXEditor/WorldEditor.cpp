@@ -958,6 +958,12 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 		if (ImGui::MenuItem("Delete")) {
 			GFXEngine::Utils::log("GFXEditor", "Delete entity");
 		}
+		if (entity.hasParent()) {
+			if (ImGui::MenuItem("Move to Scene")) {
+				auto entityptr = entity.getParent()->detachChild<GFXEngine::Core::Entity>(&entity);
+				m_scene->addEntity(std::move(entityptr));
+			}
+		}
 		ImGui::EndPopup();
 	}
 }
