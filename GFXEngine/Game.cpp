@@ -9,6 +9,7 @@
 #include "EnvironmentMap.h"
 #include "StaticMeshModel.h"
 #include "DataResource.h"
+#include "Primitive.h"
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
 {
@@ -16,6 +17,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	this->entityFactory->registerEntity<GFXEngine::Core::Model>();
 	this->entityFactory->registerEntity<GFXEngine::Core::InstancedModel>();
 	this->entityFactory->registerEntity<GFXEngine::Core::InstanceHandle>();
+	this->entityFactory->registerEntity<GFXEngine::Core::Primitive>();
 	//this->entityFactory->registerEntity<GFXEngine::Core::Sprite>(); TODO: Add a default constructor to Sprite that initializes the material and mesh references, then register it here.
 
 	// Create the window and initialize the renderer

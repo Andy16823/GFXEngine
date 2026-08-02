@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Behavior.h"
 #include "BehaviorRegistry.h"
+#include "EntityFactory.h"
 #include "Utils.h"
 
 GFXEngine::Core::Entity::Entity()
@@ -169,6 +170,18 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 		} else {
 			throw std::runtime_error("Unknown behavior type: " + bhvName);
 		}
+	}
+
+	auto childsData = data.value("childs", std::vector<nlohmann::json>());
+	for (const auto& childData : childsData) {
+		std::string typeName = childData["type"];
+		std::unique_ptr<Entity> entity = context.entityFactory.createEntity(typeName);
+		if (!entity) {
+			continue;
+		}
+		entity->deserialize(childData, context, flags);
+		auto entityPtr = this->addChild(std::move(entity));
+		context.registerEntity(entityPtr->getUUID(), entityPtr);
 	}
 }
 

@@ -14,6 +14,7 @@ namespace GFXEngine {
 			Graphics::GraphicsPipeline* m_pipeline = nullptr;
 
 		public:
+			Primitive() = default;
 			Primitive(Graphics::MeshAsset* mesh, Graphics::MaterialAsset* material, Graphics::GraphicsPipeline* pipeline) : m_pipeline(pipeline)
 			{
 				m_meshReference.set(mesh);
