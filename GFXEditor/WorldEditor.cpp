@@ -927,11 +927,22 @@ void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
 		flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	if (ImGui::TreeNode(entity.getName().c_str())) {
-		this->renderEntityContextMenu(entity);
+	bool open = ImGui::TreeNodeEx(
+		entity.getName().c_str(),
+		flags
+	);
+
+	if (ImGui::IsItemClicked()) {
+		m_selectedEntity = &entity;
+	}
+
+	renderEntityContextMenu(entity);
+
+	if (open) {
 		entity.foreachChild([&](GFXEngine::Core::Entity& child) {
 			this->renderSceneEntity(child);
 			});
+		ImGui::TreePop();
 	}
 }
 
