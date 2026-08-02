@@ -927,6 +927,10 @@ void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
 		flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
+	if (!entity.hasChilds()) {
+		flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
+	}
+
 	bool open = ImGui::TreeNodeEx(
 		entity.getName().c_str(),
 		flags

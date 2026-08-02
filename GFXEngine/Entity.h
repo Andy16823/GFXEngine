@@ -678,6 +678,19 @@ namespace GFXEngine {
 				return m_parent;
 			}
 
+			bool hasParent() const {
+				return m_parent != nullptr;
+			}
+
+			void clearParent() {
+				this->clearScene();
+				m_parent = nullptr;
+			}
+
+			bool hasChilds() const {
+				return !m_childs.empty();
+			}
+
 			template<typename T>
 			T* addChild(std::unique_ptr<T> entity) {
 				static_assert(std::is_base_of<Entity, T>::value, "T must be a subclass of Entity");
@@ -738,15 +751,6 @@ namespace GFXEngine {
 
 				// return it as an unique_ptr
 				return std::unique_ptr<T>(derived);
-			}
-
-			bool hasParent() const {
-				return m_parent != nullptr;
-			}
-
-			void clearParent() {
-				this->clearScene();
-				m_parent = nullptr;
 			}
 
 		public:
