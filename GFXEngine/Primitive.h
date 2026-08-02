@@ -4,6 +4,8 @@
 #include "MeshAsset.h"
 #include "MaterialAsset.h"
 
+#include <optional>
+
 namespace GFXEngine {
 	namespace Core {
 		class Primitive : public Entity
@@ -11,11 +13,11 @@ namespace GFXEngine {
 		private:
 			EngineTypes::AssetReference m_meshReference;
 			EngineTypes::AssetReference m_materialReference;
-			Graphics::GraphicsPipeline* m_pipeline = nullptr;
+			std::optional<unsigned int> m_pipelineId = std::nullopt;
 
 		public:
 			Primitive() = default;
-			Primitive(Graphics::MeshAsset* mesh, Graphics::MaterialAsset* material, Graphics::GraphicsPipeline* pipeline) : m_pipeline(pipeline)
+			Primitive(Graphics::MeshAsset* mesh, Graphics::MaterialAsset* material, unsigned int pipeline) : m_pipelineId(pipeline)
 			{
 				m_meshReference.set(mesh);
 				m_materialReference.set(material);

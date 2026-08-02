@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <optional>
 
 namespace GFXEngine {
 	namespace Graphics {
@@ -69,6 +70,24 @@ namespace GFXEngine {
 					return dynamic_cast<T*>(it->second.get());
 				}
 				return nullptr;
+			}
+
+			//************************************
+			// Method:    findPipelineIdentifyer
+			// FullName:  GFXEngine::Graphics::PipelineManager::findPipelineIdentifyer
+			// Access:    public 
+			// Returns:   std::optional<unsigned int>
+			// Qualifier: const
+			// Parameter: const RenderPipeline * pipeline
+			//************************************
+			std::optional<unsigned int> findPipelineIdentifyer(const RenderPipeline* pipeline) const
+			{
+				for (const auto& [key, value] : m_pipelines) {
+					if (value.get() == pipeline) {
+						return key;
+					}
+				}
+				return std::nullopt;
 			}
 		};
 	}
