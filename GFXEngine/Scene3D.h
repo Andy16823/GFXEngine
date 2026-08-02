@@ -294,6 +294,37 @@ namespace GFXEngine {
 			}
 
 			//************************************
+			// Method:    detachEntity
+			// FullName:  GFXEngine::Core::Scene3D::detachEntity
+			// Access:    public 
+			// Returns:   
+			// Qualifier:
+			// Parameter: Entity * target
+			//************************************
+			template<typename T>
+			std::unique_ptr<T> detachEntity(Entity* target) {
+				auto* derived = dynamic_cast<T*>(target);
+				if (!derived) {
+					return nullptr;
+				}
+
+				auto it = std::find_if(m_entities.begin(), m_entities.end(), [target](const auto& entity) {
+					return entity.get() == target;
+					});
+
+				if (it == m_entities.end()) {
+					return nullptr;
+				}
+
+				(*it)->clearScene();
+
+				it->release();
+				m_entities.erase(it);
+
+				return std::unique_ptr<T>(derived);
+			}
+
+			//************************************
 			// Method:    getEntities
 			// FullName:  GFXEngine::Core::Scene3D::getEntities
 			// Access:    public 

@@ -420,6 +420,20 @@ namespace GFXEngine {
 					child->setScene(scene);
 				}
 			}
+
+			//************************************
+			// Method:    clearScene
+			// FullName:  GFXEngine::Core::Entity::clearScene
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			//************************************
+			void clearScene() {
+				m_scene = nullptr;
+				for (const auto& child : m_childs) {
+					child->clearScene();
+				}
+			}
 			
 			//************************************
 			// Method:    getScene
@@ -688,8 +702,44 @@ namespace GFXEngine {
 				return nullptr;
 			}
 
+			template<typename T>
+			std::unique_ptr<T> detachChild(Entity* target)
+			{
+				// Cast target entity to T*
+				auto* derived = dynamic_cast<T*>(target);
+				if (!derived) {
+					return nullptr;
+				}
+
+				// Find the unique_ptr from the target entity in the childs
+				auto it = std::find_if(m_childs.begin(), m_childs.end(), 
+					[target](const auto& entity) {
+						return entity.get() == target;
+					});
+
+				// If we dont find an entity return nullptr
+				if (it == m_childs.end()) {
+					return nullptr;
+				}
+
+				// Clear the parent from the target
+				(*it)->clearParent();
+
+				// Release the entity from the unique_ptr and erase it from the vector
+				it->release();
+				m_childs.erase(it);
+
+				// return it as an unique_ptr
+				return std::unique_ptr<T>(derived);
+			}
+
 			bool hasParent() const {
 				return m_parent != nullptr;
+			}
+
+			void clearParent() {
+				this->clearScene();
+				m_parent = nullptr;
 			}
 
 		public:
