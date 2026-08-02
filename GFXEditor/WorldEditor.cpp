@@ -470,7 +470,8 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 
 void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputManager& input, float deltaTime)
 {
-	if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && m_viewportCursorInfo.isHovering) {
+	// Picks an entity with the mouse
+	if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && m_viewportCursorInfo.isHovering && !UIContext::gizmoIsOver() && !UIContext::gizmoIsUsing()) {
 		glm::vec4 viewport = glm::vec4(0.0f, 0.0f, m_sceneViewportWindowSize.x, m_sceneViewportWindowSize.y);
 		auto ray = GFXEngine::Physics::Raycast::screenPointToRay(m_viewportCursorInfo.position, *m_editorCamera, viewport);
 
@@ -735,12 +736,11 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
 		glm::mat4 model = m_selectedEntity->getModelMatrix();
 		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
-		if (UIContext::transformGizmo(view, projection, model, rect, m_currentGuizmoOperation)) {
-
+		if (UIContext::transformGizmo(view, projection, model, rect, m_currentGuizmoOperation)) 
+		{
 			if (m_selectedEntity->hasParent()) {
 				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
 			}
-
 			m_selectedEntity->setModelMatrix(model);
 			m_selectedEntity->propertyChanged(Entity::PropertyComponentType::Transform);
 		}
