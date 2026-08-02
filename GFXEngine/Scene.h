@@ -168,7 +168,7 @@ namespace GFXEngine {
 			// Qualifier: const
 			// Parameter: class Entity * entity
 			//************************************
-			virtual bool ownEntity(class Entity* entity, bool recursive = false) const = 0;
+			virtual bool ownsEntity(class Entity* entity, bool recursive = false) const = 0;
 
 			//************************************
 			// Method:    as

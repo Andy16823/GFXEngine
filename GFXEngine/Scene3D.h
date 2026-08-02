@@ -266,7 +266,7 @@ namespace GFXEngine {
 			// Parameter: Entity * entity
 			// Parameter: bool recursive
 			//************************************
-			bool ownEntity(Entity* entity, bool recursive = false) const override;
+			bool ownsEntity(Entity* entity, bool recursive = false) const override;
 
 			//************************************
 			// Method:    isUsingParallelRendering

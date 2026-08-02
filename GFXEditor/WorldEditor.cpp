@@ -992,7 +992,7 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 			if (ImGui::MenuItem("Make Parent")) {
 
 				// Validate the selected entity is not the parent from the entity
-				if (m_selectedEntity->ownChild(&entity, true))
+				if (m_selectedEntity->ownsChild(&entity, true))
 				{
 					GFXEngine::Utils::log("World Editor", "Cannot make an entity child of one of its descendants.");
 					return;
@@ -1005,7 +1005,7 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 							parent->addChild(std::move(childUniquePtr));
 						}
 						else {
-							if (scene->ownEntity(child, false)) {
+							if (scene->ownsEntity(child, false)) {
 								auto childUniquePtr = scene->detachEntity<GFXEngine::Core::Entity>(child);
 								parent->addChild(std::move(childUniquePtr));
 							}

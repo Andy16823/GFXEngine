@@ -681,34 +681,81 @@ namespace GFXEngine {
 			}
 
 		public:
+
+			//************************************
+			// Method:    setParent
+			// FullName:  GFXEngine::Core::Entity::setParent
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			// Parameter: Entity * entity
+			//************************************
 			void setParent(Entity* entity) {
 				m_parent = entity;
 			}
 
+
+			//************************************
+			// Method:    getParent
+			// FullName:  GFXEngine::Core::Entity::getParent
+			// Access:    public 
+			// Returns:   GFXEngine::Core::Entity*
+			// Qualifier: const
+			//************************************
 			Entity* getParent() const {
 				return m_parent;
 			}
 
+			//************************************
+			// Method:    hasParent
+			// FullName:  GFXEngine::Core::Entity::hasParent
+			// Access:    public 
+			// Returns:   bool
+			// Qualifier: const
+			//************************************
 			bool hasParent() const {
 				return m_parent != nullptr;
 			}
 
+			//************************************
+			// Method:    clearParent
+			// FullName:  GFXEngine::Core::Entity::clearParent
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			//************************************
 			void clearParent() {
 				this->clearScene();
 				m_parent = nullptr;
 			}
 
+			//************************************
+			// Method:    hasChilds
+			// FullName:  GFXEngine::Core::Entity::hasChilds
+			// Access:    public 
+			// Returns:   bool
+			// Qualifier: const
+			//************************************
 			bool hasChilds() const {
 				return !m_childs.empty();
 			}
 
-			bool ownChild(Entity* entity, bool recursive = false) const {
+			//************************************
+			// Method:    ownsChild
+			// FullName:  GFXEngine::Core::Entity::ownChild
+			// Access:    public 
+			// Returns:   bool
+			// Qualifier: const
+			// Parameter: Entity * entity
+			// Parameter: bool recursive
+			//************************************
+			bool ownsChild(Entity* entity, bool recursive = false) const {
 				for (const auto& other : m_childs) {
 					if (other.get() == entity) {
 						return true;
 					}
 					if (recursive) {
-						if (other->ownChild(entity, recursive)) {
+						if (other->ownsChild(entity, recursive)) {
 							return true;
 						}
 					}
@@ -716,6 +763,14 @@ namespace GFXEngine {
 				return false;
 			}
 
+			//************************************
+			// Method:    addChild
+			// FullName:  GFXEngine::Core::Entity::addChild
+			// Access:    public 
+			// Returns:   T*
+			// Qualifier:
+			// Parameter: std::unique_ptr<T> entity
+			//************************************
 			template<typename T>
 			T* addChild(std::unique_ptr<T> entity) {
 				static_assert(std::is_base_of<Entity, T>::value, "T must be a subclass of Entity");
@@ -729,6 +784,14 @@ namespace GFXEngine {
 				return static_cast<T*>(m_childs.back().get());
 			}
 
+			//************************************
+			// Method:    findChild
+			// FullName:  GFXEngine::Core::Entity::findChild
+			// Access:    public 
+			// Returns:   T*
+			// Qualifier:
+			// Parameter: const std::string & name
+			//************************************
 			template<typename T>
 			T* findChild(const std::string& name) {
 				for (const auto& entity : m_childs) {
@@ -740,6 +803,14 @@ namespace GFXEngine {
 				return nullptr;
 			}
 
+			//************************************
+			// Method:    foreachChild
+			// FullName:  GFXEngine::Core::Entity::foreachChild
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			// Parameter: Func & & func
+			//************************************
 			template<typename Func>
 			void foreachChild(Func&& func) {
 				for (auto& entity : m_childs) {
@@ -747,6 +818,14 @@ namespace GFXEngine {
 				}
 			}
 
+			//************************************
+			// Method:    detachChild
+			// FullName:  GFXEngine::Core::Entity::detachChild
+			// Access:    public 
+			// Returns:   
+			// Qualifier:
+			// Parameter: Entity * target
+			//************************************
 			template<typename T>
 			std::unique_ptr<T> detachChild(Entity* target)
 			{
@@ -919,8 +998,15 @@ namespace GFXEngine {
 			//************************************
 			void resolveReferences(GFXEngine::SerializationContext& context) override;
 
+			//************************************
+			// Method:    requireAsset
+			// FullName:  GFXEngine::Core::Entity::requireAsset
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			// Parameter: RequiredAssets & assets
+			//************************************
 			void requireAsset(RequiredAssets& assets) override;
-
 
 			//************************************
 			// Method:    exportToPrefab
