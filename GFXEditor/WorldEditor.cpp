@@ -731,16 +731,16 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 	if (m_selectedEntity)
 	{
-		// The transform gizmo operates on the entity's local transformation.
-		// Using the world model matrix here would apply the parent's transformation
-		// twice when writing the manipulated matrix back to the Transform.
-		// The renderer uses the world model matrix, while the editor edits the local one.
 		glm::mat4 view = m_editorCamera->getViewMatrix();
 		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
-		//glm::mat4 model = m_selectedEntity->getModelMatrix();
-		glm::mat4 model = m_selectedEntity->getLocalModelMatrix();
+		glm::mat4 model = m_selectedEntity->getModelMatrix();
 		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
 		if (UIContext::transformGizmo(view, projection, model, rect, m_currentGuizmoOperation)) {
+
+			if (m_selectedEntity->hasParent()) {
+				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
+			}
+
 			m_selectedEntity->setModelMatrix(model);
 			m_selectedEntity->propertyChanged(Entity::PropertyComponentType::Transform);
 		}
