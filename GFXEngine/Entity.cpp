@@ -135,6 +135,13 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 		behaviorsData.push_back(bhvData);
 	}
 	data["behaviors"] = behaviorsData;
+
+	std::vector<nlohmann::json> childsData;
+	for (const auto& child : m_childs) {
+		childsData.push_back(child->serialize());
+	}
+	data["childs"] = childsData;
+
 	return data;
 }
 
