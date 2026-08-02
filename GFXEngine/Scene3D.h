@@ -258,6 +258,17 @@ namespace GFXEngine {
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
 
 			//************************************
+			// Method:    ownEntity
+			// FullName:  GFXEngine::Core::Scene3D::ownEntity
+			// Access:    public 
+			// Returns:   bool
+			// Qualifier: const 
+			// Parameter: Entity * entity
+			// Parameter: bool recursive
+			//************************************
+			bool ownEntity(Entity* entity, bool recursive = false) const override;
+
+			//************************************
 			// Method:    isUsingParallelRendering
 			// FullName:  GFXEngine::Core::Scene3D::isUsingParallelRendering
 			// Access:    public 

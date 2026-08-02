@@ -691,6 +691,20 @@ namespace GFXEngine {
 				return !m_childs.empty();
 			}
 
+			bool ownChild(Entity* entity, bool recursive = false) const {
+				for (const auto& other : m_childs) {
+					if (other.get() == entity) {
+						return true;
+					}
+					if (recursive) {
+						if (other->ownChild(entity, recursive)) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+
 			template<typename T>
 			T* addChild(std::unique_ptr<T> entity) {
 				static_assert(std::is_base_of<Entity, T>::value, "T must be a subclass of Entity");

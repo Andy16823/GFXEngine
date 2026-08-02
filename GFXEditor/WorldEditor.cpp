@@ -964,6 +964,32 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 				m_scene->addEntity(std::move(entityptr));
 			}
 		}
+		if (m_selectedEntity != &entity) {
+			if (ImGui::MenuItem("Make Parent")) {
+
+				// Validate the selected entity is not the parent from the entity
+				if (m_selectedEntity->ownChild(&entity, true))
+				{
+					GFXEngine::Utils::log("World Editor", "Cannot make an entity child of one of its descendants.");
+					return;
+				}
+
+				// Check if the selected entity has an parent or if the scene owns it
+				if (m_selectedEntity->hasParent()) {
+					auto entityPtr = m_selectedEntity->getParent()->detachChild<GFXEngine::Core::Entity>(m_selectedEntity);
+					entity.addChild(std::move(entityPtr));
+				}
+				else {
+					if (m_scene->ownEntity(m_selectedEntity, false)) {
+						auto entityPtr = m_scene->detachEntity<GFXEngine::Core::Entity>(m_selectedEntity);
+						entity.addChild(std::move(entityPtr));
+					}
+					else {
+						assert(m_scene->ownEntity(m_selectedEntity, false) && "Entity has no parent but is not owned by the scene.");
+					}
+				}
+			}
+		}
 		ImGui::EndPopup();
 	}
 }
