@@ -265,6 +265,7 @@ nlohmann::json GFXEngine::Core::InstancedModel::serialize() const
 
 void GFXEngine::Core::InstancedModel::requireAsset(RequiredAssets& assets)
 {
+	Entity::requireAsset(assets);
 	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
 	if (!meshModel) {
 		throw std::runtime_error("InstancedModel requireAsset error: MeshModel reference is invalid");

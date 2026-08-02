@@ -137,6 +137,8 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 
 void Core::Primitive::requireAsset(RequiredAssets& assets)
 {
+	Entity::requireAsset(assets);
+
 	// Require Mesh
 	MeshAsset* meshAsset = m_meshReference.get<MeshAsset>();
 	if (!meshAsset) {

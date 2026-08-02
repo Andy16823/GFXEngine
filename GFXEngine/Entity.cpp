@@ -190,6 +190,22 @@ void GFXEngine::Core::Entity::resolveReferences(GFXEngine::SerializationContext&
 	for (auto& behavior : m_behaviors) {
 		behavior->resolveReferences(context);
 	}
+
+	for (auto& child : m_childs)
+	{
+		child->resolveReferences(context);
+	}
+}
+
+void GFXEngine::Core::Entity::requireAsset(RequiredAssets& assets)
+{
+	for (const auto& behavior : m_behaviors) {
+		behavior->requireAsset(assets);
+	}
+
+	for (const auto& child : m_childs) {
+		child->requireAsset(assets);
+	}
 }
 
 void GFXEngine::Core::Entity::exportToPrefab(const std::filesystem::path& path) const

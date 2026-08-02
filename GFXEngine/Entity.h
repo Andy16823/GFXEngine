@@ -918,7 +918,10 @@ namespace GFXEngine {
 			// Parameter: GFXEngine::SerializationContext & context
 			//************************************
 			void resolveReferences(GFXEngine::SerializationContext& context) override;
-			
+
+			void requireAsset(RequiredAssets& assets) override;
+
+
 			//************************************
 			// Method:    exportToPrefab
 			// FullName:  GFXEngine::Core::Entity::exportToPrefab
