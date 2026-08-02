@@ -684,17 +684,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 	ImGui::End();
 
-	ImGui::Begin("Scene Hierarchy");
-	if (ImGui::CollapsingHeader("Entities"))
-	{
-		m_scene->forEachEntity([&](GFXEngine::Core::Entity& entity) {
-			bool isSelected = (m_selectedEntity == &entity);
-			if (ImGui::Selectable(entity.getName().c_str(), isSelected)) {
-				m_selectedEntity = &entity;
-			}
-			});
-	}
-	ImGui::End();
+	this->renderSceneTree(context, renderer, imageIndex);
 
 
 	ImGui::Begin("Scene Settings");
@@ -916,4 +906,29 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 	for (auto& plugin : m_plugins) {
 		plugin->handleMouseMove(*this, window, xpos, ypos);
 	}
+}
+
+void WorldEditor::renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::Begin("Scene Hierarchy");
+	if (ImGui::CollapsingHeader("Entities"))
+	{
+		m_scene->forEachEntity([&](GFXEngine::Core::Entity& entity) {
+			bool isSelected = (m_selectedEntity == &entity);
+
+			ImGui::Selectable(entity.getName().c_str(), isSelected);
+
+			if (ImGui::IsItemClicked()) {
+				m_selectedEntity = &entity;
+			}
+
+			if (ImGui::BeginPopupContextItem()) {
+				if (ImGui::MenuItem("Delete")) {
+					GFXEngine::Utils::log("GFXEditor", "Delete entity");
+				}
+				ImGui::EndPopup();
+			}
+			});
+	}
+	ImGui::End();
 }

@@ -96,6 +96,8 @@ namespace GFXEditor {
 		// Parameter: GFXEngine::Graphics::Renderer & renderer
 		//************************************
 		void renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine::Graphics::Renderer& renderer);
+
+		void renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 		
 		//************************************
 		// Method:    markBehaviorForRemoval
