@@ -59,7 +59,8 @@ namespace GFXEditor {
 		// Returns:   void
 		// Qualifier:
 		// Parameter: const std::string & title
-		// Parameter: EditorDialogCallback callback
+		// Parameter: EditorDialogCallback callback - the callback wich gets performed on success
+		// Remarks: Opens the dialog and calls the callback when the ok button get pressed.
 		//************************************
 		void showDialog(const std::string& title, EditorDialogCallback callback);
 

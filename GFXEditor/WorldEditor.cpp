@@ -970,6 +970,18 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 		if (ImGui::MenuItem("Delete")) {
 			GFXEngine::Utils::log("GFXEditor", "Delete entity");
 		}
+		if (ImGui::MenuItem("Create Prefab"))
+		{
+			if (!m_createFileDialog->isOpen()) {
+				m_createFileDialog->showDialog("File Name", [this, entity = &entity, projectDir = m_projectDirectory](EditorDialog& dialog) {
+					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
+					fileName = fileName +  ".pfb";
+					std::filesystem::path filePath = projectDir / "prefabs" / fileName;
+					entity->exportToPrefab(filePath);
+					GFXEngine::Utils::log("World Editor", "Saved prefab to " + filePath.string());
+					});
+			}
+		}
 		if (entity.hasParent()) {
 			if (ImGui::MenuItem("Move to Scene")) {
 				auto entityptr = entity.getParent()->detachChild<GFXEngine::Core::Entity>(&entity);
