@@ -395,6 +395,17 @@ namespace GFXEngine {
 				}
 				return modelMatrix;
 			}
+
+			//************************************
+			// Method:    getLocalModelMatrix
+			// FullName:  GFXEngine::Core::Entity::getLocalModelMatrix
+			// Access:    virtual public 
+			// Returns:   glm::mat4
+			// Qualifier: const
+			//************************************
+			virtual glm::mat4 getLocalModelMatrix() const {
+				return m_transform.getModelMatrix();
+			}
 			
 			//************************************
 			// Method:    getTransform
