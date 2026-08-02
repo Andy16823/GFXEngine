@@ -927,7 +927,9 @@ void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
 		flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	if (!entity.hasChilds()) {
+	if (!entity.hasChilds())
+	{
+		flags |= ImGuiTreeNodeFlags_Leaf;
 		flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	}
 
@@ -942,7 +944,7 @@ void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
 
 	renderEntityContextMenu(entity);
 
-	if (open) {
+	if (open && entity.hasChilds()) {
 		entity.foreachChild([&](GFXEngine::Core::Entity& child) {
 			this->renderSceneEntity(child);
 			});
