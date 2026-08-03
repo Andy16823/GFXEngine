@@ -130,7 +130,7 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 
 	if (!data.contains("pipeline") || !data["pipeline"].is_number_unsigned())
 	{
-		throw std::runtime_error("Primitive deserialization error: 'pipeline' field is missing or not a unsigned");
+		throw std::runtime_error("Primitive deserialization error: 'pipeline' field is missing or not an unsigned integer");
 	}
 	m_pipelineId = data["pipeline"].get<unsigned int>();
 }
