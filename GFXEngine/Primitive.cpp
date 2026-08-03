@@ -79,9 +79,11 @@ GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Primitive::getMeshAndMaterial
 
 	MeshAsset* meshAsset = m_meshReference.get<Graphics::MeshAsset>();
 	MaterialAsset* materialAsset = m_materialReference.get<Graphics::MaterialAsset>();
+	if (!meshAsset || !meshAsset->getMesh() || !materialAsset || !materialAsset->getMaterial()) {
+		throw std::runtime_error("Primitive has invalid mesh/material asset reference");
+	}
 	Graphics::Mesh& mesh = *meshAsset->getMesh();
 	Graphics::Material& material = *materialAsset->getMaterial();
-
 	return std::make_optional(std::make_pair(std::ref(mesh), std::ref(material)));
 }
 
