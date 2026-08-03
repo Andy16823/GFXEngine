@@ -384,7 +384,7 @@ namespace GFXEngine {
 			// Method:    getModelMatrix
 			// FullName:  GFXEngine::Core::Entity::getModelMatrix
 			// Access:    virtual public 
-			// Returns:   const glm::mat4&
+			// Returns:   glm::mat4
 			// Qualifier: const
 			//************************************
 			virtual glm::mat4 getModelMatrix() const { 
