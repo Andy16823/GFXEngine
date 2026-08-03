@@ -258,8 +258,8 @@ namespace GFXEngine {
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
 
 			//************************************
-			// Method:    ownEntity
-			// FullName:  GFXEngine::Core::Scene3D::ownEntity
+			// Method:    ownsEntity
+			// FullName:  GFXEngine::Core::Scene3D::ownsEntity
 			// Access:    public 
 			// Returns:   bool
 			// Qualifier: const 
