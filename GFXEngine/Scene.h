@@ -161,8 +161,8 @@ namespace GFXEngine {
 			virtual class Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) = 0;
 
 			//************************************
-			// Method:    ownEntity
-			// FullName:  GFXEngine::Core::Scene::ownEntity
+			// Method:    ownsEntity
+			// FullName:  GFXEngine::Core::Scene::ownsEntity
 			// Access:    virtual public 
 			// Returns:   bool
 			// Qualifier: const
