@@ -73,14 +73,14 @@ namespace GFXEngine {
 			}
 
 			//************************************
-			// Method:    findPipelineIdentifyer
-			// FullName:  GFXEngine::Graphics::PipelineManager::findPipelineIdentifyer
+			// Method:    findPipelineIdentifier
+			// FullName:  GFXEngine::Graphics::PipelineManager::findPipelineIdentifier
 			// Access:    public 
 			// Returns:   std::optional<unsigned int>
 			// Qualifier: const
 			// Parameter: const RenderPipeline * pipeline
 			//************************************
-			std::optional<unsigned int> findPipelineIdentifyer(const RenderPipeline* pipeline) const
+			std::optional<unsigned int> findPipelineIdentifier(const RenderPipeline* pipeline) const
 			{
 				for (const auto& [key, value] : m_pipelines) {
 					if (value.get() == pipeline) {
