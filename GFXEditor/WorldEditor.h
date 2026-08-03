@@ -130,7 +130,7 @@ namespace GFXEditor {
 		// Returns:   void
 		// Qualifier:
 		// Parameter: GFXEngine::Core::Entity & entity
-		// Description: Renders an context menu for an scene entity in the scene tree
+		// Description: Renders a context menu for a scene entity in the scene tree
 		//************************************
 		void renderEntityContextMenu(GFXEngine::Core::Entity& entity);
 		
