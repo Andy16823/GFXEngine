@@ -61,7 +61,7 @@ namespace GFXEngine {
 			// Qualifier:
 			// Parameter: const glm::vec4 & value
 			//************************************
-			void setColor(const glm::vec4& value) { m_color = value; }
+			void setColor(const glm::vec4& value) { m_color = value; } // TODO: Make color updatable
 			
 			//************************************
 			// Method:    getColor

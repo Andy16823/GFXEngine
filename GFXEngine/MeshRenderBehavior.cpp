@@ -1,6 +1,7 @@
 #include "MeshRenderBehavior.h"
 #include "EngineDefinitions.h"
 #include "Entity.h"
+#include <iostream>
 
 void GFXEngine::Core::MeshRenderBehavior::init(Scene& scene, Graphics::Renderer& renderer)
 {}
@@ -13,7 +14,7 @@ void GFXEngine::Core::MeshRenderBehavior::destroy(Scene & scene, Graphics::Rende
 
 std::string GFXEngine::Core::MeshRenderBehavior::getName() const
 {
-    return std::string();
+	return "MeshRenderBehavior";
 }
 
 std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::MeshRenderBehavior::getProperties()

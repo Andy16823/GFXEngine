@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <stdexcept>
+
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::EngineTypes;
@@ -192,23 +193,53 @@ MeshBuilder MeshBuilder::createQuad(float width /*= 1.0f*/, float height /*= 1.0
 
 MeshBuilder MeshBuilder::createCube(float size /*= 1.0f*/)
 {
-	const float halfSize = size * 0.5f;
+	const float h = size * 0.5f;
 
 	MeshBuilder builder;
-	builder.addVertex({ { -halfSize, -halfSize, -halfSize }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } }); // Left-bottom-back
-	builder.addVertex({ { halfSize, -halfSize, -halfSize }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } }); // Right-bottom-back
-	builder.addVertex({ { halfSize, halfSize, -halfSize }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } }); // Right-top-back
-	builder.addVertex({ { -halfSize, halfSize, -halfSize }, { 1.0f, 1.0f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } }); // Left-top-back
 
-	builder.addVertex({ { -halfSize, -halfSize, halfSize }, { 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { -1.0f, 0.0f, 0.0f, 1.0f } }); // Left-bottom-front
-	builder.addVertex({ { halfSize, -halfSize, halfSize }, { 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { -1.0f, 0.0f, 0.0f, 1.0f } }); // Right-bottom-front
-	builder.addVertex({ { halfSize, halfSize, halfSize }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { -1.0f, 0.0f, 0.0f, 1.0f } }); // Right-top-front
-	builder.addVertex({ { -halfSize, halfSize, halfSize }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { -1.0f, 0.0f, 0.0f, 1.0f } }); // Left-top-front
+	// Back -Z
+	builder.addVertex({ {-h,-h,-h}, {1,1,1}, {0,0}, { 0, 0,-1}, {1,0,0,1} });
+	builder.addVertex({ { h,-h,-h}, {1,1,1}, {1,0}, { 0, 0,-1}, {1,0,0,1} });
+	builder.addVertex({ { h, h,-h}, {1,1,1}, {1,1}, { 0, 0,-1}, {1,0,0,1} });
+	builder.addVertex({ {-h, h,-h}, {1,1,1}, {0,1}, { 0, 0,-1}, {1,0,0,1} });
 
-	builder.addQuad(0, 1, 2, 3); // Back face
-	builder.addQuad(4, 5, 6, 7); // Front face
-	builder.addQuad(0, 4, 7, 3); // Left face
-	builder.addQuad(1, 5, 6, 2); // Right face
+	// Front +Z
+	builder.addVertex({ {-h,-h, h}, {1,1,1}, {0,0}, { 0, 0, 1}, {-1,0,0,1} });
+	builder.addVertex({ { h,-h, h}, {1,1,1}, {1,0}, { 0, 0, 1}, {-1,0,0,1} });
+	builder.addVertex({ { h, h, h}, {1,1,1}, {1,1}, { 0, 0, 1}, {-1,0,0,1} });
+	builder.addVertex({ {-h, h, h}, {1,1,1}, {0,1}, { 0, 0, 1}, {-1,0,0,1} });
+
+	// Left -X
+	builder.addVertex({ {-h,-h,-h}, {1,1,1}, {0,0}, {-1, 0, 0}, {0,0,1,1} });
+	builder.addVertex({ {-h,-h, h}, {1,1,1}, {1,0}, {-1, 0, 0}, {0,0,1,1} });
+	builder.addVertex({ {-h, h, h}, {1,1,1}, {1,1}, {-1, 0, 0}, {0,0,1,1} });
+	builder.addVertex({ {-h, h,-h}, {1,1,1}, {0,1}, {-1, 0, 0}, {0,0,1,1} });
+
+	// Right +X
+	builder.addVertex({ { h,-h,-h}, {1,1,1}, {0,0}, { 1, 0, 0}, {0,0,-1,1} });
+	builder.addVertex({ { h,-h, h}, {1,1,1}, {1,0}, { 1, 0, 0}, {0,0,-1,1} });
+	builder.addVertex({ { h, h, h}, {1,1,1}, {1,1}, { 1, 0, 0}, {0,0,-1,1} });
+	builder.addVertex({ { h, h,-h}, {1,1,1}, {0,1}, { 1, 0, 0}, {0,0,-1,1} });
+
+	// Top +Y
+	builder.addVertex({ {-h, h,-h}, {1,1,1}, {0,0}, { 0, 1, 0}, {1,0,1,1} });
+	builder.addVertex({ { h, h,-h}, {1,1,1}, {1,0}, { 0, 1, 0}, {1,0,1,1} });
+	builder.addVertex({ { h, h, h}, {1,1,1}, {1,1}, { 0, 1, 0}, {1,0,1,1} });
+	builder.addVertex({ {-h, h, h}, {1,1,1}, {0,1}, { 0, 1, 0}, {1,0,1,1} });
+
+	// Bottom -Y
+	builder.addVertex({ {-h,-h,-h}, {1,1,1}, {0,0}, { 0,-1, 0}, {0,1,1,1} });
+	builder.addVertex({ { h,-h,-h}, {1,1,1}, {1,0}, { 0,-1, 0}, {0,1,1,1} });
+	builder.addVertex({ { h,-h, h}, {1,1,1}, {1,1}, { 0,-1, 0}, {0,1,1,1} });
+	builder.addVertex({ {-h,-h, h}, {1,1,1}, {0,1}, { 0,-1, 0}, {0,1,1,1} });
+
+
+	builder.addQuad(0, 1, 2, 3); // Back
+	builder.addQuad(4, 5, 6, 7); // Front
+	builder.addQuad(8, 9, 10, 11); // Left
+	builder.addQuad(12, 13, 14, 15); // Right
+	builder.addQuad(16, 17, 18, 19); // Top
+	builder.addQuad(20, 21, 22, 23); // Bottom
 
 	return builder;
 }

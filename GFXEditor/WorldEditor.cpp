@@ -1000,7 +1000,7 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 				this->addPostRenderAction(std::move(action));
 			}
 		}
-		if (m_selectedEntity != &entity) {
+		if (m_selectedEntity && m_selectedEntity != &entity) {
 			if (ImGui::MenuItem("Make Parent")) {
 
 				// Validate the selected entity is not the parent from the entity

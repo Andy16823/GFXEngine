@@ -44,12 +44,12 @@ bool GFXEngine::Graphics::SolidColorPass::bindResources(GFXEngine::Graphics::Ren
     }
 
     if (!resources.contains(Defintions::MATERIAL_RESOURCE)) {
-        throw std::runtime_error("SolidGeometryPass requires MATERIAL_RESOURCE");
+        throw std::runtime_error("SolidColorPass requires MATERIAL_RESOURCE");
     }
 
 	if (!builder.hasModelMatrix())
 	{
-		throw std::runtime_error("SolidGeometryPass requires ModelMatrix for push_constnat");
+		throw std::runtime_error("SolidColorPass requires ModelMatrix for push_constnat");
 	}
 
     glm::mat4 modelMatrix = builder.getModelMatrix();
