@@ -119,7 +119,7 @@ namespace GFXEditor {
 		// Returns:   void
 		// Qualifier:
 		// Parameter: GFXEngine::Core::Entity & entity
-		// Description: renders an scene tree entry
+		// Description: renders a scene tree entry
 		//************************************
 		void renderSceneEntity(GFXEngine::Core::Entity& entity);
 
