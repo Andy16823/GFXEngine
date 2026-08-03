@@ -11,6 +11,18 @@ void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderCon
 	// Build Geometrypass Task
 	if (context.renderPass == RenderPassIteration::GeometryPass) {
 
+		// Check if the pipeline id is set
+		if (!m_pipelineId.has_value()) {
+			throw std::runtime_error("Missing pipeline ID");
+		}
+		unsigned int pipelineId = m_pipelineId.value();
+
+		// Get the pipeline from the renderer
+		auto pipeline = context.renderer.getPipeline<GFXEngine::Graphics::GraphicsPipeline>(pipelineId);
+		if (!pipeline) {
+			throw std::runtime_error("Pipeline with ID " + std::to_string(pipelineId) + " not found.");
+		}
+
 		// Gather resources needed for the render task
 		Graphics::GraphicResources ressources;
 		ressources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
@@ -24,12 +36,12 @@ void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderCon
 				const auto& [mesh, material] = meshMaterial.value();
 
 				RenderTaskBuilder taskBuilder;
-				taskBuilder.setPipeline(m_pipeline)
+				taskBuilder.setPipeline(pipeline)
 					.setMesh(&mesh)
 					.setModelMatrix(this->getModelMatrix());
 
 				this->getMeshMaterialGraphicResources(ressources, context.imageIndex, i);
-				m_pipeline->getGraphicsPass().bindResources(taskBuilder, ressources);
+				pipeline->getGraphicsPass().bindResources(taskBuilder, ressources);
 				renderQueue.addRenderTask(taskBuilder.build());
 			}
 		}
@@ -75,9 +87,15 @@ GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Primitive::getMeshAndMaterial
 
 nlohmann::json Core::Primitive::serialize() const
 {
+	if (!m_pipelineId.has_value())
+	{
+		throw std::logic_error("Primitive has no pipeline assigned.");
+	}
+
 	nlohmann::json data = Entity::serialize();
 	data["mesh"] = m_meshReference.get<MeshAsset>()->getName();
 	data["material"] = m_materialReference.get<MaterialAsset>()->getName();
+	data["pipeline"] = m_pipelineId.value();
 	return data;
 }
 
@@ -109,10 +127,18 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 		throw std::runtime_error("Primitive deserialization error: MaterialAsset asset '" + materialName + "' not found");
 	}
 	m_materialReference.set(materialAsset);
+
+	if (!data.contains("pipeline") || !data["pipeline"].is_number_unsigned())
+	{
+		throw std::runtime_error("Primitive deserialization error: 'pipeline' field is missing or not an unsigned integer");
+	}
+	m_pipelineId = data["pipeline"].get<unsigned int>();
 }
 
 void Core::Primitive::requireAsset(RequiredAssets& assets)
 {
+	Entity::requireAsset(assets);
+
 	// Require Mesh
 	MeshAsset* meshAsset = m_meshReference.get<MeshAsset>();
 	if (!meshAsset) {
@@ -121,7 +147,7 @@ void Core::Primitive::requireAsset(RequiredAssets& assets)
 	assets.emplace(meshAsset->getName());
 
 	// Require Material
-	MaterialAsset* materialAsset = m_meshReference.get<MaterialAsset>();
+	MaterialAsset* materialAsset = m_materialReference.get<MaterialAsset>();
 	if (!materialAsset) {
 		throw std::runtime_error("Primitive requireAsset error: MaterialAsset reference is invalid");
 	}

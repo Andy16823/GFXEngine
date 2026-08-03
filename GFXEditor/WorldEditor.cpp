@@ -470,7 +470,8 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 
 void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputManager& input, float deltaTime)
 {
-	if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && m_viewportCursorInfo.isHovering) {
+	// Picks an entity with the mouse
+	if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && m_viewportCursorInfo.isHovering && !UIContext::gizmoIsOver() && !UIContext::gizmoIsUsing()) {
 		glm::vec4 viewport = glm::vec4(0.0f, 0.0f, m_sceneViewportWindowSize.x, m_sceneViewportWindowSize.y);
 		auto ray = GFXEngine::Physics::Raycast::screenPointToRay(m_viewportCursorInfo.position, *m_editorCamera, viewport);
 
@@ -684,17 +685,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 	ImGui::End();
 
-	ImGui::Begin("Scene Hierarchy");
-	if (ImGui::CollapsingHeader("Entities"))
-	{
-		m_scene->forEachEntity([&](GFXEngine::Core::Entity& entity) {
-			bool isSelected = (m_selectedEntity == &entity);
-			if (ImGui::Selectable(entity.getName().c_str(), isSelected)) {
-				m_selectedEntity = &entity;
-			}
-			});
-	}
-	ImGui::End();
+	this->renderSceneTree(context, renderer, imageIndex);
 
 
 	ImGui::Begin("Scene Settings");
@@ -745,7 +736,11 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
 		glm::mat4 model = m_selectedEntity->getModelMatrix();
 		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
-		if (UIContext::transformGizmo(view, projection, model, rect, m_currentGuizmoOperation)) {
+		if (UIContext::transformGizmo(view, projection, model, rect, m_currentGuizmoOperation)) 
+		{
+			if (m_selectedEntity->hasParent()) {
+				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
+			}
 			m_selectedEntity->setModelMatrix(model);
 			m_selectedEntity->propertyChanged(Entity::PropertyComponentType::Transform);
 		}
@@ -809,6 +804,13 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 void WorldEditor::afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
+	auto actions = std::move(m_postRenderActions);
+	for (auto& action : actions) {
+		if (action.callback) {
+			action.callback();
+		}
+	}
+
 	this->cleanupRemovedBehaviors(renderer);
 	m_backgroundTaskManager.update();
 	for (auto& plugin : m_plugins) {
@@ -916,4 +918,123 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 	for (auto& plugin : m_plugins) {
 		plugin->handleMouseMove(*this, window, xpos, ypos);
 	}
+}
+
+void WorldEditor::renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::Begin("Scene Hierarchy");
+	if (ImGui::CollapsingHeader("Entities"))
+	{
+		m_scene->forEachEntity([&](GFXEngine::Core::Entity& entity) {
+			this->renderSceneEntity(entity);
+			});
+	}
+	ImGui::End();
+}
+
+void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
+{
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+	if (m_selectedEntity == &entity) {
+		flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	if (!entity.hasChilds())
+	{
+		flags |= ImGuiTreeNodeFlags_Leaf;
+		flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
+	}
+
+	ImGui::PushID(&entity);
+
+	bool open = ImGui::TreeNodeEx(
+		entity.getName().c_str(),
+		flags
+	);
+
+	if (ImGui::IsItemClicked()) {
+		m_selectedEntity = &entity;
+	}
+
+	renderEntityContextMenu(entity);
+
+	if (open && entity.hasChilds()) {
+		entity.foreachChild([&](GFXEngine::Core::Entity& child) {
+			this->renderSceneEntity(child);
+			});
+		ImGui::TreePop();
+	}
+
+	ImGui::PopID();
+}
+
+void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
+{
+	if (ImGui::BeginPopupContextItem()) {
+		if (ImGui::MenuItem("Delete")) {
+			GFXEngine::Utils::log("GFXEditor", "Delete entity");
+		}
+		if (ImGui::MenuItem("Create Prefab"))
+		{
+			if (!m_createFileDialog->isOpen()) {
+				m_createFileDialog->showDialog("File Name", [this, entity = &entity, projectDir = m_projectDirectory](EditorDialog& dialog) {
+					std::string fileName = static_cast<TextInputDialog&>(dialog).getInputText();
+					fileName = fileName +  ".pfb";
+					std::filesystem::path filePath = projectDir / "prefabs" / fileName;
+					entity->exportToPrefab(filePath);
+					GFXEngine::Utils::log("World Editor", "Saved prefab to " + filePath.string());
+					});
+			}
+		}
+		if (entity.hasParent()) {
+			if (ImGui::MenuItem("Move to Scene")) {
+				PostRenderAction action{
+					.callback = [this, child = &entity, scene = m_scene]() {
+						if (!child->hasParent()) {
+							return;
+						}
+						auto entityPtr = child->getParent()->detachChild<GFXEngine::Core::Entity>(child);
+						scene->addEntity(std::move(entityPtr));
+					}
+				};
+				this->addPostRenderAction(std::move(action));
+			}
+		}
+		if (m_selectedEntity != &entity) {
+			if (ImGui::MenuItem("Make Parent")) {
+
+				// Validate the selected entity is not the parent from the entity
+				if (m_selectedEntity->ownsChild(&entity, true))
+				{
+					GFXEngine::Utils::log("World Editor", "Cannot make an entity child of one of its descendants.");
+					return;
+				}
+
+				PostRenderAction action = {
+					.callback = [this, parent = &entity, child = m_selectedEntity, scene = m_scene]() {
+						if (child->hasParent()) {
+							auto childUniquePtr = child->getParent()->detachChild<GFXEngine::Core::Entity>(child);
+							parent->addChild(std::move(childUniquePtr));
+						}
+						else {
+							if (scene->ownsEntity(child, false)) {
+								auto childUniquePtr = scene->detachEntity<GFXEngine::Core::Entity>(child);
+								parent->addChild(std::move(childUniquePtr));
+							}
+							else {
+								assert(false && "Entity has no parent but is not owned by the scene.");
+							}
+						}
+					}
+				};
+				this->addPostRenderAction(std::move(action));
+			}
+		}
+		ImGui::EndPopup();
+	}
+}
+
+void WorldEditor::addPostRenderAction(PostRenderAction action)
+{
+	m_postRenderActions.emplace_back(std::move(action));
 }

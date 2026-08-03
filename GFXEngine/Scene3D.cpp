@@ -273,3 +273,18 @@ GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::
 	
 	return addEntity(std::move(entity));
 }
+
+bool GFXEngine::Core::Scene3D::ownsEntity(Entity* entity, bool recursive /*= false*/) const
+{
+	for (const auto& other : m_entities) {
+		if (other.get() == entity) {
+			return true;
+		}
+		if (recursive) {
+			if (other->ownsChild(entity, recursive)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
