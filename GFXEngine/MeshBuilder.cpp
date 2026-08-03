@@ -1,7 +1,8 @@
 #include "MeshBuilder.h"
+#include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-
+#include <stdexcept>
 using namespace GFXEngine;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::EngineTypes;
