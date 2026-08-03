@@ -985,8 +985,11 @@ void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
 		if (entity.hasParent()) {
 			if (ImGui::MenuItem("Move to Scene")) {
 				PostRenderAction action{
-					.callback = [this, target = &entity, scene = m_scene]() {
-						auto entityPtr = target->getParent()->detachChild<GFXEngine::Core::Entity>(target);
+					.callback = [this, child = &entity, scene = m_scene]() {
+						if (!child->hasParent()) {
+							return;
+						}
+						auto entityPtr = child->getParent()->detachChild<GFXEngine::Core::Entity>(child);
 						scene->addEntity(std::move(entityPtr));
 					}
 				};
