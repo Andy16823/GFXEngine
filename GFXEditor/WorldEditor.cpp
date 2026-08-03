@@ -945,6 +945,8 @@ void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
 		flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	}
 
+	ImGui::PushID(&entity);
+
 	bool open = ImGui::TreeNodeEx(
 		entity.getName().c_str(),
 		flags
@@ -962,6 +964,8 @@ void WorldEditor::renderSceneEntity(GFXEngine::Core::Entity& entity)
 			});
 		ImGui::TreePop();
 	}
+
+	ImGui::PopID();
 }
 
 void WorldEditor::renderEntityContextMenu(GFXEngine::Core::Entity& entity)
