@@ -40,7 +40,7 @@ VkPipelineLayout GFXEngine::Graphics::SolidColorPass::buildLayout(Renderer& rend
 bool GFXEngine::Graphics::SolidColorPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
 {
     if (!resources.contains(Defintions::CAMERA_RESOURCE)) {
-        throw std::runtime_error("SolidGeometryPass requires CAMERA_RESOURCE");
+        throw std::runtime_error("SolidColorPass requires CAMERA_RESOURCE");
     }
 
     if (!resources.contains(Defintions::MATERIAL_RESOURCE)) {
