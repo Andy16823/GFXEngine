@@ -108,7 +108,7 @@ namespace GFXEditor {
 		// Parameter: GFXEngine::Core::UIContext & context
 		// Parameter: GFXEngine::Graphics::Renderer & renderer
 		// Parameter: uint32_t imageIndex
-		// Description: diyplays the scene tree
+		// Description: displays the scene tree
 		//************************************
 		void renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 
