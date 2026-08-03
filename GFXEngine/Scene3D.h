@@ -9,6 +9,7 @@
 #include "DataTypes.h"
 #include "RenderQueue.h"
 #include <execution>
+#include <algorithm>
 
 namespace GFXEngine {
 	namespace Core {
@@ -258,6 +259,17 @@ namespace GFXEngine {
 			Entity* instantiatePrefab(const std::filesystem::path& path, GFXEngine::SerializationContext& context) override;
 
 			//************************************
+			// Method:    ownsEntity
+			// FullName:  GFXEngine::Core::Scene3D::ownsEntity
+			// Access:    public 
+			// Returns:   bool
+			// Qualifier: const 
+			// Parameter: Entity * entity
+			// Parameter: bool recursive
+			//************************************
+			bool ownsEntity(Entity* entity, bool recursive = false) const override;
+
+			//************************************
 			// Method:    isUsingParallelRendering
 			// FullName:  GFXEngine::Core::Scene3D::isUsingParallelRendering
 			// Access:    public 
@@ -291,6 +303,37 @@ namespace GFXEngine {
 				T* entityPtr = entity.get();
 				m_entities.push_back(std::move(entity));
 				return entityPtr;
+			}
+
+			//************************************
+			// Method:    detachEntity
+			// FullName:  GFXEngine::Core::Scene3D::detachEntity
+			// Access:    public 
+			// Returns:   
+			// Qualifier:
+			// Parameter: Entity * target
+			//************************************
+			template<typename T>
+			std::unique_ptr<T> detachEntity(Entity* target) {
+				auto* derived = dynamic_cast<T*>(target);
+				if (!derived) {
+					return nullptr;
+				}
+
+				auto it = std::find_if(m_entities.begin(), m_entities.end(), [target](const auto& entity) {
+					return entity.get() == target;
+					});
+
+				if (it == m_entities.end()) {
+					return nullptr;
+				}
+
+				(*it)->clearScene();
+
+				it->release();
+				m_entities.erase(it);
+
+				return std::unique_ptr<T>(derived);
 			}
 
 			//************************************

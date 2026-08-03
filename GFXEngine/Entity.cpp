@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Behavior.h"
 #include "BehaviorRegistry.h"
+#include "EntityFactory.h"
 #include "Utils.h"
 
 GFXEngine::Core::Entity::Entity()
@@ -33,12 +34,21 @@ void GFXEngine::Core::Entity::init(Scene& scene, GFXEngine::Graphics::Renderer& 
 	for (auto& behavior : m_behaviors) {
 		behavior->init(scene, renderer);
 	}
+
+	// Initialize Child
+	for (const auto& child : m_childs) {
+		child->init(scene, renderer);
+	}
 }
 
 void GFXEngine::Core::Entity::update(Scene& scene, GFXEngine::Graphics::Camera& camera, float deltaTime)
 {
 	for (auto& behavior : m_behaviors) {
 		behavior->update(scene, camera, deltaTime);
+	}
+
+	for (const auto& child : m_childs) {
+		child->update(scene, camera, deltaTime);
 	}
 }
 
@@ -49,12 +59,20 @@ void GFXEngine::Core::Entity::buildRenderTasks(GFXEngine::Graphics::RenderContex
 			renderableBehavior->buildRenderTasks(context, renderQueue);
 		}
 	}
+
+	for (const auto& child : m_childs) {
+		child->buildRenderTasks(context, renderQueue);
+	}
 }
 
 void GFXEngine::Core::Entity::destroy(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
 	for (auto& behavior : m_behaviors) {
 		behavior->destroy(scene, renderer);
+	}
+
+	for (const auto& child : m_childs) {
+		child->destroy(scene, renderer);
 	}
 }
 
@@ -118,6 +136,13 @@ nlohmann::json GFXEngine::Core::Entity::serialize() const
 		behaviorsData.push_back(bhvData);
 	}
 	data["behaviors"] = behaviorsData;
+
+	std::vector<nlohmann::json> childsData;
+	for (const auto& child : m_childs) {
+		childsData.push_back(child->serialize());
+	}
+	data["childs"] = childsData;
+
 	return data;
 }
 
@@ -146,12 +171,40 @@ void GFXEngine::Core::Entity::deserialize(const nlohmann::json& data, GFXEngine:
 			throw std::runtime_error("Unknown behavior type: " + bhvName);
 		}
 	}
+
+	auto childsData = data.value("childs", std::vector<nlohmann::json>());
+	for (const auto& childData : childsData) {
+		std::string typeName = childData["type"];
+		std::unique_ptr<Entity> entity = context.entityFactory.createEntity(typeName);
+		if (!entity) {
+			continue;
+		}
+		entity->deserialize(childData, context, flags);
+		auto entityPtr = this->addChild(std::move(entity));
+		context.registerEntity(entityPtr->getUUID(), entityPtr);
+	}
 }
 
 void GFXEngine::Core::Entity::resolveReferences(GFXEngine::SerializationContext& context)
 {
 	for (auto& behavior : m_behaviors) {
 		behavior->resolveReferences(context);
+	}
+
+	for (auto& child : m_childs)
+	{
+		child->resolveReferences(context);
+	}
+}
+
+void GFXEngine::Core::Entity::requireAsset(RequiredAssets& assets)
+{
+	for (const auto& behavior : m_behaviors) {
+		behavior->requireAsset(assets);
+	}
+
+	for (const auto& child : m_childs) {
+		child->requireAsset(assets);
 	}
 }
 

@@ -20,6 +20,20 @@ namespace GFXEngine {
 			Range
 		};
 
+		enum class AssetType {
+			Any,
+			Mesh,
+			Material,
+			Texture,
+			MeshModel,
+			EnvironmentMap
+		};
+
+		struct AssetMetaData
+		{
+			AssetType type = AssetType::Any;
+		};
+
 		struct EnumMetaData {
 			std::vector<std::string> options;
 		};
@@ -36,7 +50,13 @@ namespace GFXEngine {
 			int step;
 		};
 
-		using PropertyMetaData = std::variant<std::monostate, EnumMetaData, RangeMetaData, RangeIntMetaData>;
+		using PropertyMetaData = std::variant<
+			std::monostate, 
+			EnumMetaData, 
+			RangeMetaData, 
+			RangeIntMetaData, 
+			AssetMetaData
+		>;
 
 		using PropertyDataPointer = std::variant<
 			std::string*, 

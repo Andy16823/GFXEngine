@@ -149,6 +149,7 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 		.name = "Environment Map",
 		.data = &m_environmentMapRef,
 		.hint = PropertyHint::Asset,
+		.metaData = AssetMetaData { AssetType::EnvironmentMap }
 		});
 
 	properties.push_back({
@@ -271,4 +272,19 @@ GFXEngine::Core::Entity* GFXEngine::Core::Scene3D::instantiatePrefab(const std::
 	entity->deserialize(json["prefab"], context, SerializationFlags::RegenerateUUID);
 	
 	return addEntity(std::move(entity));
+}
+
+bool GFXEngine::Core::Scene3D::ownsEntity(Entity* entity, bool recursive /*= false*/) const
+{
+	for (const auto& other : m_entities) {
+		if (other.get() == entity) {
+			return true;
+		}
+		if (recursive) {
+			if (other->ownsChild(entity, recursive)) {
+				return true;
+			}
+		}
+	}
+	return false;
 }

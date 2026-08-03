@@ -15,6 +15,7 @@
 #include <string>
 #include "BackgroundTask.h"
 #include "EditorPlugin.h"
+#include "PostRenderAction.h"
 
 namespace GFXEditor {
 
@@ -50,6 +51,7 @@ namespace GFXEditor {
 		std::unique_ptr<GFXEngine::Graphics::Camera3D> m_editorCamera;
 		std::unique_ptr<TextInputDialog> m_createFileDialog;
 		std::vector<GFXEngine::Core::Behavior*> m_behaviorsToRemove;
+		std::vector<GFXEditor::PostRenderAction> m_postRenderActions; // TODO: Move behaviors to remove into this system
 		GFXEngine::BackgroundTaskManager m_backgroundTaskManager;
 		std::vector<std::unique_ptr<EditorPlugin>> m_plugins;
 		glm::vec2 m_sceneViewportWindowSize = glm::vec2(1024.0f, 1024.0f);
@@ -96,6 +98,41 @@ namespace GFXEditor {
 		// Parameter: GFXEngine::Graphics::Renderer & renderer
 		//************************************
 		void renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine::Graphics::Renderer& renderer);
+
+		//************************************
+		// Method:    renderSceneTree
+		// FullName:  GFXEditor::WorldEditor::renderSceneTree
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: GFXEngine::Core::UIContext & context
+		// Parameter: GFXEngine::Graphics::Renderer & renderer
+		// Parameter: uint32_t imageIndex
+		// Description: displays the scene tree
+		//************************************
+		void renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+
+		//************************************
+		// Method:    renderSceneEntity
+		// FullName:  GFXEditor::WorldEditor::renderSceneEntity
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: GFXEngine::Core::Entity & entity
+		// Description: renders a scene tree entry
+		//************************************
+		void renderSceneEntity(GFXEngine::Core::Entity& entity);
+
+		//************************************
+		// Method:    renderEntityContextMenu
+		// FullName:  GFXEditor::WorldEditor::renderEntityContextMenu
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: GFXEngine::Core::Entity & entity
+		// Description: Renders a context menu for a scene entity in the scene tree
+		//************************************
+		void renderEntityContextMenu(GFXEngine::Core::Entity& entity);
 		
 		//************************************
 		// Method:    markBehaviorForRemoval
@@ -440,6 +477,16 @@ namespace GFXEditor {
 		// Parameter: GFXEngine::Graphics::Renderer & renderer
 		//************************************
 		void dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer) override;
+
+		//************************************
+		// Method:    addPostRenderAction
+		// FullName:  GFXEditor::WorldEditor::addPostRenderAction
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: PostRenderAction action
+		//************************************
+		void addPostRenderAction(PostRenderAction action);
 
 	public:
 		//************************************

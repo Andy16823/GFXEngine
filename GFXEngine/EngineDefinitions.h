@@ -11,7 +11,8 @@ namespace GFXEngine {
 			INSTANCED_GEOMETRY_PIPELINE_UNLIT	= 'IULI',	
 			ENVIRONMENT_PIPELINE				= 'ENVI',
 			DEBUG_PIPELINE						= 'DEBG',
-			SPRITE_PIPELINE						= 'SPRT'
+			SPRITE_PIPELINE						= 'SPRT',
+			SOLID_COLOR_PIPELINE				= 'SOLC'
 		};
 
 		enum RenderResource : unsigned int {

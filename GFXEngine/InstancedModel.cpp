@@ -236,7 +236,8 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::InstancedModel::getP
 	properties.push_back({
 		.name = "Mesh Model",
 		.data = &m_meshModelRef,
-		.hint = PropertyHint::Asset
+		.hint = PropertyHint::Asset,
+		.metaData = AssetMetaData { AssetType::MeshModel }
 		});
 
 	return properties;
@@ -264,6 +265,7 @@ nlohmann::json GFXEngine::Core::InstancedModel::serialize() const
 
 void GFXEngine::Core::InstancedModel::requireAsset(RequiredAssets& assets)
 {
+	Entity::requireAsset(assets);
 	auto meshModel = m_meshModelRef.get<Graphics::MeshModel>();
 	if (!meshModel) {
 		throw std::runtime_error("InstancedModel requireAsset error: MeshModel reference is invalid");

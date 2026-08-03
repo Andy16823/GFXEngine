@@ -14,6 +14,7 @@
 #include "EnvironmentPass.h"
 #include "DebugPass.h"
 #include "SpritePass.h"
+#include "SolidColorPass.h"
 
 using namespace std;
 using namespace GFXEngine::Graphics;
@@ -648,6 +649,16 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 		.useVertex2DInput(0);
 	auto spritePipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SpritePass>());
 	this->managePipeline(PipelineType::SPRITE_PIPELINE, std::move(spritePipeline));
+	pipelineBuilder.clear();
+
+	// Solid Color Pipeline
+	vertPath = std::filesystem::path(shadersDirectory) / "solid_vert.spv";
+	fragPath = std::filesystem::path(shadersDirectory) / "solid_frag.spv";
+	RenderShader solidShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
+	pipelineBuilder.addShaderStage(solidShader)
+		.useVertex3DInput(0);
+	auto solidPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SolidColorPass>());
+	this->managePipeline(PipelineType::SOLID_COLOR_PIPELINE, std::move(solidPipeline));
 	pipelineBuilder.clear();
 
 	// Create Present Pipeline
