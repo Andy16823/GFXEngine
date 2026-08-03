@@ -9,6 +9,7 @@
 #include "DataTypes.h"
 #include "RenderQueue.h"
 #include <execution>
+#include <algorithm>
 
 namespace GFXEngine {
 	namespace Core {
