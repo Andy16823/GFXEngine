@@ -87,6 +87,8 @@ bool OffscreenRenderPass::create(LibGFX::VkContext& context, VkFormat swapchainI
 			std::to_string(result)
 		);
 	}
+
+	return true;
 }
 
 void OffscreenRenderPass::destroy(LibGFX::VkContext& context)
