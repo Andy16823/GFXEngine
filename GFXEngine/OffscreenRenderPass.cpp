@@ -74,8 +74,18 @@ bool OffscreenRenderPass::create(LibGFX::VkContext& context, VkFormat swapchainI
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(context.getDevice(), &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create offscreen render pass");
+	VkResult result = vkCreateRenderPass(
+		context.getDevice(),
+		&renderPassInfo,
+		nullptr,
+		&m_renderPass
+	);
+
+	if (result != VK_SUCCESS) {
+		throw std::runtime_error(
+			"Failed to create offscreen render pass: " +
+			std::to_string(result)
+		);
 	}
 }
 
