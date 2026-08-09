@@ -81,6 +81,7 @@ add_library(stb_image INTERFACE)
 target_include_directories(stb_image INTERFACE ${stb_SOURCE_DIR})
 
 # LibGFX und GLM verfügbar machen
+include_directories(/usr/include/minizip)
 FetchContent_MakeAvailable(LibGFX GLM Assimp json)
 
 # ImGui Quellen herunterladen (ohne add_subdirectory, da kein CMake-Projekt)

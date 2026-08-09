@@ -1,6 +1,6 @@
 #pragma once
 #include "GLFW/glfw3.h"
-#include "Glm/glm.hpp"
+#include <glm/glm.hpp>
 #include <functional>
 #include <unordered_map>
 

@@ -2,7 +2,7 @@
 #include "DescriptorPoolBuilder.h"
 #include <iostream>
 #include "glm/gtc/type_ptr.hpp"
-#include "imguizmo.h"
+#include "ImGuizmo.h"
 
 using namespace GFXEngine::Core;
 using namespace LibGFX;

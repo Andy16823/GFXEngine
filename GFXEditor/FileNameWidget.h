@@ -1,5 +1,5 @@
 #pragma once
-#include "UIContext.h";
+#include "UIContext.h"
 #include <functional>
 
 namespace GFXEditor {

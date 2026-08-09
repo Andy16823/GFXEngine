@@ -15,6 +15,7 @@
 #include <string>
 #include "RenderPipeline.h"
 #include "GraphicResources.h"
+#include <cstring>
 
 const uint32_t TEXTURE_SAMPLER_DESCRIPTOR_COUNT = 16;
 const uint32_t TEXTURE_SAMPLER_MAX_SETS = 512;
@@ -786,7 +787,7 @@ namespace GFXEngine {
 			template<typename T>
 			void updateMappedBuffer(void* mappedData, size_t bufferSize, const T* data, size_t count) {
 				size_t totalSize = sizeof(T) * count;
-				assert(totalSize <= bufferSize, "Buffer update size exceeds buffer size");
+				assert(totalSize <= bufferSize && "Buffer update size exceeds buffer size");
 				memcpy(mappedData, data, totalSize);
 			}
 

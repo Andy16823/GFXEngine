@@ -1,4 +1,5 @@
 #pragma once
+#include "Asset.h"
 #include <vector>
 #include <glm/glm.hpp>
 #include <typeindex>
