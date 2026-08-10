@@ -184,9 +184,10 @@ uint32_t Renderer::nextImage()
 	uint32_t imageIndex;
 	VkResult result = m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
 
-	// Some platforms (e.g. Linux/X11 on maximize) don't report an out-of-date swapchain here, so also check the resize flag
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || m_framebufferResized) {
-		m_framebufferResized = false;
+	// Only OUT_OF_DATE_KHR guarantees the semaphore was left unsignaled; SUCCESS/SUBOPTIMAL still
+	// signal it, so on resize we must let the frame proceed and consume it via submitFrame, then
+	// recreate afterwards in presentFrame() instead of discarding it here.
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		this->recreate();
 		return UINT32_MAX;
 	}
