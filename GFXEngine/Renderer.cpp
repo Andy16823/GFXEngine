@@ -186,7 +186,6 @@ uint32_t Renderer::nextImage()
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		this->recreate();
-		util::log("Renderer", "Swapchain is out of date, recreating swapchain.");
 		return UINT32_MAX;
 	}
 
