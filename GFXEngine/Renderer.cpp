@@ -182,12 +182,7 @@ uint32_t Renderer::nextImage()
 	m_context->waitForFence(m_inFlightFences[m_currentImage]);
 
 	uint32_t imageIndex;
-	VkResult result = m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
-
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		this->recreate();
-		return UINT32_MAX;
-	}
+	m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
 
 	if(m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
 		m_context->waitForFence(m_imagesInFlight[imageIndex]);
@@ -251,9 +246,6 @@ void Renderer::submitFrame(uint32_t imageIndex)
 		.commandBufferCount = 1,
 		.pCommandBuffers = &m_commandBuffers[imageIndex],
 		.signalSemaphoreCount = 1,
-		// Signal semaphore is indexed by swapchain image, not frame-in-flight, since
-		// present (which waits on it) is tied to the acquired image index, and with
-		// MAILBOX present mode images can be acquired out of frame order.
 		.pSignalSemaphores = &m_renderFinishedSemaphores[imageIndex]
 	};
 	m_context->submitCommandBuffer(submitInfo, m_inFlightFences[m_currentImage]);

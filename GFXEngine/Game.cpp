@@ -165,9 +165,6 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		}
 
 		auto imageIndex = m_renderer->nextImage();
-		if (imageIndex == UINT32_MAX) {
-			continue; // Skip this frame if the swapchain was recreated
-		}
 
 		// Call user-defined update
 		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);
