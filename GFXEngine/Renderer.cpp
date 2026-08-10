@@ -251,7 +251,10 @@ void Renderer::submitFrame(uint32_t imageIndex)
 		.commandBufferCount = 1,
 		.pCommandBuffers = &m_commandBuffers[imageIndex],
 		.signalSemaphoreCount = 1,
-		.pSignalSemaphores = &m_renderFinishedSemaphores[m_currentImage]
+		// Signal semaphore is indexed by swapchain image, not frame-in-flight, since
+		// present (which waits on it) is tied to the acquired image index, and with
+		// MAILBOX present mode images can be acquired out of frame order.
+		.pSignalSemaphores = &m_renderFinishedSemaphores[imageIndex]
 	};
 	m_context->submitCommandBuffer(submitInfo, m_inFlightFences[m_currentImage]);
 }
@@ -261,7 +264,7 @@ void Renderer::presentFrame(uint32_t imageIndex)
 	VkPresentInfoKHR presentInfo = {
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		.waitSemaphoreCount = 1,
-		.pWaitSemaphores = &m_renderFinishedSemaphores[m_currentImage],
+		.pWaitSemaphores = &m_renderFinishedSemaphores[imageIndex],
 		.swapchainCount = 1,
 		.pSwapchains = &m_swapchainInfo.swapchain,
 		.pImageIndices = &imageIndex
