@@ -112,6 +112,14 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		}
 	});
 
+	// Some platforms (e.g. Linux/X11 on maximize) don't report VK_SUBOPTIMAL_KHR/VK_ERROR_OUT_OF_DATE_KHR, so track resizes explicitly
+	glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game && game->m_renderer) {
+			game->m_renderer->notifyFramebufferResized();
+		}
+	});
+
 	m_renderer = std::make_unique<Graphics::Renderer>();
 	m_renderer->setValidationEnabled(validationLayers);
 	m_renderer->init(m_window, shadersDirectory);
@@ -165,6 +173,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		}
 
 		auto imageIndex = m_renderer->nextImage();
+		if (imageIndex == UINT32_MAX) {
+			continue; // Skip this frame if the swapchain was recreated
+		}
 
 		// Call user-defined update
 		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);

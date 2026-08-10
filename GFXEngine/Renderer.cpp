@@ -182,7 +182,14 @@ uint32_t Renderer::nextImage()
 	m_context->waitForFence(m_inFlightFences[m_currentImage]);
 
 	uint32_t imageIndex;
-	m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
+	VkResult result = m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
+
+	// Some platforms (e.g. Linux/X11 on maximize) don't report an out-of-date swapchain here, so also check the resize flag
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || m_framebufferResized) {
+		m_framebufferResized = false;
+		this->recreate();
+		return UINT32_MAX;
+	}
 
 	if(m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
 		m_context->waitForFence(m_imagesInFlight[imageIndex]);
@@ -263,12 +270,18 @@ void Renderer::presentFrame(uint32_t imageIndex)
 	};
 
 	VkResult result = m_context->queuePresent(presentInfo);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-		// Swapchain is out of date (e.g. window resized) or suboptimal, trigger recreation
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_framebufferResized) {
+		// Swapchain is out of date/suboptimal, or the framebuffer was resized but the platform didn't report it above
+		m_framebufferResized = false;
 		this->recreate();
 	} else if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to present swapchain image");
 	}
+}
+
+void Renderer::notifyFramebufferResized()
+{
+	m_framebufferResized = true;
 }
 
 void Renderer::advanceFrame()
