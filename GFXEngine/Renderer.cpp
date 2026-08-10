@@ -182,7 +182,13 @@ uint32_t Renderer::nextImage()
 	m_context->waitForFence(m_inFlightFences[m_currentImage]);
 
 	uint32_t imageIndex;
-	m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
+	VkResult result = m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		this->recreate();
+		util::log("Renderer", "Swapchain is out of date, recreating swapchain.");
+		return UINT32_MAX;
+	}
 
 	if(m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
 		m_context->waitForFence(m_imagesInFlight[imageIndex]);
