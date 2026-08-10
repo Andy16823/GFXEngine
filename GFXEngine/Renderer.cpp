@@ -182,11 +182,13 @@ uint32_t Renderer::nextImage()
 	m_context->waitForFence(m_inFlightFences[m_currentImage]);
 
 	uint32_t imageIndex;
-	VkResult result = m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
-
-	// Only OUT_OF_DATE_KHR guarantees the semaphore was left unsignaled; SUCCESS/SUBOPTIMAL still
-	// signal it, so on resize we must let the frame proceed and consume it via submitFrame, then
-	// recreate afterwards in presentFrame() instead of discarding it here.
+	VkResult result = m_context->acquireNextImage(
+		m_swapchainInfo, 
+		m_imageAvailableSemaphores[m_currentImage], 
+		VK_NULL_HANDLE, 
+		imageIndex
+	);
+	
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		this->recreate();
 		return UINT32_MAX;
