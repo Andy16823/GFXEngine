@@ -671,7 +671,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	fragPath = std::filesystem::path(shadersDirectory) / "solid_frag.spv";
 	RenderShader solidShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(solidShader)
-		.useVertex3DInput(0);
+        .useVertex3DInput(0)
+        .setCullMode(VK_CULL_MODE_NONE);
 	auto solidPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SolidColorPass>());
 	this->managePipeline(PipelineType::SOLID_COLOR_PIPELINE, std::move(solidPipeline));
 	pipelineBuilder.clear();
