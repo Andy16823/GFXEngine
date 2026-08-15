@@ -274,7 +274,6 @@ void Renderer::presentFrame(uint32_t imageIndex)
 
 	VkResult result = m_context->queuePresent(presentInfo);
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_framebufferResized) {
-		// Swapchain is out of date/suboptimal, or the framebuffer was resized but the platform didn't report it above
 		m_framebufferResized = false;
 		this->recreate();
 	} else if (result != VK_SUCCESS) {
