@@ -252,5 +252,32 @@ namespace GFXEngine {
 		// Qualifier:
 		//************************************
 		void clearCallbacks();
+
+        //************************************
+        // Method:    hideCursor
+        // FullName:  GFXEngine::InputManager::hideCursor
+        // Access:    public
+        // Returns:   void
+        // Qualifier:
+        //************************************
+        void hideCursor();
+
+        //************************************
+        // Method:    showCursor
+        // FullName:  GFXEngine::InputManager::showCursor
+        // Access:    public
+        // Returns:   void
+        // Qualifier:
+        //************************************
+        void showCursor();
+
+        //************************************
+        // Method:    isCursorHidden
+        // FullName:  GFXEngine::InputManager::isCursorHidden
+        // Access:    public
+        // Returns:   bool
+        // Qualifier:
+        //************************************
+        bool isCursorHidden();
 	};
 }
