@@ -4,6 +4,7 @@
 #include "ISerializable.h"
 #include "PropertyInfo.h"
 #include <filesystem>
+#include "Raycast.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -169,6 +170,17 @@ namespace GFXEngine {
 			// Parameter: class Entity * entity
 			//************************************
 			virtual bool ownsEntity(class Entity* entity, bool recursive = false) const = 0;
+
+            //************************************
+            // Method:    pickEntity
+            // FullName:  GFXEngine::Core::Scene3D::pickEntity
+            // Access:    virtual public
+            // Returns:   GFXEngine::Core::Entity*
+            // Qualifier:
+            // Parameter: Ray&
+            // Parameter: book pickMesh
+            //************************************
+            virtual Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false) = 0;
 
 			//************************************
 			// Method:    as

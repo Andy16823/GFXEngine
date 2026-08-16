@@ -76,6 +76,31 @@ void GFXEngine::Core::Entity::destroy(Scene& scene, GFXEngine::Graphics::Rendere
 	}
 }
 
+bool GFXEngine::Core::Entity::pick(const Physics::Ray &ray, float& tdistance, bool pickMesh) const
+{
+    auto aabb = this->getWorldAABB();
+    float tmin, tmax;
+    if(Physics::Raycast::rayIntersectsAABB(ray, aabb, tmin, tmax)) {
+        if(pickMesh) {
+            auto numMeshes = this->getMeshCount();
+            for(int i = 0; i < numMeshes; i++) {
+                auto meshMaterialPair = this->getMeshAndMaterial(i);
+                if(meshMaterialPair.has_value()) {
+                    const auto& [mesh, material] = meshMaterialPair.value();
+                    Physics::RaycastHit hit;
+                    if(Physics::Raycast::rayIntersectsMesh(ray, this->getModelMatrix(), mesh, hit)) {
+                        tdistance = hit.distance;
+                        return true;
+                    }
+                }
+            }
+        }
+        tdistance = tmin;
+        return true;
+    }
+    return false;
+}
+
 std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Entity::getProperties()
 {
 	std::vector<PropertyInfo> properties;

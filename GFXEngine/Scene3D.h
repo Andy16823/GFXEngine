@@ -495,7 +495,16 @@ namespace GFXEngine {
 				return taggedEntities;
 			}
 
-            Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false);
+            //************************************
+            // Method:    pickEntity
+            // FullName:  GFXEngine::Core::Scene3D::pickEntity
+            // Access:    public
+            // Returns:   GFXEngine::Core::Entity*
+            // Qualifier:
+            // Parameter: Ray&
+            // Parameter: book pickMesh
+            //************************************
+            Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false) override;
 
 			//************************************
 			// Method:    clearEntities

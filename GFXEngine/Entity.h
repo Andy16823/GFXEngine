@@ -956,6 +956,17 @@ namespace GFXEngine {
 			//************************************
 			virtual MeshMaterialPair getMeshAndMaterial(size_t index) const { return MeshMaterialPair(); }
 
+            //************************************
+            // Method:    pick
+            // FullName:  GFXEngine::Core::Entity::pick
+            // Access:    virtual public
+            // Returns:   bool
+            // Qualifier: const
+            // Parameter: Ray&
+            // Parameter: bool pickMesh
+            //************************************
+            virtual bool pick(const GFXEngine::Physics::Ray& ray, float& tdistance, bool pickMesh = false) const;
+
 		public:
 			
 			//************************************
