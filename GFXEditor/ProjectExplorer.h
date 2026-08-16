@@ -104,10 +104,11 @@ namespace GFXEditor {
 			// Parameter: GFXEditor::WorldEditor & editor
 			// Parameter: GLFWwindow * window
 			// Parameter: int key
-			// Parameter: int mods
-			// Parameter: int action
+            // Parameter: int action
+            // Parameter: int scancode
+            // Parameter: int mods
 			//************************************
-			void handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int mods, int action) override;
+            void handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int scancode, int action, int mods) override;
 			
 			//************************************
 			// Method:    handleMouseInput
@@ -118,10 +119,10 @@ namespace GFXEditor {
 			// Parameter: GFXEditor::WorldEditor & editor
 			// Parameter: GLFWwindow * window
 			// Parameter: int button
-			// Parameter: int mods
-			// Parameter: int action
+            // Parameter: int action
+            // Parameter: int mods
 			//************************************
-			void handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int mods, int action) override;
+            void handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int action, int mods) override;
 			
 			//************************************
 			// Method:    handleMouseMove

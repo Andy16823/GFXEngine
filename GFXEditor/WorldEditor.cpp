@@ -818,7 +818,7 @@ void WorldEditor::afterRender(GFXEngine::Core::UIContext& context, GFXEngine::Gr
 	}
 }
 
-void WorldEditor::handleInput(GLFWwindow* window, int key, int mods, int action)
+void WorldEditor::handleInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Dont process input if ImGui wants to capture it (e.g. when typing in a text field or using a combo box)
 	ImGuiIO& io = ImGui::GetIO();
@@ -855,7 +855,7 @@ void WorldEditor::handleInput(GLFWwindow* window, int key, int mods, int action)
 	}
 
 	for (auto& plugin : m_plugins) {
-		plugin->handleInput(*this, window, key, mods, action);
+        plugin->handleInput(*this, window, key, scancode, action, mods);
 	}
 }
 
@@ -869,7 +869,7 @@ void WorldEditor::dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphi
 	}
 }
 
-void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int mods, int action)
+void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int action, int mods)
 {
 	if (ImGui::GetIO().WantCaptureKeyboard) {
 		return;
@@ -894,7 +894,7 @@ void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int mods, int
 	}
 
 	for (auto& plugin : m_plugins) {
-		plugin->handleMouseInput(*this, window, button, mods, action);
+        plugin->handleMouseInput(*this, window, button, action, mods);
 	}
 }
 

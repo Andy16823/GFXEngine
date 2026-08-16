@@ -56,7 +56,7 @@ namespace GFXEngine {
 			// Parameter: int mods
 			// Parameter: int action
 			//************************************
-			virtual void handleInput(GLFWwindow* window, int key, int mods, int action) = 0;
+            virtual void handleInput(GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
 			
 			//************************************
 			// Method:    handleMouseInput
@@ -66,10 +66,10 @@ namespace GFXEngine {
 			// Qualifier:
 			// Parameter: GLFWwindow * window
 			// Parameter: int button
-			// Parameter: int mods
-			// Parameter: int action
+            // Parameter: int action
+            // Parameter: int mods
 			//************************************
-			virtual void handleMouseInput(GLFWwindow* window, int button, int mods, int action) = 0;
+            virtual void handleMouseInput(GLFWwindow* window, int button, int action, int mods) = 0;
 			
 			//************************************
 			// Method:    handleMouseMove

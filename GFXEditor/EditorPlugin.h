@@ -118,7 +118,7 @@ namespace GFXEditor
 		// Parameter: int mods
 		// Parameter: int action
 		//************************************
-		virtual void handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int mods, int action) = 0;
+        virtual void handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
 		
 		//************************************
 		// Method:    handleMouseInput
@@ -129,10 +129,10 @@ namespace GFXEditor
 		// Parameter: GFXEditor::WorldEditor & editor
 		// Parameter: GLFWwindow * window
 		// Parameter: int button
-		// Parameter: int mods
-		// Parameter: int action
+        // Parameter: int action
+        // Parameter: int mods
 		//************************************
-		virtual void handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int mods, int action) = 0;
+        virtual void handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int action, int mods) = 0;
 		
 		//************************************
 		// Method:    handleMouseMove
