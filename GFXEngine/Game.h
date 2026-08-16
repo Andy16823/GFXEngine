@@ -342,6 +342,15 @@ namespace GFXEngine {
 			// Parameter: TaskCompletionCallback completionCallback
 			//************************************
 			void StartBackgroundTask(std::unique_ptr<BackgroundTask> task, TaskCompletionCallback completionCallback);
+
+            //************************************
+            // Method:    getWindowViewport
+            // FullName:  GFXEngine::Core::Game::getWindowViewport
+            // Access:    public
+            // Returns:   glm::ivec4
+            // Qualifier: const
+            //************************************
+            glm::vec4 getWindowViewport() const;
 		};
 	}
 }

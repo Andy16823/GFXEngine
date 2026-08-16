@@ -226,3 +226,10 @@ void GFXEngine::Core::Game::StartBackgroundTask(std::unique_ptr<BackgroundTask> 
 	auto taskPtr = m_backgroundTaskManager.addTask(std::move(task));
 	taskPtr->start(completionCallback);
 }
+
+glm::vec4 GFXEngine::Core::Game::getWindowViewport() const
+{
+    int width, height;
+    glfwGetFramebufferSize(m_window, &width, &height);
+    return glm::vec4(0, 0, static_cast<float>(width), static_cast<float>(height));
+}
