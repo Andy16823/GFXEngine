@@ -190,8 +190,15 @@ uint32_t Renderer::nextImage()
 	);
 	
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		m_framebufferResized = false;
 		this->recreate();
 		return UINT32_MAX;
+	}
+	if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("Failed to acquire swapchain image");
+	}
+	if (result == VK_SUBOPTIMAL_KHR) {
+		m_framebufferResized = true;
 	}
 
 	if(m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
