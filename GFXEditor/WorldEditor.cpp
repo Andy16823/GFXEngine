@@ -484,42 +484,6 @@ void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputMa
 
             return true;
         });
-
-
-        // auto candidates = m_scene->collectEntities([&](GFXEngine::Core::Entity& entity) {
-        // 	if (!entity.isVisible())
-        // 		return false;
-        // 	auto aabb = entity.getWorldAABB();
-        // 	float tMin, tMax;
-        // 	return GFXEngine::Physics::Raycast::rayIntersectsAABB(ray, aabb, tMin, tMax);
-        // 	});
-
-        // GFXEngine::Core::Entity* closestEntity = nullptr;
-        // float closestT = std::numeric_limits<float>::max();
-        // for (auto& entity : candidates) {
-        // 	if (dynamic_cast<GFXEngine::Core::InstancedModel*>(entity))
-        // 	{
-        // 		continue;
-        // 	}
-
-        // 	size_t meshes = entity->getMeshCount();
-        // 	for (size_t i = 0; i < meshes; i++) {
-        // 		GFXEngine::Physics::RaycastHit hitInfo;
-        // 		auto meshMaterialPair = entity->getMeshAndMaterial(i);
-        // 		const auto& [mesh, material] = meshMaterialPair.value(); // TODO: add generic mesh raycast
-  //               if (GFXEngine::Physics::Raycast::rayIntersectsMesh(ray, entity->getModelMatrix(), mesh, hitInfo)) {
-        // 			if (hitInfo.distance < closestT) {
-        // 				closestT = hitInfo.distance;
-        // 				closestEntity = entity;
-        // 			}
-        // 		}
-        // 	}
-        // }
-
-        // if (closestEntity) {
-        // 	std::cout << "Clicked on entity: " << closestEntity->getName() << std::endl;
-        // 	m_selectedEntity = closestEntity;
-        // }
 	}
 
 	// Update plugins
@@ -747,8 +711,9 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
 		glm::mat4 model = m_selectedEntity->getModelMatrix();
 		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
-		if (UIContext::transformGizmo(view, projection, model, rect, m_currentGuizmoOperation)) 
+        if (UIContext::transformGizmo(view, projection, model, rect, m_guizmoSnap, m_currentGuizmoOperation))
 		{
+            m_guizmoSnap = {0, 0, 0};
 			if (m_selectedEntity->hasParent()) {
 				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
 			}
@@ -862,7 +827,12 @@ void WorldEditor::handleInput(GLFWwindow* window, int key, int scancode, int act
 		else if (key == GLFW_KEY_E)
 		{
 			m_editorCamera->getTransform().rotateWorld(0.0f, 1.0f, 0.0f);
-		}
+        }
+
+        // Guizmo snap
+        if (mods == GLFW_MOD_SHIFT) {
+            m_guizmoSnap = {1,1,1};
+        }
 	}
 
 	for (auto& plugin : m_plugins) {

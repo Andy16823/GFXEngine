@@ -68,7 +68,7 @@ bool UIContext::gizmoIsOver()
 	return ImGuizmo::IsOver();
 }
 
-bool UIContext::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation)
+bool UIContext::transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, std::span<const float> span ,GuizmoOperation operation)
 {
 	ImGuizmo::SetOrthographic(false);
 	ImGuizmo::BeginFrame();
@@ -100,7 +100,9 @@ bool UIContext::transformGizmo(const glm::mat4& view, const glm::mat4& projectio
 		glm::value_ptr(adjustedProjection),
 		guizmoOperation,
 		ImGuizmo::WORLD,
-		glm::value_ptr(transform)
+        glm::value_ptr(transform),
+        nullptr,
+        span.data()
 	);
 
 	return ImGuizmo::IsUsing();

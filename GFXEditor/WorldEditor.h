@@ -57,6 +57,7 @@ namespace GFXEditor {
 		glm::vec2 m_sceneViewportWindowSize = glm::vec2(1024.0f, 1024.0f);
 		ViewportCursorInfo m_viewportCursorInfo = { glm::vec2(0.0f), false };
 		GFXEngine::Core::GuizmoOperation m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
+        std::array<float, 3> m_guizmoSnap;
 		CursorDragInfo m_cursorDragInfo = { glm::vec2(0.0f), glm::vec2(0.0f), false };
 		std::filesystem::path m_projectDirectory;
 		std::filesystem::path m_currentExplorerPath;

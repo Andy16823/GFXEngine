@@ -158,7 +158,7 @@ namespace GFXEngine {
 			// Parameter: const glm::vec4 & rect
 			// Parameter: GuizmoOperation operation
 			//************************************
-			static bool transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, GuizmoOperation operation = GuizmoOperation::Translate);
+            static bool transformGizmo(const glm::mat4& view, const glm::mat4& projection, glm::mat4& transform, const glm::vec4& rect, std::span<const float> snap, GuizmoOperation operation = GuizmoOperation::Translate);
 			
 			//************************************
 			// Method:    gizmoIsOver
