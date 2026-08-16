@@ -182,7 +182,24 @@ uint32_t Renderer::nextImage()
 	m_context->waitForFence(m_inFlightFences[m_currentImage]);
 
 	uint32_t imageIndex;
-	m_context->acquireNextImage(m_swapchainInfo, m_imageAvailableSemaphores[m_currentImage], VK_NULL_HANDLE, imageIndex);
+	VkResult result = m_context->acquireNextImage(
+		m_swapchainInfo, 
+		m_imageAvailableSemaphores[m_currentImage], 
+		VK_NULL_HANDLE, 
+		imageIndex
+	);
+	
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		m_framebufferResized = false;
+		this->recreate();
+		return UINT32_MAX;
+	}
+	if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("Failed to acquire swapchain image");
+	}
+	if (result == VK_SUBOPTIMAL_KHR) {
+		m_framebufferResized = true;
+	}
 
 	if(m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
 		m_context->waitForFence(m_imagesInFlight[imageIndex]);
@@ -246,7 +263,7 @@ void Renderer::submitFrame(uint32_t imageIndex)
 		.commandBufferCount = 1,
 		.pCommandBuffers = &m_commandBuffers[imageIndex],
 		.signalSemaphoreCount = 1,
-		.pSignalSemaphores = &m_renderFinishedSemaphores[m_currentImage]
+		.pSignalSemaphores = &m_renderFinishedSemaphores[imageIndex]
 	};
 	m_context->submitCommandBuffer(submitInfo, m_inFlightFences[m_currentImage]);
 }
@@ -256,19 +273,24 @@ void Renderer::presentFrame(uint32_t imageIndex)
 	VkPresentInfoKHR presentInfo = {
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		.waitSemaphoreCount = 1,
-		.pWaitSemaphores = &m_renderFinishedSemaphores[m_currentImage],
+		.pWaitSemaphores = &m_renderFinishedSemaphores[imageIndex],
 		.swapchainCount = 1,
 		.pSwapchains = &m_swapchainInfo.swapchain,
 		.pImageIndices = &imageIndex
 	};
 
 	VkResult result = m_context->queuePresent(presentInfo);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-		// Swapchain is out of date (e.g. window resized) or suboptimal, trigger recreation
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_framebufferResized) {
+		m_framebufferResized = false;
 		this->recreate();
 	} else if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to present swapchain image");
 	}
+}
+
+void Renderer::notifyFramebufferResized()
+{
+	m_framebufferResized = true;
 }
 
 void Renderer::advanceFrame()
@@ -656,7 +678,8 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 	fragPath = std::filesystem::path(shadersDirectory) / "solid_frag.spv";
 	RenderShader solidShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
 	pipelineBuilder.addShaderStage(solidShader)
-		.useVertex3DInput(0);
+        .useVertex3DInput(0)
+        .setCullMode(VK_CULL_MODE_NONE);
 	auto solidPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SolidColorPass>());
 	this->managePipeline(PipelineType::SOLID_COLOR_PIPELINE, std::move(solidPipeline));
 	pipelineBuilder.clear();

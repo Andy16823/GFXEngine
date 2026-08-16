@@ -44,6 +44,7 @@ namespace GFXEngine {
 			// SYNC OBJECTS
 			int m_currentImage = 0;
 			int m_maxFramesInFlight = 2;
+			bool m_framebufferResized = false; // Set externally when the window/framebuffer size changes (e.g. resize or maximize)
 			std::vector<VkFence> m_imagesInFlight; // Track which fence is currently using each swapchain image
 			std::vector<VkFence> m_inFlightFences;
 			std::vector<VkSemaphore> m_imageAvailableSemaphores;
@@ -287,6 +288,15 @@ namespace GFXEngine {
 			// Parameter: uint32_t imageIndex
 			//************************************
 			void presentFrame(uint32_t imageIndex);
+			
+			//************************************
+			// Method:    notifyFramebufferResized
+			// FullName:  GFXEngine::Graphics::Renderer::notifyFramebufferResized
+			// Access:    public 
+			// Returns:   void
+			// Qualifier: Call from a GLFW framebuffer size callback since some platforms (e.g. Linux/X11 on maximize) don't report VK_SUBOPTIMAL_KHR/VK_ERROR_OUT_OF_DATE_KHR
+			//************************************
+			void notifyFramebufferResized();
 			
 			//************************************
 			// Method:    advanceFrame

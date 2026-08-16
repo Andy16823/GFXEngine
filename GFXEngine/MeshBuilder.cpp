@@ -16,125 +16,154 @@ void GFXEngine::Core::MeshBuilder::addVertex(const EngineTypes::Vertex3D& vertex
 
 MeshBuilder MeshBuilder::createCylinder(float radius /*= 1.0f*/, float height /*= 1.0f*/, uint32_t sectorCount /*= 36*/)
 {
-	MeshBuilder builder;
+    MeshBuilder builder;
 
-	const float halfHeight = height * 0.5f;
-	const float sectorStep = glm::two_pi<float>() / sectorCount;
+    const float halfHeight = height * 0.5f;
+    const float sectorStep = glm::two_pi<float>() / sectorCount;
 
-	// Hull
-	for (uint32_t i = 0; i <= sectorCount; ++i)
-	{
-		float angle = i * sectorStep;
+    // ============================================================
+    // Hull
+    // ============================================================
 
-		float x = radius * cosf(angle);
-		float z = radius * sinf(angle);
+    for (uint32_t i = 0; i <= sectorCount; ++i)
+    {
+        const float angle = i * sectorStep;
 
-		glm::vec3 normal = glm::normalize(glm::vec3(x, 0.0f, z));
+        const float x = radius * cosf(angle);
+        const float z = radius * sinf(angle);
 
-		builder.addVertex(
-			{ x, -halfHeight, z },
-			{ 1,1,1 },
-			{ (float)i / sectorCount, 0.0f },
-			normal
-		);
+        // Outward-facing normal
+        const glm::vec3 normal = glm::normalize(
+            glm::vec3(x, 0.0f, z)
+            );
 
-		builder.addVertex(
-			{ x, halfHeight, z },
-			{ 1,1,1 },
-			{ (float)i / sectorCount, 1.0f },
-			normal
-		);
-	}
+        // Bottom
+        builder.addVertex(
+            { x, -halfHeight, z },
+            { 1, 1, 1 },
+            { static_cast<float>(i) / sectorCount, 0.0f },
+            normal
+            );
 
-	// Hull indices
-	for (uint32_t i = 0; i < sectorCount; ++i)
-	{
-		uint32_t bottom0 = i * 2;
-		uint32_t top0 = bottom0 + 1;
+        // Top
+        builder.addVertex(
+            { x, halfHeight, z },
+            { 1, 1, 1 },
+            { static_cast<float>(i) / sectorCount, 1.0f },
+            normal
+            );
+    }
 
-		uint32_t bottom1 = bottom0 + 2;
-		uint32_t top1 = bottom0 + 3;
+    // Hull indices
+    //
+    // IMPORTANT:
+    // The winding must produce outward-facing triangles.
+    //
+    // bottom0 -> top0 -> top1 -> bottom1
+    //
+    for (uint32_t i = 0; i < sectorCount; ++i)
+    {
+        const uint32_t bottom0 = i * 2;
+        const uint32_t top0 = bottom0 + 1;
 
-		builder.addQuad(bottom0, bottom1, top1, top0);
-	}
+        const uint32_t bottom1 = bottom0 + 2;
+        const uint32_t top1 = bottom0 + 3;
 
-	// Top caps
-	uint32_t centerTop = builder.vertexCount();
-	builder.addVertex(
-		{ 0.0f, halfHeight, 0.0f },
-		{ 1,1,1 },
-		{ 0.5f,0.5f },
-		{ 0,1,0 }
-	);
+        builder.addQuad(
+            bottom0,
+            top0,
+            top1,
+            bottom1
+            );
+    }
 
-	uint32_t topStart = builder.vertexCount();
-	for (uint32_t i = 0; i <= sectorCount; ++i)
-	{
-		float angle = i * sectorStep;
+    // ============================================================
+    // Top cap
+    // ============================================================
 
-		float x = radius * cosf(angle);
-		float z = radius * sinf(angle);
+    const uint32_t centerTop = builder.vertexCount();
 
-		builder.addVertex(
-			{ x, halfHeight, z },
-			{ 1,1,1 },
-			{
-				x / radius * 0.5f + 0.5f,
-				z / radius * 0.5f + 0.5f
-			},
-			{ 0,1,0 }
-		);
-	}
+    builder.addVertex(
+        { 0.0f, halfHeight, 0.0f },
+        { 1, 1, 1 },
+        { 0.5f, 0.5f },
+        { 0, 1, 0 }
+        );
 
-	// Top cap indices
-	for (uint32_t i = 0; i < sectorCount; ++i)
-	{
-		builder.addTriangle(
-			centerTop,
-			topStart + i,
-			topStart + i + 1
-		);
-	}
+    const uint32_t topStart = builder.vertexCount();
 
-	// Bottom caps
-	uint32_t centerBottom = builder.vertexCount();
-	builder.addVertex(
-		{ 0.0f, -halfHeight, 0.0f },
-		{ 1,1,1 },
-		{ 0.5f,0.5f },
-		{ 0,-1,0 }
-	);
+    for (uint32_t i = 0; i <= sectorCount; ++i)
+    {
+        const float angle = i * sectorStep;
 
-	uint32_t bottomStart = builder.vertexCount();
-	for (uint32_t i = 0; i <= sectorCount; ++i)
-	{
-		float angle = i * sectorStep;
+        const float x = radius * cosf(angle);
+        const float z = radius * sinf(angle);
 
-		float x = radius * cosf(angle);
-		float z = radius * sinf(angle);
+        builder.addVertex(
+            { x, halfHeight, z },
+            { 1, 1, 1 },
+            {
+                x / radius * 0.5f + 0.5f,
+                z / radius * 0.5f + 0.5f
+            },
+            { 0, 1, 0 }
+            );
+    }
 
-		builder.addVertex(
-			{ x, -halfHeight, z },
-			{ 1,1,1 },
-			{
-				x / radius * 0.5f + 0.5f,
-				z / radius * 0.5f + 0.5f
-			},
-			{ 0,-1,0 }
-		);
-	}
+    // Viewed from above -> CCW -> +Y
+    for (uint32_t i = 0; i < sectorCount; ++i)
+    {
+        builder.addTriangle(
+            centerTop,
+            topStart + i,
+            topStart + i + 1
+            );
+    }
 
-	// Bottom cap indices
-	for (uint32_t i = 0; i < sectorCount; ++i)
-	{
-		builder.addTriangle(
-			centerBottom,
-			bottomStart + i + 1,
-			bottomStart + i
-		);
-	}
+    // ============================================================
+    // Bottom cap
+    // ============================================================
 
-	return builder;
+    const uint32_t centerBottom = builder.vertexCount();
+
+    builder.addVertex(
+        { 0.0f, -halfHeight, 0.0f },
+        { 1, 1, 1 },
+        { 0.5f, 0.5f },
+        { 0, -1, 0 }
+        );
+
+    const uint32_t bottomStart = builder.vertexCount();
+
+    for (uint32_t i = 0; i <= sectorCount; ++i)
+    {
+        const float angle = i * sectorStep;
+
+        const float x = radius * cosf(angle);
+        const float z = radius * sinf(angle);
+
+        builder.addVertex(
+            { x, -halfHeight, z },
+            { 1, 1, 1 },
+            {
+                x / radius * 0.5f + 0.5f,
+                z / radius * 0.5f + 0.5f
+            },
+            { 0, -1, 0 }
+            );
+    }
+
+    // Viewed from below -> CCW -> -Y
+    for (uint32_t i = 0; i < sectorCount; ++i)
+    {
+        builder.addTriangle(
+            centerBottom,
+            bottomStart + i + 1,
+            bottomStart + i
+            );
+    }
+
+    return builder;
 }
 
 MeshBuilder MeshBuilder::createSphere(float radius /*= 1.0f*/, uint32_t sectorCount /*= 36*/, uint32_t stackCount /*= 18*/)

@@ -437,10 +437,11 @@ namespace GFXEditor {
 		// Qualifier:
 		// Parameter: GLFWwindow * window
 		// Parameter: int key
-		// Parameter: int mods
-		// Parameter: int action
+        // Parameter: int scancode
+        // Parameter: int action
+        // Parameter: int mods
 		//************************************
-		void handleInput(GLFWwindow* window, int key, int mods, int action) override;
+        void handleInput(GLFWwindow* window, int key, int scancode, int action, int mods) override;
 		
 		//************************************
 		// Method:    handleMouseInput
@@ -453,7 +454,7 @@ namespace GFXEditor {
 		// Parameter: int mods
 		// Parameter: int action
 		//************************************
-		void handleMouseInput(GLFWwindow* window, int button, int mods, int action) override;
+        void handleMouseInput(GLFWwindow* window, int button, int action, int mods) override;
 		
 		//************************************
 		// Method:    handleMouseMove

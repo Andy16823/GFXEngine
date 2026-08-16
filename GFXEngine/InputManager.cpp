@@ -83,17 +83,17 @@ void GFXEngine::InputManager::unregisterScrollCallback(uint32_t callbackId)
 	}
 }
 
-void GFXEngine::InputManager::handleInput(int key, int mods, int action)
+void GFXEngine::InputManager::handleInput(int key, int scancode, int action, int mods)
 {
 	for (const auto& [callbackId, callback] : m_inputCallbacks) {
-		callback(key, mods, action);
+        callback(key, scancode, action, mods);
 	}
 }
 
-void GFXEngine::InputManager::handleMouseButton(int button, int mods, int action)
+void GFXEngine::InputManager::handleMouseButton(int button, int action, int mods)
 {
 	for (const auto& [callbackId, callback] : m_mouseButtonCallbacks) {
-		callback(button, mods, action);
+        callback(button, action, mods);
 	}
 }
 
@@ -117,4 +117,20 @@ void GFXEngine::InputManager::clearCallbacks()
 	m_mouseButtonCallbacks.clear();
 	m_mouseMoveCallbacks.clear();
 	m_scrollCallbacks.clear();
+}
+
+void GFXEngine::InputManager::hideCursor()
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void GFXEngine::InputManager::showCursor()
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+bool GFXEngine::InputManager::isCursorHidden() const
+{
+    auto cursorState = glfwGetInputMode(m_window, GLFW_CURSOR);
+    return cursorState == GLFW_CURSOR_DISABLED;
 }

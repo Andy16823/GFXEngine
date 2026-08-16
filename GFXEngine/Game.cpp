@@ -80,8 +80,8 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) {
-			game->onInput(key, mods, action);
-			game->inputManager->handleInput(key, mods, action);
+            game->onInput(key, scancode, action, mods);
+            game->inputManager->handleInput(key, scancode, action, mods);
 		}
 	});
 
@@ -89,8 +89,8 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) 
 		{ 
-			game->onMouseInput(button, mods, action);
-			game->inputManager->handleMouseButton(button, mods, action);
+            game->onMouseInput(button, action, mods);
+            game->inputManager->handleMouseButton(button, action, mods);
 		}
 	});
 
@@ -109,6 +109,14 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		{
 			game->onScroll(xoffset, yoffset);
 			game->inputManager->handleScroll(xoffset, yoffset);
+		}
+	});
+
+	// Some platforms (e.g. Linux/X11 on maximize) don't report VK_SUBOPTIMAL_KHR/VK_ERROR_OUT_OF_DATE_KHR, so track resizes explicitly
+	glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
+		if (game && game->m_renderer) {
+			game->m_renderer->notifyFramebufferResized();
 		}
 	});
 
@@ -165,6 +173,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		}
 
 		auto imageIndex = m_renderer->nextImage();
+		if (imageIndex == UINT32_MAX) {
+			continue; // Skip this frame if the swapchain was recreated
+		}
 
 		// Call user-defined update
 		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);

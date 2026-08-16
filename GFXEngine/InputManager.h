@@ -8,8 +8,8 @@ namespace GFXEngine {
 	class InputManager
 	{
 	private:
-		using InputCallback = std::function<void(int key, int mods, int action)>;
-		using MouseButtonCallback = std::function<void(int button, int mods, int action)>;
+        using InputCallback = std::function<void(int key, int scancode, int action, int mods)>;
+        using MouseButtonCallback = std::function<void(int button, int action, int mods)>;
 		using MouseMoveCallback = std::function<void(double xpos, double ypos)>;
 		using ScrollCallback = std::function<void(double xoffset, double yoffset)>;
 
@@ -205,10 +205,11 @@ namespace GFXEngine {
 		// Returns:   void
 		// Qualifier:
 		// Parameter: int key
-		// Parameter: int mods
-		// Parameter: int action
+        // Parameter: int scancode
+        // Parameter: int action
+        // Parameter: int mods
 		//************************************
-		void handleInput(int key, int mods, int action);
+        void handleInput(int key, int scancode, int action, int mods);
 		
 		//************************************
 		// Method:    handleMouseButton
@@ -217,10 +218,10 @@ namespace GFXEngine {
 		// Returns:   void
 		// Qualifier:
 		// Parameter: int button
-		// Parameter: int mods
-		// Parameter: int action
+        // Parameter: int action
+        // Parameter: int mods
 		//************************************
-		void handleMouseButton(int button, int mods, int action);
+        void handleMouseButton(int button, int action, int mods);
 		
 		//************************************
 		// Method:    handleMouseMove
@@ -252,5 +253,32 @@ namespace GFXEngine {
 		// Qualifier:
 		//************************************
 		void clearCallbacks();
+
+        //************************************
+        // Method:    hideCursor
+        // FullName:  GFXEngine::InputManager::hideCursor
+        // Access:    public
+        // Returns:   void
+        // Qualifier:
+        //************************************
+        void hideCursor();
+
+        //************************************
+        // Method:    showCursor
+        // FullName:  GFXEngine::InputManager::showCursor
+        // Access:    public
+        // Returns:   void
+        // Qualifier:
+        //************************************
+        void showCursor();
+
+        //************************************
+        // Method:    isCursorHidden
+        // FullName:  GFXEngine::InputManager::isCursorHidden
+        // Access:    public
+        // Returns:   bool
+        // Qualifier:
+        //************************************
+        bool isCursorHidden() const;
 	};
 }

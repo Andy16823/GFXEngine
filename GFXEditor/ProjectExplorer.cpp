@@ -143,12 +143,12 @@ void GFXEditor::Plugins::ProjectExplorer::afterRender(GFXEditor::WorldEditor& ed
 	
 }
 
-void GFXEditor::Plugins::ProjectExplorer::handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int mods, int action)
+void GFXEditor::Plugins::ProjectExplorer::handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	
 }
 
-void GFXEditor::Plugins::ProjectExplorer::handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int mods, int action)
+void GFXEditor::Plugins::ProjectExplorer::handleMouseInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int button, int action, int mods)
 {
 	
 }
