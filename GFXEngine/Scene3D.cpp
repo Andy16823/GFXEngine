@@ -290,7 +290,7 @@ bool GFXEngine::Core::Scene3D::ownsEntity(Entity* entity, bool recursive /*= fal
 	return false;
 }
 
-GFXEngine::Core::Entity *GFXEngine::Core::Scene3D::pickEntity(const Physics::Ray &ray, bool pickMesh /*= false*/)
+GFXEngine::Core::Entity *GFXEngine::Core::Scene3D::pickEntity(const Physics::Ray &ray, bool pickMesh /*= false*/, const EntityFilter& filter /*= nullptr*/)
 {
     GFXEngine::Core::Entity* closestEntity = nullptr;
     float dist = std::numeric_limits<float>::max();
@@ -299,19 +299,23 @@ GFXEngine::Core::Entity *GFXEngine::Core::Scene3D::pickEntity(const Physics::Ray
 
         if(entity->pick(ray, tdistance, pickMesh)) {
             if(tdistance < dist) {
-                closestEntity = entity.get();
-                dist = tdistance;
+                if (filter == nullptr || filter(entity.get())) {
+                    closestEntity = entity.get();
+                    dist = tdistance;
+                }
             }
         }
 
         // Test children
-        entity->foreachChild([&ray, &closestEntity, &dist, &pickMesh](Entity& child) {
+        entity->foreachChild([&ray, &closestEntity, &dist, &pickMesh, &filter](Entity& child) {
             float tdistance;
 
             if(child.pick(ray, tdistance, pickMesh)) {
                 if(tdistance < dist) {
-                    closestEntity = &child;
-                    dist = tdistance;
+                    if(filter == nullptr || filter(&child)) {
+                        closestEntity = &child;
+                        dist = tdistance;
+                    }
                 }
             }
         });

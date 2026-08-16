@@ -475,40 +475,51 @@ void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputMa
 		glm::vec4 viewport = glm::vec4(0.0f, 0.0f, m_sceneViewportWindowSize.x, m_sceneViewportWindowSize.y);
 		auto ray = GFXEngine::Physics::Raycast::screenPointToRay(m_viewportCursorInfo.position, *m_editorCamera, viewport);
 
-		auto candidates = m_scene->collectEntities([&](GFXEngine::Core::Entity& entity) {
-			if (!entity.isVisible())
-				return false;
-			auto aabb = entity.getWorldAABB();
-			float tMin, tMax;
-			return GFXEngine::Physics::Raycast::rayIntersectsAABB(ray, aabb, tMin, tMax);
-			});
+        m_selectedEntity = m_scene->pickEntity(ray, true, [](Entity* entity) {
+            if(!entity->isVisible())
+                return false;
 
-		GFXEngine::Core::Entity* closestEntity = nullptr;
-		float closestT = std::numeric_limits<float>::max();
-		for (auto& entity : candidates) {
-			if (dynamic_cast<GFXEngine::Core::InstancedModel*>(entity))
-			{
-				continue;
-			}
+            if(dynamic_cast<GFXEngine::Core::InstancedModel*>(entity))
+                return false;
 
-			size_t meshes = entity->getMeshCount();
-			for (size_t i = 0; i < meshes; i++) {
-				GFXEngine::Physics::RaycastHit hitInfo;
-				auto meshMaterialPair = entity->getMeshAndMaterial(i);
-				const auto& [mesh, material] = meshMaterialPair.value(); // TODO: add generic mesh raycast
-                if (GFXEngine::Physics::Raycast::rayIntersectsMesh(ray, entity->getModelMatrix(), mesh, hitInfo)) {
-					if (hitInfo.distance < closestT) {
-						closestT = hitInfo.distance;
-						closestEntity = entity;
-					}
-				}
-			}
-		}
+            return true;
+        });
 
-		if (closestEntity) {
-			std::cout << "Clicked on entity: " << closestEntity->getName() << std::endl;
-			m_selectedEntity = closestEntity;
-		}
+
+        // auto candidates = m_scene->collectEntities([&](GFXEngine::Core::Entity& entity) {
+        // 	if (!entity.isVisible())
+        // 		return false;
+        // 	auto aabb = entity.getWorldAABB();
+        // 	float tMin, tMax;
+        // 	return GFXEngine::Physics::Raycast::rayIntersectsAABB(ray, aabb, tMin, tMax);
+        // 	});
+
+        // GFXEngine::Core::Entity* closestEntity = nullptr;
+        // float closestT = std::numeric_limits<float>::max();
+        // for (auto& entity : candidates) {
+        // 	if (dynamic_cast<GFXEngine::Core::InstancedModel*>(entity))
+        // 	{
+        // 		continue;
+        // 	}
+
+        // 	size_t meshes = entity->getMeshCount();
+        // 	for (size_t i = 0; i < meshes; i++) {
+        // 		GFXEngine::Physics::RaycastHit hitInfo;
+        // 		auto meshMaterialPair = entity->getMeshAndMaterial(i);
+        // 		const auto& [mesh, material] = meshMaterialPair.value(); // TODO: add generic mesh raycast
+  //               if (GFXEngine::Physics::Raycast::rayIntersectsMesh(ray, entity->getModelMatrix(), mesh, hitInfo)) {
+        // 			if (hitInfo.distance < closestT) {
+        // 				closestT = hitInfo.distance;
+        // 				closestEntity = entity;
+        // 			}
+        // 		}
+        // 	}
+        // }
+
+        // if (closestEntity) {
+        // 	std::cout << "Clicked on entity: " << closestEntity->getName() << std::endl;
+        // 	m_selectedEntity = closestEntity;
+        // }
 	}
 
 	// Update plugins

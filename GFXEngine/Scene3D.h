@@ -504,7 +504,7 @@ namespace GFXEngine {
             // Parameter: Ray&
             // Parameter: book pickMesh
             //************************************
-            Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false) override;
+            Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false, const EntityFilter& filter = nullptr) override;
 
 			//************************************
 			// Method:    clearEntities

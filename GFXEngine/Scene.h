@@ -5,11 +5,14 @@
 #include "PropertyInfo.h"
 #include <filesystem>
 #include "Raycast.h"
+#include <functional>
 
 namespace GFXEngine {
 	namespace Core {
 
-		class Scene : public GFXEngine::ISerializable
+        using EntityFilter = std::function<bool(Entity* entity)>;
+
+        class Scene : public GFXEngine::ISerializable
 		{
 		public:
 			//************************************
@@ -180,7 +183,7 @@ namespace GFXEngine {
             // Parameter: Ray&
             // Parameter: book pickMesh
             //************************************
-            virtual Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false) = 0;
+            virtual Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false, const EntityFilter& filter = nullptr) = 0;
 
 			//************************************
 			// Method:    as
