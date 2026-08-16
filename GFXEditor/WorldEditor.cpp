@@ -719,6 +719,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		glm::mat4 model = m_selectedEntity->getModelMatrix();
 		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
 
+        // Guizmo Snapping
         std::array<float, 3> snap = {0, 0, 0};
         if(m_guizmoSnap) {
             snap = {1, 1, 1};
