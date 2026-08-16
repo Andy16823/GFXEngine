@@ -486,6 +486,13 @@ void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputMa
         });
 	}
 
+    if(input.isKeyPressed(GLFW_KEY_LEFT_SHIFT) || input.isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+        m_guizmoSnap = true;
+    }
+    else {
+        m_guizmoSnap = false;
+    }
+
 	// Update plugins
 	for (auto& plugin : m_plugins) {
 		plugin->update(*this, context, input, deltaTime);
@@ -711,9 +718,14 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
 		glm::mat4 model = m_selectedEntity->getModelMatrix();
 		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
-        if (UIContext::transformGizmo(view, projection, model, rect, m_guizmoSnap, m_currentGuizmoOperation))
+
+        std::array<float, 3> snap = {0, 0, 0};
+        if(m_guizmoSnap) {
+            snap = {1, 1, 1};
+        }
+
+        if (UIContext::transformGizmo(view, projection, model, rect, snap, m_currentGuizmoOperation))
 		{
-            m_guizmoSnap = {0, 0, 0};
 			if (m_selectedEntity->hasParent()) {
 				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
 			}
@@ -827,12 +839,6 @@ void WorldEditor::handleInput(GLFWwindow* window, int key, int scancode, int act
 		else if (key == GLFW_KEY_E)
 		{
 			m_editorCamera->getTransform().rotateWorld(0.0f, 1.0f, 0.0f);
-        }
-
-        // Guizmo snap
-        if (mods == GLFW_MOD_SHIFT) {
-            Utils::log("WorldEditor", "Snapping guizmo!");
-            m_guizmoSnap = {1,1,1};
         }
 	}
 
