@@ -496,7 +496,7 @@ void WorldEditor::update(GFXEngine::Core::UIContext& context, GFXEngine::InputMa
 				GFXEngine::Physics::RaycastHit hitInfo;
 				auto meshMaterialPair = entity->getMeshAndMaterial(i);
 				const auto& [mesh, material] = meshMaterialPair.value(); // TODO: add generic mesh raycast
-				if (GFXEngine::Physics::Raycast::rayIntersectsMesh(ray, entity->getTransform(), mesh, hitInfo)) {
+                if (GFXEngine::Physics::Raycast::rayIntersectsMesh(ray, entity->getModelMatrix(), mesh, hitInfo)) {
 					if (hitInfo.distance < closestT) {
 						closestT = hitInfo.distance;
 						closestEntity = entity;

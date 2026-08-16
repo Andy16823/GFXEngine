@@ -5,6 +5,7 @@
 #include "EngineDefinitions.h"
 #include "IGraphicsPass.h"
 #include <cassert>
+#include "Mesh.h"
 
 void GFXEngine::Core::Scene3D::renderSerial(GFXEngine::Graphics::RenderContext& context)
 {
@@ -287,4 +288,71 @@ bool GFXEngine::Core::Scene3D::ownsEntity(Entity* entity, bool recursive /*= fal
 		}
 	}
 	return false;
+}
+
+GFXEngine::Core::Entity *GFXEngine::Core::Scene3D::pickEntity(const Physics::Ray &ray, bool pickMesh /*= false*/)
+{
+    GFXEngine::Core::Entity* closestEntity = nullptr;
+    float dist = std::numeric_limits<float>::max();
+    for(const auto& entity : m_entities) {
+        auto entityAABB = entity->getWorldAABB();
+        float tmin, tmax;
+        if(Physics::Raycast::rayIntersectsAABB(ray, entityAABB, tmin, tmax)) {
+            if (tmin < dist) {
+                if(pickMesh) {
+                    // If we set pickMesh to true, we also check the mesh itself if a intersection happens
+                    auto numMeshes = entity->getMeshCount();
+                    for(int i = 0; i < numMeshes; i++) {
+                        auto meshMaterialPair = entity->getMeshAndMaterial(i);
+                        if(meshMaterialPair.has_value()) {
+                            const auto& [mesh, material] = meshMaterialPair.value();
+                            Physics::RaycastHit hit;
+                            if(Physics::Raycast::rayIntersectsMesh(ray, entity->getModelMatrix(), mesh, hit)) {
+                                if(hit.distance < dist) {
+                                    closestEntity = entity.get();
+                                    dist = hit.distance;
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    closestEntity = entity.get();
+                    dist = tmin;
+                }
+            }
+        }
+
+        // Test children
+        entity->foreachChild([&ray, &closestEntity, &dist, &pickMesh](Entity& child) {
+            auto aabb = child.getWorldAABB();
+            float tmin, tmax;
+            if(Physics::Raycast::rayIntersectsAABB(ray, aabb, tmin, tmax)) {
+                if(tmin < dist) {
+                    if(pickMesh){
+                        // If we set pickMesh to true, we also check the mesh itself if a intersection happens
+                        auto numMeshes = child.getMeshCount();
+                        for(int i = 0; i < numMeshes; i++) {
+                            auto meshMaterialPair = child.getMeshAndMaterial(i);
+                            if(meshMaterialPair.has_value()) {
+                                const auto& [mesh, material] = meshMaterialPair.value();
+                                Physics::RaycastHit hit;
+                                if(Physics::Raycast::rayIntersectsMesh(ray, child.getModelMatrix(), mesh, hit)) {
+                                    if(hit.distance < dist) {
+                                        closestEntity = &child;
+                                        dist = hit.distance;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        closestEntity = &child;
+                        dist = tmin;
+                    }
+                }
+            }
+        });
+    }
+    return closestEntity;
 }

@@ -1036,7 +1036,7 @@ namespace GFXEngine {
 			// Returns:   GFXEngine::Math::AABB
 			// Qualifier: const
 			//************************************
-			Math::AABB getWorldAABB() const { return m_aabb.applyTransform(m_transform.getModelMatrix()); }
+            Math::AABB getWorldAABB() const { return m_aabb.applyTransform(this->getModelMatrix()); }
 			
 			//************************************
 			// Method:    setAABB

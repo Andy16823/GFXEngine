@@ -72,7 +72,7 @@ namespace GFXEngine {
 			// Parameter: const Graphics::Mesh & mesh
 			// Parameter: RaycastHit & hitInfo
 			//************************************
-			static bool rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh& mesh, RaycastHit& hitInfo);
+            static bool rayIntersectsMesh(const Ray& ray, const glm::mat4& modelMatrix, const Graphics::Mesh& mesh, RaycastHit& hitInfo);
 			
 			//************************************
 			// Method:    rayIntersectsTriangle

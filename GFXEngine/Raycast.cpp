@@ -59,9 +59,9 @@ bool GFXEngine::Physics::Raycast::rayIntersectsAABB(const Ray& ray, const Math::
 	return true;
 }
 
-bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::Transform& transform, const Graphics::Mesh& mesh, RaycastHit& hitInfo)
+bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const glm::mat4& modelMatrix, const Graphics::Mesh& mesh, RaycastHit& hitInfo)
 {
-	glm::mat4 finalMatrix = transform.getModelMatrix(); // TODO: Add mesh matrix
+    // glm::mat4 finalMatrix = transform.getModelMatrix(); // TODO: Add mesh matrix
 	float closestT = std::numeric_limits<float>::max();
 	hitInfo.hit = false;
 
@@ -74,9 +74,9 @@ bool GFXEngine::Physics::Raycast::rayIntersectsMesh(const Ray& ray, const Math::
 	auto positions = positionsView.as<glm::vec3>();
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
-		auto v0 = glm::vec3(finalMatrix * glm::vec4(positions[indices[i]], 1.0f));
-		auto v1 = glm::vec3(finalMatrix * glm::vec4(positions[indices[i + 1]], 1.0f));
-		auto v2 = glm::vec3(finalMatrix * glm::vec4(positions[indices[i + 2]], 1.0f));
+        auto v0 = glm::vec3(modelMatrix * glm::vec4(positions[indices[i]], 1.0f));
+        auto v1 = glm::vec3(modelMatrix * glm::vec4(positions[indices[i + 1]], 1.0f));
+        auto v2 = glm::vec3(modelMatrix * glm::vec4(positions[indices[i + 2]], 1.0f));
 
 		float t;
 		glm::vec3 normal;

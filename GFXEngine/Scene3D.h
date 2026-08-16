@@ -10,6 +10,7 @@
 #include "RenderQueue.h"
 #include <execution>
 #include <algorithm>
+#include "Raycast.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -493,6 +494,8 @@ namespace GFXEngine {
 				}
 				return taggedEntities;
 			}
+
+            Entity* pickEntity(const GFXEngine::Physics::Ray& ray, bool pickMesh = false);
 
 			//************************************
 			// Method:    clearEntities
