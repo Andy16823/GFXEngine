@@ -149,8 +149,9 @@ namespace GFXEngine {
 			// Returns:   void
 			// Qualifier:
 			// Parameter: int key
-			// Parameter: int mods
-			// Parameter: int action
+            // Parameter: int scancode
+            // Parameter: int action
+            // Parameter: int mods
 			//************************************
             virtual void onInput(int key, int scancode, int action, int mods) = 0;
 			

@@ -115,8 +115,9 @@ namespace GFXEditor
 		// Parameter: GFXEditor::WorldEditor & editor
 		// Parameter: GLFWwindow * window
 		// Parameter: int key
-		// Parameter: int mods
-		// Parameter: int action
+        // Parameter: int scancode
+        // Parameter: int action
+        // Parameter: int mods
 		//************************************
         virtual void handleInput(GFXEditor::WorldEditor& editor, GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
 		
