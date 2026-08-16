@@ -129,7 +129,7 @@ void GFXEngine::InputManager::showCursor()
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-bool GFXEngine::InputManager::isCursorHidden()
+bool GFXEngine::InputManager::isCursorHidden() const
 {
     auto cursorState = glfwGetInputMode(m_window, GLFW_CURSOR);
     return cursorState == GLFW_CURSOR_DISABLED;
