@@ -279,6 +279,6 @@ namespace GFXEngine {
         // Returns:   bool
         // Qualifier:
         //************************************
-        bool isCursorHidden();
+        bool isCursorHidden() const;
 	};
 }
