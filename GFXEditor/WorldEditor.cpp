@@ -831,6 +831,7 @@ void WorldEditor::handleInput(GLFWwindow* window, int key, int scancode, int act
 
         // Guizmo snap
         if (mods == GLFW_MOD_SHIFT) {
+            Utils::log("WorldEditor", "Snapping guizmo!");
             m_guizmoSnap = {1,1,1};
         }
 	}
