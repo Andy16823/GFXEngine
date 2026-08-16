@@ -152,7 +152,7 @@ namespace GFXEngine {
 			// Parameter: int mods
 			// Parameter: int action
 			//************************************
-			virtual void onInput(int key, int mods, int action) = 0;
+            virtual void onInput(int key, int scancode, int action, int mods) = 0;
 			
 			//************************************
 			// Method:    onMouseInput
@@ -161,10 +161,10 @@ namespace GFXEngine {
 			// Returns:   void
 			// Qualifier:
 			// Parameter: int button
-			// Parameter: int mods
-			// Parameter: int action
+            // Parameter: int action
+            // Parameter: int mods
 			//************************************
-			virtual void onMouseInput(int button, int mods, int action) = 0;
+            virtual void onMouseInput(int button, int action, int mods) = 0;
 			
 			//************************************
 			// Method:    onMouseMove

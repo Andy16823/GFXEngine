@@ -80,8 +80,8 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) {
-			game->onInput(key, mods, action);
-			game->inputManager->handleInput(key, mods, action);
+            game->onInput(key, scancode, action, mods);
+            game->inputManager->handleInput(key, scancode, action, mods);
 		}
 	});
 
@@ -89,8 +89,8 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		Game* game = reinterpret_cast<Game*>(glfwGetWindowUserPointer(window));
 		if (game) 
 		{ 
-			game->onMouseInput(button, mods, action);
-			game->inputManager->handleMouseButton(button, mods, action);
+            game->onMouseInput(button, action, mods);
+            game->inputManager->handleMouseButton(button, action, mods);
 		}
 	});
 
