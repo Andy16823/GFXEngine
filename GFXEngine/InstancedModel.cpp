@@ -61,7 +61,7 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 
 	if (m_isDirty) {
 		context.renderer.updateMappedBuffer(m_mappedInstanceData, m_instanceData.size() * sizeof(EngineTypes::InstanceData), m_instanceData.data(), m_instanceData.size());
-		std::cout << "Updated instance data buffer with " << m_instanceData.size() << " instances." << std::endl;
+        // std::cout << "Updated instance data buffer with " << m_instanceData.size() << " instances." << std::endl;
 		m_isDirty = false;
 	}
 
