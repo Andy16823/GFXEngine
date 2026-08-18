@@ -12,7 +12,7 @@
 #include "Primitive.h"
 
 void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::string& shadersDirectory, const std::string& title /*= "My Game"*/, bool fullscreen /*= false*/, bool validationLayers /*= true*/)
-{
+{    
 	// Register core entity types in the entity factory
 	this->entityFactory->registerEntity<GFXEngine::Core::Model>();
 	this->entityFactory->registerEntity<GFXEngine::Core::InstancedModel>();
@@ -120,6 +120,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		}
 	});
 
+    // Create Renderer
 	m_renderer = std::make_unique<Graphics::Renderer>();
 	m_renderer->setValidationEnabled(validationLayers);
 	m_renderer->init(m_window, shadersDirectory);
@@ -135,6 +136,10 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		m_windowSize = { width, height };
 		this->afterSwapchainRecreate(renderer, viewport, scissor);
 		});
+
+    // Create Framecontext (for 1 frame for now)
+    m_frameContext = std::make_unique<GFXEngine::Graphics::FrameContext>();
+    m_frameContext->init(*m_renderer);
 
 	// Load assets and register behaviors before initialization
 	this->registerBehaviors(*behaviorRegistry);
@@ -177,6 +182,11 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 			continue; // Skip this frame if the swapchain was recreated
 		}
 
+        // Update Frame Globals
+        m_frameContext->setDeltaTime(m_deltaTime);
+        m_frameContext->setTime(currentTime);
+        m_frameContext->update(*m_renderer, imageIndex);
+
 		// Call user-defined update
 		this->onUpdate(*m_renderer, imageIndex, m_deltaTime);
 
@@ -202,6 +212,9 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 		m_renderer->advanceFrame();
 	}
 	m_renderer->waitIdle();
+
+    // Cleanup Framecontext
+    m_frameContext->dispose(*m_renderer);
 
 	// Call user-defined cleanup
 	this->onDestroy(*m_renderer);

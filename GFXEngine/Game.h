@@ -10,6 +10,7 @@
 #include "InputManager.h"
 #include "EventBus.h"
 #include "BackgroundTask.h"
+#include "FrameContext.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -18,6 +19,7 @@ namespace GFXEngine {
 		private:
 			GLFWwindow* m_window = nullptr;
 			std::unique_ptr<Graphics::Renderer> m_renderer;
+            std::unique_ptr<Graphics::FrameContext> m_frameContext;
 			BackgroundTaskManager m_backgroundTaskManager;
 			glm::ivec2 m_windowSize = { 800, 600 };
 			float m_targetFPS = 120.0f;

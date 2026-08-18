@@ -31,20 +31,20 @@ void GFXEngine::Graphics::Fog::update(Renderer& renderer, const Camera& camera, 
 		.color = color,
 		.fogParams = fogParams
 	};
-	renderer.updateBuffer(m_uniformBuffers[imageIndex], &fogData, sizeof(fogData));
+    renderer.updateBuffer(m_uniformBuffers[imageIndex], &fogData, 1);
 }
 
 void GFXEngine::Graphics::Fog::destroy(Renderer& renderer)
 {
+    for (auto& descriptorSet : m_descriptorSets) {
+        renderer.freeUniformBufferDescriptorSet(descriptorSet);
+    }
+    m_descriptorSets.clear();
+
 	for (auto& buffer : m_uniformBuffers) {
 		renderer.destroyBuffer(buffer);
 	}
 	m_uniformBuffers.clear();
-
-	for (auto& descriptorSet : m_descriptorSets) {
-		renderer.freeUniformBufferDescriptorSet(descriptorSet);
-	}
-	m_descriptorSets.clear();
 }
 
 nlohmann::json GFXEngine::Graphics::Fog::serialize() const

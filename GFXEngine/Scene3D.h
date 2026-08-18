@@ -21,6 +21,7 @@ namespace GFXEngine {
 			std::vector<std::unique_ptr<Entity>> m_entities;
 			EngineTypes::AssetReference m_environmentMapRef;
 			GFXEngine::Graphics::RenderQueue m_renderQueue;
+
 			bool m_useParallelRendering = false;
 
 			//************************************
