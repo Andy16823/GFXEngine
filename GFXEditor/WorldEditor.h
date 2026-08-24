@@ -16,6 +16,7 @@
 #include "BackgroundTask.h"
 #include "EditorPlugin.h"
 #include "PostRenderAction.h"
+#include "FrameContext.h"
 
 namespace GFXEditor {
 
@@ -404,7 +405,7 @@ namespace GFXEditor {
 		// Parameter: GFXEngine::Core::UIContext * ui
 		// Parameter: uint32_t imageIndex
 		//************************************
-		void renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Core::UIContext* ui, uint32_t imageIndex);
+        void renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::FrameContext& frameContext, GFXEngine::Core::UIContext* ui, uint32_t imageIndex);
 		
 		//************************************
 		// Method:    render

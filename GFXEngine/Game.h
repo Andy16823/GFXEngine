@@ -259,6 +259,15 @@ namespace GFXEngine {
 			// Qualifier: const
 			//************************************
 			GLFWwindow* getWindow() const { return m_window; }
+
+            //************************************
+            // Method:    getFrameContext
+            // FullName:  GFXEngine::Core::Game::getFrameContext
+            // Access:    public
+            // Returns:   FrameContext*
+            // Qualifier:
+            //************************************
+            Graphics::FrameContext& getFrameContext() { return *m_frameContext; }
 			
 			//************************************
 			// Method:    getDeltaTime

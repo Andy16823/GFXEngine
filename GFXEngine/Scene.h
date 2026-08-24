@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Camera.h"
+#include "FrameContext.h"
 #include "ISerializable.h"
 #include "PropertyInfo.h"
 #include <filesystem>
@@ -76,7 +77,7 @@ namespace GFXEngine {
 			// Parameter: GFXEngine::Graphics::Camera & camera
 			// Parameter: uint32_t imageIndex
 			//************************************
-			virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, uint32_t imageIndex) = 0;
+            virtual void render(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::Camera& camera, GFXEngine::Graphics::FrameContext& frameContext, uint32_t imageIndex) = 0;
 			
 			//************************************
 			// Method:    afterRender

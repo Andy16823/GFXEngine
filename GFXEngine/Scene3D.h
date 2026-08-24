@@ -162,7 +162,7 @@ namespace GFXEngine {
 			// Parameter: Graphics::Camera & camera
 			// Parameter: uint32_t imageIndex
 			//************************************
-			void render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex) override;
+            void render(Graphics::Renderer& renderer, Graphics::Camera& camera, Graphics::FrameContext& frameContext, uint32_t imageIndex) override;
 
 			//************************************
 			// Method:    afterRender

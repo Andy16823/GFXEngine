@@ -507,7 +507,7 @@ void WorldEditor::beforeRender(GFXEngine::Core::UIContext& context, GFXEngine::G
 	}
 }
 
-void WorldEditor::renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Core::UIContext* ui, uint32_t imageIndex)
+void WorldEditor::renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, GFXEngine::Graphics::FrameContext& frameContext, GFXEngine::Core::UIContext* ui, uint32_t imageIndex)
 {
 	// Avoid rendering if the viewport size is zero or negative to prevent issues with zero-sized render textures
 	if (m_sceneViewportWindowSize.x <= 0 || m_sceneViewportWindowSize.y <= 0) {
@@ -529,7 +529,7 @@ void WorldEditor::renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, 
 
 	// Render the scene to the offscreen render texture
 	renderer.beginRenderPass(renderer.getOffscreenRenderPass(), m_renderTexture->getFramebuffer(), m_renderTexture->getViewport(), m_renderTexture->getScissor(), imageIndex);
-	m_scene->render(renderer, *m_editorCamera, imageIndex);
+    m_scene->render(renderer, *m_editorCamera, frameContext, imageIndex);
 	renderer.endRenderPass(imageIndex);
 
 	// Restore the original viewport and scissor after rendering to the texture

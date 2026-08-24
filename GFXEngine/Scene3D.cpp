@@ -78,11 +78,12 @@ void GFXEngine::Core::Scene3D::beforeRender(Graphics::Renderer& renderer, Graphi
 	fog.update(renderer, camera, imageIndex);
 }
 
-void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, uint32_t imageIndex)
+void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Camera& camera, Graphics::FrameContext& frameContext, uint32_t imageIndex)
 {
 	GFXEngine::Graphics::RenderContext context{
 		.renderer = renderer,
 		.camera = camera,
+        .frameContext = frameContext,
 		.imageIndex = imageIndex,
 		.renderPass = Graphics::RenderPassIteration::GeometryPass
 	};
