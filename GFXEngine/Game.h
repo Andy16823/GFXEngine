@@ -121,7 +121,7 @@ namespace GFXEngine {
 			// Parameter: Graphics::Renderer & renderer
 			// Parameter: uint32_t imageIndex
 			//************************************
-			virtual void onRender(Graphics::Renderer& renderer, uint32_t imageIndex) = 0;
+            virtual void onRender(Graphics::Renderer& renderer, Graphics::FrameContext& frameContext, uint32_t imageIndex) = 0;
 			
 			//************************************
 			// Method:    afterRender

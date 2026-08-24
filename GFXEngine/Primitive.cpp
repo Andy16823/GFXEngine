@@ -26,6 +26,7 @@ void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderCon
 		// Gather resources needed for the render task
 		Graphics::GraphicResources ressources;
 		ressources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+        ressources[Defintions::FRAME_RESOURCE] = context.frameContext.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(ressources, context.imageIndex);
 		this->getGraphicResources(ressources, context.imageIndex);
 

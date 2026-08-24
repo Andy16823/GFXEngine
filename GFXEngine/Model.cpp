@@ -46,6 +46,7 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 		// Build the common graphic resources for the entity (camera, scene-level, entity resources)
 		Graphics::GraphicResources resources;
 		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+        resources[Defintions::FRAME_RESOURCE] = context.frameContext.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(resources, context.imageIndex);
 		this->getGraphicResources(resources, context.imageIndex);
 

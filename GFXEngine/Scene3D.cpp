@@ -41,6 +41,7 @@ void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& 
 	
 	Graphics::GraphicResources resources;
 	resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+    resources[Defintions::FRAME_RESOURCE] = context.frameContext.getDescriptorSet(context.imageIndex);
 	resources[Defintions::MATERIAL_RESOURCE] = envMap.getMaterial().getDescriptorSet(context.imageIndex);
 	resources[Defintions::ENVIRONMENT_MAP_RESOURCE] = envMap.getDescriptorSet(context.imageIndex);
 	this->getGraphicResources(resources, context.imageIndex);

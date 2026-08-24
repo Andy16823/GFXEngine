@@ -22,7 +22,8 @@ namespace GFXEngine {
 			DIRECTIONAL_LIGHT_RESOURCE			= 'DLIR',
 			POINT_LIGHTS_RESOURCE				= 'PLIR',
 			FOG_RESOURCE						= 'FOGR',
-			ENVIRONMENT_MAP_RESOURCE			= 'ENVR'
+            ENVIRONMENT_MAP_RESOURCE			= 'ENVR',
+            FRAME_RESOURCE                      = 'FRES'
 		};
 	}
 }

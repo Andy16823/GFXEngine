@@ -195,7 +195,7 @@ void GFXEngine::Core::Game::start(uint32_t width, uint32_t height, const std::st
 
 		// Start recording commands for the current frame
 		m_renderer->beginFrame(imageIndex);
-		this->onRender(*m_renderer, imageIndex);
+        this->onRender(*m_renderer, *m_frameContext, imageIndex);
 
 		// End recording and submit the command buffer, then present the frame
 		m_renderer->endFrame(imageIndex);

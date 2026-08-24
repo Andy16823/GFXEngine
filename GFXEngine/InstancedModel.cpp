@@ -73,6 +73,7 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 		// Build render resources (camera, scene-level, entity-level)
 		Graphics::GraphicResources resources;
 		resources[Defintions::CAMERA_RESOURCE] = context.camera.getDescriptorSet(context.imageIndex);
+        resources[Defintions::FRAME_RESOURCE] = context.frameContext.getDescriptorSet(context.imageIndex);
 		this->getScene()->getGraphicResources(resources, context.imageIndex);
 		this->getGraphicResources(resources, context.imageIndex);
 

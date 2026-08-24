@@ -25,6 +25,7 @@ public:
     void update(Renderer& renderer, uint32_t imageIndex);
     void dispose(Renderer& renderer);
 public:
+    VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const { return m_descriptorSets[imageIndex]; }
     void setDeltaTime(float value) { m_deltaTime = value; }
     void setTime(float value) { m_time = value; }
 };
