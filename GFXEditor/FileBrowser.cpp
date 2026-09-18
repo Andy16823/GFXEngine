@@ -1,6 +1,7 @@
 #include "FileBrowser.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
+#include "Utils.h"
 
 namespace GFXEditor {
 namespace Plugins {
@@ -38,6 +39,7 @@ void FileBrowser::beforeRender(WorldEditor &editor, GFXEngine::Core::UIContext &
 void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &context, GFXEngine::Graphics::Renderer &renderer, uint32_t imageIndex)
 {
     if(m_isOpen) {
+        GFXEngine::Utils::log("[File Browser]", "Is open");
         ImGui::Begin("File Dialog");
         ImGui::InputText("Filename", &m_filename);
 
