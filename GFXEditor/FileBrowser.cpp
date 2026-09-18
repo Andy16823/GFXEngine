@@ -39,9 +39,26 @@ void FileBrowser::beforeRender(WorldEditor &editor, GFXEngine::Core::UIContext &
 void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &context, GFXEngine::Graphics::Renderer &renderer, uint32_t imageIndex)
 {
     if(m_isOpen) {
-        GFXEngine::Utils::log("[File Browser]", "Is open");
         ImGui::Begin("File Dialog");
         ImGui::InputText("Filename", &m_filename);
+
+        // List Directory and files
+        ImGui::BeginListBox("Files");
+        for (const auto& entry : std::filesystem::directory_iterator(m_currentPath)) {
+            if (entry.is_directory())
+            {
+                if (ImGui::Selectable((entry.path().filename().string() + "/").c_str())) {
+                    m_currentPath = entry.path();
+                }
+            }
+            else if (entry.is_regular_file()) {
+                if (ImGui::Selectable(entry.path().filename().string().c_str())) {
+                    std::string extension = entry.path().extension().string();
+                    m_currentPath = entry.path();
+                }
+            }
+        }
+        ImGui::EndListBox();
 
         if(ImGui::Button("Save")) {
             if (m_callback && (*m_callback)(*this)) {

@@ -461,6 +461,7 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
     m_projectExplorer = this->addPlugin(std::move(projectExplorer));
 
     auto fileBrowser = std::make_unique<Plugins::FileBrowser>();
+    fileBrowser->setPath(m_projectDirectory);
     m_fileBrowser = this->addPlugin(std::move(fileBrowser));
 
 	// PLUGINS
