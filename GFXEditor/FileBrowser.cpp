@@ -1,7 +1,6 @@
 #include "FileBrowser.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
-#include "Utils.h"
 
 namespace GFXEditor {
 namespace Plugins {
@@ -45,16 +44,16 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
         // List Directory and files
         ImGui::BeginListBox("Files");
         for (const auto& entry : std::filesystem::directory_iterator(m_currentPath)) {
-            if (entry.is_directory())
+            if (entry.is_directory() && this->hasFilter(FileBrowserFilter::FILE_BROWSER_FILTER_DIR))
             {
-                if (ImGui::Selectable((entry.path().filename().string() + "/").c_str())) {
+                if (ImGui::Selectable(("/" + entry.path().filename().string()).c_str())) {
                     m_currentPath = entry.path();
                 }
             }
-            else if (entry.is_regular_file()) {
+            else if (entry.is_regular_file() && this->hasFilter(FileBrowserFilter::FILE_BROWSER_FILTER_FILES)) {
                 if (ImGui::Selectable(entry.path().filename().string().c_str())) {
                     std::string extension = entry.path().extension().string();
-                    m_currentPath = entry.path();
+                    m_filename = entry.path().filename();
                 }
             }
         }

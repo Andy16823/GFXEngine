@@ -11,6 +11,27 @@ namespace Plugins {
 
 using FileBrowserCallback = std::function<bool(class FileBrowser&)>;
 
+enum class FileBrowserFilter : char {
+    FILE_BROWSER_FILTER_FILES = 1 << 1,
+    FILE_BROWSER_FILTER_DIR = 1 << 2
+};
+
+inline FileBrowserFilter operator|(FileBrowserFilter a, FileBrowserFilter b)
+{
+    return static_cast<FileBrowserFilter>(static_cast<char>(a) | static_cast<char>(b));
+}
+
+inline FileBrowserFilter operator&(FileBrowserFilter a, FileBrowserFilter b)
+{
+    return static_cast<FileBrowserFilter>(static_cast<char>(a) & static_cast<char>(b));
+}
+
+inline FileBrowserFilter& operator|=(FileBrowserFilter& a, FileBrowserFilter b)
+{
+    a = static_cast<FileBrowserFilter>(static_cast<char>(a) | static_cast<char>(b));
+    return a;
+}
+
 class FileBrowser : public EditorPlugin
 {
 private:
@@ -18,6 +39,7 @@ private:
     std::optional<FileBrowserCallback> m_callback;
     std::filesystem::path m_currentPath;
     std::string m_filename;
+    FileBrowserFilter m_filter = FileBrowserFilter::FILE_BROWSER_FILTER_FILES | FileBrowserFilter::FILE_BROWSER_FILTER_DIR;
 
 public:
     FileBrowser();
@@ -27,6 +49,14 @@ public:
     void setFilename(const std::string& value) { m_filename = value; }
     void setPath(const std::filesystem::path& path) { m_currentPath = path; }
     std::filesystem::path getPath() const { return m_currentPath; }
+    void setFilter(FileBrowserFilter value) { m_filter = value; }
+    bool hasFilter(FileBrowserFilter ref) const {
+        if((m_filter & ref) == ref) {
+            return true;
+        }
+        return false;
+    }
+    FileBrowserFilter getFilter() const { return m_filter; }
 
 public:
     void show(FileBrowserCallback callback);
