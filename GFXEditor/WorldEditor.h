@@ -17,6 +17,9 @@
 #include "EditorPlugin.h"
 #include "PostRenderAction.h"
 #include "FrameContext.h"
+#include "FileBrowser.h"
+#include "ProjectExplorer.h"
+#include <concepts>
 
 namespace GFXEditor {
 
@@ -44,7 +47,7 @@ namespace GFXEditor {
 		ImGuiID m_topDockID;
 		ImGuiID m_leftDockID;
 		ImGuiID m_leftBottomDockID;
-		ImGuiID m_centerDockID;
+        ImGuiID m_centerDockID;
 		ImGuiID m_bottomDockID;
 		
 	private:
@@ -63,6 +66,12 @@ namespace GFXEditor {
 		std::filesystem::path m_projectDirectory;
 		std::filesystem::path m_currentExplorerPath;
 		VkDescriptorSet m_descriptorSet;
+
+    private:
+        // Plugin ptr
+        Plugins::FileBrowser* m_fileBrowser = nullptr;
+        Plugins::ProjectExplorer* m_projectExplorer = nullptr;
+
 	
 	private:
 		//************************************
@@ -354,9 +363,13 @@ namespace GFXEditor {
 		// Qualifier:
 		// Parameter: std::unique_ptr<EditorPlugin> plugin
 		//************************************
-		void addPlugin(std::unique_ptr<EditorPlugin> plugin) {
+        template<typename T>
+        requires std::derived_from<T, EditorPlugin>
+        T* addPlugin(std::unique_ptr<T> plugin) {
 			plugin->onRegister(*this);
+            T* ptr = plugin.get();
 			m_plugins.push_back(std::move(plugin));
+            return ptr;
 		}
 
 	public:

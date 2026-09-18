@@ -9,11 +9,9 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include "DataTypes.h"
 #include "PropertyInfo.h"
-#include "ProjectExplorer.h"
 #include "MeshAsset.h"
 #include "MaterialAsset.h"
 #include <filesystem>
-
 
 using namespace GFXEditor;
 using namespace GFXEngine;
@@ -460,7 +458,10 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 
 	// Create predefined plugins
 	auto projectExplorer = std::make_unique<Plugins::ProjectExplorer>(m_projectDirectory);
-	m_plugins.push_back(std::move(projectExplorer));
+    m_projectExplorer = this->addPlugin(std::move(projectExplorer));
+
+    auto fileBrowser = std::make_unique<Plugins::FileBrowser>();
+    m_fileBrowser = this->addPlugin(std::move(fileBrowser));
 
 	// PLUGINS
 	for (auto& plugin : m_plugins) {
