@@ -680,11 +680,16 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	}
 
 	UIContext::createButton("Save Scene", [&]() {
-		std::string path = "C:\\Users\\andy1\\Documents\\gfxscene.json";
-		if (!path.empty()) {
-			auto jsonData = m_scene->serialize();
-			GFXEngine::Utils::saveJsonToFile(jsonData, path);
-		}
+        if(m_fileBrowser) {
+            m_fileBrowser->show([](Plugins::FileBrowser& browser) {
+                return true;
+            });
+        }
+        // std::string path = "C:\\Users\\andy1\\Documents\\gfxscene.json";
+        // if (!path.empty()) {
+        // 	auto jsonData = m_scene->serialize();
+        // 	GFXEngine::Utils::saveJsonToFile(jsonData, path);
+        // }
 		});
 
 	ImGui::End();
