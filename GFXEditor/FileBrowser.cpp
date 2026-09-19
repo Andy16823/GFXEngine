@@ -39,25 +39,36 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
 {
     if(m_isOpen) {
         ImGui::Begin("File Dialog");
-        ImGui::InputText("Filename", &m_filename);
 
-        // List Directory and files
-        ImGui::BeginListBox("Files");
+        std::vector<std::filesystem::path> dirs;
+        std::vector<std::filesystem::path> files;
         for (const auto& entry : std::filesystem::directory_iterator(m_currentPath)) {
             if (entry.is_directory() && this->hasFilter(FileBrowserFilter::FILE_BROWSER_FILTER_DIR))
             {
-                if (ImGui::Selectable(("/" + entry.path().filename().string()).c_str())) {
-                    m_currentPath = entry.path();
-                }
+                dirs.push_back(entry.path());
+
             }
             else if (entry.is_regular_file() && this->hasFilter(FileBrowserFilter::FILE_BROWSER_FILTER_FILES)) {
-                if (ImGui::Selectable(entry.path().filename().string().c_str())) {
-                    std::string extension = entry.path().extension().string();
-                    m_filename = entry.path().filename();
-                }
+                files.push_back(entry.path());
+            }
+        }
+
+        ImGui::BeginListBox("Files");
+        for(const auto path : dirs) {
+            if (ImGui::Selectable(("/" + path.filename().string()).c_str())) {
+                m_currentPath = path;
+            }
+        }
+
+        for(const auto path : files) {
+            if (ImGui::Selectable(path.filename().string().c_str())) {
+                std::string extension = path.extension().string();
+                m_filename = path.filename();
             }
         }
         ImGui::EndListBox();
+
+        ImGui::InputText("Filename", &m_filename);
 
         if(ImGui::Button("Save")) {
             if (m_callback && (*m_callback)(*this)) {
@@ -66,7 +77,9 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
             }
         }
 
-        if(ImGui::Button("Cancle")) {
+        ImGui::SameLine();
+
+        if(ImGui::Button("Cancel")) {
             m_callback.reset();
             m_isOpen = false;
         }

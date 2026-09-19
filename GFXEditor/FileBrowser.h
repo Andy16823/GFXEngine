@@ -35,6 +35,7 @@ inline FileBrowserFilter& operator|=(FileBrowserFilter& a, FileBrowserFilter b)
 class FileBrowser : public EditorPlugin
 {
 private:
+    // private members
     bool m_isOpen = false;
     std::optional<FileBrowserCallback> m_callback;
     std::filesystem::path m_currentPath;
@@ -42,27 +43,26 @@ private:
     FileBrowserFilter m_filter = FileBrowserFilter::FILE_BROWSER_FILTER_FILES | FileBrowserFilter::FILE_BROWSER_FILTER_DIR;
 
 public:
+    // Constructor
     FileBrowser();
 
 public:
+    // Getter & Setter
     std::string getFileName() const { return m_filename; }
     void setFilename(const std::string& value) { m_filename = value; }
     void setPath(const std::filesystem::path& path) { m_currentPath = path; }
     std::filesystem::path getPath() const { return m_currentPath; }
+    std::filesystem::path getFilePath() const { return m_currentPath / m_filename; }
     void setFilter(FileBrowserFilter value) { m_filter = value; }
-    bool hasFilter(FileBrowserFilter ref) const {
-        if((m_filter & ref) == ref) {
-            return true;
-        }
-        return false;
-    }
+    bool hasFilter(FileBrowserFilter ref) const { return ((m_filter & ref) == ref); }
     FileBrowserFilter getFilter() const { return m_filter; }
 
 public:
+    // Methods
     void show(FileBrowserCallback callback);
 
-    // EditorPlugin interface
 public:
+    // EditorPlugin interface
     void onRegister(WorldEditor &editor);
     void init(WorldEditor &editor, GFXEngine::Core::UIContext &context, GFXEngine::Graphics::Renderer &renderer);
     void update(WorldEditor &editor, GFXEngine::Core::UIContext &context, GFXEngine::InputManager &input, float deltaTime);
