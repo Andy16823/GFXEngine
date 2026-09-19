@@ -32,6 +32,11 @@ inline FileBrowserFilter& operator|=(FileBrowserFilter& a, FileBrowserFilter b)
     return a;
 }
 
+enum class FileBrowserOperation {
+    FILE_BROWSER_OP_SAVE,
+    FILE_BROWSER_OP_LOAD
+};
+
 class FileBrowser : public EditorPlugin
 {
 private:
@@ -41,6 +46,7 @@ private:
     std::filesystem::path m_currentPath;
     std::string m_filename;
     FileBrowserFilter m_filter = FileBrowserFilter::FILE_BROWSER_FILTER_FILES | FileBrowserFilter::FILE_BROWSER_FILTER_DIR;
+    FileBrowserOperation m_fileBrowserOp = FileBrowserOperation::FILE_BROWSER_OP_SAVE;
 
 public:
     // Constructor
@@ -59,7 +65,7 @@ public:
 
 public:
     // Methods
-    void show(FileBrowserCallback callback);
+    void show(FileBrowserCallback callback, FileBrowserOperation operation = FileBrowserOperation::FILE_BROWSER_OP_SAVE);
 
 public:
     // EditorPlugin interface

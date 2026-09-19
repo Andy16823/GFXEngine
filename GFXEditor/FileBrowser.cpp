@@ -9,10 +9,11 @@ FileBrowser::FileBrowser() {
 
 }
 
-void FileBrowser::show(FileBrowserCallback callback)
+void FileBrowser::show(FileBrowserCallback callback, FileBrowserOperation operation /*= FileBrowserOperation::FILE_BROWSER_OP_SAVE*/)
 {
     m_callback = std::move(callback);
     m_isOpen = true;
+    m_fileBrowserOp = operation;
 }
 
 void FileBrowser::onRegister(WorldEditor &editor)
@@ -70,11 +71,25 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
 
         ImGui::InputText("Filename", &m_filename);
 
-        if(ImGui::Button("Save")) {
-            if (m_callback && (*m_callback)(*this)) {
-                m_isOpen = false;
-                m_callback.reset();
-            }
+        switch(m_fileBrowserOp) {
+            case FileBrowserOperation::FILE_BROWSER_OP_SAVE:
+                if(ImGui::Button("Save")) {
+                    if (m_callback && (*m_callback)(*this)) {
+                        m_isOpen = false;
+                        m_callback.reset();
+                    }
+                }
+                break;
+            case FileBrowserOperation::FILE_BROWSER_OP_LOAD:
+                if(ImGui::Button("Open")) {
+                    if (m_callback && (*m_callback)(*this)) {
+                        m_isOpen = false;
+                        m_callback.reset();
+                    }
+                }
+                break;
+            default:
+                break;
         }
 
         ImGui::SameLine();
