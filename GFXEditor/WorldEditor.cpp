@@ -651,7 +651,8 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		| ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoMove
-		| ImGuiWindowFlags_NoScrollbar;
+        | ImGuiWindowFlags_NoScrollbar
+        | ImGuiWindowFlags_MenuBar;
 
 	ImGui::Begin("World Editor Toolbar", nullptr, toolbarFlags);
 
