@@ -74,6 +74,45 @@ void WorldEditor::placeModel(GFXEngine::Graphics::Renderer& renderer, const glm:
 	m_scene->addEntity(std::move(entity));
 }
 
+void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::Graphics::Renderer &renderer, uint32_t imageIndex)
+{
+    if(ImGui::BeginMenuBar()) {
+        // File Menu
+        if(ImGui::BeginMenu("File")) {
+
+            ImGui::EndMenu();
+        }
+        // Edit Menu
+        if(ImGui::BeginMenu("Edit")) {
+            if(ImGui::MenuItem("Translate")) {
+                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
+            }
+            if(ImGui::MenuItem("Rotate")) {
+                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Rotate;
+            }
+            if(ImGui::MenuItem("Scale")) {
+                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Scale;
+            }
+            ImGui::EndMenu();
+        }
+        // Add Menu
+        if(ImGui::BeginMenu("Add")) {
+            if(ImGui::MenuItem("Model")) {
+                m_assetPicker->show([&](Plugins::AssetPicker& picker, GFXEngine::Asset* asset) {
+                    if(GFXEngine::Graphics::StaticMeshModel* model = dynamic_cast<GFXEngine::Graphics::StaticMeshModel*>(asset)) {
+                        this->placeModel(renderer, glm::vec3(0,0,0), model);
+                        return true;
+                    }
+                    GFXEngine::Utils::log("World Editor", "Unknown Asset: " + asset->getName());
+                    return true;
+                });
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
+}
+
 void WorldEditor::renderBehavior(GFXEngine::Core::Behavior& behavior, GFXEngine::Graphics::Renderer& renderer)
 {
 	std::string name = behavior.getName();
@@ -545,12 +584,15 @@ void WorldEditor::renderSceneToTexture(GFXEngine::Graphics::Renderer& renderer, 
 void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
+    windowFlags |= ImGuiWindowFlags_MenuBar;
 	if (UIContext::gizmoIsOver() || UIContext::gizmoIsUsing()) {
 		windowFlags |= ImGuiWindowFlags_NoMove;
 	}
 
 	// Render the GUI for the world editor
 	UIContext::beginnFullscreen("World Editor", windowFlags);
+    this->renderMenuBar(context, renderer, imageIndex);
+
 	ImGuiID dockspaceID = ImGui::GetID("WorldEditorDockspace");
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
@@ -655,43 +697,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
         | ImGuiWindowFlags_MenuBar;
 
 	ImGui::Begin("World Editor Toolbar", nullptr, toolbarFlags);
-
-    if(ImGui::BeginMenuBar()) {
-        // File Menu
-        if(ImGui::BeginMenu("File")) {
-
-            ImGui::EndMenu();
-        }
-        // Edit Menu
-        if(ImGui::BeginMenu("Edit")) {
-            if(ImGui::MenuItem("Translate")) {
-                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
-            }
-            if(ImGui::MenuItem("Rotate")) {
-                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Rotate;
-            }
-            if(ImGui::MenuItem("Scale")) {
-                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Scale;
-            }
-            ImGui::EndMenu();
-        }
-        // Add Menu
-        if(ImGui::BeginMenu("Add")) {
-            if(ImGui::MenuItem("Model")) {
-                m_assetPicker->show([&](Plugins::AssetPicker& picker, GFXEngine::Asset* asset) {
-                    if(GFXEngine::Graphics::StaticMeshModel* model = dynamic_cast<GFXEngine::Graphics::StaticMeshModel*>(asset)) {
-                        this->placeModel(renderer, glm::vec3(0,0,0), model);
-                        return true;
-                    }
-                    GFXEngine::Utils::log("World Editor", "Unknown Asset: " + asset->getName());
-                    return true;
-                });
-            }
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-    }
-
+    // TODO: Add Toolbar here!
 	ImGui::End();
 
 	this->renderSceneTree(context, renderer, imageIndex);
