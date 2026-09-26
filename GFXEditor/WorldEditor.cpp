@@ -673,7 +673,11 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
     ImGui::SameLine();
     UIContext::createButton("Add Model", [&]() {
         m_assetPicker->show([&](Plugins::AssetPicker& picker, GFXEngine::Asset* asset) {
-            GFXEngine::Utils::log("[World Editor]", "Loaded Asset: " + asset->getName());
+            if(GFXEngine::Graphics::StaticMeshModel* model = dynamic_cast<GFXEngine::Graphics::StaticMeshModel*>(asset)) {
+                this->placeModel(renderer, glm::vec3(0,0,0), model);
+                return true;
+            }
+            GFXEngine::Utils::log("[World Editor]", "Unknown Asset type: " + asset->getName());
             return true;
         });
     });
