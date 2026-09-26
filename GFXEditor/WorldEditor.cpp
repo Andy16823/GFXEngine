@@ -464,6 +464,9 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
     fileBrowser->setPath(m_projectDirectory);
     m_fileBrowser = this->addPlugin(std::move(fileBrowser));
 
+    auto assetPicker = std::make_unique<Plugins::AssetPicker>();
+    m_assetPicker = this->addPlugin(std::move(assetPicker));
+
 	// PLUGINS
 	for (auto& plugin : m_plugins) {
 		plugin->init(*this, context, renderer);
@@ -666,6 +669,14 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	UIContext::createButton("Scale", [&]() {
 		m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Scale;
 		});
+
+    ImGui::SameLine();
+    UIContext::createButton("Add Model", [&]() {
+        m_assetPicker->show([&](Plugins::AssetPicker& picker, GFXEngine::Asset* asset) {
+            GFXEngine::Utils::log("[World Editor]", "Loaded Asset: " + asset->getName());
+            return true;
+        });
+    });
 
 	ImGui::End();
 
