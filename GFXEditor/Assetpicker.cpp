@@ -47,15 +47,15 @@ void AssetPicker::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
         ImGui::Begin("Select Asset");
 
         GFXEngine::AssetManager *manager = editor.getAssetManager();
-        ImGui::BeginCombo("Assets", "Please Select");
+        if(ImGui::BeginCombo("Assets", "Please Select")) {
+            manager->forEachAssetOfType<GFXEngine::Graphics::StaticMeshModel>([this](GFXEngine::Graphics::StaticMeshModel* model) {
+                if(ImGui::Selectable(model->getName().c_str())) {
+                    m_selectedAsset = model;
+                }
+            });
 
-        manager->forEachAssetOfType<GFXEngine::Graphics::StaticMeshModel>([this](GFXEngine::Graphics::StaticMeshModel* model) {
-            if(ImGui::Selectable(model->getName().c_str())) {
-                m_selectedAsset = model;
-            }
-        });
-
-        ImGui::EndCombo();
+            ImGui::EndCombo();
+        }
 
         if(ImGui::Button("Select")) {
             if(m_callback && (*m_callback)(*this, m_selectedAsset)) {
