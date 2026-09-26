@@ -689,7 +689,8 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	}
 	ImGui::End();
 
-	auto toolbarFlags = ImGuiWindowFlags_NoCollapse
+    /* TODO: Add toolbar
+    auto toolbarFlags = ImGuiWindowFlags_NoCollapse
 		| ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoMove
@@ -697,8 +698,9 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
         | ImGuiWindowFlags_MenuBar;
 
 	ImGui::Begin("World Editor Toolbar", nullptr, toolbarFlags);
-    // TODO: Add Toolbar here!
+
 	ImGui::End();
+    */
 
 	this->renderSceneTree(context, renderer, imageIndex);
 
