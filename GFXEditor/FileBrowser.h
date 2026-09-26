@@ -41,7 +41,7 @@ class FileBrowser : public EditorPlugin
 {
 private:
     // private members
-    bool m_isOpen = false;
+    bool m_visible = false;
     std::optional<FileBrowserCallback> m_callback;
     std::filesystem::path m_currentPath;
     std::string m_filename;
@@ -51,6 +51,7 @@ private:
 public:
     // Constructor
     FileBrowser();
+    void hide();
 
 public:
     // Getter & Setter

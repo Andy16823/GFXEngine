@@ -9,10 +9,16 @@ FileBrowser::FileBrowser() {
 
 }
 
+void FileBrowser::hide()
+{
+    m_callback.reset();
+    m_visible = false;
+}
+
 void FileBrowser::show(FileBrowserCallback callback, FileBrowserOperation operation /*= FileBrowserOperation::FILE_BROWSER_OP_SAVE*/)
 {
     m_callback = std::move(callback);
-    m_isOpen = true;
+    m_visible = true;
     m_fileBrowserOp = operation;
 }
 
@@ -38,7 +44,7 @@ void FileBrowser::beforeRender(WorldEditor &editor, GFXEngine::Core::UIContext &
 
 void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &context, GFXEngine::Graphics::Renderer &renderer, uint32_t imageIndex)
 {
-    if(m_isOpen) {
+    if(m_visible) {
         ImGui::Begin("File Dialog");
 
         std::vector<std::filesystem::path> dirs;
@@ -75,16 +81,14 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
             case FileBrowserOperation::FILE_BROWSER_OP_SAVE:
                 if(ImGui::Button("Save")) {
                     if (m_callback && (*m_callback)(*this)) {
-                        m_isOpen = false;
-                        m_callback.reset();
+                        this->hide();
                     }
                 }
                 break;
             case FileBrowserOperation::FILE_BROWSER_OP_LOAD:
                 if(ImGui::Button("Open")) {
                     if (m_callback && (*m_callback)(*this)) {
-                        m_isOpen = false;
-                        m_callback.reset();
+                        this->hide();
                     }
                 }
                 break;
@@ -95,8 +99,7 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
         ImGui::SameLine();
 
         if(ImGui::Button("Cancel")) {
-            m_callback.reset();
-            m_isOpen = false;
+            this->hide();
         }
 
         ImGui::End();
