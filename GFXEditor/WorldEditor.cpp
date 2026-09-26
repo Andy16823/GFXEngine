@@ -79,7 +79,16 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
     if(ImGui::BeginMenuBar()) {
         // File Menu
         if(ImGui::BeginMenu("File")) {
-
+            if(ImGui::MenuItem("Save Scene")) {
+                if(m_fileBrowser) {
+                    m_fileBrowser->show([scene = m_scene](Plugins::FileBrowser& browser) {
+                        auto file = browser.getFilePath();
+                        auto jsonData = scene->serialize();
+                        GFXEngine::Utils::saveJsonToFile(jsonData, file.c_str());
+                        return true;
+                    });
+                }
+            }
             ImGui::EndMenu();
         }
         // Edit Menu
@@ -712,17 +721,6 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		const std::string label = UIContext::createLabelID(prop.name, "SCENE");
 		this->renderProperty(label, renderer, prop);
 	}
-
-    UIContext::createButton("Save Scene", [scene = m_scene, filebrowser = m_fileBrowser]() {
-        if(filebrowser) {
-            filebrowser->show([scene](Plugins::FileBrowser& browser) {
-                auto file = browser.getFilePath();
-                auto jsonData = scene->serialize();
-                GFXEngine::Utils::saveJsonToFile(jsonData, file.c_str());
-                return true;
-            });
-        }
-		});
 
 	ImGui::End();
 
