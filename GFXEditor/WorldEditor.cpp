@@ -654,33 +654,42 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 		| ImGuiWindowFlags_NoScrollbar;
 
 	ImGui::Begin("World Editor Toolbar", nullptr, toolbarFlags);
-	UIContext::createButton("Translate", [&]() {
-		m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
-		});
 
-	ImGui::SameLine();
+    if(ImGui::BeginMenuBar()) {
+        // File Menu
+        if(ImGui::BeginMenu("File")) {
 
-	UIContext::createButton("Rotate", [&]() {
-		m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Rotate;
-		});
-
-	ImGui::SameLine();
-
-	UIContext::createButton("Scale", [&]() {
-		m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Scale;
-		});
-
-    ImGui::SameLine();
-    UIContext::createButton("Add Model", [&]() {
-        m_assetPicker->show([&](Plugins::AssetPicker& picker, GFXEngine::Asset* asset) {
-            if(GFXEngine::Graphics::StaticMeshModel* model = dynamic_cast<GFXEngine::Graphics::StaticMeshModel*>(asset)) {
-                this->placeModel(renderer, glm::vec3(0,0,0), model);
-                return true;
+            ImGui::EndMenu();
+        }
+        // Edit Menu
+        if(ImGui::BeginMenu("Edit")) {
+            if(ImGui::MenuItem("Translate")) {
+                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Translate;
             }
-            GFXEngine::Utils::log("[World Editor]", "Unknown Asset type: " + asset->getName());
-            return true;
-        });
-    });
+            if(ImGui::MenuItem("Rotate")) {
+                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Rotate;
+            }
+            if(ImGui::MenuItem("Scale")) {
+                m_currentGuizmoOperation = GFXEngine::Core::GuizmoOperation::Scale;
+            }
+            ImGui::EndMenu();
+        }
+        // Add Menu
+        if(ImGui::BeginMenu("Add")) {
+            if(ImGui::MenuItem("Model")) {
+                m_assetPicker->show([&](Plugins::AssetPicker& picker, GFXEngine::Asset* asset) {
+                    if(GFXEngine::Graphics::StaticMeshModel* model = dynamic_cast<GFXEngine::Graphics::StaticMeshModel*>(asset)) {
+                        this->placeModel(renderer, glm::vec3(0,0,0), model);
+                        return true;
+                    }
+                    GFXEngine::Utils::log("World Editor", "Unknown Asset: " + asset->getName());
+                    return true;
+                });
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
 
 	ImGui::End();
 
