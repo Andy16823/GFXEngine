@@ -12,7 +12,6 @@ endif()
 
 # TODO: Fügen Sie bei Bedarf Tests hinzu, und installieren Sie Ziele.
 # LibGFX linken (GLFW und Vulkan kommen automatisch mit)
-find_package(TBB REQUIRED)
 target_link_libraries(GFXEngine 
     PRIVATE LibGFX
     PRIVATE glm::glm
@@ -25,7 +24,6 @@ target_link_libraries(GFXEngine
     PRIVATE BulletDynamics
     PRIVATE BulletCollision
     PRIVATE LinearMath
-    PRIVATE TBB::tbb
 )
 
 # Include-Verzeichnisse (falls nötig)
