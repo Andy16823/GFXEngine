@@ -93,6 +93,7 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
             if(ImGui::MenuItem("Load Scene")) {
                 if(m_fileBrowser) {
                     m_fileBrowser->show([scene = m_scene, assetManager = m_assetManager, &renderer](Plugins::FileBrowser& browser) {
+                        /*
                         auto file = browser.getFilePath();
                         auto sceneData = GFXEngine::Utils::loadJsonFromFile(file);
                         Utils::loadSceneAssets(sceneData, *assetManager);
@@ -141,7 +142,7 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
                                 }
                             }
                         }
-
+                        */
                         return true;
                     }, Plugins::FileBrowserOperation::FILE_BROWSER_OP_LOAD);
                 }
