@@ -70,7 +70,7 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
         for(const auto path : files) {
             if (ImGui::Selectable(path.filename().string().c_str())) {
                 std::string extension = path.extension().string();
-                m_filename = path.filename();
+                m_filename = path.filename().string();
             }
         }
         ImGui::EndListBox();

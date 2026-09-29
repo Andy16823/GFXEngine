@@ -85,7 +85,7 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
                     m_fileBrowser->show([scene = m_scene](Plugins::FileBrowser& browser) {
                         auto file = browser.getFilePath();
                         auto jsonData = scene->serialize();
-                        GFXEngine::Utils::saveJsonToFile(jsonData, file.c_str());
+                        GFXEngine::Utils::saveJsonToFile(jsonData, file.string());
                         return true;
                     });
                 }
