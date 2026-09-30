@@ -228,6 +228,11 @@ namespace GFXEngine {
 		std::type_index assetType = typeid(void);
 		void* asset = nullptr;
 
+		~AssetReference()
+		{
+			clear();
+		}
+
 		operator bool() const {
 			return asset != nullptr;
 		}
