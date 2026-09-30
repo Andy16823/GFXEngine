@@ -85,12 +85,12 @@ void GFXEngine::AssetManager::freeUnusedAssets(Graphics::Renderer& renderer)
 
 		GFXEngine::Utils::log("Assets", "Unloading asset " + asset->getName());
 
-		if (auto fileAsset = dynamic_cast<FileAsset*>(asset)) {
-			fileAsset->unload();
-		}
-
 		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(asset)) {
 			graphicsAsset->destroy(renderer);
+		}
+
+		if (auto fileAsset = dynamic_cast<FileAsset*>(asset)) {
+			fileAsset->unload();
 		}
 	}
 }
