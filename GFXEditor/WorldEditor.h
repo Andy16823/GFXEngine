@@ -21,6 +21,7 @@
 #include "ProjectExplorer.h"
 #include "Assetpicker.h"
 #include <concepts>
+#include "Game.h"
 
 namespace GFXEditor {
 
@@ -38,9 +39,8 @@ namespace GFXEditor {
 	class WorldEditor : public GFXEngine::Core::UIWidget
 	{
 	private:
-		GFXEngine::Core::Scene3D* m_scene;
-		GFXEngine::AssetManager* m_assetManager;
-		GFXEngine::BehaviorRegistry* m_behaviorRegistry;
+		GFXEngine::Core::Game* m_game = nullptr;
+		GFXEngine::Core::Scene3D* m_scene = nullptr;
 		GFXEngine::Core::Entity* m_selectedEntity = nullptr;
 
 	private:
@@ -87,15 +87,15 @@ namespace GFXEditor {
 		void cleanupRemovedBehaviors(GFXEngine::Graphics::Renderer& renderer);
 
 	public:
-		WorldEditor(GFXEngine::Core::Scene3D* scene, GFXEngine::AssetManager* assetManager, GFXEngine::BehaviorRegistry* behaviorRegistry, const std::filesystem::path& projectDirectory)
-			: GFXEngine::Core::UIWidget(), m_scene(scene), m_assetManager(assetManager), m_behaviorRegistry(behaviorRegistry), m_projectDirectory(projectDirectory), m_currentExplorerPath(projectDirectory) {}
+		WorldEditor(GFXEngine::Core::Scene3D* scene, GFXEngine::Core::Game* game, const std::filesystem::path& projectDirectory)
+			: GFXEngine::Core::UIWidget(), m_scene(scene), m_game(game), m_projectDirectory(projectDirectory), m_currentExplorerPath(projectDirectory) {}
 		
 		~WorldEditor() = default;
 
 	public:
 		GFXEngine::Core::Scene3D* getScene() const { return m_scene; }
-		GFXEngine::AssetManager* getAssetManager() const { return m_assetManager; }
-		GFXEngine::BehaviorRegistry* getBehaviorRegistry() const { return m_behaviorRegistry; }
+		GFXEngine::AssetManager* getAssetManager() const { return m_game->assetManager.get(); }
+		GFXEngine::BehaviorRegistry* getBehaviorRegistry() const { return m_game->behaviorRegistry.get(); }
 		GFXEngine::Core::Entity* getSelectedEntity() const { return m_selectedEntity; }
 		std::filesystem::path getProjectDirectory() const { return m_projectDirectory; }
         GFXEngine::BackgroundTaskManager& getBackgroundTaskManager() { return m_backgroundTaskManager; }

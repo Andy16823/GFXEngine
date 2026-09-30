@@ -92,57 +92,8 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
             }
             if(ImGui::MenuItem("Load Scene")) {
                 if(m_fileBrowser) {
-                    m_fileBrowser->show([scene = m_scene, assetManager = m_assetManager, &renderer](Plugins::FileBrowser& browser) {
-                        /*
-                        auto file = browser.getFilePath();
-                        auto sceneData = GFXEngine::Utils::loadJsonFromFile(file);
-                        Utils::loadSceneAssets(sceneData, *assetManager);
-                        auto requiredAssets = sceneData["requiredAssets"];
-                        scene->destroy(renderer);
-                        scene->clearEntities();
-
-                        SerializationContext ctx = GFXEngine::RuntimeContext::get().createSerializationContext();
-                        scene->deserialize(sceneData, ctx);
-                        scene->resolveReferences(ctx);
-
-                        // reinitialize the graphics resources for the new scene and the new entities
-                        assetManager->initializeGraphicsAssets(renderer);
-                        scene->init(renderer);
-
-                        // Get all assets that are not required by the new scene and unload them to free up memory
-                        auto unusedAssets = assetManager->filterAssets([&requiredAssets](GFXEngine::Asset* asset) {
-                            if (requiredAssets.is_array()) {
-                                if (std::find(requiredAssets.begin(), requiredAssets.end(), asset->getName()) == requiredAssets.end()) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-
-                        // Unload the unused assets
-                        for (auto& asset : unusedAssets) {
-
-                            // Unload graphics assets if they are initialized
-                            auto graphicsAsset = dynamic_cast<GFXEngine::GraphicsAsset*>(asset);
-                            if (graphicsAsset) {
-                                if (graphicsAsset->isInitialized())
-                                {
-                                    GFXEngine::Utils::log("Game", "Unloading graphics asset: " + asset->getName());
-                                    graphicsAsset->destroy(renderer);
-                                }
-                            }
-
-                            // Unload file assets if they are loaded
-                            auto fileAsset = dynamic_cast<GFXEngine::FileAsset*>(asset);
-                            if (fileAsset) {
-                                if (fileAsset->isLoaded())
-                                {
-                                    GFXEngine::Utils::log("Game", "Unloading file asset: " + asset->getName());
-                                    fileAsset->unload();
-                                }
-                            }
-                        }
-                        */
+                    m_fileBrowser->show([scene = m_scene, game = m_game](Plugins::FileBrowser& browser) {
+						scene->loadFromFile(browser.getFilePath().string(), *game);
                         return true;
                     }, Plugins::FileBrowserOperation::FILE_BROWSER_OP_LOAD);
                 }
@@ -425,7 +376,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 			switch (meta->type)
 			{
 			case GFXEngine::Core::AssetType::EnvironmentMap:
-				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::EnvironmentMap>([&](GFXEngine::Graphics::EnvironmentMap* envMap) {
+				m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::EnvironmentMap>([&](GFXEngine::Graphics::EnvironmentMap* envMap) {
 					if (ImGui::Selectable(envMap->getName().c_str()))
 					{
 						if (!envMap->isLoaded()) {
@@ -442,7 +393,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 					});
 				break;
 			case GFXEngine::Core::AssetType::MeshModel:
-				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshModel>([&](GFXEngine::Graphics::MeshModel* model) {
+				m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshModel>([&](GFXEngine::Graphics::MeshModel* model) {
 					if (ImGui::Selectable(UIContext::createLabelID(model->getName(), model->getUUID()).c_str()))
 					{
 						if (!model->isLoaded()) {
@@ -461,7 +412,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 					});
 				break;
 			case GFXEngine::Core::AssetType::Mesh:
-				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshAsset>([&](GFXEngine::Graphics::MeshAsset* mesh) {
+				m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::MeshAsset>([&](GFXEngine::Graphics::MeshAsset* mesh) {
 					if (ImGui::Selectable(UIContext::createLabelID(mesh->getName(), mesh->getUUID()).c_str()))
 					{
 						if (!mesh->isInitialized()) {
@@ -476,7 +427,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 					});
 				break;
 			case GFXEngine::Core::AssetType::Material:
-				m_assetManager->forEachAssetOfType<GFXEngine::Graphics::MaterialAsset>([&](GFXEngine::Graphics::MaterialAsset* material) {
+				m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::MaterialAsset>([&](GFXEngine::Graphics::MaterialAsset* material) {
 					if (ImGui::Selectable(UIContext::createLabelID(material->getName(), material->getUUID()).c_str()))
 					{
 						if (!material->isInitialized()) {
@@ -492,7 +443,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 				break;
 			default:
 				GFXEngine::Utils::log("World Editor", "Undefined asset type");
-				m_assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
+				m_game->assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
 					if (ImGui::Selectable(asset->getName().c_str()))
 					{
 						if (auto fileAsset = dynamic_cast<GFXEngine::FileAsset*>(asset)) {
@@ -784,7 +735,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 
 	ImGui::Begin("Assets");
 	if (ImGui::CollapsingHeader("Models")) {
-		m_assetManager->forEachAssetOfType<GFXEngine::Graphics::StaticMeshModel>([&](GFXEngine::Graphics::StaticMeshModel* model) {
+		m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::StaticMeshModel>([&](GFXEngine::Graphics::StaticMeshModel* model) {
 			UIContext::createButton(model->getName().c_str(), [&]() {
 				this->placeModel(renderer, glm::vec3(0.0f, 0.0f, 0.0f), model);
 				});
@@ -850,9 +801,9 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 				});
 
 			if (ImGui::BeginCombo("Add Behavior", "")) {
-				m_behaviorRegistry->foreachBehavior([&](const std::string& behaviorName) {
+				m_game->behaviorRegistry->foreachBehavior([&](const std::string& behaviorName) {
 					if (ImGui::Selectable(behaviorName.c_str())) {
-						auto bhv = m_selectedEntity->addBehavior(m_behaviorRegistry->createBehavior(behaviorName));
+						auto bhv = m_selectedEntity->addBehavior(m_game->behaviorRegistry->createBehavior(behaviorName));
 						bhv->init(*m_scene, renderer);
 					}
 					});
