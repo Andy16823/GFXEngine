@@ -11,6 +11,7 @@
 #include <execution>
 #include <algorithm>
 #include "Raycast.h"
+#include "Asset.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -19,7 +20,7 @@ namespace GFXEngine {
 		{
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
-			EngineTypes::AssetReference m_environmentMapRef;
+			GFXEngine::AssetReference m_environmentMapRef;
 			GFXEngine::Graphics::RenderQueue m_renderQueue;
 
 			bool m_useParallelRendering = false;

@@ -5,6 +5,7 @@
 #include <vector>
 #include "DataTypes.h"
 #include "AABB.h"
+#include "Asset.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -15,7 +16,7 @@ namespace GFXEngine {
 		{
 		private:
 			std::vector<EngineTypes::InstanceData> m_instanceData;
-			EngineTypes::AssetReference m_meshModelRef;
+			GFXEngine::AssetReference m_meshModelRef;
 			bool m_isDirty = true;
 
 			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;

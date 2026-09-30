@@ -4,14 +4,15 @@
 #include "DataTypes.h"
 #include "MeshAsset.h"
 #include "MaterialAsset.h"
+#include "Asset.h"
 
 namespace GFXEngine {
 	namespace Core {
 		class MeshRenderBehavior : public Behavior, public Graphics::IRenderable
 		{
 		private:
-			EngineTypes::AssetReference m_meshRef;
-			EngineTypes::AssetReference m_materialRef;
+			GFXEngine::AssetReference m_meshRef;
+			GFXEngine::AssetReference m_materialRef;
 			Graphics::GraphicsPipeline* m_pipeline = nullptr;
 
 		public:

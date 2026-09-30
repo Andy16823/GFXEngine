@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "MeshModel.h"
 #include "DataTypes.h"
+#include "Asset.h"
 
 namespace GFXEngine {
 	namespace Core {
@@ -9,7 +10,7 @@ namespace GFXEngine {
 		class Model : public Entity
 		{
 		private:
-			EngineTypes::AssetReference m_meshModelRef;
+			GFXEngine::AssetReference m_meshModelRef;
 
 		public:
 			

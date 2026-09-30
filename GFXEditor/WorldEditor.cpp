@@ -186,7 +186,7 @@ void WorldEditor::renderProperty(const std::string& label, GFXEngine::Graphics::
 	else if (auto* dataPtr = std::get_if<GFXEngine::EngineTypes::EntityReference*>(&prop.data)) {
 		this->renderEntityProperty(label, renderer, prop, *dataPtr);
 	}
-	else if (auto* dataPtr = std::get_if<GFXEngine::EngineTypes::AssetReference*>(&prop.data)) {
+	else if (auto* dataPtr = std::get_if<GFXEngine::AssetReference*>(&prop.data)) {
 		this->renderAssetProperty(label, renderer, prop, *dataPtr);
 	}
 	else {
@@ -372,7 +372,7 @@ void WorldEditor::renderEntityProperty(const std::string& label, GFXEngine::Grap
 	}
 }
 
-void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::EngineTypes::AssetReference* value)
+void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::AssetReference* value)
 {
 	const auto asset = static_cast<GFXEngine::Asset*>(value->asset);
 	if (ImGui::BeginCombo(label.c_str(), asset ? asset->getName().c_str() : "None"))

@@ -3,6 +3,7 @@
 #include "DataTypes.h"
 #include "MeshAsset.h"
 #include "MaterialAsset.h"
+#include "Asset.h"
 
 #include <optional>
 
@@ -11,8 +12,8 @@ namespace GFXEngine {
 		class Primitive : public Entity
 		{
 		private:
-			EngineTypes::AssetReference m_meshReference;
-			EngineTypes::AssetReference m_materialReference;
+			GFXEngine::AssetReference m_meshReference;
+			GFXEngine::AssetReference m_materialReference;
 			std::optional<unsigned int> m_pipelineId = std::nullopt;
 
 		public:

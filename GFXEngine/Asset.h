@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <typeindex>
 
 namespace GFXEngine {
 
@@ -12,6 +13,7 @@ namespace GFXEngine {
 	protected:
 		std::string m_uuid;
 		std::string m_name;
+		uint32_t m_refCount = 0;
 	public:
 		
 		//************************************
@@ -62,6 +64,48 @@ namespace GFXEngine {
 		T* as() {
 			return dynamic_cast<T*>(this);
 		}
+
+		//************************************
+		// Method:    increaseRef
+		// FullName:  GFXEngine::Asset::increaseRef
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		void increaseRef() {
+			m_refCount++;
+		}
+
+		//************************************
+		// Method:    decreaseRef
+		// FullName:  GFXEngine::Asset::decreaseRef
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		void decreaseRef() {
+			if (m_refCount > 0) {
+				m_refCount--;
+			}
+		}
+
+		//************************************
+		// Method:    getRefCount
+		// FullName:  GFXEngine::Asset::getRefCount
+		// Access:    public 
+		// Returns:   uint32_t
+		// Qualifier: const
+		//************************************
+		uint32_t getRefCount() const { return m_refCount; }
+
+		//************************************
+		// Method:    isReferenced
+		// FullName:  GFXEngine::Asset::isReferenced
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier: const
+		//************************************
+		bool isReferenced() const {	return m_refCount > 0; }
 	};
 
 	/// <summary>
@@ -175,4 +219,46 @@ namespace GFXEngine {
 		//************************************
 		virtual bool isInitialized() const = 0;
 	};
+
+	/// <summary>
+	/// AssetReference is a simple structure that holds a non-owning pointer to an Asset, allowing entities to reference assets without owning them directly.
+	/// </summary>
+	struct AssetReference
+	{
+		std::type_index assetType = typeid(void);
+		void* asset = nullptr;
+
+		operator bool() const {
+			return asset != nullptr;
+		}
+
+		template<typename T>
+		void set(T* assetPtr) {
+			static_assert(std::derived_from<T, class GFXEngine::Asset>, "AssetReference can only hold pointers to Asset-derived types");
+			assetType = typeid(T);
+			asset = assetPtr;
+			assetPtr->increaseRef();
+		}
+
+		template <typename T>
+		T* get() const {
+			if (assetType == typeid(T)) {
+				return static_cast<T*>(asset);
+			}
+			return nullptr;
+		}
+
+		template <typename T>
+		bool isTypeOf() const {
+			return assetType == typeid(T);
+		}
+
+		void clear() {
+			static_cast<Asset*>(asset)->decreaseRef();
+			assetType = typeid(void);
+			asset = nullptr;
+
+		}
+	};
+
 }
