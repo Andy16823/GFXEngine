@@ -196,6 +196,7 @@ void GFXEngine::Core::Scene3D::loadFromFile(const std::string& path, GFXEngine::
 	GFXEngine::SerializationContext ctx = game.createSerializationContext();
 	this->deserialize(sceneData, ctx);
 	this->resolveReferences(ctx);
+	game.assetManager->initializeGraphicsAssets(*renderer);
 	this->init(*renderer);
 
 	game.assetManager->freeUnusedAssets(*renderer);
