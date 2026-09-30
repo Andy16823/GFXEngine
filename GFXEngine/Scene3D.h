@@ -248,6 +248,17 @@ namespace GFXEngine {
 			// Qualifier:
 			//************************************
 			std::vector<PropertyInfo> getProperties() override;
+
+			//************************************
+			// Method:    loadFromFile
+			// FullName:  GFXEngine::Core::Scene3D::loadFromFile
+			// Access:    public 
+			// Returns:   void
+			// Qualifier:
+			// Parameter: const std::string & path
+			// Parameter: GFXEngine::Core::Game & game
+			//************************************
+			void loadFromFile(const std::string& path, GFXEngine::Core::Game& game) override;
 			
 			//************************************
 			// Method:    instantiatePrefab

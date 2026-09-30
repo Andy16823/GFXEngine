@@ -6,6 +6,7 @@
 #include "IGraphicsPass.h"
 #include <cassert>
 #include "Mesh.h"
+#include "Game.h"
 
 void GFXEngine::Core::Scene3D::renderSerial(GFXEngine::Graphics::RenderContext& context)
 {
@@ -179,6 +180,20 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 		});
 
 	return properties;
+}
+
+void GFXEngine::Core::Scene3D::loadFromFile(const std::string& path, GFXEngine::Core::Game& game)
+{
+	auto renderer = game.getRenderer();
+	auto sceneData = GFXEngine::Utils::loadJsonFromFile(path);
+	auto requiredAssets = sceneData["requiredAssets"];
+
+	this->destroy(*renderer);
+	this->clearEntities();
+
+	GFXEngine::SerializationContext ctx = game.createSerializationContext();
+	this->deserialize(sceneData, ctx);
+	this->resolveReferences(ctx);
 }
 
 nlohmann::json GFXEngine::Core::Scene3D::serialize() const

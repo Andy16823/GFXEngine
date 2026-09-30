@@ -304,6 +304,15 @@ namespace GFXEngine {
 			// Qualifier: const
 			//************************************
 			float getTargetFPS() const { return m_targetFPS; }
+
+			//************************************
+			// Method:    getRenderer
+			// FullName:  GFXEngine::Core::Game::getRenderer
+			// Access:    public 
+			// Returns:   GFXEngine::Graphics::Renderer*
+			// Qualifier: const
+			//************************************
+			GFXEngine::Graphics::Renderer* getRenderer() const { return m_renderer.get(); }
 			
 			//************************************
 			// Method:    createSerializationContext

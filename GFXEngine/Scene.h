@@ -11,6 +11,8 @@
 namespace GFXEngine {
 	namespace Core {
 
+		class Game;
+
         using EntityFilter = std::function<bool(Entity* entity)>;
 
         class Scene : public GFXEngine::ISerializable
@@ -153,6 +155,17 @@ namespace GFXEngine {
 			// Parameter: uint32_t imageIndex
 			//************************************
 			virtual void getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex) const = 0;
+
+			//************************************
+			// Method:    loadFromFile
+			// FullName:  GFXEngine::Core::Scene::loadFromFile
+			// Access:    virtual public 
+			// Returns:   void
+			// Qualifier:
+			// Parameter: const std::string & path
+			// Parameter: GFXEngine::Core::Game & game
+			//************************************
+			virtual void loadFromFile(const std::string& path, GFXEngine::Core::Game& game) = 0;
 
 			//************************************
 			// Method:    instantiatePrefab
