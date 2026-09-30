@@ -57,7 +57,13 @@ void GFXEngine::AssetManager::unloadAssets()
 void GFXEngine::AssetManager::initializeGraphicsAssets(Graphics::Renderer& renderer)
 {
 	for (auto& pair : m_assets) {
-		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(pair.second.get())) 
+
+		Asset* asset = pair.second.get();
+
+		if(!asset->isReferenced())
+			continue;
+
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(asset)) 
 		{
 			if (!graphicsAsset->isInitialized()) 
 			{

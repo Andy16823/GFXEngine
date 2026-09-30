@@ -259,10 +259,12 @@ namespace GFXEngine {
 		}
 
 		void clear() {
-			static_cast<Asset*>(asset)->decreaseRef();
+			if (asset)
+			{
+				static_cast<Asset*>(asset)->decreaseRef();
+			}
 			assetType = typeid(void);
 			asset = nullptr;
-
 		}
 	};
 
