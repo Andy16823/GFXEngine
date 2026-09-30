@@ -92,8 +92,13 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
             }
             if(ImGui::MenuItem("Load Scene")) {
                 if(m_fileBrowser) {
-                    m_fileBrowser->show([scene = m_scene, game = m_game](Plugins::FileBrowser& browser) {
-						scene->loadFromFile(browser.getFilePath().string(), *game);
+                    m_fileBrowser->show([this](Plugins::FileBrowser& browser) {
+						PostRenderAction action{
+							.callback = [this, browser] {
+								this->m_scene->loadFromFile(browser.getFilePath().string(), *this->m_game);
+							}
+						};
+						this->addPostRenderAction(std::move(action));
                         return true;
                     }, Plugins::FileBrowserOperation::FILE_BROWSER_OP_LOAD);
                 }
