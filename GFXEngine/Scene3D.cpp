@@ -185,6 +185,8 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 void GFXEngine::Core::Scene3D::loadFromFile(const std::string& path, GFXEngine::Core::Game& game)
 {
 	auto renderer = game.getRenderer();
+	renderer->waitIdle();
+
 	auto sceneData = GFXEngine::Utils::loadJsonFromFile(path);
 	auto requiredAssets = sceneData["requiredAssets"];
 
@@ -194,6 +196,7 @@ void GFXEngine::Core::Scene3D::loadFromFile(const std::string& path, GFXEngine::
 	GFXEngine::SerializationContext ctx = game.createSerializationContext();
 	this->deserialize(sceneData, ctx);
 	this->resolveReferences(ctx);
+	this->init(*renderer);
 }
 
 nlohmann::json GFXEngine::Core::Scene3D::serialize() const
