@@ -75,3 +75,22 @@ void GFXEngine::AssetManager::destroyGraphicsAssets(Graphics::Renderer& renderer
 		}
 	}
 }
+
+void GFXEngine::AssetManager::freeUnusedAssets(Graphics::Renderer& renderer)
+{
+	for (auto& pair : m_assets) {
+		Asset* asset = pair.second.get();
+		if (asset->isReferenced())
+			continue;
+
+		GFXEngine::Utils::log("Assets", "Unloading asset " + asset->getName());
+
+		if (auto fileAsset = dynamic_cast<FileAsset*>(asset)) {
+			fileAsset->unload();
+		}
+
+		if (auto graphicsAsset = dynamic_cast<GraphicsAsset*>(asset)) {
+			graphicsAsset->destroy(renderer);
+		}
+	}
+}

@@ -197,6 +197,8 @@ void GFXEngine::Core::Scene3D::loadFromFile(const std::string& path, GFXEngine::
 	this->deserialize(sceneData, ctx);
 	this->resolveReferences(ctx);
 	this->init(*renderer);
+
+	game.assetManager->freeUnusedAssets(*renderer);
 }
 
 nlohmann::json GFXEngine::Core::Scene3D::serialize() const

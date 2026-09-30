@@ -70,6 +70,16 @@ namespace GFXEngine {
 		void destroyGraphicsAssets(Graphics::Renderer& renderer);
 
 		//************************************
+		// Method:    freeUnusedAssets
+		// FullName:  GFXEngine::AssetManager::freeUnusedAssets
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: Graphics::Renderer & renderer
+		//************************************
+		void freeUnusedAssets(Graphics::Renderer& renderer);
+
+		//************************************
 		// Method:    addAsset
 		// FullName:  GFXEngine::AssetManager::addAsset
 		// Access:    public 
