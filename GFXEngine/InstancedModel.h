@@ -16,7 +16,7 @@ namespace GFXEngine {
 		{
 		private:
 			std::vector<EngineTypes::InstanceData> m_instanceData;
-			GFXEngine::AssetReference m_meshModelRef;
+			std::optional<GFXEngine::AssetHandle> m_meshModelRef = std::nullopt;
 			bool m_isDirty = true;
 
 			VkDescriptorSet m_instanceDataDescriptorSet = VK_NULL_HANDLE;
@@ -42,7 +42,7 @@ namespace GFXEngine {
 			// Parameter: Graphics::MeshModel * meshModel
 			// Parameter: size_t instanceCount
 			//************************************
-			InstancedModel(Graphics::MeshModel* meshModel, size_t instanceCount);
+			InstancedModel(GFXEngine::AssetHandle meshModel, size_t instanceCount);
 
 			//************************************
 			// Method:    init

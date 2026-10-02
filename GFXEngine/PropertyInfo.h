@@ -68,7 +68,7 @@ namespace GFXEngine {
 			glm::vec4*, 
 			glm::quat*, 
 			GFXEngine::EngineTypes::EntityReference*,
-			GFXEngine::AssetReference*
+			GFXEngine::AssetHandle*
 		>;
 
 		struct PropertyInfo {

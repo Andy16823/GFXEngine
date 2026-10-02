@@ -10,7 +10,7 @@ namespace GFXEngine {
 		class Model : public Entity
 		{
 		private:
-			GFXEngine::AssetReference m_meshModelRef;
+			std::optional<GFXEngine::AssetHandle> m_meshModelRef = std::nullopt;
 
 		public:
 			
@@ -31,7 +31,7 @@ namespace GFXEngine {
 			// Qualifier:
 			// Parameter: Graphics::MeshModel * meshModel
 			//************************************
-			Model(Graphics::MeshModel* meshModel);
+			Model(GFXEngine::AssetHandle handle) : m_meshModelRef(handle) {}
 
 			//************************************
 			// Method:    init
@@ -137,15 +137,6 @@ namespace GFXEngine {
 			// Parameter: size_t index
 			//************************************
 			MeshMaterialPair getMeshAndMaterial(size_t index) const override;
-
-			//************************************
-			// Method:    getMeshModel
-			// FullName:  GFXEngine::Core::Model::getMeshModel
-			// Access:    public 
-			// Returns:   const GFXEngine::Graphics::MeshModel*
-			// Qualifier: const
-			//************************************
-			const Graphics::MeshModel* getMeshModel() const { return m_meshModelRef.get<Graphics::MeshModel>(); }
 		};
 	}
 }

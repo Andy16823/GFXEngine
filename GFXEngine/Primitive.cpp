@@ -78,11 +78,18 @@ GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Primitive::getMeshAndMaterial
 		throw std::out_of_range("Mesh index out of range");
 	}
 
-	MeshAsset* meshAsset = m_meshReference.get<Graphics::MeshAsset>();
-	MaterialAsset* materialAsset = m_materialReference.get<Graphics::MaterialAsset>();
+	// Check if there is a reference set
+	if (!m_meshReference.has_value() || !m_materialReference.has_value())
+	{
+		throw std::runtime_error("Primitive has no valid mesh or material reference");
+	}
+
+	MeshAsset* meshAsset = m_meshReference.value()->as<Graphics::MeshAsset>();
+	MaterialAsset* materialAsset = m_materialReference.value()->as<Graphics::MaterialAsset>();
 	if (!meshAsset || !meshAsset->getMesh() || !materialAsset || !materialAsset->getMaterial()) {
 		throw std::runtime_error("Primitive has invalid mesh/material asset reference");
 	}
+
 	Graphics::Mesh& mesh = *meshAsset->getMesh();
 	Graphics::Material& material = *materialAsset->getMaterial();
 	return std::make_optional(std::make_pair(std::ref(mesh), std::ref(material)));
@@ -96,8 +103,15 @@ nlohmann::json Core::Primitive::serialize() const
 	}
 
 	nlohmann::json data = Entity::serialize();
-	data["mesh"] = m_meshReference.get<MeshAsset>()->getName();
-	data["material"] = m_materialReference.get<MaterialAsset>()->getName();
+
+	if (m_meshReference.has_value()) {
+		data["mesh"] = m_meshReference.value()->getName();
+	}
+
+	if (m_materialReference.has_value()) {
+		data["material"] = m_materialReference.value()->getName();
+	}
+	
 	data["pipeline"] = m_pipelineId.value();
 	return data;
 }
@@ -111,12 +125,7 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 		throw std::runtime_error("Primitive deserialization error: 'mesh' field is missing or not a string");
 	}
 	std::string meshName = data["mesh"].get<std::string>();
-	
-	MeshAsset* meshAsset = context.assets.get<MeshAsset>(meshName);
-	if (!meshAsset) {
-		throw std::runtime_error("Primitive deserialization error: MeshAsset asset '" + meshName + "' not found");
-	}
-	m_meshReference.set(meshAsset);
+	m_meshReference = context.assets.get<MeshAsset>(meshName);
 
 
 	// Deserialize Material
@@ -124,12 +133,7 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 		throw std::runtime_error("Primitive deserialization error: 'material' field is missing or not a string");
 	}
 	std::string materialName = data["material"].get<std::string>();
-
-	MaterialAsset* materialAsset = context.assets.get<MaterialAsset>(materialName);
-	if (!materialAsset) {
-		throw std::runtime_error("Primitive deserialization error: MaterialAsset asset '" + materialName + "' not found");
-	}
-	m_materialReference.set(materialAsset);
+	m_materialReference = context.assets.get<MaterialAsset>(materialName);
 
 	if (!data.contains("pipeline") || !data["pipeline"].is_number_unsigned())
 	{
@@ -142,17 +146,10 @@ void Core::Primitive::requireAsset(RequiredAssets& assets)
 {
 	Entity::requireAsset(assets);
 
-	// Require Mesh
-	MeshAsset* meshAsset = m_meshReference.get<MeshAsset>();
-	if (!meshAsset) {
-		throw std::runtime_error("Primitive requireAsset error: MeshAsset reference is invalid");
+	if (!m_meshReference.has_value() || !m_materialReference.has_value()) {
+		throw std::runtime_error("Primitive requireAsset error: MeshReference or MaterialReference is invalid");
 	}
-	assets.emplace(meshAsset->getName());
 
-	// Require Material
-	MaterialAsset* materialAsset = m_materialReference.get<MaterialAsset>();
-	if (!materialAsset) {
-		throw std::runtime_error("Primitive requireAsset error: MaterialAsset reference is invalid");
-	}
-	assets.emplace(materialAsset->getName());
+	assets.emplace(m_meshReference.value()->getName());
+	assets.emplace(m_materialReference.value()->getName());
 }

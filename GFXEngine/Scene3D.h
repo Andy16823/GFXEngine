@@ -20,7 +20,7 @@ namespace GFXEngine {
 		{
 		private:
 			std::vector<std::unique_ptr<Entity>> m_entities;
-			GFXEngine::AssetReference m_environmentMapRef;
+			std::optional<GFXEngine::AssetHandle> m_environmentMapRef = std::nullopt;
 			GFXEngine::Graphics::RenderQueue m_renderQueue;
 
 			bool m_useParallelRendering = false;
@@ -538,8 +538,8 @@ namespace GFXEngine {
 			// Qualifier:
 			// Parameter: Graphics::EnvironmentMap * environmentMap
 			//************************************
-			void setEnvironmentMap(Graphics::EnvironmentMap* environmentMap) {
-				m_environmentMapRef.set(environmentMap);
+			void setEnvironmentMap(GFXEngine::AssetHandle environmentMap) {
+				m_environmentMapRef = environmentMap;
 			}
 		};
 	}

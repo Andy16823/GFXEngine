@@ -113,17 +113,19 @@ namespace GFXEngine {
 		// Parameter: const std::string & name
 		//************************************
 		template<typename T>
-		T* get(const std::string& name) {
+		AssetHandle get(const std::string& name) {
 			auto it = m_assets.find(name);
 
 			if (it == m_assets.end()) {
-				return nullptr;
+				throw std::runtime_error("Asset not found: " + name);
 			}
 
 			auto* asset = dynamic_cast<T*>(it->second.get());
 			if (!asset) 
 			{
-				return nullptr;
+				throw std::runtime_error(
+					"Asset '" + name + "' has an invalid type"
+				);
 			}
 
 			if (auto* fileAsset = dynamic_cast<FileAsset*>(asset)) 
@@ -133,7 +135,7 @@ namespace GFXEngine {
 				}
 			}
 
-			return asset;
+			return AssetHandle(asset);
 		}
 
 		//************************************

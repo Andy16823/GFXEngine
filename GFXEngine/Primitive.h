@@ -12,17 +12,14 @@ namespace GFXEngine {
 		class Primitive : public Entity
 		{
 		private:
-			GFXEngine::AssetReference m_meshReference;
-			GFXEngine::AssetReference m_materialReference;
+			std::optional<GFXEngine::AssetHandle> m_meshReference = std::nullopt;
+			std::optional<GFXEngine::AssetHandle> m_materialReference = std::nullopt;
 			std::optional<unsigned int> m_pipelineId = std::nullopt;
 
 		public:
 			Primitive() = default;
-			Primitive(Graphics::MeshAsset* mesh, Graphics::MaterialAsset* material, unsigned int pipeline) : m_pipelineId(pipeline)
-			{
-				m_meshReference.set(mesh);
-				m_materialReference.set(material);
-			}
+			Primitive(GFXEngine::AssetHandle mesh, GFXEngine::AssetHandle material, unsigned int pipeline) 
+				: m_meshReference(mesh), m_materialReference(material), m_pipelineId(pipeline) {}
 
 		public:
 			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;

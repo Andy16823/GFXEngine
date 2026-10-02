@@ -99,9 +99,12 @@ void GFXEngine::Core::Scene3D::render(Graphics::Renderer& renderer, Graphics::Ca
 		renderSerial(context);
 	}
 
-	if (const auto* envMap = m_environmentMapRef.get<Graphics::EnvironmentMap>()) 
+	if (m_environmentMapRef.has_value()) 
 	{
-		this->renderEnvMap(context, *envMap);
+		if (const auto* envMap = m_environmentMapRef.value()->as<Graphics::EnvironmentMap>())
+		{
+			this->renderEnvMap(context, *envMap);
+		}
 	}
 
 	m_renderQueue.sort();
@@ -151,7 +154,7 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 
 	properties.push_back({
 		.name = "Environment Map",
-		.data = &m_environmentMapRef,
+		.data = &m_environmentMapRef.value(),
 		.hint = PropertyHint::Asset,
 		.metaData = AssetMetaData { AssetType::EnvironmentMap }
 		});
@@ -209,10 +212,12 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 	data["fog"] = fog.serialize();
 
 	RequiredAssets assets;
-	if (m_environmentMapRef.isTypeOf<Graphics::EnvironmentMap>()) {
-		auto envMap = m_environmentMapRef.get<Graphics::EnvironmentMap>();
-		assets.emplace(envMap->getName());
-		data["environmentMap"] = envMap ? envMap->getName() : "";
+	if (m_environmentMapRef.has_value()) {
+		assets.emplace(m_environmentMapRef.value()->getName());
+		data["environmentMap"] = m_environmentMapRef.value()->getName();
+	}
+	else {
+		data["environmentMap"] = "";
 	}
 	
 	for (const auto& entity : m_entities) {
@@ -237,11 +242,7 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 
 	if (data.contains("environmentMap")) {
 		std::string envMapName = data["environmentMap"].get<std::string>();
-		auto envmap = context.assets.get<GFXEngine::Graphics::EnvironmentMap>(envMapName);
-		if (!envmap) {
-			throw std::runtime_error("Failed to find environment map asset with name: " + envMapName);
-		}
-		m_environmentMapRef.set(envmap);
+		m_environmentMapRef = context.assets.get<GFXEngine::Graphics::EnvironmentMap>(envMapName);
 	}
 
 	auto entities = data["entities"];

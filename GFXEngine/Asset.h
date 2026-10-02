@@ -220,52 +220,108 @@ namespace GFXEngine {
 		virtual bool isInitialized() const = 0;
 	};
 
-	/// <summary>
-	/// AssetReference is a simple structure that holds a non-owning pointer to an Asset, allowing entities to reference assets without owning them directly.
-	/// </summary>
-	struct AssetReference
-	{
-		std::type_index assetType = typeid(void);
-		void* asset = nullptr;
 
-		~AssetReference()
+	class AssetHandle {
+		private:
+			GFXEngine::Asset* m_asset = nullptr;
+
+	public:
+
+		explicit AssetHandle(GFXEngine::Asset* asset)
+			: m_asset(asset)
 		{
-			clear();
+			if (m_asset)
+				m_asset->increaseRef();
 		}
 
-		operator bool() const {
-			return asset != nullptr;
+		AssetHandle(const AssetHandle& other)
+			: m_asset(other.m_asset)
+		{
+			if (m_asset)
+				m_asset->increaseRef();
+		}
+
+		AssetHandle& operator=(const AssetHandle& other)
+		{
+			if (this == &other)
+				return *this;
+
+			// Free old asset
+			if (m_asset)
+				m_asset->decreaseRef();
+
+			// Assign new asset
+			m_asset = other.m_asset;
+
+			if (m_asset)
+				m_asset->increaseRef();
+
+			return *this;
+		}
+
+		// Move Assignment
+		AssetHandle& operator=(AssetHandle&& other) noexcept
+		{
+			if (this == &other)
+				return *this;
+
+			// free current reference
+			if (m_asset)
+				m_asset->decreaseRef();
+
+			// assign pointer
+			m_asset = other.m_asset;
+
+			// remove other asset
+			other.m_asset = nullptr;
+
+			return *this;
+		}
+
+		AssetHandle(AssetHandle&& other) noexcept
+			: m_asset(other.m_asset)
+		{
+			other.m_asset = nullptr;
+		}
+
+
+		~AssetHandle() {
+			if (m_asset)
+				m_asset->decreaseRef();
+		}
+
+		GFXEngine::Asset* get() const {
+			return m_asset;
+		}
+
+		void replace(Asset* asset) {
+
+			if (m_asset == asset)
+				return;
+
+			if (m_asset)
+				m_asset->decreaseRef();
+			
+			asset->increaseRef();
+			m_asset = asset;
 		}
 
 		template<typename T>
-		void set(T* assetPtr) {
-			static_assert(std::derived_from<T, class GFXEngine::Asset>, "AssetReference can only hold pointers to Asset-derived types");
-			assetType = typeid(T);
-			asset = assetPtr;
-			assetPtr->increaseRef();
-		}
-
-		template <typename T>
-		T* get() const {
-			if (assetType == typeid(T)) {
-				return static_cast<T*>(asset);
+		T* as() const {
+			if (T* cast = dynamic_cast<T*>(m_asset)) {
+				return cast;
 			}
 			return nullptr;
 		}
 
-		template <typename T>
-		bool isTypeOf() const {
-			return assetType == typeid(T);
+		GFXEngine::Asset* operator->() const
+		{
+			return m_asset;
 		}
 
-		void clear() {
-			if (asset)
-			{
-				static_cast<Asset*>(asset)->decreaseRef();
-			}
-			assetType = typeid(void);
-			asset = nullptr;
+		explicit operator bool() const
+		{
+			return m_asset != nullptr;
 		}
 	};
-
 }

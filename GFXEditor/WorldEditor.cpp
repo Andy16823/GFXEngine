@@ -66,7 +66,8 @@ void WorldEditor::placeModel(GFXEngine::Graphics::Renderer& renderer, const glm:
 		model->init(renderer);
 	}
 
-	auto entity = std::make_unique<GFXEngine::Core::Model>(model);
+
+	auto entity = std::make_unique<GFXEngine::Core::Model>(AssetHandle(model));
 	entity->setName(model->getName());
 	entity->setPosition(position);
 	entity->setScale(glm::vec3(0.1f));
@@ -186,7 +187,7 @@ void WorldEditor::renderProperty(const std::string& label, GFXEngine::Graphics::
 	else if (auto* dataPtr = std::get_if<GFXEngine::EngineTypes::EntityReference*>(&prop.data)) {
 		this->renderEntityProperty(label, renderer, prop, *dataPtr);
 	}
-	else if (auto* dataPtr = std::get_if<GFXEngine::AssetReference*>(&prop.data)) {
+	else if (auto* dataPtr = std::get_if<GFXEngine::AssetHandle*>(&prop.data)) {
 		this->renderAssetProperty(label, renderer, prop, *dataPtr);
 	}
 	else {
@@ -372,9 +373,9 @@ void WorldEditor::renderEntityProperty(const std::string& label, GFXEngine::Grap
 	}
 }
 
-void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::AssetReference* value)
+void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::AssetHandle* value)
 {
-	const auto asset = static_cast<GFXEngine::Asset*>(value->asset);
+	const auto asset = static_cast<GFXEngine::Asset*>(value->get());
 	if (ImGui::BeginCombo(label.c_str(), asset ? asset->getName().c_str() : "None"))
 	{
 		if (auto* meta = std::get_if<GFXEngine::Core::AssetMetaData>(&prop.metaData)) {
@@ -390,7 +391,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 						if (!envMap->isInitialized()) {
 							envMap->init(renderer);
 						}
-						value->set(envMap);
+						value->replace(envMap);
 						if (prop.onChanged) {
 							prop.onChanged();
 						}
@@ -409,7 +410,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 							model->init(renderer);
 						}
 
-						value->set(model);
+						value->replace(model);
 						if (prop.onChanged) {
 							prop.onChanged();
 						}
@@ -424,7 +425,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 							mesh->init(renderer);
 						}
 
-						value->set(mesh);
+						value->replace(mesh);
 						if (prop.onChanged) {
 							prop.onChanged();
 						}
@@ -439,7 +440,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 							material->init(renderer);
 						}
 
-						value->set(material);
+						value->replace(material);
 						if (prop.onChanged) {
 							prop.onChanged();
 						}
@@ -464,7 +465,7 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 							}
 						}
 
-						value->set(asset);
+						value->replace(asset);
 						if (prop.onChanged) {
 							prop.onChanged();
 						}
