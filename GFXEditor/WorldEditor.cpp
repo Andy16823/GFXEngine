@@ -740,14 +740,13 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	ImGui::End();
 
 	ImGui::Begin("Assets");
-	if (ImGui::CollapsingHeader("Models")) {
-		m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::StaticMeshModel>([&](GFXEngine::Graphics::StaticMeshModel* model) {
-			UIContext::createButton(model->getName().c_str(), [&]() {
-				this->placeModel(renderer, glm::vec3(0.0f, 0.0f, 0.0f), model);
-				});
+	if (ImGui::BeginListBox("Assets")) {
+		m_game->assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
+			std::string label = "[" + std::to_string(asset->getRefCount()) + "] " + asset->getName();
+			ImGui::Selectable(label.c_str());
 			});
+		ImGui::EndListBox();
 	}
-	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::Begin("Scene Viewport");

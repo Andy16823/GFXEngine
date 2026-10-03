@@ -10,10 +10,8 @@ using namespace GFXEngine::Graphics;
 
 void GFXEngine::Core::Model::init(Scene& scene, GFXEngine::Graphics::Renderer& renderer)
 {
-	// Call base entity initialization (if any)
 	Entity::init(scene, renderer);
 
-	// Ensure the mesh model reference is valid and initialized
 	auto meshModel = m_meshModelRef->as<MeshModel>();
 	if (!meshModel) {
 		throw std::runtime_error("Model initialization error: MeshModel reference is invalid");
