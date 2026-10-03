@@ -220,13 +220,22 @@ namespace GFXEngine {
 		virtual bool isInitialized() const = 0;
 	};
 
-
+	/// <summary>
+	/// AssetHandle for accessing assets
+	/// </summary>
 	class AssetHandle {
 		private:
 			GFXEngine::Asset* m_asset = nullptr;
 
 	public:
-
+		//************************************
+		// Method:    AssetHandle
+		// FullName:  GFXEngine::AssetHandle::AssetHandle
+		// Access:    public 
+		// Returns:   
+		// Qualifier: : m_asset(asset)
+		// Parameter: GFXEngine::Asset * asset
+		//************************************
 		explicit AssetHandle(GFXEngine::Asset* asset)
 			: m_asset(asset)
 		{
@@ -234,6 +243,14 @@ namespace GFXEngine {
 				m_asset->increaseRef();
 		}
 
+		//************************************
+		// Method:    AssetHandle
+		// FullName:  GFXEngine::AssetHandle::AssetHandle
+		// Access:    public 
+		// Returns:   
+		// Qualifier: : m_asset(other.m_asset)
+		// Parameter: const AssetHandle & other
+		//************************************
 		AssetHandle(const AssetHandle& other)
 			: m_asset(other.m_asset)
 		{
@@ -241,6 +258,14 @@ namespace GFXEngine {
 				m_asset->increaseRef();
 		}
 
+		//************************************
+		// Method:    operator=
+		// FullName:  GFXEngine::AssetHandle::operator=
+		// Access:    public 
+		// Returns:   GFXEngine::AssetHandle&
+		// Qualifier:
+		// Parameter: const AssetHandle & other
+		//************************************
 		AssetHandle& operator=(const AssetHandle& other)
 		{
 			if (this == &other)
@@ -259,7 +284,14 @@ namespace GFXEngine {
 			return *this;
 		}
 
-		// Move Assignment
+		//************************************
+		// Method:    operator=
+		// FullName:  GFXEngine::AssetHandle::operator=
+		// Access:    public 
+		// Returns:   GFXEngine::AssetHandle&
+		// Qualifier: noexcept
+		// Parameter: AssetHandle & & other
+		//************************************
 		AssetHandle& operator=(AssetHandle&& other) noexcept
 		{
 			if (this == &other)
@@ -278,22 +310,75 @@ namespace GFXEngine {
 			return *this;
 		}
 
+		//************************************
+		// Method:    operator->
+		// FullName:  GFXEngine::AssetHandle::operator->
+		// Access:    public 
+		// Returns:   GFXEngine::Asset*
+		// Qualifier: const
+		//************************************
+		GFXEngine::Asset* operator->() const
+		{
+			return m_asset;
+		}
+
+		//************************************
+		// Method:    operator bool
+		// FullName:  GFXEngine::AssetHandle::operator bool
+		// Access:    public 
+		// Returns:   
+		// Qualifier: const
+		//************************************
+		explicit operator bool() const
+		{
+			return m_asset != nullptr;
+		}
+
+		//************************************
+		// Method:    AssetHandle
+		// FullName:  GFXEngine::AssetHandle::AssetHandle
+		// Access:    public 
+		// Returns:   
+		// Qualifier: noexcept : m_asset(other.m_asset)
+		// Parameter: AssetHandle & & other
+		//************************************
 		AssetHandle(AssetHandle&& other) noexcept
 			: m_asset(other.m_asset)
 		{
 			other.m_asset = nullptr;
 		}
 
-
+		//************************************
+		// Method:    ~AssetHandle
+		// FullName:  GFXEngine::AssetHandle::~AssetHandle
+		// Access:    public 
+		// Returns:   
+		// Qualifier:
+		//************************************
 		~AssetHandle() {
 			if (m_asset)
 				m_asset->decreaseRef();
 		}
 
+		//************************************
+		// Method:    get
+		// FullName:  GFXEngine::AssetHandle::get
+		// Access:    public 
+		// Returns:   GFXEngine::Asset*
+		// Qualifier: const
+		//************************************
 		GFXEngine::Asset* get() const {
 			return m_asset;
 		}
 
+		//************************************
+		// Method:    replace
+		// FullName:  GFXEngine::AssetHandle::replace
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: Asset * asset
+		//************************************
 		void replace(Asset* asset) {
 
 			if (m_asset == asset)
@@ -306,6 +391,13 @@ namespace GFXEngine {
 			m_asset = asset;
 		}
 
+		//************************************
+		// Method:    as
+		// FullName:  GFXEngine::AssetHandle::as
+		// Access:    public 
+		// Returns:   T*
+		// Qualifier: const
+		//************************************
 		template<typename T>
 		T* as() const {
 			if (T* cast = dynamic_cast<T*>(m_asset)) {
@@ -314,14 +406,16 @@ namespace GFXEngine {
 			return nullptr;
 		}
 
-		GFXEngine::Asset* operator->() const
-		{
-			return m_asset;
-		}
-
-		explicit operator bool() const
-		{
-			return m_asset != nullptr;
+		//************************************
+		// Method:    sAs
+		// FullName:  GFXEngine::AssetHandle::sAs
+		// Access:    public 
+		// Returns:   T*
+		// Qualifier: const
+		//************************************
+		template<typename T>
+		T* unsafeAs() const {
+			return static_cast<T*>(m_asset);
 		}
 	};
 }
