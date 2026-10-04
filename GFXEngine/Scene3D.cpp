@@ -154,7 +154,7 @@ std::vector<GFXEngine::Core::PropertyInfo> GFXEngine::Core::Scene3D::getProperti
 
 	properties.push_back({
 		.name = "Environment Map",
-		.data = &m_environmentMapRef.value(),
+		.data = m_environmentMapRef.has_value() ? &m_environmentMapRef.value() : nullptr,
 		.hint = PropertyHint::Asset,
 		.metaData = AssetMetaData { AssetType::EnvironmentMap }
 		});
