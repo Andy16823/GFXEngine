@@ -375,7 +375,11 @@ void WorldEditor::renderEntityProperty(const std::string& label, GFXEngine::Grap
 
 void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graphics::Renderer& renderer, const GFXEngine::Core::PropertyInfo& prop, GFXEngine::AssetHandle* value)
 {
-	const auto asset = static_cast<GFXEngine::Asset*>(value->get());
+	GFXEngine::Asset* asset = nullptr;
+	if (value) {
+		asset = dynamic_cast<GFXEngine::Asset*>(value->get());
+	}
+
 	if (ImGui::BeginCombo(label.c_str(), asset ? asset->getName().c_str() : "None"))
 	{
 		if (auto* meta = std::get_if<GFXEngine::Core::AssetMetaData>(&prop.metaData)) {
@@ -911,12 +915,8 @@ void WorldEditor::dispose(GFXEngine::Core::UIContext& context, GFXEngine::Graphi
 
 void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int action, int mods)
 {
-	if (ImGui::GetIO().WantCaptureKeyboard) {
-		return;
-	}
-
 	if (action == GLFW_PRESS) {
-		if (button == GLFW_MOUSE_BUTTON_RIGHT) 
+		if (button == GLFW_MOUSE_BUTTON_RIGHT && m_viewportCursorInfo.isHovering)
 		{
 			m_cursorDragInfo.isDragging = true;
 			double xpos, ypos;
@@ -931,6 +931,11 @@ void WorldEditor::handleMouseInput(GLFWwindow* window, int button, int action, i
 		{
 			m_cursorDragInfo.isDragging = false;
 		}
+	}
+
+
+	if (ImGui::GetIO().WantCaptureKeyboard) {
+		return;
 	}
 
 	for (auto& plugin : m_plugins) {
