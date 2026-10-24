@@ -131,6 +131,8 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
                     return true;
                 });
             }
+			if (ImGui::MenuItem("Primitive")) {
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();

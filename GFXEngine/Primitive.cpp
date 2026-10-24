@@ -6,6 +6,27 @@ using namespace GFXEngine;
 using namespace GFXEngine::Core;
 using namespace GFXEngine::Graphics;
 
+std::vector<GFXEngine::Core::PropertyInfo> Primitive::getProperties()
+{
+	auto properties = Entity::getProperties();
+
+	properties.push_back({
+		.name = "Mesh",
+		.data = m_meshReference.has_value() ? &m_meshReference.value() : nullptr,
+		.hint = PropertyHint::Asset,
+		.metaData = AssetMetaData{ AssetType::Mesh },
+		});
+
+	properties.push_back({
+		.name = "Material",
+		.data = m_materialReference.has_value() ? &m_materialReference.value() : nullptr,
+		.hint = PropertyHint::Asset,
+		.metaData = AssetMetaData{ AssetType::Material },
+		});
+
+	return properties;
+}
+
 void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
 	// Build Geometrypass Task

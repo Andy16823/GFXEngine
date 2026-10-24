@@ -22,6 +22,7 @@ namespace GFXEngine {
 				: m_meshReference(mesh), m_materialReference(material), m_pipelineId(pipeline) {}
 
 		public:
+			virtual std::vector<PropertyInfo> getProperties() override;
 			void buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue) override;
 			void getGraphicResources(GFXEngine::Graphics::GraphicResources& resources, uint32_t imageIndex) const override;
 			void getMeshMaterialGraphicResources(Graphics::GraphicResources& resources, uint32_t imageIndex, size_t meshIndex) const override;
