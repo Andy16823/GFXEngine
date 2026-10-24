@@ -133,11 +133,34 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
                 });
             }
 			if (ImGui::MenuItem("Primitive")) {
-				auto primtive = std::make_unique<GFXEngine::Core::Primitive>();
+				// TODO: Replace with an proper primitive selection dialog in the future. Since we need the material and the mesh for the primitive.
+				/*auto primtive = std::make_unique<GFXEngine::Core::Primitive>();
 				primtive->setName("Primitive");
 				primtive->init(*m_scene, renderer);
-				m_scene->addEntity(std::move(primtive));
+				m_scene->addEntity(std::move(primtive));*/
             }
+            ImGui::EndMenu();
+        }
+		if(ImGui::BeginMenu("Create")) {
+			if (ImGui::MenuItem("Cube Mesh Asset")) {
+
+			}
+			if (ImGui::MenuItem("Sphere Mesh Asset")) {
+
+			}
+			if (ImGui::MenuItem("Plane Mesh Asset")) {
+
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("PBR Material Asset")) {
+
+			}
+			if (ImGui::MenuItem("Unlit Material Asset")) {
+
+			}
+			if (ImGui::MenuItem("Skybox Material Asset")) {
+
+			}
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
