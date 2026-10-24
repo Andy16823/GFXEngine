@@ -286,19 +286,6 @@ nlohmann::json GFXEngine::Core::InstancedModel::serialize() const
 	return data;
 }
 
-void GFXEngine::Core::InstancedModel::requireAsset(RequiredAssets& assets)
-{
-	Entity::requireAsset(assets);
-
-	if (m_meshModelRef.has_value()) {
-		auto meshModel = m_meshModelRef.value()->as<Graphics::MeshModel>();
-		if (!meshModel) {
-			throw std::runtime_error("InstancedModel requireAsset error: MeshModel reference is invalid");
-		}
-		assets.emplace(meshModel->getName());
-	}
-}
-
 void GFXEngine::Core::InstancedModel::deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags)
 {
 	// Deserialize base entity data first

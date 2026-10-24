@@ -221,7 +221,6 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 	}
 	
 	for (const auto& entity : m_entities) {
-		entity->requireAsset(assets);	// Let the entity specify which assets it requires
 		nlohmann::json entityData = entity->serialize(); // Serialize the entity
 		data["entities"].push_back(entityData); // Add the serialized entity data to the entities array
 	}

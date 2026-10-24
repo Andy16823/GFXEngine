@@ -140,17 +140,5 @@ namespace GFXEngine {
 		// Parameter: SerializationContext & context
 		//************************************
 		virtual void resolveReferences(SerializationContext& context) {};
-
-
-		//************************************
-		// Method:    requireAsset
-		// FullName:  GFXEngine::ISerializable::requireAsset
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: RequiredAssets & assets
-		// Description: This method can be overridden by derived classes to specify which assets are required for the object. The default implementation does nothing.
-		//************************************
-		virtual void requireAsset(RequiredAssets& assets) {};
 	};
 }

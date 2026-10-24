@@ -1010,16 +1010,6 @@ namespace GFXEngine {
 			void resolveReferences(GFXEngine::SerializationContext& context) override;
 
 			//************************************
-			// Method:    requireAsset
-			// FullName:  GFXEngine::Core::Entity::requireAsset
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: RequiredAssets & assets
-			//************************************
-			void requireAsset(RequiredAssets& assets) override;
-
-			//************************************
 			// Method:    exportToPrefab
 			// FullName:  GFXEngine::Core::Entity::exportToPrefab
 			// Access:    public 

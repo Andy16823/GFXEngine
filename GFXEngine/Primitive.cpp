@@ -141,15 +141,3 @@ void GFXEngine::Core::Primitive::deserialize(const nlohmann::json& data, Seriali
 	}
 	m_pipelineId = data["pipeline"].get<unsigned int>();
 }
-
-void Core::Primitive::requireAsset(RequiredAssets& assets)
-{
-	Entity::requireAsset(assets);
-
-	if (!m_meshReference.has_value() || !m_materialReference.has_value()) {
-		throw std::runtime_error("Primitive requireAsset error: MeshReference or MaterialReference is invalid");
-	}
-
-	assets.emplace(m_meshReference.value()->getName());
-	assets.emplace(m_materialReference.value()->getName());
-}

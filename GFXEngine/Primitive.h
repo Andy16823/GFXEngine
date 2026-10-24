@@ -31,7 +31,6 @@ namespace GFXEngine {
 		public:
 			nlohmann::json serialize() const override;
 			void deserialize(const nlohmann::json& data, GFXEngine::SerializationContext& context, GFXEngine::SerializationFlags flags = GFXEngine::SerializationFlags::None) override;
-			void requireAsset(RequiredAssets& assets) override;
 		};
 	}
 }
