@@ -29,6 +29,11 @@ std::vector<GFXEngine::Core::PropertyInfo> Primitive::getProperties()
 
 void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEngine::Graphics::RenderQueue& renderQueue)
 {
+	if (!m_meshReference.has_value() || !m_materialReference.has_value())
+	{
+		return; // No mesh or material assigned, skip rendering
+	}
+
 	// Build Geometrypass Task
 	if (context.renderPass == RenderPassIteration::GeometryPass) {
 
@@ -102,7 +107,7 @@ GFXEngine::Core::MeshMaterialPair GFXEngine::Core::Primitive::getMeshAndMaterial
 	// Check if there is a reference set
 	if (!m_meshReference.has_value() || !m_materialReference.has_value())
 	{
-		throw std::runtime_error("Primitive has no valid mesh or material reference");
+		return std::nullopt; // No mesh or material assigned, skip rendering
 	}
 
 	MeshAsset* meshAsset = m_meshReference.value()->as<Graphics::MeshAsset>();

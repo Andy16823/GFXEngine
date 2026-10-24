@@ -13,6 +13,7 @@
 #include "MaterialAsset.h"
 #include <filesystem>
 #include "RuntimeContext.h"
+#include "Primitive.h"
 
 using namespace GFXEditor;
 using namespace GFXEngine;
@@ -132,6 +133,10 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
                 });
             }
 			if (ImGui::MenuItem("Primitive")) {
+				auto primtive = std::make_unique<GFXEngine::Core::Primitive>();
+				primtive->setName("Primitive");
+				primtive->init(*m_scene, renderer);
+				m_scene->addEntity(std::move(primtive));
             }
             ImGui::EndMenu();
         }
