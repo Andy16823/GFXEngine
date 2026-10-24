@@ -7,14 +7,6 @@
 namespace GFXEngine {
 
 	//************************************
-	// Class:     RequiredAssets
-	// FullName:  GFXEngine::RequiredAssets
-	// Access:    public
-	// Qualifier:
-	//************************************
-	using RequiredAssets = std::unordered_set<std::string>;
-
-	//************************************
 	// Class:     SerializationFlags
 	// FullName:  GFXEngine::SerializationFlags
 	// Access:    public

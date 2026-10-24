@@ -211,9 +211,7 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 	data["directionalLight"] = directionalLight.serialize();
 	data["fog"] = fog.serialize();
 
-	RequiredAssets assets;
 	if (m_environmentMapRef.has_value()) {
-		assets.emplace(m_environmentMapRef.value()->getName());
 		data["environmentMap"] = m_environmentMapRef.value()->getName();
 	}
 	else {
@@ -225,7 +223,6 @@ nlohmann::json GFXEngine::Core::Scene3D::serialize() const
 		data["entities"].push_back(entityData); // Add the serialized entity data to the entities array
 	}
 
-	data["requiredAssets"] = assets; // Add the required assets to the JSON data
 	return data;
 }
 
