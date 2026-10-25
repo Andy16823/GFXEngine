@@ -14,6 +14,7 @@
 #include <filesystem>
 #include "RuntimeContext.h"
 #include "Primitive.h"
+#include "SolidMaterial.h"
 
 using namespace GFXEditor;
 using namespace GFXEngine;
@@ -148,6 +149,9 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 			if (ImGui::MenuItem("Sphere Mesh Asset")) {
 
 			}
+			if (ImGui::MenuItem("Cylinder Mesh Asset")) {
+
+			}
 			if (ImGui::MenuItem("Plane Mesh Asset")) {
 
 			}
@@ -155,8 +159,13 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 			if (ImGui::MenuItem("PBR Material Asset")) {
 
 			}
-			if (ImGui::MenuItem("Unlit Material Asset")) {
-
+			if (ImGui::MenuItem("Solid Material Asset")) {
+				m_fileBrowser->show([this](Plugins::FileBrowser& browser) {
+					SolidMaterial material;
+					nlohmann::json jsonData = material.serialize();
+					GFXEngine::Utils::saveJsonToFile(jsonData, browser.getFilePath().string());
+					return true;
+					}, Plugins::FileBrowserOperation::FILE_BROWSER_OP_SAVE);
 			}
 			if (ImGui::MenuItem("Skybox Material Asset")) {
 
