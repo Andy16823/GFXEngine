@@ -27,6 +27,7 @@ void GFXEngine::Graphics::MaterialAsset::destroy(Graphics::Renderer & renderer)
 void GFXEngine::Graphics::MaterialAsset::load()
 {
 	auto filepath = this->getFilePath();
+	GFXEngine::Utils::log("Asset", "Trying to load material from file: " + filepath);
 	// If the file path is not empty, attempt to load the material from the JSON file
 	if (!filepath.empty() && !m_material) {
 		// Load the JSON data from the specified file path
@@ -46,6 +47,7 @@ void GFXEngine::Graphics::MaterialAsset::load()
 		GFXEngine::SerializationContext sctx = ctx.createSerializationContext();
 		m_material->deserialize(data, sctx, GFXEngine::SerializationFlags::None);
 		m_name = Utils::getFileName(filepath);
+		GFXEngine::Utils::log("Asset", "Material loaded successfully: " + m_name);
 	}
 	else {
 		throw std::runtime_error("File path is empty for MaterialAsset: " + this->getName());
