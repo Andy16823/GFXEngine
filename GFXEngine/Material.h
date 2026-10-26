@@ -18,6 +18,7 @@ namespace GFXEngine {
 			virtual void init(Renderer& renderer) = 0;
 			virtual void destroy(Renderer& renderer) = 0;
 			virtual VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const = 0;
+			virtual void updateMaterial(Renderer& renderer) = 0;
 
 		public:
 			virtual nlohmann::json serialize() const override;

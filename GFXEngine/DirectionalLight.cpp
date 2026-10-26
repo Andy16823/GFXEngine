@@ -56,5 +56,5 @@ void DirectionalLight::update(Renderer& renderer, const Camera& camera, uint32_t
 		.color = glm::vec4(color, intensity)
 	};
 
-	renderer.updateBuffer(m_uniformBuffers[imageIndex], &lightData, sizeof(lightData));
+	renderer.updateBuffer(m_uniformBuffers[imageIndex], &lightData, 1);
 }

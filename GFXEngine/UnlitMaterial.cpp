@@ -10,6 +10,11 @@ void GFXEngine::Graphics::UnlitMaterial::init(Renderer& renderer)
 	m_textureDescriptorSet = renderer.allocateTextureDescriptorSet(m_texture, 0);
 }
 
+void GFXEngine::Graphics::UnlitMaterial::updateMaterial(Renderer& renderer)
+{
+
+}
+
 void GFXEngine::Graphics::UnlitMaterial::destroy(Renderer& renderer)
 {
 	// Free the texture descriptor set and destroy the Vulkan texture

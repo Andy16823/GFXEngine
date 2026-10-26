@@ -12,7 +12,7 @@ void GFXEngine::Graphics::PositionMesh::init(Renderer& renderer)
 		vertexBufferSize,
 		VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	renderer.updateBuffer(vertexStagingBuffer, m_vertices.data(), vertexBufferSize);
+	renderer.updateBuffer(vertexStagingBuffer, m_vertices.data(), m_vertices.size());
 	
 	m_vertexBuffer = renderer.createBuffer(
 		vertexBufferSize,
@@ -26,7 +26,7 @@ void GFXEngine::Graphics::PositionMesh::init(Renderer& renderer)
 		indexBufferSize,
 		VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	renderer.updateBuffer(indexStagingBuffer, m_indices.data(), indexBufferSize);
+	renderer.updateBuffer(indexStagingBuffer, m_indices.data(), m_indices.size());
 
 	m_indexBuffer = renderer.createBuffer(
 		indexBufferSize,

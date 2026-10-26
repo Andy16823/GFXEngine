@@ -11,3 +11,8 @@ void GFXEngine::Graphics::EnvironmentMaterial::destroy(Renderer& renderer)
 {
 	renderer.disposeCubemap(m_cubemap);
 }
+
+void GFXEngine::Graphics::EnvironmentMaterial::updateMaterial(Renderer& renderer)
+{
+
+}
