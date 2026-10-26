@@ -6,7 +6,13 @@
 namespace GFXEngine {
 	namespace Graphics {
 
-		class UnlitMaterial : public Material {
+		/// <summary>
+		/// UnlitMaterial is a material that does not respond to lighting and is rendered with a texture. 
+		/// It is used for objects that do not require lighting calculations, such as UI elements or 2D sprites.
+		/// </summary>
+		class UnlitMaterial 
+			: public Material {
+
 		private:
 			LibGFX::Image m_texture;
 			std::string m_texturePath;

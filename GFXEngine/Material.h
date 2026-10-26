@@ -5,7 +5,16 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class Material : public ISerializable {
+
+		/// <summary>
+		/// Material is an abstract base class that represents a material in the graphics engine. 
+		/// A material defines how a surface interacts with light and can include properties 
+		/// such as color, texture, and shading parameters. Materials are used to render 
+		/// objects in the scene with specific visual characteristics.
+		/// </summary>
+		class Material 
+			: public ISerializable {
+
 		public:
 			Material() = default;
 			virtual ~Material() = default;

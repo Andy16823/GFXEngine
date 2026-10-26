@@ -482,11 +482,9 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 						if (!material->isLoaded()) {
 							material->load();
 						}
-
 						if (!material->isInitialized()) {
 							material->init(renderer);
 						}
-
 						value->replace(material);
 						if (prop.onChanged) {
 							prop.onChanged();

@@ -5,7 +5,13 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class PBRMaterial : public Material
+
+		/// <summary>
+		/// PBRMaterial represents a physically based rendering material that 
+		/// uses textures for albedo, normal, metallic-roughness, and ambient occlusion.
+		/// </summary>
+		class PBRMaterial 
+			: public Material
 		{
 		private:
 			LibGFX::ImageData m_albedoData;

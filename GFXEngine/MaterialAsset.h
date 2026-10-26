@@ -5,7 +5,14 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class MaterialAsset : public Asset, public GraphicsAsset, public FileAsset {
+
+		/// <summary>
+		/// MaterialAsset is a specialized Asset that holds a Material instance. 
+		/// The MaterialAsset can created from a Material instance or loaded from a JSON file.
+		/// </summary>
+		class MaterialAsset 
+			: public Asset, public GraphicsAsset, public FileAsset {
+
 		private:
 			bool m_initialized = false;
 			std::unique_ptr<Material> m_material = nullptr;
@@ -25,7 +32,6 @@ namespace GFXEngine {
 			void load() override;
 			bool isLoaded() const override;
 			void unload() override;
-
 		};
 	}
 }

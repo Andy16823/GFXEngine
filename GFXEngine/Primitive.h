@@ -9,7 +9,15 @@
 
 namespace GFXEngine {
 	namespace Core {
-		class Primitive : public Entity
+
+		/// <summary>
+		/// Primitive is a type of Entity that represents a basic geometric shape or object in the scene. 
+		/// It is associated with a mesh and a material, which define its appearance and rendering properties. 
+		/// The Primitive class provides functionality to manage its properties, 
+		/// build render tasks, and handle serialization and deserialization.
+		/// </summary>
+		class Primitive 
+			: public Entity
 		{
 		private:
 			std::optional<GFXEngine::AssetHandle> m_meshReference = std::nullopt;

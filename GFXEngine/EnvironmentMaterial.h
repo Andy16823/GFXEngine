@@ -5,7 +5,13 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class EnvironmentMaterial : public Material
+
+		/// <summary>
+		/// EnvironmentMaterial is a material that uses a cubemap for rendering. 
+		/// It is used for skyboxes and reflections.
+		/// </summary>
+		class EnvironmentMaterial 
+			: public Material
 		{
 		private:
 			LibGFX::CubemapData m_cubemapData;

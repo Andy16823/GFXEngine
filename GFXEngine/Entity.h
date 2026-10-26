@@ -8,7 +8,6 @@
 #include <string>
 #include <filesystem>
 #include <optional>
-
 #include "Transform.h"
 #include "Renderer.h"
 #include "Camera.h"
@@ -26,8 +25,15 @@ namespace GFXEngine {
 
 		using MeshMaterialPair = std::optional<std::pair<const Graphics::Mesh&, const Graphics::Material&>>;
 
-		class Entity : public GFXEngine::ISerializable, public GFXEngine::Graphics::IRenderable
+		/// <summary>
+		/// Entity class represents a game object in the scene. 
+		/// It can have a transform, behaviors, and child entities. 
+		/// It can be rendered and serialized.
+		/// </summary>
+		class Entity 
+			: public GFXEngine::ISerializable, public GFXEngine::Graphics::IRenderable
 		{
+
 		private:
 			std::vector<std::string> m_tags;
 			std::vector<std::unique_ptr<Behavior>> m_behaviors;
