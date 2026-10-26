@@ -5,12 +5,13 @@
 
 namespace GFXEngine {
 	namespace Graphics {
-		class MaterialAsset : public Asset, public GraphicsAsset {
+		class MaterialAsset : public Asset, public GraphicsAsset, public FileAsset {
 		private:
 			bool m_initialized = false;
-			std::unique_ptr<Material> m_material;
+			std::unique_ptr<Material> m_material = nullptr;
 
 		public:
+			MaterialAsset(const std::string& name) : Asset(name) {}
 			MaterialAsset(const std::string& name, std::unique_ptr<Material> material)
 				: Asset(name), m_material(std::move(material)) {}
 
@@ -19,6 +20,12 @@ namespace GFXEngine {
 			void destroy(Graphics::Renderer& renderer) override;
 			bool isInitialized() const override { return m_initialized; }
 			Material* getMaterial() const { return m_material.get(); }
+
+		public:
+			void load() override;
+			bool isLoaded() const override;
+			void unload() override;
+
 		};
 	}
 }

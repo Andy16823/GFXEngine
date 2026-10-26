@@ -26,7 +26,7 @@ namespace GFXEngine {
 			// Parameter: const std::string & filePath
 			//************************************
 			MeshModel(const std::string& name, const std::string& filePath)
-				: Asset(name), FileAsset(filePath) {}
+				: Asset(name) { this->setFilePath(filePath); }
 			
 			//************************************
 			// Method:    MeshModel

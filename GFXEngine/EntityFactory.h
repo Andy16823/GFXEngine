@@ -3,14 +3,10 @@
 #include <unordered_map>
 #include <functional>
 #include <memory>
+#include "Entity.h"
 
 namespace GFXEngine
 {
-	namespace Core
-	{
-		class Entity;
-	}
-
 	class EntityFactory
 	{
 	private:

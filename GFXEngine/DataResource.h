@@ -25,7 +25,8 @@ namespace GFXEngine {
 			// Parameter: const std::string & name
 			// Parameter: const std::string & filePath
 			//************************************
-			DataResource(const std::string& name, const std::string& filePath) : Asset(name), FileAsset(filePath) {}
+			DataResource(const std::string& name, const std::string& filePath) 
+				: Asset(name) { this->setFilePath(filePath); }
 			
 			//************************************
 			// Method:    DataResource

@@ -45,7 +45,8 @@ namespace GFXEngine {
 			// Parameter: const std::string & name
 			// Parameter: const std::string & filePath
 			//************************************
-			EnvironmentMap(const std::string& name, const std::string& filePath) : Asset(name), FileAsset(filePath) {}
+			EnvironmentMap(const std::string& name, const std::string& filePath) 
+				: Asset(name) { this->setFilePath(filePath); }
 
 			//************************************
 			// Method:    init

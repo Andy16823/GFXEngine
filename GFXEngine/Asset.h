@@ -117,60 +117,15 @@ namespace GFXEngine {
 		std::string m_filePath;
 
 	public:
-		
-		//************************************
-		// Method:    FileAsset
-		// FullName:  GFXEngine::FileAsset::FileAsset
-		// Access:    public 
-		// Returns:   
-		// Qualifier: : m_filePath(filePath)
-		// Parameter: const std::string & filePath
-		//************************************
-		FileAsset(const std::string& filePath) : m_filePath(filePath) {}
-		
-		//************************************
-		// Method:    ~FileAsset
-		// FullName:  GFXEngine::FileAsset::~FileAsset
-		// Access:    virtual public 
-		// Returns:   
-		// Qualifier:
-		//************************************
 		virtual ~FileAsset() = default;
-		
-		//************************************
-		// Method:    load
-		// FullName:  GFXEngine::FileAsset::load
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
+
+	public:
 		virtual void load() = 0;
-		
-		//************************************
-		// Method:    isLoaded
-		// FullName:  GFXEngine::FileAsset::isLoaded
-		// Access:    virtual public 
-		// Returns:   bool
-		// Qualifier: const
-		//************************************
 		virtual bool isLoaded() const = 0;
-		
-		//************************************
-		// Method:    unload
-		// FullName:  GFXEngine::FileAsset::unload
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
 		virtual void unload() = 0;
 		
-		//************************************
-		// Method:    getFilePath
-		// FullName:  GFXEngine::FileAsset::getFilePath
-		// Access:    public 
-		// Returns:   const std::string&
-		// Qualifier: const
-		//************************************
+	public:
+		void setFilePath(const std::string& filePath) { m_filePath = filePath; }
 		const std::string& getFilePath() const { return m_filePath; }
 	};
 	
