@@ -479,6 +479,10 @@ void WorldEditor::renderAssetProperty(const std::string& label, GFXEngine::Graph
 				m_game->assetManager->forEachAssetOfType<GFXEngine::Graphics::MaterialAsset>([&](GFXEngine::Graphics::MaterialAsset* material) {
 					if (ImGui::Selectable(UIContext::createLabelID(material->getName(), material->getUUID()).c_str()))
 					{
+						if (!material->isLoaded()) {
+							material->load();
+						}
+
 						if (!material->isInitialized()) {
 							material->init(renderer);
 						}
