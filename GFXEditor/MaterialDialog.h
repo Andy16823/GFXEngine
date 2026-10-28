@@ -16,7 +16,7 @@ namespace GFXEditor {
 			std::optional<MaterialDialogCallback> m_callback;
 
 		public:
-			MaterialDialog();
+			MaterialDialog() = default;
 
 		public:
 			void show(GFXEngine::Graphics::Material* material, MaterialDialogCallback callback = nullptr);
