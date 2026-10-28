@@ -29,6 +29,8 @@ namespace GFXEngine {
 		public:
 			void setColor(const glm::vec4& value) { m_color = value; }
 			glm::vec4 getColor() const { return m_color; }
+			glm::vec4& getColorRef() { return m_color; }
+
 			VkDescriptorSet getDescriptorSet(uint32_t imageIndex) const override { return m_decriptorSet; }
 
 		public:

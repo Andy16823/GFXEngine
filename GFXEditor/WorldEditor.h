@@ -23,6 +23,7 @@
 #include <concepts>
 #include "Game.h"
 #include "Asset.h"
+#include "MaterialDialog.h"
 
 namespace GFXEditor {
 
@@ -74,6 +75,7 @@ namespace GFXEditor {
         Plugins::FileBrowser* m_fileBrowser = nullptr;
         Plugins::ProjectExplorer* m_projectExplorer = nullptr;
         Plugins::AssetPicker* m_assetPicker = nullptr;
+		Plugins::MaterialDialog* m_materialDialog = nullptr;
 
 	
 	private:

@@ -162,8 +162,13 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 			if (ImGui::MenuItem("Solid Material Asset")) {
 				m_fileBrowser->show([this](Plugins::FileBrowser& browser) {
 					SolidMaterial material;
-					nlohmann::json jsonData = material.serialize();
-					GFXEngine::Utils::saveJsonToFile(jsonData, browser.getFilePath().string());
+
+					m_materialDialog->show(&material, [this, &browser](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
+						// Save the material to a file
+						nlohmann::json jsonData = material->serialize();
+						GFXEngine::Utils::saveJsonToFile(jsonData, browser.getFilePath().string());
+						});
+
 					return true;
 					}, Plugins::FileBrowserOperation::FILE_BROWSER_OP_SAVE);
 			}
@@ -574,6 +579,9 @@ void WorldEditor::init(GFXEngine::Core::UIContext& context, GFXEngine::Graphics:
 
     auto assetPicker = std::make_unique<Plugins::AssetPicker>();
     m_assetPicker = this->addPlugin(std::move(assetPicker));
+
+	auto materialDialog = std::make_unique<Plugins::MaterialDialog>();
+	m_materialDialog = this->addPlugin(std::move(materialDialog));
 
 	// PLUGINS
 	for (auto& plugin : m_plugins) {

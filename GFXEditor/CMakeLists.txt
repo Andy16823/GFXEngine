@@ -3,7 +3,7 @@ project(GFXEditor)
 add_library(GFXEditor STATIC "WorldEditor.h" "WorldEditor.cpp" "FileNameWidget.h" "FileNameWidget.cpp" "EditorDialog.h" "EditorDialog.cpp" "TextInputDialog.h" "TextInputDialog.cpp" "EditorPlugin.h" "ProjectExplorer.h" "ProjectExplorer.cpp" "PostRenderAction.h"
   FileBrowser.h FileBrowser.cpp
   Assetpicker.h Assetpicker.cpp
-)
+ "MaterialDialog.h" "MaterialDialog.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GFXEditor PROPERTY CXX_STANDARD 20)
