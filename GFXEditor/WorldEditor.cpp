@@ -160,10 +160,15 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 
 			}
 			if (ImGui::MenuItem("Solid Material Asset")) {
-				m_fileBrowser->show([this](Plugins::FileBrowser& browser) {
-					SolidMaterial material;
+				m_fileBrowser->show([&](Plugins::FileBrowser& browser) {
+					std::string materialName = GFXEngine::Utils::getFileName(browser.getFilePath().string());
+					auto material = std::make_unique<GFXEngine::Graphics::SolidMaterial>();
+					GFXEngine::Graphics::SolidMaterial* materialPtr = material.get(); // Keep a raw pointer to the material for later use
+					auto materialAsset = std::make_unique<GFXEngine::Graphics::MaterialAsset>(materialName, std::move(material));
+					this->getAssetManager()->addAsset(std::move(materialAsset));
+					materialPtr->init(renderer);
 
-					m_materialDialog->show(&material, [this, &browser](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
+					m_materialDialog->show(materialPtr, [this, &browser](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
 						// Save the material to a file
 						nlohmann::json jsonData = material->serialize();
 						GFXEngine::Utils::saveJsonToFile(jsonData, browser.getFilePath().string());
