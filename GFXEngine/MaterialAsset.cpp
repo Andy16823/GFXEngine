@@ -41,7 +41,7 @@ void GFXEngine::Graphics::MaterialAsset::load()
 		auto& ctx = GFXEngine::RuntimeContext::get();
 		GFXEngine::SerializationContext sctx = ctx.createSerializationContext();
 		m_material->deserialize(data, sctx, GFXEngine::SerializationFlags::None);
-		m_name = Utils::getFileName(filepath);
+		m_name = Utils::getFileNameWithoutExtension(filepath);
 	}
 	else {
 		throw std::runtime_error("File path is empty for MaterialAsset: " + this->getName());
