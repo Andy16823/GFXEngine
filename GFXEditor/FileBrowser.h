@@ -45,6 +45,7 @@ private:
     std::optional<FileBrowserCallback> m_callback;
     std::filesystem::path m_currentPath;
     std::string m_filename;
+	std::string m_fileExtension;
     FileBrowserFilter m_filter = FileBrowserFilter::FILE_BROWSER_FILTER_FILES | FileBrowserFilter::FILE_BROWSER_FILTER_DIR;
     FileBrowserOperation m_fileBrowserOp = FileBrowserOperation::FILE_BROWSER_OP_SAVE;
 
@@ -52,6 +53,7 @@ public:
     // Constructor
     FileBrowser();
     void hide();
+    bool hasExtension(const std::string& filename) const;
 
 public:
     // Getter & Setter
@@ -59,10 +61,12 @@ public:
     void setFilename(const std::string& value) { m_filename = value; }
     void setPath(const std::filesystem::path& path) { m_currentPath = path; }
     std::filesystem::path getPath() const { return m_currentPath; }
-    std::filesystem::path getFilePath() const { return m_currentPath / m_filename; }
+    std::filesystem::path getFilePath() const { return m_currentPath / (m_filename + m_fileExtension); }
     void setFilter(FileBrowserFilter value) { m_filter = value; }
     bool hasFilter(FileBrowserFilter ref) const { return ((m_filter & ref) == ref); }
     FileBrowserFilter getFilter() const { return m_filter; }
+	void setFileExtension(const std::string& extension) { m_fileExtension = extension; }
+	const std::string& getFileExtension() const { return m_fileExtension; }
 
 public:
     // Methods

@@ -85,6 +85,7 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
         if(ImGui::BeginMenu("File")) {
             if(ImGui::MenuItem("Save Scene")) {
                 if(m_fileBrowser) {
+					m_fileBrowser->setFileExtension(".json");
                     m_fileBrowser->show([scene = m_scene](Plugins::FileBrowser& browser) {
                         auto file = browser.getFilePath();
                         auto jsonData = scene->serialize();
@@ -160,6 +161,7 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 
 			}
 			if (ImGui::MenuItem("Solid Material Asset")) {
+				m_fileBrowser->setFileExtension(".mat");
 				m_fileBrowser->show([&](Plugins::FileBrowser& browser) {
 					std::string materialName = GFXEngine::Utils::getFileNameWithoutExtension(browser.getFilePath().string());
 					auto material = std::make_unique<GFXEngine::Graphics::SolidMaterial>();
