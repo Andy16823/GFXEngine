@@ -238,7 +238,12 @@ void GFXEngine::Core::Scene3D::deserialize(const nlohmann::json& data, GFXEngine
 
 	if (data.contains("environmentMap")) {
 		std::string envMapName = data["environmentMap"].get<std::string>();
-		m_environmentMapRef = context.assets.get<GFXEngine::Graphics::EnvironmentMap>(envMapName);
+		if (!envMapName.empty()) {
+			m_environmentMapRef = context.assets.get<GFXEngine::Graphics::EnvironmentMap>(envMapName);
+		}
+		else {
+			m_environmentMapRef.reset();
+		}
 	}
 
 	auto entities = data["entities"];

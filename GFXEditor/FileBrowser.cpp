@@ -61,6 +61,13 @@ void FileBrowser::render(WorldEditor &editor, GFXEngine::Core::UIContext &contex
         }
 
         ImGui::BeginListBox("Files");
+
+		ImGui::PushID("..");
+        if (ImGui::Selectable("..")) {
+            m_currentPath = m_currentPath.parent_path();
+        }
+        ImGui::PopID();
+
         for(const auto path : dirs) {
             if (ImGui::Selectable(("/" + path.filename().string()).c_str())) {
                 m_currentPath = path;
