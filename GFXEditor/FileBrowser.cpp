@@ -9,21 +9,10 @@ FileBrowser::FileBrowser() {
 
 }
 
-bool FileBrowser::hasExtension(const std::string& filename) const
-{
-    if (m_fileExtension.empty()) {
-        return true;
-    }
-    return filename.size() >= m_fileExtension.size() &&
-           filename.compare(filename.size() - m_fileExtension.size(), m_fileExtension.size(), m_fileExtension) == 0;
-}
-
 void FileBrowser::hide()
 {
     m_callback.reset();
     m_visible = false;
-	//m_fileExtension.clear();
-	//m_filename.clear();
 }
 
 void FileBrowser::show(FileBrowserCallback callback, FileBrowserOperation operation /*= FileBrowserOperation::FILE_BROWSER_OP_SAVE*/)
