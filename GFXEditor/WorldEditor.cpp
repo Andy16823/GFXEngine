@@ -165,8 +165,8 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 					auto material = std::make_unique<GFXEngine::Graphics::SolidMaterial>();
 					GFXEngine::Graphics::SolidMaterial* materialPtr = material.get();
 					auto materialAsset = std::make_unique<GFXEngine::Graphics::MaterialAsset>(materialName, std::move(material));
+					materialAsset->init(renderer); // TODO: Maybe let material returns a bool if the material self is initialized or not, and if not.
 					this->getAssetManager()->addAsset(std::move(materialAsset));
-					materialPtr->init(renderer);
 
 					m_materialDialog->show(materialPtr, [this, &browser](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
 						// Save the material to a file
