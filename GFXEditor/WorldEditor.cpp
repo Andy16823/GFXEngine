@@ -808,7 +808,22 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	if (ImGui::BeginListBox("Assets")) {
 		m_game->assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
 			std::string label = "[" + std::to_string(asset->getRefCount()) + "] " + asset->getName();
-			ImGui::Selectable(label.c_str());
+
+			if (GFXEngine::Graphics::MaterialAsset* materialAsset = dynamic_cast<GFXEngine::Graphics::MaterialAsset*>(asset)) {
+				if (ImGui::Selectable(label.c_str())) {
+					auto material = materialAsset->getMaterial();
+					if (material) {
+						m_materialDialog->show(material, [&renderer](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
+							// TODO: Save the material to a file
+							material->updateMaterial(renderer);
+							});
+					}
+				}
+			}
+			else {
+				ImGui::Selectable(label.c_str());
+			}
+
 			});
 		ImGui::EndListBox();
 	}
