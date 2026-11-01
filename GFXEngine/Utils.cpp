@@ -243,11 +243,17 @@ std::filesystem::path GFXEngine::Utils::getBasePath(const std::filesystem::path&
 
 std::string GFXEngine::Utils::getFileName(const std::string& filePath)
 {
-	size_t lastSlashPos = filePath.find_last_of("/\\");
-	if (lastSlashPos == std::string::npos) {
-		return filePath; // The entire path is the file name
+	return std::filesystem::path(filePath).filename().string();
+}
+
+std::string GFXEngine::Utils::getFileNameWithoutExtension(const std::string& filePath)
+{
+	std::string filename = Utils::getFileName(filePath);
+	int dotPos = filename.find_last_of('.');
+	if (dotPos != std::string::npos) {
+		return filename.substr(0, dotPos);
 	}
-	return filePath.substr(lastSlashPos + 1);
+	return filename;
 }
 
 std::string GFXEngine::Utils::generateUUID()

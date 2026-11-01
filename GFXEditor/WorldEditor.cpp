@@ -161,9 +161,9 @@ void WorldEditor::renderMenuBar(GFXEngine::Core::UIContext &context, GFXEngine::
 			}
 			if (ImGui::MenuItem("Solid Material Asset")) {
 				m_fileBrowser->show([&](Plugins::FileBrowser& browser) {
-					std::string materialName = GFXEngine::Utils::getFileName(browser.getFilePath().string());
+					std::string materialName = GFXEngine::Utils::getFileNameWithoutExtension(browser.getFilePath().string());
 					auto material = std::make_unique<GFXEngine::Graphics::SolidMaterial>();
-					GFXEngine::Graphics::SolidMaterial* materialPtr = material.get(); // Keep a raw pointer to the material for later use
+					GFXEngine::Graphics::SolidMaterial* materialPtr = material.get();
 					auto materialAsset = std::make_unique<GFXEngine::Graphics::MaterialAsset>(materialName, std::move(material));
 					this->getAssetManager()->addAsset(std::move(materialAsset));
 					materialPtr->init(renderer);
