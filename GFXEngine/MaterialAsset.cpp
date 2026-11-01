@@ -16,12 +16,16 @@ void GFXEngine::Graphics::MaterialAsset::init(Graphics::Renderer& renderer)
 
 void GFXEngine::Graphics::MaterialAsset::destroy(Graphics::Renderer & renderer)
 {
+	Utils::log("MaterialAsset", "Destroying material asset: " + this->getName());
 	if (m_initialized) {
+		Utils::log("MaterialAsset", "Destroying material: " + this->getName());	
 		if (m_material) {
+			Utils::log("MaterialAsset", "Destroying material: " + this->getName() + " with type: " + typeid(*m_material).name());
 			m_material->destroy(renderer);
 			m_initialized = false;
 		}
 	}
+	Utils::log("MaterialAsset", "Destroyed material asset: " + this->getName());
 }
 
 void GFXEngine::Graphics::MaterialAsset::load()
