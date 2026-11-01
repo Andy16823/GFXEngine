@@ -22,8 +22,8 @@ void FileBrowser::hide()
 {
     m_callback.reset();
     m_visible = false;
-	m_fileExtension.clear();
-	m_filename.clear();
+	//m_fileExtension.clear();
+	//m_filename.clear();
 }
 
 void FileBrowser::show(FileBrowserCallback callback, FileBrowserOperation operation /*= FileBrowserOperation::FILE_BROWSER_OP_SAVE*/)
