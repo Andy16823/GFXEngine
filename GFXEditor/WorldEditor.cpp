@@ -813,7 +813,7 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 				if (ImGui::Selectable(label.c_str())) {
 					auto material = materialAsset->getMaterial();
 					if (material) {
-						m_materialDialog->show(material, [&renderer, &materialAsset](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
+						m_materialDialog->show(material, [&renderer, materialAsset](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
 							std::string filePath = materialAsset->getFilePath();
 							if (!filePath.empty()) {
 								nlohmann::json jsonData = material->serialize();
