@@ -778,99 +778,14 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	}
 	ImGui::End();
 
-    /* TODO: Add toolbar
-    auto toolbarFlags = ImGuiWindowFlags_NoCollapse
-		| ImGuiWindowFlags_NoTitleBar
-		| ImGuiWindowFlags_NoResize
-		| ImGuiWindowFlags_NoMove
-        | ImGuiWindowFlags_NoScrollbar
-        | ImGuiWindowFlags_MenuBar;
-
-	ImGui::Begin("World Editor Toolbar", nullptr, toolbarFlags);
-
-	ImGui::End();
-    */
-
 	this->renderSceneTree(context, renderer, imageIndex);
 
 
-	ImGui::Begin("Scene Settings");
-	auto sceneProps = m_scene->getProperties();
-	for (const auto& prop : sceneProps)
-	{
-		const std::string label = UIContext::createLabelID(prop.name, "SCENE");
-		this->renderProperty(label, renderer, prop);
-	}
+	this->renderSceneSettings(context, renderer, imageIndex);
 
-	ImGui::End();
+	this->renderAssetBrowser(context, renderer, imageIndex);
 
-	ImGui::Begin("Assets");
-	if (ImGui::BeginListBox("Assets")) {
-		m_game->assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
-			std::string label = "[" + std::to_string(asset->getRefCount()) + "] " + asset->getName();
-
-			if (GFXEngine::Graphics::MaterialAsset* materialAsset = dynamic_cast<GFXEngine::Graphics::MaterialAsset*>(asset)) {
-				if (ImGui::Selectable(label.c_str())) {
-					auto material = materialAsset->getMaterial();
-					if (material) {
-						m_materialDialog->show(material, [&renderer, materialAsset](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
-							std::string filePath = materialAsset->getFilePath();
-							if (!filePath.empty()) {
-								nlohmann::json jsonData = material->serialize();
-								GFXEngine::Utils::saveJsonToFile(jsonData, filePath);
-							}
-							material->updateMaterial(renderer);
-							});
-					}
-				}
-			}
-			else {
-				ImGui::Selectable(label.c_str());
-			}
-
-			});
-		ImGui::EndListBox();
-	}
-	ImGui::End();
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin("Scene Viewport");
-	ImGui::PopStyleVar();
-	auto viewportPos = UIContext::toVec2(ImGui::GetCursorScreenPos());
-	m_sceneViewportWindowSize = UIContext::toVec2(ImGui::GetContentRegionAvail());
-	UIContext::createImage(m_descriptorSet, glm::vec2(m_sceneViewportWindowSize.x, m_sceneViewportWindowSize.y));
-	auto mousePos = UIContext::toVec2(ImGui::GetMousePos());
-	m_viewportCursorInfo.position = mousePos - viewportPos;
-	m_viewportCursorInfo.isHovering =
-		m_viewportCursorInfo.position.x >= 0 &&
-		m_viewportCursorInfo.position.y >= 0 &&
-		m_viewportCursorInfo.position.x < m_sceneViewportWindowSize.x &&
-		m_viewportCursorInfo.position.y < m_sceneViewportWindowSize.y;
-
-	if (m_selectedEntity)
-	{
-		glm::mat4 view = m_editorCamera->getViewMatrix();
-		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
-		glm::mat4 model = m_selectedEntity->getModelMatrix();
-		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
-
-        // Guizmo Snapping
-        std::array<float, 3> snap = {0, 0, 0};
-        if(m_guizmoSnap) {
-            snap = {1, 1, 1};
-        }
-
-        if (UIContext::transformGizmo(view, projection, model, rect, snap, m_currentGuizmoOperation))
-		{
-			if (m_selectedEntity->hasParent()) {
-				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
-			}
-			m_selectedEntity->setModelMatrix(model);
-			m_selectedEntity->propertyChanged(Entity::PropertyComponentType::Transform);
-		}
-	}
-
-	ImGui::End();
+	this->renderViewport(context, renderer, imageIndex);
 
 	ImGui::Begin("Debug");
 	ImGui::InputFloat3("Camera Position", glm::value_ptr(m_editorCamera->getTransform().position));
@@ -1045,6 +960,18 @@ void WorldEditor::handleMouseMove(GLFWwindow* window, double xpos, double ypos)
 	}
 }
 
+void GFXEditor::WorldEditor::renderSceneSettings(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::Begin("Scene Settings");
+	auto sceneProps = m_scene->getProperties();
+	for (const auto& prop : sceneProps)
+	{
+		const std::string label = UIContext::createLabelID(prop.name, "SCENE");
+		this->renderProperty(label, renderer, prop);
+	}
+	ImGui::End();
+}
+
 void WorldEditor::renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
 {
 	ImGui::Begin("Scene Hierarchy");
@@ -1054,6 +981,80 @@ void WorldEditor::renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine
 			this->renderSceneEntity(entity);
 			});
 	}
+	ImGui::End();
+}
+
+void GFXEditor::WorldEditor::renderAssetBrowser(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::Begin("Assets");
+	if (ImGui::BeginListBox("Assets")) {
+		m_game->assetManager->forEachAsset([&](GFXEngine::Asset* asset) {
+			std::string label = "[" + std::to_string(asset->getRefCount()) + "] " + asset->getName();
+
+			if (GFXEngine::Graphics::MaterialAsset* materialAsset = dynamic_cast<GFXEngine::Graphics::MaterialAsset*>(asset)) {
+				if (ImGui::Selectable(label.c_str())) {
+					auto material = materialAsset->getMaterial();
+					if (material) {
+						m_materialDialog->show(material, [&renderer, materialAsset](Plugins::MaterialDialog& dialog, GFXEngine::Graphics::Material* material) {
+							std::string filePath = materialAsset->getFilePath();
+							if (!filePath.empty()) {
+								nlohmann::json jsonData = material->serialize();
+								GFXEngine::Utils::saveJsonToFile(jsonData, filePath);
+							}
+							material->updateMaterial(renderer);
+							});
+					}
+				}
+			}
+			else {
+				ImGui::Selectable(label.c_str());
+			}
+
+			});
+		ImGui::EndListBox();
+	}
+	ImGui::End();
+}
+
+void GFXEditor::WorldEditor::renderViewport(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("Scene Viewport");
+	ImGui::PopStyleVar();
+	auto viewportPos = UIContext::toVec2(ImGui::GetCursorScreenPos());
+	m_sceneViewportWindowSize = UIContext::toVec2(ImGui::GetContentRegionAvail());
+	UIContext::createImage(m_descriptorSet, glm::vec2(m_sceneViewportWindowSize.x, m_sceneViewportWindowSize.y));
+	auto mousePos = UIContext::toVec2(ImGui::GetMousePos());
+	m_viewportCursorInfo.position = mousePos - viewportPos;
+	m_viewportCursorInfo.isHovering =
+		m_viewportCursorInfo.position.x >= 0 &&
+		m_viewportCursorInfo.position.y >= 0 &&
+		m_viewportCursorInfo.position.x < m_sceneViewportWindowSize.x &&
+		m_viewportCursorInfo.position.y < m_sceneViewportWindowSize.y;
+
+	if (m_selectedEntity)
+	{
+		glm::mat4 view = m_editorCamera->getViewMatrix();
+		glm::mat4 projection = m_editorCamera->getProjectionMatrix();
+		glm::mat4 model = m_selectedEntity->getModelMatrix();
+		glm::vec4 rect = glm::vec4(viewportPos, m_sceneViewportWindowSize);
+
+		// Guizmo Snapping
+		std::array<float, 3> snap = { 0, 0, 0 };
+		if (m_guizmoSnap) {
+			snap = { 1, 1, 1 };
+		}
+
+		if (UIContext::transformGizmo(view, projection, model, rect, snap, m_currentGuizmoOperation))
+		{
+			if (m_selectedEntity->hasParent()) {
+				model = glm::inverse(m_selectedEntity->getParent()->getModelMatrix()) * model;
+			}
+			m_selectedEntity->setModelMatrix(model);
+			m_selectedEntity->propertyChanged(Entity::PropertyComponentType::Transform);
+		}
+	}
+
 	ImGui::End();
 }
 
