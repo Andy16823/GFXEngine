@@ -87,6 +87,8 @@ namespace GFXEditor {
 		void renderSceneTree(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 		void renderAssetBrowser(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 		void renderViewport(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+		void renderDebugPanel(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
+		void renderSelectedEntityPanel(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex);
 		void renderSceneEntity(GFXEngine::Core::Entity& entity);
 		void renderEntityContextMenu(GFXEngine::Core::Entity& entity);
 		void markBehaviorForRemoval(GFXEngine::Core::Behavior* behavior);

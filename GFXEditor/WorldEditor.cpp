@@ -778,48 +778,13 @@ void WorldEditor::render(GFXEngine::Core::UIContext& context, GFXEngine::Graphic
 	}
 	ImGui::End();
 
+	// Render the various panels and windows of the world editor
 	this->renderSceneTree(context, renderer, imageIndex);
-
-
 	this->renderSceneSettings(context, renderer, imageIndex);
-
 	this->renderAssetBrowser(context, renderer, imageIndex);
-
 	this->renderViewport(context, renderer, imageIndex);
-
-	ImGui::Begin("Debug");
-	ImGui::InputFloat3("Camera Position", glm::value_ptr(m_editorCamera->getTransform().position));
-	ImGui::InputFloat3("Relative Position", glm::value_ptr(m_viewportCursorInfo.position));
-	ImGui::Checkbox("Hovering Viewport", &m_viewportCursorInfo.isHovering);
-	ImGui::End();
-
-	ImGui::Begin("Selected Entity");
-	if (m_selectedEntity) {
-		auto props = m_selectedEntity->getProperties();
-		for (const auto& prop : props) {
-			const std::string label = UIContext::createLabelID(prop.name, m_selectedEntity->getUUID());
-			this->renderProperty(label, renderer, prop);
-		}
-		if (ImGui::CollapsingHeader("Behaviors")) {
-			m_selectedEntity->foreachBehavior([&](GFXEngine::Core::Behavior* behavior) {
-				this->renderBehavior(*behavior, renderer);
-				});
-
-			if (ImGui::BeginCombo("Add Behavior", "")) {
-				m_game->behaviorRegistry->foreachBehavior([&](const std::string& behaviorName) {
-					if (ImGui::Selectable(behaviorName.c_str())) {
-						auto bhv = m_selectedEntity->addBehavior(m_game->behaviorRegistry->createBehavior(behaviorName));
-						bhv->init(*m_scene, renderer);
-					}
-					});
-				ImGui::EndCombo();
-			}
-		}
-	}
-	else {
-		ImGui::Text("No entity selected");
-	}
-	ImGui::End();
+	this->renderDebugPanel(context, renderer, imageIndex);
+	this->renderSelectedEntityPanel(context, renderer, imageIndex);
 
 	// Instances from InstancedModel
 	if (auto instancedModel = dynamic_cast<GFXEngine::Core::InstancedModel*>(m_selectedEntity)) {
@@ -1055,6 +1020,46 @@ void GFXEditor::WorldEditor::renderViewport(GFXEngine::Core::UIContext& context,
 		}
 	}
 
+	ImGui::End();
+}
+
+void GFXEditor::WorldEditor::renderDebugPanel(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::Begin("Debug");
+	ImGui::InputFloat3("Camera Position", glm::value_ptr(m_editorCamera->getTransform().position));
+	ImGui::InputFloat3("Relative Position", glm::value_ptr(m_viewportCursorInfo.position));
+	ImGui::Checkbox("Hovering Viewport", &m_viewportCursorInfo.isHovering);
+	ImGui::End();
+}
+
+void GFXEditor::WorldEditor::renderSelectedEntityPanel(GFXEngine::Core::UIContext& context, GFXEngine::Graphics::Renderer& renderer, uint32_t imageIndex)
+{
+	ImGui::Begin("Selected Entity");
+	if (m_selectedEntity) {
+		auto props = m_selectedEntity->getProperties();
+		for (const auto& prop : props) {
+			const std::string label = UIContext::createLabelID(prop.name, m_selectedEntity->getUUID());
+			this->renderProperty(label, renderer, prop);
+		}
+		if (ImGui::CollapsingHeader("Behaviors")) {
+			m_selectedEntity->foreachBehavior([&](GFXEngine::Core::Behavior* behavior) {
+				this->renderBehavior(*behavior, renderer);
+				});
+
+			if (ImGui::BeginCombo("Add Behavior", "")) {
+				m_game->behaviorRegistry->foreachBehavior([&](const std::string& behaviorName) {
+					if (ImGui::Selectable(behaviorName.c_str())) {
+						auto bhv = m_selectedEntity->addBehavior(m_game->behaviorRegistry->createBehavior(behaviorName));
+						bhv->init(*m_scene, renderer);
+					}
+					});
+				ImGui::EndCombo();
+			}
+		}
+	}
+	else {
+		ImGui::Text("No entity selected");
+	}
 	ImGui::End();
 }
 
