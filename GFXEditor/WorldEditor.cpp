@@ -966,7 +966,11 @@ void GFXEditor::WorldEditor::renderAssetBrowser(GFXEngine::Core::UIContext& cont
 								nlohmann::json jsonData = material->serialize();
 								GFXEngine::Utils::saveJsonToFile(jsonData, filePath);
 							}
-							material->updateMaterial(renderer);
+
+							// Update the material if it is initialized
+							if (materialAsset->isInitialized()) {
+								material->updateMaterial(renderer);
+							}
 							});
 					}
 				}
