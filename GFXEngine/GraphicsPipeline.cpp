@@ -10,16 +10,3 @@ void GFXEngine::Graphics::GraphicsPipeline::bindScissor(VkCommandBuffer commandB
 {
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 }
-
-void GFXEngine::Graphics::GraphicsPipeline::destroy(LibGFX::VkContext& context)
-{
-	if (m_pipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(context.getDevice(), m_pipeline, nullptr);
-		m_pipeline = VK_NULL_HANDLE;
-	}
-
-	if (m_pipelineLayout != VK_NULL_HANDLE) {
-		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
-		m_pipelineLayout = VK_NULL_HANDLE;
-	}
-}

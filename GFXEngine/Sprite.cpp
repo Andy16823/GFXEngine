@@ -47,7 +47,7 @@ void Sprite::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFXEn
 				.setRenderLayer(RenderLayer::Transparent);
 
 			// Bind material descriptor set and push constant for model matrix
-			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
+			pipeline->bindDescriptorSets(taskBuilder, resources);
 			renderQueue.addRenderTask(taskBuilder.build());
 		}
 	}

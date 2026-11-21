@@ -1,22 +1,26 @@
-#include "PBRGeometryPass.h"
-#include "Renderer.h"
-#include "RenderContext.h"
-#include "Material.h"
-#include "RenderTask.h"
+#include "PBRPipeline.h"
+#include "PipelineBuilder.h"
 #include "EngineDefinitions.h"
-#include <stdexcept>
+#include "RenderTask.h"
 
-using namespace GFXEngine;
-using namespace GFXEngine::Graphics;
+VkPipelineLayout GFXEngine::Graphics::PBRPipeline::getPipelineLayout() const
+{
+	return m_pipelineLayout;
+}
 
-VkPipelineLayout GFXEngine::Graphics::PBRGeometryPass::buildLayout(Renderer& renderer) const
+VkPipeline GFXEngine::Graphics::PBRPipeline::getPipeline() const
+{
+    return m_pipeline;
+}
+
+void GFXEngine::Graphics::PBRPipeline::build(Renderer& renderer, VkRenderPass renderPass)
 {
 	VkPushConstantRange pushConstantRange = {};
 	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 	pushConstantRange.size = sizeof(glm::mat4);
 	pushConstantRange.offset = 0;
 
-	std::array<VkDescriptorSetLayout, 4> descriptorSetLayouts{ 
+	std::array<VkDescriptorSetLayout, 4> descriptorSetLayouts{
 		renderer.getUniformBufferLayout(), // Camera
 		renderer.getPBRMaterialLayout(), // Material
 		renderer.getUniformBufferLayout(), // Directional Light UBO
@@ -30,16 +34,32 @@ VkPipelineLayout GFXEngine::Graphics::PBRGeometryPass::buildLayout(Renderer& ren
 	pipelineLayoutInfo.pushConstantRangeCount = 1;
 	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
-	VkPipelineLayout pipelineLayout;
-	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create pipeline layout");
 	}
-	return pipelineLayout;
+
+	PipelineBuilder builder(renderer);
+	builder.addShaderStage(this->getShader())
+		.useVertex3DInput(0);
+	m_pipeline = builder.build(renderPass, m_pipelineLayout);
 }
 
-bool GFXEngine::Graphics::PBRGeometryPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
+void GFXEngine::Graphics::PBRPipeline::destroy(LibGFX::VkContext & context)
 {
-	if (!resources.contains(Defintions::CAMERA_RESOURCE)) 
+	if (m_pipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(context.getDevice(), m_pipeline, nullptr);
+		m_pipeline = VK_NULL_HANDLE;
+	}
+
+	if (m_pipelineLayout != VK_NULL_HANDLE) {
+		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
+		m_pipelineLayout = VK_NULL_HANDLE;
+	}
+}
+
+bool GFXEngine::Graphics::PBRPipeline::bindDescriptorSets(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources)
+{
+	if (!resources.contains(Defintions::CAMERA_RESOURCE))
 	{
 		throw std::runtime_error("PBRGeometryPass requires CAMERA_RESOURCE");
 	}
@@ -54,7 +74,7 @@ bool GFXEngine::Graphics::PBRGeometryPass::bindResources(GFXEngine::Graphics::Re
 		throw std::runtime_error("PBRGeometryPass requires DIRECTIONAL_LIGHT_RESOURCE");
 	}
 
-	if (!builder.hasModelMatrix()) 
+	if (!builder.hasModelMatrix())
 	{
 		throw std::runtime_error("PBRGeometryPass requires ModelMatrix for push_constnat");
 	}
@@ -63,7 +83,7 @@ bool GFXEngine::Graphics::PBRGeometryPass::bindResources(GFXEngine::Graphics::Re
 	{
 		throw std::runtime_error("PBRGeometryPass requires FOG_RESOURCE");
 	}
-	
+
 	glm::mat4 modelMatrix = builder.getModelMatrix();
 	VkDescriptorSet cameraDescriptorSet = resources[Defintions::CAMERA_RESOURCE];
 	VkDescriptorSet materialDescriptorSet = resources[Defintions::MATERIAL_RESOURCE];

@@ -1,102 +1,59 @@
 #pragma once
 #include "RenderPipeline.h"
-#include "IGraphicsPass.h"
+#include "RenderShader.h"
+#include "GraphicResources.h"
 #include <memory>
 
 namespace GFXEngine {
 	namespace Graphics {
 
+		class RenderTaskBuilder;
+
+		/// <summary>
+		/// GraphicsPipeline is a specialized abstract RenderPipeline that is used for rendering graphics. 
+		/// Its used for offscreen rendering.
+		/// </summary>
 		class GraphicsPipeline : public RenderPipeline
 		{
 		private:
-			VkPipelineLayout m_pipelineLayout;
-			VkPipeline m_pipeline;
-			std::unique_ptr<IGraphicsPass> m_graphicsPass;
+			RenderShader m_shader;
 
 		public:
 			
-			//************************************
-			// Method:    GraphicsPipeline
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::GraphicsPipeline
-			// Access:    public 
-			// Returns:   
-			// Qualifier: : RenderPipeline(), m_pipeline(pipeline), m_pipelineLayout(layout), m_graphicsPass(std::move(graphicsPass))
-			// Parameter: VkPipeline pipeline
-			// Parameter: VkPipelineLayout layout
-			// Parameter: std::unique_ptr<IGraphicsPass> graphicsPass
-			//************************************
-			GraphicsPipeline(VkPipeline pipeline, VkPipelineLayout layout, std::unique_ptr<IGraphicsPass> graphicsPass)
-				: RenderPipeline(), m_pipeline(pipeline), m_pipelineLayout(layout), m_graphicsPass(std::move(graphicsPass)) {}
+			/// <summary>
+			/// Creates a new GraphicsPipeline with the specified shader. The shader is moved into the pipeline, so it should not be used after this call.
+			/// </summary>
+			/// <param name="shader"></param>
+			GraphicsPipeline(RenderShader shader) : RenderPipeline(), m_shader(std::move(shader)) {}
 
-			//************************************
-			// Method:    getPipelineLayout
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::getPipelineLayout
-			// Access:    public 
-			// Returns:   VkPipelineLayout
-			// Qualifier: const 
-			//************************************
-			VkPipelineLayout getPipelineLayout() const override 
-			{
-				assert(m_pipelineLayout != VK_NULL_HANDLE);
-				return m_pipelineLayout;
-			}
+			/// <summary>
+			/// Returns a reference to the shader used by this pipeline. The shader is owned by the pipeline, so it should not be used after the pipeline is destroyed.
+			/// </summary>
+			/// <returns></returns>
+			RenderShader& getShader() { return m_shader; }
 
-			//************************************
-			// Method:    getPipeline
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::getPipeline
-			// Access:    public 
-			// Returns:   VkPipeline
-			// Qualifier: const 
-			//************************************
-			VkPipeline getPipeline() const override
-			{
-				assert(m_pipeline != VK_NULL_HANDLE);
-				return m_pipeline;
-			}
+			/// <summary>
+			/// Binds the descriptor sets to the command buffer. This is called by the renderer when the pipeline is used.
+			/// </summary>
+			/// <param name="builder"></param>
+			/// <param name="resources"></param>
+			virtual bool bindDescriptorSets(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) = 0;
 
-			//************************************
-			// Method:    getGraphicsPass
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::getGraphicsPass
-			// Access:    public 
-			// Returns:   const GFXEngine::Graphics::IGraphicsPass&
-			// Qualifier: const
-			//************************************
-			const IGraphicsPass& getGraphicsPass() const 
-			{
-				return *m_graphicsPass;
-			}
-
-			//************************************
-			// Method:    bindViewport
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::bindViewport
-			// Access:    public 
-			// Returns:   void
-			// Qualifier: const 
-			// Parameter: VkCommandBuffer commandBuffer
-			// Parameter: const VkViewport & viewport
-			//************************************
+			/// <summary>
+			/// Binds the viewport to the command buffer. 
+			/// This is called by the renderer when the pipeline is used.
+			/// </summary>
+			/// <param name="commandBuffer"></param>
+			/// <param name="viewport"></param>
 			void bindViewport(VkCommandBuffer commandBuffer, const VkViewport& viewport) const override;
-			
-			//************************************
-			// Method:    bindScissor
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::bindScissor
-			// Access:    public 
-			// Returns:   void
-			// Qualifier: const 
-			// Parameter: VkCommandBuffer commandBuffer
-			// Parameter: const VkRect2D & scissor
-			//************************************
+
+			/// <summary>
+			/// Binds the scissor to the command buffer. 
+			/// This is called by the renderer when the pipeline is used.
+			/// </summary>
+			/// <param name="commandBuffer"></param>
+			/// <param name="scissor"></param>
 			void bindScissor(VkCommandBuffer commandBuffer, const VkRect2D& scissor) const override;
-			
-			//************************************
-			// Method:    destroy
-			// FullName:  GFXEngine::Graphics::GraphicsPipeline::destroy
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::VkContext & context
-			//************************************
-			void destroy(LibGFX::VkContext& context) override;
 		};
 	}
 }

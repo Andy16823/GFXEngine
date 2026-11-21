@@ -68,7 +68,7 @@ void GFXEngine::Core::Primitive::buildRenderTasks(GFXEngine::Graphics::RenderCon
 					.setModelMatrix(this->getModelMatrix());
 
 				this->getMeshMaterialGraphicResources(ressources, context.imageIndex, i);
-				pipeline->getGraphicsPass().bindResources(taskBuilder, ressources);
+				pipeline->bindDescriptorSets(taskBuilder, ressources);
 				renderQueue.addRenderTask(taskBuilder.build());
 			}
 		}

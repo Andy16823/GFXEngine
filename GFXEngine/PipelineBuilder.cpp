@@ -235,7 +235,7 @@ void PipelineBuilder::clear()
 	m_depthCompareOp = VK_COMPARE_OP_LESS;
 }
 
-std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRenderPass renderPass, std::unique_ptr<IGraphicsPass> graphicsPass)
+VkPipeline PipelineBuilder::build(VkRenderPass renderPass, VkPipelineLayout pipelineLayout)
 {
 	if (m_shaderStages.empty()) {
 		throw std::runtime_error("At least one shader stage must be added to the pipeline");
@@ -309,140 +309,6 @@ std::unique_ptr<GraphicsPipeline> PipelineBuilder::buildGraphicsPipeline(VkRende
 	colorBlending.logicOpEnable = VK_FALSE;
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
-
-	// Depth stencil state
-	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
-	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-	depthStencil.depthTestEnable = m_depthTestEnable;
-	depthStencil.depthWriteEnable = m_depthWriteEnable;
-	depthStencil.depthCompareOp = m_depthCompareOp;
-	depthStencil.depthBoundsTestEnable = VK_FALSE;
-	depthStencil.stencilTestEnable = VK_FALSE;
-
-	// Pipeline Layout
-	VkPipelineLayout pipelineLayout = graphicsPass->buildLayout(renderer);
-
-	// Pipeline create info
-	VkGraphicsPipelineCreateInfo pipelineInfo = {};
-	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-	pipelineInfo.stageCount = static_cast<uint32_t>(m_shaderStages.size());
-	pipelineInfo.pStages = m_shaderStages.data();
-	pipelineInfo.pVertexInputState = &vertexInputInfo;
-	pipelineInfo.pInputAssemblyState = &inputAssembly;
-	pipelineInfo.pViewportState = &viewportState;
-	pipelineInfo.pRasterizationState = &rasterizer;
-	pipelineInfo.pMultisampleState = &multisampling;
-	pipelineInfo.pColorBlendState = &colorBlending;
-	pipelineInfo.pDepthStencilState = &depthStencil;
-	pipelineInfo.pDynamicState = &dynamicState;
-	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = renderPass;
-	pipelineInfo.subpass = 0;
-
-	// Create the graphics pipeline
-	VkPipeline pipeline;
-	if (vkCreateGraphicsPipelines(renderer.getContext().getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create graphics pipeline");
-	}
-
-	// Clean up shader modules (they can be destroyed after pipeline creation)
-	for (const auto& shaderStage : m_shaderStages) {
-		renderer.getContext().destroyShaderModule(shaderStage.module);
-	}
-
-	// Return the created pipeline and layout
-	std::cout << "Graphics Pipeline created successfully!" << std::endl;
-	return std::make_unique<GraphicsPipeline>(pipeline, pipelineLayout, std::move(graphicsPass));
-}
-
-std::unique_ptr<GFXEngine::Graphics::PresentPipeline> PipelineBuilder::buildPresentPipeline(VkRenderPass renderPass)
-{
-	if (m_shaderStages.empty()) {
-		throw std::runtime_error("At least one shader stage must be added to the pipeline");
-	}
-
-	if (m_bindingDescriptions.empty()) {
-		throw std::runtime_error("At least one vertex input binding must be added to the pipeline");
-	}
-
-	if (m_attributeDescriptions.empty()) {
-		throw std::runtime_error("At least one vertex input attribute must be added to the pipeline");
-	}
-
-	// Vertex input state
-	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
-	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(m_bindingDescriptions.size());
-	vertexInputInfo.pVertexBindingDescriptions = m_bindingDescriptions.data();
-	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_attributeDescriptions.size());
-	vertexInputInfo.pVertexAttributeDescriptions = m_attributeDescriptions.data();
-
-	// Input assembly state
-	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
-	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	inputAssembly.topology = m_primitiveTopology;
-	inputAssembly.primitiveRestartEnable = VK_FALSE;
-
-	// Viewport state (dynamic)
-	VkPipelineViewportStateCreateInfo viewportState = {};
-	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	viewportState.viewportCount = 1;
-	viewportState.scissorCount = 1;
-
-	// Dynamic state (viewport and scissor)
-	std::vector<VkDynamicState> dynamicStates = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
-	VkPipelineDynamicStateCreateInfo dynamicState = {};
-	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
-	dynamicState.pDynamicStates = dynamicStates.data();
-
-	// Rasterization state
-	VkPipelineRasterizationStateCreateInfo rasterizer = {};
-	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-	rasterizer.depthClampEnable = VK_FALSE;
-	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = m_polygonMode;
-	rasterizer.cullMode = m_cullMode;
-	rasterizer.frontFace = m_frontFace;
-	rasterizer.depthBiasEnable = VK_FALSE;
-	rasterizer.lineWidth = 1.0f;
-
-	// Multisampling state
-	VkPipelineMultisampleStateCreateInfo multisampling = {};
-	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.sampleShadingEnable = VK_FALSE;
-	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-
-	// Color blending state
-	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
-	colorBlendAttachment.colorWriteMask = m_colorWriteMask;
-	colorBlendAttachment.blendEnable = m_blendEnable;
-	colorBlendAttachment.srcColorBlendFactor = m_srcColorBlendFactor;
-	colorBlendAttachment.dstColorBlendFactor = m_dstColorBlendFactor;
-	colorBlendAttachment.colorBlendOp = m_colorBlendOp;
-	colorBlendAttachment.srcAlphaBlendFactor = m_srcAlphaBlendFactor;
-	colorBlendAttachment.dstAlphaBlendFactor = m_dstAlphaBlendFactor;
-	colorBlendAttachment.alphaBlendOp = m_alphaBlendOp;
-
-	VkPipelineColorBlendStateCreateInfo colorBlending = {};
-	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-	colorBlending.logicOpEnable = VK_FALSE;
-	colorBlending.attachmentCount = 1;
-	colorBlending.pAttachments = &colorBlendAttachment;
-
-	// Pipeline layout
-	std::array<VkDescriptorSetLayout, 1> descriptorSetLayouts { renderer.getSamplerLayout() };
-	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
-	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
-	pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
-	pipelineLayoutInfo.pushConstantRangeCount = 0;
-	pipelineLayoutInfo.pPushConstantRanges = nullptr;
-
-	VkPipelineLayout pipelineLayout;
-	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create pipeline layout");
-	}
 
 	// Depth stencil state
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
@@ -482,6 +348,6 @@ std::unique_ptr<GFXEngine::Graphics::PresentPipeline> PipelineBuilder::buildPres
 	}
 
 	// Return the created pipeline and layout
-	std::cout << "Present Pipeline created successfully!" << std::endl;
-	return std::make_unique<PresentPipeline>(pipeline, pipelineLayout);
+	std::cout << "Graphics Pipeline created successfully!" << std::endl;
+	return pipeline;
 }

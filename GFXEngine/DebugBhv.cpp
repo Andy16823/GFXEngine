@@ -52,7 +52,7 @@ void DebugBhv::buildRenderTasks(GFXEngine::Graphics::RenderContext& context, GFX
 	taskBuilder.setPipeline(pipeline)
 		.setMesh(m_debugMesh.get())
 		.setModelMatrix(this->getEntity()->getModelMatrix());
-	pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
+	pipeline->bindDescriptorSets(taskBuilder, resources);
 	renderQueue.addRenderTask(taskBuilder.build());
 }
 

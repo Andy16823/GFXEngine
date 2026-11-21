@@ -61,7 +61,7 @@ void GFXEngine::Core::Model::buildRenderTasks(GFXEngine::Graphics::RenderContext
 			this->getMeshMaterialGraphicResources(resources, context.imageIndex, i);
 
 			// Bind resources to the pipeline (this will throw if required resources are missing)
-			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
+			pipeline->bindDescriptorSets(taskBuilder, resources);
 			renderQueue.addRenderTask(taskBuilder.build());
 		}
 	}

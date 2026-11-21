@@ -3,7 +3,6 @@
 #include "EntityFactory.h"
 #include "Utils.h"
 #include "EngineDefinitions.h"
-#include "IGraphicsPass.h"
 #include <cassert>
 #include "Mesh.h"
 #include "Game.h"
@@ -52,7 +51,7 @@ void GFXEngine::Core::Scene3D::renderEnvMap(GFXEngine::Graphics::RenderContext& 
 		.setMesh(&envMap.getMesh())
 		.setRenderLayer(Graphics::RenderLayer::Skybox);
 
-	pipeline->getGraphicsPass().bindResources(builder, resources);
+	pipeline->bindDescriptorSets(builder, resources);
 	m_renderQueue.addRenderTask(builder.build());
 }
 

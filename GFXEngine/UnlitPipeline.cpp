@@ -1,13 +1,20 @@
-#include "UnlitGeometryPass.h"
+#include "UnlitPipeline.h"
 #include "Renderer.h"
+#include "PipelineBuilder.h"
 #include "EngineDefinitions.h"
 #include "RenderTask.h"
-#include <stdexcept>
 
-using namespace GFXEngine;
-using namespace GFXEngine::Graphics;
+VkPipelineLayout GFXEngine::Graphics::UnlitPipeline::getPipelineLayout() const
+{
+	return m_pipelineLayout;
+}
 
-VkPipelineLayout GFXEngine::Graphics::UnlitGeometryPass::buildLayout(Renderer& renderer) const
+VkPipeline GFXEngine::Graphics::UnlitPipeline::getPipeline() const
+{
+	return m_pipeline;
+}
+
+void GFXEngine::Graphics::UnlitPipeline::build(Renderer& renderer, VkRenderPass renderPass)
 {
 	VkPushConstantRange pushConstantRange = {};
 	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -26,14 +33,30 @@ VkPipelineLayout GFXEngine::Graphics::UnlitGeometryPass::buildLayout(Renderer& r
 	pipelineLayoutInfo.pushConstantRangeCount = 1;
 	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
-	VkPipelineLayout pipelineLayout;
-	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(renderer.getContext().getDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create pipeline layout");
 	}
-	return pipelineLayout;
+
+	PipelineBuilder builder(renderer);
+	builder.addShaderStage(this->getShader())
+		.useVertex3DInput(0);
+	m_pipeline = builder.build(renderPass, m_pipelineLayout);
 }
 
-bool GFXEngine::Graphics::UnlitGeometryPass::bindResources(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources) const
+void GFXEngine::Graphics::UnlitPipeline::destroy(LibGFX::VkContext & context)
+{
+	if (m_pipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(context.getDevice(), m_pipeline, nullptr);
+		m_pipeline = VK_NULL_HANDLE;
+	}
+
+	if (m_pipelineLayout != VK_NULL_HANDLE) {
+		vkDestroyPipelineLayout(context.getDevice(), m_pipelineLayout, nullptr);
+		m_pipelineLayout = VK_NULL_HANDLE;
+	}
+}
+
+bool GFXEngine::Graphics::UnlitPipeline::bindDescriptorSets(GFXEngine::Graphics::RenderTaskBuilder& builder, GFXEngine::Graphics::GraphicResources& resources)
 {
 	if (!resources.contains(Defintions::CAMERA_RESOURCE))
 	{

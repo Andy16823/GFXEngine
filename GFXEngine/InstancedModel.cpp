@@ -103,7 +103,7 @@ void GFXEngine::Core::InstancedModel::buildRenderTasks(GFXEngine::Graphics::Rend
 
 			// Get mesh-specific graphic resources (like material descriptor set) and bind to the pipeline
 			this->getMeshMaterialGraphicResources(resources, context.imageIndex, i);
-			pipeline->getGraphicsPass().bindResources(taskBuilder, resources);
+			pipeline->bindDescriptorSets(taskBuilder, resources);
 
 			renderQueue.addRenderTask(taskBuilder.build());
 		}

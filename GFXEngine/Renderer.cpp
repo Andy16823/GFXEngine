@@ -7,14 +7,14 @@
 #include <iostream>
 #include "EngineDefinitions.h"
 #include "PipelineBuilder.h"
-#include "PBRGeometryPass.h"
-#include "UnlitGeometryPass.h"
-#include "InstancedPBRGeometryPass.h"
-#include "InstancedUnlitGeometryPass.h"
-#include "EnvironmentPass.h"
-#include "DebugPass.h"
-#include "SpritePass.h"
-#include "SolidColorPass.h"
+#include "PBRPipeline.h"
+#include "UnlitPipeline.h"
+#include "PBRPipelineInst.h"
+#include "UnlitPipelineInst.h"
+#include "EnviromentPipeline.h"
+#include "DebugPipeline.h"
+#include "SpritePipeline.h"
+#include "SolidColorPipeline.h"
 
 using namespace std;
 using namespace GFXEngine::Graphics;
@@ -598,104 +598,68 @@ void Renderer::createPipelines(const std::string& shadersDirectory)
 {
 	std::cout << "Creating pipelines with shaders from directory: " << shadersDirectory << std::endl;
 
-	PipelineBuilder pipelineBuilder(*this);
-
 	// PBR Geometry Pipeline
 	std::filesystem::path vertPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_vert.spv";
 	std::filesystem::path fragPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_frag.spv";
-	RenderShader meshShaderPBR = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(meshShaderPBR)
-		.useVertex3DInput(0);
-	auto geometryPipelinePBR = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<PBRGeometryPass>());
-	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(geometryPipelinePBR));
-	pipelineBuilder.clear();
+	auto pbrPipeline = std::make_unique<PBRPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	pbrPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
+	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(pbrPipeline));
 
 	// Unlit Geometry Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_frag.spv";
-	RenderShader meshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(meshShaderUnlit)
-		.useVertex3DInput(0);
-	auto geometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<UnlitGeometryPass>());
-	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(geometryPipelineUnlit));
-	pipelineBuilder.clear();
+	auto unlitPipeline = std::make_unique<UnlitPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	unlitPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
+	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(unlitPipeline));
 
 	// Create Instanced Geometry Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_frag.spv";
-	RenderShader instancedMeshShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(instancedMeshShader)
-		.useVertex3DInput(0);
-	auto instancedGeometryPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<InstancedPBRGeometryPass>());
-	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(instancedGeometryPipeline));
-	pipelineBuilder.clear();
+	auto pbrPipelineInst = std::make_unique<PBRPipelineInst>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	pbrPipelineInst->build(*this, m_offscreenRenderPass->getRenderPass());
+	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(pbrPipelineInst));
 
 	// Instant Geometry Pipeline Unlit
 	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_frag.spv";
-	RenderShader instancedMeshShaderUnlit = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(instancedMeshShaderUnlit)
-		.useVertex3DInput(0);
-	auto instancedGeometryPipelineUnlit = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<InstancedUnlitGeometryPass>());
-	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedGeometryPipelineUnlit));
-	pipelineBuilder.clear();
+	auto instancedMeshPipelineUnlit = std::make_unique<UnlitPipelineInst>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	instancedMeshPipelineUnlit->build(*this, m_offscreenRenderPass->getRenderPass());
+	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedMeshPipelineUnlit));
 
 	// Create Enviroment Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "env_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "env_frag.spv";
-	RenderShader enviromentShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(enviromentShader)
-		.usePositionInput(0)
-		.setDepthTestEnable(VK_TRUE)
-		.setDepthWriteEnable(VK_FALSE)
-		.setDepthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL);
-	auto enviromentPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<EnvironmentPass>());
+	auto enviromentPipeline = std::make_unique<EnviromentPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	enviromentPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
-	pipelineBuilder.clear();
 
 	// Debug Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "debug_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "debug_frag.spv";
-	RenderShader debugShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(debugShader)
-		.usePositionInput(0);
-	auto debugPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<DebugPass>());
+	auto debugPipeline = std::make_unique<DebugPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	debugPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
-	pipelineBuilder.clear();
 
 	// Sprite Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "sprite_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "sprite_frag.spv";
-	RenderShader spriteShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(spriteShader)
-		.useVertex2DInput(0);
-	auto spritePipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SpritePass>());
+	auto spritePipeline = std::make_unique<SpritePipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	spritePipeline->build(*this, m_offscreenRenderPass->getRenderPass());
 	this->managePipeline(PipelineType::SPRITE_PIPELINE, std::move(spritePipeline));
-	pipelineBuilder.clear();
 
 	// Solid Color Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "solid_vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "solid_frag.spv";
-	RenderShader solidShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(solidShader)
-        .useVertex3DInput(0)
-        .setCullMode(VK_CULL_MODE_NONE);
-	auto solidPipeline = pipelineBuilder.buildGraphicsPipeline(m_offscreenRenderPass->getRenderPass(), std::make_unique<SolidColorPass>());
-	this->managePipeline(PipelineType::SOLID_COLOR_PIPELINE, std::move(solidPipeline));
-	pipelineBuilder.clear();
+	auto solidColorPipeline = std::make_unique<SolidColorPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	solidColorPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
+	this->managePipeline(PipelineType::SOLID_COLOR_PIPELINE, std::move(solidColorPipeline));
 
 	// Create Present Pipeline
 	vertPath = std::filesystem::path(shadersDirectory) / "vert.spv";
 	fragPath = std::filesystem::path(shadersDirectory) / "frag.spv";
-	RenderShader defaultShader = RenderShader::fromFiles(vertPath.string(), fragPath.string());
-	pipelineBuilder.addShaderStage(defaultShader)
-		.useFramebufferInput(0)
-		.setDepthTestEnable(VK_FALSE)
-		.setFrontFace(VK_FRONT_FACE_CLOCKWISE)
-		.disableBlending();	// DISABLE BLENDING FOR TESTING. WE MAY NEED TO MAKE IT DYNAMIC LATER DEPENDING ON THE USE CASES. CURRENTLY A TRANSPARENT SPRITE IN 3D SCENES HAS BLACK BACKGROUND
-	auto presentPipeline = pipelineBuilder.buildPresentPipeline(m_renderPass->getRenderPass());
+	auto presentPipeline = std::make_unique<PresentPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
+	presentPipeline->build(*this, m_renderPass->getRenderPass());
 	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
-	pipelineBuilder.clear();
 
 	std::cout << "Finished creating pipelines" << std::endl;
 }

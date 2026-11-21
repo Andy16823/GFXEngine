@@ -51,292 +51,216 @@ namespace GFXEngine
 
 		public:
 			
-			//************************************
-			// Method:    PipelineBuilder
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::PipelineBuilder
-			// Access:    public 
-			// Returns:   
-			// Qualifier: : renderer(renderer)
-			// Parameter: Renderer & renderer
-			//************************************
+			/// <summary>
+			/// Creates a new PipelineBuilder for the specified renderer. 
+			/// The renderer is not owned by the PipelineBuilder and must remain valid for the lifetime of the PipelineBuilder.
+			/// </summary>
+			/// <param name="renderer"></param>
 			PipelineBuilder(Renderer& renderer) : renderer(renderer) {}
 			
-			//************************************
-			// Method:    ~PipelineBuilder
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::~PipelineBuilder
-			// Access:    virtual public 
-			// Returns:   
-			// Qualifier:
-			//************************************
 			virtual ~PipelineBuilder() = default;
 
 		public:
 			
-			//************************************
-			// Method:    addShaderStage
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::addShaderStage
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: const RenderShader & shader
-			//************************************
+			/// <summary>
+			/// Adds a shader stage to the pipeline. 
+			/// The shader must be valid and compatible with the other stages in the pipeline. 
+			/// The shader is not owned by the PipelineBuilder and must remain valid for the 
+			/// lifetime of the PipelineBuilder.
+			/// </summary>
+			/// <param name="shader"></param>
+			/// <returns></returns>
 			PipelineBuilder& addShaderStage(const RenderShader& shader);	// Required
 			
-			//************************************
-			// Method:    addVertexInputBinding
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::addVertexInputBinding
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: uint32_t binding
-			// Parameter: uint32_t stride
-			//************************************
+			/// <summary>
+			/// Adds a vertex input binding to the pipeline. 
+			/// The binding must be compatible with the vertex input attributes in the pipeline.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <param name="stride"></param>
+			/// <returns></returns>
 			PipelineBuilder& addVertexInputBinding(uint32_t binding, uint32_t stride); // Required
 			
-			//************************************
-			// Method:    addVertexInputAttribute
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::addVertexInputAttribute
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: uint32_t binding
-			// Parameter: uint32_t location
-			// Parameter: VkFormat format
-			// Parameter: uint32_t offset
-			//************************************
+			/// <summary>
+			/// Adds a vertex input attribute to the pipeline. 
+			/// The attribute must be compatible with the vertex input binding in the pipeline.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <param name="location"></param>
+			/// <param name="format"></param>
+			/// <param name="offset"></param>
+			/// <returns></returns>
 			PipelineBuilder& addVertexInputAttribute(uint32_t binding, uint32_t location, VkFormat format, uint32_t offset); // Required
 
-			//************************************
-			// Method:    useVertex3DInput
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::useVertex3DInput
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Use the 3D vertex input layout for the pipeline. 
+			/// This will add the necessary vertex input bindings and attributes for a 3D vertex.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			PipelineBuilder& useVertex3DInput(uint32_t binding);
 			
-			//************************************
-			// Method:    useVertex2DInput
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::useVertex2DInput
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Use the 2D vertex input layout for the pipeline.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			PipelineBuilder& useVertex2DInput(uint32_t binding);
 			
-			//************************************
-			// Method:    usePositionInput
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::usePositionInput
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Use the position-only vertex input layout for the pipeline.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			PipelineBuilder& usePositionInput(uint32_t binding);
 			
-			//************************************
-			// Method:    useFramebufferInput
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::useFramebufferInput
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Use the framebuffer vertex input layout for the pipeline. 
+			/// This is used for rendering to a framebuffer, where the vertex data is generated by the GPU.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			PipelineBuilder& useFramebufferInput(uint32_t binding);
 
-			//************************************
-			// Method:    setTopology
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setTopology
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkPrimitiveTopology topology
-			//************************************
+			/// <summary>
+			/// Sets the primitive topology for the pipeline. 
+			/// The default is VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST.
+			/// </summary>
+			/// <param name="topology"></param>
+			/// <returns></returns>
 			PipelineBuilder& setTopology(VkPrimitiveTopology topology);
 
-			//************************************
-			// Method:    setPolygonMode
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setPolygonMode
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkPolygonMode polygonMode
-			//************************************
+			/// <summary>
+			/// Sets the polygon mode for the pipeline.
+			/// The default is VK_POLYGON_MODE_FILL.
+			/// </summary>
+			/// <param name="polygonMode"></param>
+			/// <returns></returns>
 			PipelineBuilder& setPolygonMode(VkPolygonMode polygonMode);
 			
-			//************************************
-			// Method:    setCullMode
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setCullMode
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkCullModeFlags cullMode
-			//************************************
+			/// <summary>
+			/// Sets the cull mode for the pipeline. 
+			/// The default is VK_CULL_MODE_BACK_BIT.
+			/// </summary>
+			/// <param name="cullMode"></param>
+			/// <returns></returns>
 			PipelineBuilder& setCullMode(VkCullModeFlags cullMode);
 			
-			//************************************
-			// Method:    setFrontFace
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setFrontFace
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkFrontFace frontFace
-			//************************************
+			/// <summary>
+			/// Sets the front face for the pipeline.
+			/// The default is VK_FRONT_FACE_COUNTER_CLOCKWISE.
+			/// </summary>
+			/// <param name="frontFace"></param>
+			/// <returns></returns>
 			PipelineBuilder& setFrontFace(VkFrontFace frontFace);
 			
-			//************************************
-			// Method:    setColorWriteMask
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setColorWriteMask
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkColorComponentFlags colorWriteMask
-			//************************************
+			/// <summary>
+			/// Sets the color write mask for the pipeline.
+			/// The default is VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT.
+			/// </summary>
+			/// <param name="colorWriteMask"></param>
+			/// <returns></returns>
 			PipelineBuilder& setColorWriteMask(VkColorComponentFlags colorWriteMask);
 			
-			//************************************
-			// Method:    setBlendEnable
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setBlendEnable
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkBool32 blendEnable
-			//************************************
+			/// <summary>
+			/// Sets whether blending is enabled for the pipeline.
+			/// The default is VK_TRUE.
+			/// </summary>
+			/// <param name="blendEnable"></param>
+			/// <returns></returns>
 			PipelineBuilder& setBlendEnable(VkBool32 blendEnable);
 			
-			//************************************
-			// Method:    setColorBlendFactors
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setColorBlendFactors
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkBlendFactor srcColorBlendFactor
-			// Parameter: VkBlendFactor dstColorBlendFactor
-			// Parameter: VkBlendOp colorBlendOp
-			//************************************
+			/// <summary>
+			/// Sets the color blend factors for the pipeline.
+			/// The default is VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, VK_BLEND_OP_ADD.
+			/// </summary>
+			/// <param name="srcColorBlendFactor"></param>
+			/// <param name="dstColorBlendFactor"></param>
+			/// <param name="colorBlendOp"></param>
+			/// <returns></returns>
 			PipelineBuilder& setColorBlendFactors(VkBlendFactor srcColorBlendFactor, VkBlendFactor dstColorBlendFactor, VkBlendOp colorBlendOp);
 			
-			//************************************
-			// Method:    setAlphaBlendFactors
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setAlphaBlendFactors
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkBlendFactor srcAlphaBlendFactor
-			// Parameter: VkBlendFactor dstAlphaBlendFactor
-			// Parameter: VkBlendOp alphaBlendOp
-			//************************************
+			/// <summary>
+			/// Sets the alpha blend factors for the pipeline.
+			/// The default is VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD.
+			/// </summary>
+			/// <param name="srcAlphaBlendFactor"></param>
+			/// <param name="dstAlphaBlendFactor"></param>
+			/// <param name="alphaBlendOp"></param>
+			/// <returns></returns>
 			PipelineBuilder& setAlphaBlendFactors(VkBlendFactor srcAlphaBlendFactor, VkBlendFactor dstAlphaBlendFactor, VkBlendOp alphaBlendOp);
 			
-			//************************************
-			// Method:    enableAlphaBlending
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::enableAlphaBlending
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Sets whether depth testing is enabled for the pipeline.
+			/// </summary>
+			/// <returns></returns>
 			PipelineBuilder& enableAlphaBlending();
 			
-			//************************************
-			// Method:    enableAdditiveBlending
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::enableAdditiveBlending
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Sets the depth test enable for the pipeline.
+			/// </summary>
+			/// <returns></returns>
 			PipelineBuilder& enableAdditiveBlending();
 			
-			//************************************
-			// Method:    disableBlending
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::disableBlending
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Disables blending for the pipeline. 
+			/// This is useful for rendering opaque objects.
+			/// </summary>
+			/// <returns></returns>
 			PipelineBuilder& disableBlending();
 
-			//************************************
-			// Method:    addDescriptorSetLayout
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::addDescriptorSetLayout
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkDescriptorSetLayout layout
-			//************************************
+			/// <summary>
+			/// Adds a descriptor set layout to the pipeline.
+			/// The layout must be compatible with the shader stages in the pipeline.
+			/// </summary>
+			/// <param name="layout"></param>
+			/// <returns></returns>
 			PipelineBuilder& addDescriptorSetLayout(VkDescriptorSetLayout layout);
 			
-			//************************************
-			// Method:    addPushConstantRange
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::addPushConstantRange
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkShaderStageFlags stageFlags
-			// Parameter: uint32_t offset
-			// Parameter: uint32_t size
-			//************************************
+			/// <summary>
+			/// Adds a push constant range to the pipeline.
+			/// The range must be compatible with the shader stages in the pipeline.
+			/// </summary>
+			/// <param name="stageFlags"></param>
+			/// <param name="offset"></param>
+			/// <param name="size"></param>
+			/// <returns></returns>
 			PipelineBuilder& addPushConstantRange(VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size);
 
-			//************************************
-			// Method:    setDepthTestEnable
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setDepthTestEnable
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkBool32 depthTestEnable
-			//************************************
+			/// <summary>
+			/// Enables depth testing for the pipeline.
+			/// </summary>
+			/// <param name="depthTestEnable"></param>
+			/// <returns></returns>
 			PipelineBuilder& setDepthTestEnable(VkBool32 depthTestEnable);
 			
-			//************************************
-			// Method:    setDepthWriteEnable
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setDepthWriteEnable
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkBool32 depthWriteEnable
-			//************************************
+			/// <summary>
+			/// Sets whether depth writing is enabled for the pipeline.
+			/// </summary>
+			/// <param name="depthWriteEnable"></param>
+			/// <returns></returns>
 			PipelineBuilder& setDepthWriteEnable(VkBool32 depthWriteEnable);
 			
-			//************************************
-			// Method:    setDepthCompareOp
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::setDepthCompareOp
-			// Access:    public 
-			// Returns:   GFXEngine::Graphics::PipelineBuilder&
-			// Qualifier:
-			// Parameter: VkCompareOp depthCompareOp
-			//************************************
+			/// <summary>
+			/// Sets the depth compare operation for the pipeline.
+			/// </summary>
+			/// <param name="depthCompareOp"></param>
+			/// <returns></returns>
 			PipelineBuilder& setDepthCompareOp(VkCompareOp depthCompareOp);
 
-			//************************************
-			// Method:    buildGraphicsPipeline
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::buildGraphicsPipeline
-			// Access:    public 
-			// Returns:   std::unique_ptr<GFXEngine::Graphics::GraphicsPipeline>
-			// Qualifier:
-			// Parameter: VkRenderPass renderPass
-			// Parameter: std::unique_ptr<IGraphicsPass> graphicsPass
-			//************************************
-			std::unique_ptr<GraphicsPipeline> buildGraphicsPipeline(VkRenderPass renderPass, std::unique_ptr<IGraphicsPass> graphicsPass);
+			/// <summary>
+			/// Builds the graphics pipeline with the specified render pass.
+			/// Requires that at least one shader stage, one vertex input binding, 
+			/// and one vertex input attribute have been added to the pipeline.
+			/// </summary>
+			/// <param name="renderPass"></param>
+			/// <param name="pipelineLayout"></param>
+			/// <returns></returns>
+			VkPipeline build(VkRenderPass renderPass, VkPipelineLayout pipelineLayout);
 			
-			//************************************
-			// Method:    buildPresentPipeline
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::buildPresentPipeline
-			// Access:    public 
-			// Returns:   std::unique_ptr<GFXEngine::Graphics::PresentPipeline>
-			// Qualifier:
-			// Parameter: VkRenderPass renderPass
-			//************************************
-			std::unique_ptr<PresentPipeline> buildPresentPipeline(VkRenderPass renderPass);
-			
-			//************************************
-			// Method:    clear
-			// FullName:  GFXEngine::Graphics::PipelineBuilder::clear
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Clears the pipeline builder, removing all shader stages, vertex input bindings, and attributes.
+			/// </summary>
 			void clear();
 		};
 	}
