@@ -89,638 +89,449 @@ namespace GFXEngine {
 			std::vector<std::function<void(Renderer&, VkViewport viewport, VkRect2D scissors)>> m_swapchainRecreationCallbacks;
 
 		public:
-			//************************************
-			// Method:    Renderer
-			// FullName:  GFXEngine::Graphics::Renderer::Renderer
-			// Access:    public 
-			// Returns:   
-			// Qualifier:
-			//************************************
+			
+			/// <summary>
+			/// Default constructor for the Renderer class. 
+			/// Initializes the renderer with default settings.
+			/// </summary>
 			Renderer() = default;
 			
-			//************************************
-			// Method:    ~Renderer
-			// FullName:  GFXEngine::Graphics::Renderer::~Renderer
-			// Access:    public 
-			// Returns:   
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Default destructor for the Renderer class. 
+			/// Cleans up resources used by the renderer.
+			/// </summary>
 			~Renderer() = default;
 
 		public:
-			//************************************
-			// Method:    init
-			// FullName:  GFXEngine::Graphics::Renderer::init
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: GLFWwindow * window
-			// Parameter: const std::string & shadersDirectory
-			//************************************
+			/// <summary>
+			/// Initializes the renderer with the specified GLFW window.
+			/// </summary>
+			/// <param name="window"></param>
 			void init(GLFWwindow* window);
 			
-			//************************************
-			// Method:    recreate
-			// FullName:  GFXEngine::Graphics::Renderer::recreate
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Recreates the swapchain and associated resources when 
+			/// the window is resized or the swapchain becomes incompatible.
+			/// </summary>
 			void recreate();
 			
-			//************************************
-			// Method:    createSyncObjects
-			// FullName:  GFXEngine::Graphics::Renderer::createSyncObjects
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Creates synchronization objects (semaphores and fences) 
+			/// for frame rendering.
+			/// </summary>
 			void createSyncObjects();
 			
-			//************************************
-			// Method:    nextImage
-			// FullName:  GFXEngine::Graphics::Renderer::nextImage
-			// Access:    public 
-			// Returns:   uint32_t
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Acquires the next available image from the swapchain for rendering.
+			/// </summary>
+			/// <returns></returns>
 			uint32_t nextImage();
 			
-			//************************************
-			// Method:    beginSingleTimeCommands
-			// FullName:  GFXEngine::Graphics::Renderer::beginSingleTimeCommands
-			// Access:    public 
-			// Returns:   VkCommandBuffer
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Begins recording a single-use command buffer for one-time operations.
+			/// </summary>
+			/// <returns></returns>
 			VkCommandBuffer beginSingleTimeCommands();
 			
-			//************************************
-			// Method:    endSingleTimeCommands
-			// FullName:  GFXEngine::Graphics::Renderer::endSingleTimeCommands
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkCommandBuffer commandBuffer
-			//************************************
+			/// <summary>
+			/// Ends recording of a single-use command buffer and submits it for execution.
+			/// </summary>
+			/// <param name="commandBuffer"></param>
 			void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 			
-			//************************************
-			// Method:    beginFrame
-			// FullName:  GFXEngine::Graphics::Renderer::beginFrame
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Begins recording commands for a frame, preparing the command buffer for rendering.
+			/// </summary>
+			/// <param name="imageIndex"></param>
 			void beginFrame(uint32_t imageIndex);
 			
-			//************************************
-			// Method:    beginRenderPass
-			// FullName:  GFXEngine::Graphics::Renderer::beginRenderPass
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::RenderPass & renderpass
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Begins a render pass with the specified renderpass and framebuffer for the given image index.
+			/// </summary>
+			/// <param name="renderpass"></param>
+			/// <param name="imageIndex"></param>
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    beginRenderPass
-			// FullName:  GFXEngine::Graphics::Renderer::beginRenderPass
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::RenderPass & renderpass
-			// Parameter: const VkFramebuffer & framebuffer
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Begins a render pass with the specified renderpass, framebuffer, and extent for the given image index.
+			/// </summary>
+			/// <param name="renderpass"></param>
+			/// <param name="framebuffer"></param>
+			/// <param name="imageIndex"></param>
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    beginRenderPass
-			// FullName:  GFXEngine::Graphics::Renderer::beginRenderPass
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::RenderPass & renderpass
-			// Parameter: const VkFramebuffer & framebuffer
-			// Parameter: VkExtent2D extent
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Begins a render pass with the specified renderpass, framebuffer, extent, and image index.
+			/// </summary>
+			/// <param name="renderpass"></param>
+			/// <param name="framebuffer"></param>
+			/// <param name="extent"></param>
+			/// <param name="imageIndex"></param>
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, VkExtent2D extent, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    beginRenderPass
-			// FullName:  GFXEngine::Graphics::Renderer::beginRenderPass
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::RenderPass & renderpass
-			// Parameter: const VkFramebuffer & framebuffer
-			// Parameter: const VkViewport & viewport
-			// Parameter: const VkRect2D & scissors
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Begins a render pass with the specified renderpass, framebuffer, viewport, scissors, and image index.
+			/// </summary>
+			/// <param name="renderpass"></param>
+			/// <param name="framebuffer"></param>
+			/// <param name="viewport"></param>
+			/// <param name="scissors"></param>
+			/// <param name="imageIndex"></param>
 			void beginRenderPass(const LibGFX::RenderPass& renderpass, const VkFramebuffer& framebuffer, const VkViewport& viewport, const VkRect2D& scissors, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    usePipeline
-			// FullName:  GFXEngine::Graphics::Renderer::usePipeline
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const RenderPipeline & pipeline
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Uses the specified render pipeline for rendering commands in the current command buffer.
+			/// </summary>
+			/// <param name="pipeline"></param>
+			/// <param name="imageIndex"></param>
 			void usePipeline(const RenderPipeline& pipeline, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    usePipeline
-			// FullName:  GFXEngine::Graphics::Renderer::usePipeline
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Ends the current render pass for the given image index, finalizing rendering commands.
+			/// </summary>
+			/// <param name="imageIndex"></param>
 			void endRenderPass(uint32_t imageIndex);
 			
-			//************************************
-			// Method:    endFrame
-			// FullName:  GFXEngine::Graphics::Renderer::endFrame
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Ends recording commands for a frame, finalizing the command buffer for submission.
+			/// </summary>
+			/// <param name="imageIndex"></param>
 			void endFrame(uint32_t imageIndex);
 			
-			//************************************
-			// Method:    submitFrame
-			// FullName:  GFXEngine::Graphics::Renderer::submitFrame
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Submits the recorded command buffer for execution and presents the rendered frame to the swapchain for the given image index.
+			/// </summary>
+			/// <param name="imageIndex"></param>
 			void submitFrame(uint32_t imageIndex);
 			
-			//************************************
-			// Method:    presentFrame
-			// FullName:  GFXEngine::Graphics::Renderer::presentFrame
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Presents the rendered frame to the swapchain for the given image index, displaying it on the screen.
+			/// </summary>
+			/// <param name="imageIndex"></param>
 			void presentFrame(uint32_t imageIndex);
 			
-			//************************************
-			// Method:    notifyFramebufferResized
-			// FullName:  GFXEngine::Graphics::Renderer::notifyFramebufferResized
-			// Access:    public 
-			// Returns:   void
-			// Qualifier: Call from a GLFW framebuffer size callback since some platforms (e.g. Linux/X11 on maximize) don't report VK_SUBOPTIMAL_KHR/VK_ERROR_OUT_OF_DATE_KHR
-			//************************************
+			/// <summary>
+			/// Notifies the renderer that the framebuffer has been resized, triggering a swapchain recreation on the next frame.
+			/// </summary>
 			void notifyFramebufferResized();
 			
-			//************************************
-			// Method:    advanceFrame
-			// FullName:  GFXEngine::Graphics::Renderer::advanceFrame
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Advances to the next frame in the rendering loop, updating the current image index and 
+			/// handling synchronization for multi-frame rendering.
+			/// </summary>
 			void advanceFrame();
 			
-			//************************************
-			// Method:    bindPushConstants
-			// FullName:  GFXEngine::Graphics::Renderer::bindPushConstants
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const void * data
-			// Parameter: size_t size
-			// Parameter: size_t offset
-			// Parameter: VkPipelineLayout pipelineLayout
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Binds push constants to the specified pipeline layout for the given image index, 
+			/// allowing for dynamic data to be passed to shaders during rendering.
+			/// </summary>
+			/// <param name="data"></param>
+			/// <param name="size"></param>
+			/// <param name="offset"></param>
+			/// <param name="pipelineLayout"></param>
+			/// <param name="imageIndex"></param>
 			void bindPushConstants(const void* data, size_t size, size_t offset, VkPipelineLayout pipelineLayout, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    bindPushConstants
-			// FullName:  GFXEngine::Graphics::Renderer::bindPushConstants
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const void * data
-			// Parameter: size_t size
-			// Parameter: VkPipelineLayout pipelineLayout
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Binds push constants to the specified pipeline layout for the given image index,
+			/// </summary>
+			/// <param name="data"></param>
+			/// <param name="size"></param>
+			/// <param name="pipelineLayout"></param>
+			/// <param name="imageIndex"></param>
 			void bindPushConstants(const void* data, size_t size, VkPipelineLayout pipelineLayout, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    bindDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::bindDescriptorSet
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const VkDescriptorSet & descriptorSet
-			// Parameter: VkPipelineLayout pipelineLayout
-			// Parameter: uint32_t firstSet
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Binds a single descriptor set to the specified pipeline layout for the given image index,
+			/// </summary>
+			/// <param name="descriptorSet"></param>
+			/// <param name="pipelineLayout"></param>
+			/// <param name="firstSet"></param>
+			/// <param name="imageIndex"></param>
 			void bindDescriptorSet(const VkDescriptorSet& descriptorSet, VkPipelineLayout pipelineLayout, uint32_t firstSet, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    bindDescriptorSets
-			// FullName:  GFXEngine::Graphics::Renderer::bindDescriptorSets
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const std::vector<VkDescriptorSet> & descriptorSets
-			// Parameter: VkPipelineLayout pipelineLayout
-			// Parameter: uint32_t imageIndex
-			//************************************
+			/// <summary>
+			/// Binds multiple descriptor sets to the specified pipeline layout for the given image index, allowing for efficient resource binding during rendering.
+			/// </summary>
+			/// <param name="descriptorSets"></param>
+			/// <param name="pipelineLayout"></param>
+			/// <param name="imageIndex"></param>
 			void bindDescriptorSets(const std::vector<VkDescriptorSet>& descriptorSets, VkPipelineLayout pipelineLayout, uint32_t imageIndex);
 			
-			//************************************
-			// Method:    drawBuffers
-			// FullName:  GFXEngine::Graphics::Renderer::drawBuffers
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & vertexBuffer
-			// Parameter: const LibGFX::Buffer & indexBuffer
-			// Parameter: uint32_t indexCount
-			// Parameter: uint32_t imageIndex
-			// Parameter: uint32_t instanceCount
-			//************************************
+			/// <summary>
+			/// Draws indexed geometry using the specified vertex and index buffers for the given image index, 
+			/// allowing for efficient rendering of complex meshes.
+			/// </summary>
+			/// <param name="vertexBuffer"></param>
+			/// <param name="indexBuffer"></param>
+			/// <param name="indexCount"></param>
+			/// <param name="imageIndex"></param>
+			/// <param name="instanceCount"></param>
 			void drawBuffers(const LibGFX::Buffer& vertexBuffer, const LibGFX::Buffer& indexBuffer, uint32_t indexCount, uint32_t imageIndex, uint32_t instanceCount = 1);
 			
-			//************************************
-			// Method:    drawFrame
-			// FullName:  GFXEngine::Graphics::Renderer::drawFrame
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Draws a frame by acquiring the next image, recording commands, submitting the command buffer, and presenting the rendered frame to the swapchain.
+			/// </summary>
 			void drawFrame();
 			
-			//************************************
-			// Method:    waitIdle
-			// FullName:  GFXEngine::Graphics::Renderer::waitIdle
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Waits for the device to become idle, ensuring that all pending operations have completed before proceeding.
+			/// </summary>
 			void waitIdle() { m_context->waitIdle(); }
 			
-			//************************************
-			// Method:    dispose
-			// FullName:  GFXEngine::Graphics::Renderer::dispose
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Disposes of the renderer, releasing all allocated resources and cleaning up Vulkan objects.
+			/// </summary>
 			void dispose();
 
 		public:
-			//************************************
-			// Method:    createDescriptorSetLayout
-			// FullName:  GFXEngine::Graphics::Renderer::createDescriptorSetLayout
-			// Access:    public 
-			// Returns:   VkDescriptorSetLayout
-			// Qualifier:
-			// Parameter: uint32_t binding
-			// Parameter: VkDescriptorType type
-			// Parameter: VkShaderStageFlags stageFlags
-			//************************************
+			/// <summary>
+			/// Creates a descriptor set layout with the specified binding, descriptor type, and shader stage flags, allowing for efficient resource binding in shaders.
+			/// </summary>
+			/// <param name="binding"></param>
+			/// <param name="type"></param>
+			/// <param name="stageFlags"></param>
+			/// <returns></returns>
 			VkDescriptorSetLayout createDescriptorSetLayout(uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags);
 			
-			//************************************
-			// Method:    destroyDescriptorSetLayout
-			// FullName:  GFXEngine::Graphics::Renderer::destroyDescriptorSetLayout
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkDescriptorSetLayout layout
-			//************************************
+			/// <summary>
+			/// Destroys a descriptor set layout, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="layout"></param>
 			void destroyDescriptorSetLayout(VkDescriptorSetLayout layout);
 
-			//************************************
-			// Method:    allocateTextureDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::allocateTextureDescriptorSet
-			// Access:    public 
-			// Returns:   VkDescriptorSet
-			// Qualifier:
-			// Parameter: const LibGFX::Image & image
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Allocates a descriptor set for a texture image with the specified binding, allowing for efficient resource binding in shaders.
+			/// </summary>
+			/// <param name="image"></param>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			VkDescriptorSet allocateTextureDescriptorSet(const LibGFX::Image& image, uint32_t binding);
 			
-			//************************************
-			// Method:    allocateCubemapDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::allocateCubemapDescriptorSet
-			// Access:    public 
-			// Returns:   VkDescriptorSet
-			// Qualifier:
-			// Parameter: const LibGFX::Cubemap & cubemap
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Allocates a descriptor set for a cubemap texture with the specified binding, allowing for efficient resource binding in shaders.
+			/// </summary>
+			/// <param name="cubemap"></param>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			VkDescriptorSet allocateCubemapDescriptorSet(const LibGFX::Cubemap& cubemap, uint32_t binding);
 			
-			//************************************
-			// Method:    allocatePBRMaterialDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::allocatePBRMaterialDescriptorSet
-			// Access:    public 
-			// Returns:   VkDescriptorSet
-			// Qualifier:
-			// Parameter: const LibGFX::Image & albedo
-			// Parameter: const LibGFX::Image & normal
-			// Parameter: const LibGFX::Image & metallicRoughness
-			// Parameter: const LibGFX::Image & ao
-			// Parameter: uint32_t binding
-			//************************************
+			/// <summary>
+			/// Allocates a descriptor set for a PBR material with the specified albedo, normal, metallic-roughness, 
+			/// and ambient occlusion textures, allowing for efficient resource binding in shaders.
+			/// </summary>
+			/// <param name="albedo"></param>
+			/// <param name="normal"></param>
+			/// <param name="metallicRoughness"></param>
+			/// <param name="ao"></param>
+			/// <param name="binding"></param>
+			/// <returns></returns>
 			VkDescriptorSet allocatePBRMaterialDescriptorSet(const LibGFX::Image& albedo, const LibGFX::Image& normal, const LibGFX::Image& metallicRoughness, const LibGFX::Image& ao, uint32_t binding);
 			
-			//************************************
-			// Method:    freeTextureDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::freeTextureDescriptorSet
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkDescriptorSet descriptorSet
-			//************************************
+			/// <summary>
+			/// Frees a previously allocated texture descriptor set, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="descriptorSet"></param>
 			void freeTextureDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
 			
-			//************************************
-			// Method:    freeCubemapDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::freeCubemapDescriptorSet
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkDescriptorSet descriptorSet
-			//************************************
+			/// <summary>
+			/// Frees a previously allocated cubemap descriptor set, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="descriptorSet"></param>
 			void freeCubemapDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
 			
-			//************************************
-			// Method:    freePBRMaterialDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::freePBRMaterialDescriptorSet
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkDescriptorSet descriptorSet
-			//************************************
+			/// <summary>
+			/// Frees a previously allocated PBR material descriptor set, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="descriptorSet"></param>
 			void freePBRMaterialDescriptorSet(VkDescriptorSet descriptorSet); // TODO: Not used, consider removing
 
-			//************************************
-			// Method:    allocateUniformBufferDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::allocateUniformBufferDescriptorSet
-			// Access:    public 
-			// Returns:   VkDescriptorSet
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			// Parameter: uint32_t binding
-			// Parameter: VkDescriptorSetLayout layout
-			//************************************
+			/// <summary>
+			/// Allocates a descriptor set for a uniform buffer with the specified binding and layout, 
+			/// allowing for efficient resource binding in shaders.
+			/// </summary>
+			/// <param name="buffer"></param>
+			/// <param name="binding"></param>
+			/// <param name="layout"></param>
+			/// <returns></returns>
 			VkDescriptorSet allocateUniformBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
 			
-			//************************************
-			// Method:    freeUniformBufferDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::freeUniformBufferDescriptorSet
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkDescriptorSet descriptorSet
-			//************************************
+			/// <summary>
+			/// Frees a previously allocated uniform buffer descriptor set, 
+			/// releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="descriptorSet"></param>
 			void freeUniformBufferDescriptorSet(VkDescriptorSet descriptorSet);
 
-			//************************************
-			// Method:    allocateStorageBufferDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::allocateStorageBufferDescriptorSet
-			// Access:    public 
-			// Returns:   VkDescriptorSet
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			// Parameter: uint32_t binding
-			// Parameter: VkDescriptorSetLayout layout
-			//************************************
+			/// <summary>
+			/// Allocates a descriptor set for a storage buffer with the specified binding and layout,
+			/// </summary>
+			/// <param name="buffer"></param>
+			/// <param name="binding"></param>
+			/// <param name="layout"></param>
+			/// <returns></returns>
 			VkDescriptorSet allocateStorageBufferDescriptorSet(const LibGFX::Buffer& buffer, uint32_t binding, VkDescriptorSetLayout layout);
 			
-			//************************************
-			// Method:    freeStorageBufferDescriptorSet
-			// FullName:  GFXEngine::Graphics::Renderer::freeStorageBufferDescriptorSet
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: VkDescriptorSet descriptorSet
-			//************************************
+			/// <summary>
+			/// Frees a previously allocated storage buffer descriptor set, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="descriptorSet"></param>
 			void freeStorageBufferDescriptorSet(VkDescriptorSet descriptorSet);
 
 		public:
-			//************************************
-			// Method:    createShaderModule
-			// FullName:  GFXEngine::Graphics::Renderer::createShaderModule
-			// Access:    public 
-			// Returns:   VkShaderModule
-			// Qualifier:
-			// Parameter: const std::vector<char> & code
-			//************************************
+			/// <summary>
+			/// Creates a shader module from the provided SPIR-V bytecode, allowing for the use of custom shaders in the rendering pipeline.
+			/// </summary>
+			/// <param name="code"></param>
+			/// <returns></returns>
 			VkShaderModule createShaderModule(const std::vector<char>& code);
 
 		public:
-			//************************************
-			// Method:    createImage
-			// FullName:  GFXEngine::Graphics::Renderer::createImage
-			// Access:    public 
-			// Returns:   LibGFX::Image
-			// Qualifier:
-			// Parameter: VkExtent2D extent
-			// Parameter: VkFormat format
-			// Parameter: VkImageUsageFlags usage
-			// Parameter: VkMemoryPropertyFlags properties
-			//************************************
+			/// <summary>
+			/// Creates an image with the specified extent, format, usage, and memory properties, 
+			/// allowing for efficient texture and framebuffer management in Vulkan.
+			/// </summary>
+			/// <param name="extent"></param>
+			/// <param name="format"></param>
+			/// <param name="usage"></param>
+			/// <param name="properties"></param>
+			/// <returns></returns>
 			LibGFX::Image createImage(VkExtent2D extent, VkFormat format, VkImageUsageFlags usage, VkMemoryPropertyFlags properties);
 			
-			//************************************
-			// Method:    loadTexture
-			// FullName:  GFXEngine::Graphics::Renderer::loadTexture
-			// Access:    public 
-			// Returns:   LibGFX::Image
-			// Qualifier:
-			// Parameter: const LibGFX::ImageData & imageData
-			//************************************
+			/// <summary>
+			/// Loads a texture from the provided image data, creating a Vulkan image and associated resources for efficient rendering.
+			/// </summary>
+			/// <param name="imageData"></param>
+			/// <returns></returns>
 			LibGFX::Image loadTexture(const LibGFX::ImageData& imageData);
 			
-			//************************************
-			// Method:    loadCubemap
-			// FullName:  GFXEngine::Graphics::Renderer::loadCubemap
-			// Access:    public 
-			// Returns:   LibGFX::Cubemap
-			// Qualifier:
-			// Parameter: const LibGFX::CubemapData & cubemapData
-			//************************************
+			/// <summary>
+			/// Loads a cubemap texture from the provided cubemap data, creating a Vulkan image 
+			/// and associated resources for efficient rendering of environment maps.
+			/// </summary>
+			/// <param name="cubemapData"></param>
+			/// <returns></returns>
 			LibGFX::Cubemap loadCubemap(const LibGFX::CubemapData& cubemapData);
 			
-			//************************************
-			// Method:    disposeTexture
-			// FullName:  GFXEngine::Graphics::Renderer::disposeTexture
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::Image & image
-			//************************************
+			/// <summary>
+			/// Disposes of a previously created texture, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="image"></param>
 			void disposeTexture(LibGFX::Image& image);
 			
-			//************************************
-			// Method:    disposeCubemap
-			// FullName:  GFXEngine::Graphics::Renderer::disposeCubemap
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::Cubemap & cubemap
-			//************************************
+			/// <summary>
+			/// Disposes of a previously created cubemap texture, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="cubemap"></param>
 			void disposeCubemap(LibGFX::Cubemap& cubemap);
 		
-
 		public:
-			//************************************
-			// Method:    managePipeline
-			// FullName:  GFXEngine::Graphics::Renderer::managePipeline
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: unsigned int pipelineId
-			// Parameter: std::unique_ptr<RenderPipeline> pipeline
-			//************************************
+			
+			/// <summary>
+			/// Manages a render pipeline by associating it with a unique pipeline ID, 
+			/// allowing for efficient retrieval and usage of different rendering pipelines in the renderer.
+			/// </summary>
+			/// <param name="pipelineId"></param>
+			/// <param name="pipeline"></param>
 			void managePipeline(unsigned int pipelineId, std::unique_ptr<RenderPipeline> pipeline);
 			
-			//************************************
-			// Method:    getPipeline
-			// FullName:  GFXEngine::Graphics::Renderer::getPipeline
-			// Access:    public 
-			// Returns:   T*
-			// Qualifier: const
-			// Parameter: unsigned int pipelineId
-			//************************************
+			/// <summary>
+			/// Gets a managed render pipeline ptr by its unique pipeline ID, 
+			/// allowing for efficient retrieval and usage of different rendering pipelines in the renderer.
+			/// </summary>
+			/// <typeparam name="T"></typeparam>
+			/// <param name="pipelineId"></param>
+			/// <returns></returns>
 			template<typename T>
 			T* getPipeline(unsigned int pipelineId) const {
 				return m_pipelineManager.getPipeline<T>(pipelineId);
 			}
 
 		public:
-			//************************************
-			// Method:    createDepthBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::createDepthBuffer
-			// Access:    public 
-			// Returns:   LibGFX::DepthBuffer
-			// Qualifier:
-			// Parameter: VkExtent2D extent
-			// Parameter: VkFormat format
-			//************************************
+			
+			/// <summary>
+			/// Creates a depth buffer with the specified extent and format, allowing for efficient depth testing and rendering in Vulkan.
+			/// </summary>
+			/// <param name="extent"></param>
+			/// <param name="format"></param>
+			/// <returns></returns>
 			LibGFX::DepthBuffer createDepthBuffer(VkExtent2D extent, VkFormat format);
 			
-			//************************************
-			// Method:    destroyDepthBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::destroyDepthBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::DepthBuffer & depthBuffer
-			//************************************
+			/// <summary>
+			/// Destroys a previously created depth buffer, releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="depthBuffer"></param>
 			void destroyDepthBuffer(LibGFX::DepthBuffer& depthBuffer);
 
 		public:
-			//************************************
-			// Method:    createBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::createBuffer
-			// Access:    public 
-			// Returns:   LibGFX::Buffer
-			// Qualifier:
-			// Parameter: VkDeviceSize size
-			// Parameter: VkBufferUsageFlags usage
-			// Parameter: VkMemoryPropertyFlags properties
-			//************************************
+			
+			/// <summary>
+			/// Creates a buffer with the specified size, usage, and memory properties, allowing for efficient data storage and transfer in Vulkan.
+			/// </summary>
+			/// <param name="size"></param>
+			/// <param name="usage"></param>
+			/// <param name="properties"></param>
+			/// <returns></returns>
 			LibGFX::Buffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			
-			//************************************
-			// Method:    copyBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::copyBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & srcBuffer
-			// Parameter: const LibGFX::Buffer & dstBuffer
-			// Parameter: VkDeviceSize size
-			//************************************
+			/// <summary>
+			/// Copies data from the source buffer to the destination buffer, allowing for efficient data transfer between buffers in Vulkan.
+			/// </summary>
+			/// <param name="srcBuffer"></param>
+			/// <param name="dstBuffer"></param>
+			/// <param name="size"></param>
 			void copyBuffer(const LibGFX::Buffer& srcBuffer, const LibGFX::Buffer& dstBuffer, VkDeviceSize size);
 			
-			//************************************
-			// Method:    resizeBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::resizeBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::Buffer & buffer
-			// Parameter: VkDeviceSize newSize
-			// Parameter: VkBufferUsageFlags usage
-			// Parameter: VkMemoryPropertyFlags properties
-			//************************************
+			/// <summary>
+			/// Resizes a buffer to the specified new size, updating its usage and memory properties as needed, 
+			/// allowing for dynamic buffer management in Vulkan.
+			/// </summary>
+			/// <param name="buffer"></param>
+			/// <param name="newSize"></param>
+			/// <param name="usage"></param>
+			/// <param name="properties"></param>
 			void resizeBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			
-			//************************************
-			// Method:    recreateBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::recreateBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::Buffer & buffer
-			// Parameter: VkDeviceSize newSize
-			// Parameter: VkBufferUsageFlags usage
-			// Parameter: VkMemoryPropertyFlags properties
-			//************************************
+			/// <summary>
+			/// Recreates a buffer with the specified new size, usage, and memory properties,
+			/// </summary>
+			/// <param name="buffer"></param>
+			/// <param name="newSize"></param>
+			/// <param name="usage"></param>
+			/// <param name="properties"></param>
 			void recreateBuffer(LibGFX::Buffer& buffer, VkDeviceSize newSize, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 			
-			//************************************
-			// Method:    flushBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::flushBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			//************************************
+			/// <summary>
+			/// Flushes the specified buffer, ensuring that any pending writes to 
+			/// the buffer are made visible to the GPU for subsequent rendering operations.
+			/// </summary>
+			/// <param name="buffer"></param>
 			void flushBuffer(const LibGFX::Buffer& buffer);
 			
-			//************************************
-			// Method:    destroyBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::destroyBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: LibGFX::Buffer & buffer
-			//************************************
+			/// <summary>
+			/// Destroys a previously created buffer, 
+			/// releasing the associated resources and cleaning up Vulkan objects.
+			/// </summary>
+			/// <param name="buffer"></param>
 			void destroyBuffer(LibGFX::Buffer& buffer);
 
-			//************************************
-			// Method:    updateBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::updateBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			// Parameter: const T * data
-			// Parameter: size_t count
-			// Parameter: bool flush
-			//************************************
+			/// <summary>
+			/// Updates the contents of a buffer with the specified data, 
+			/// allowing for efficient data transfer to the GPU for rendering operations.
+			/// </summary>
+			/// <typeparam name="T">The type of the data elements.</typeparam>
+			/// <param name="buffer">The buffer to update.</param>
+			/// <param name="data">The data to copy into the buffer.</param>
+			/// <param name="count">The number of elements to copy (not the number of bytes).</param>
+			/// <param name="flush">Whether to flush the buffer after updating.</param>
 			template<typename T>
 			void updateBuffer(const LibGFX::Buffer& buffer, const T* data, size_t count, bool flush = false) {
-				void* mappedData;
+				VkDeviceSize totalSize = sizeof(T) * count;
+				assert(totalSize <= buffer.size);
 
+				void* mappedData;
 				vkMapMemory(m_context->getDevice(), buffer.memory, 0, buffer.size, 0, &mappedData);
-				memcpy(mappedData, data, sizeof(T) * count);
+				memcpy(mappedData, data, totalSize);
 				if (flush)
 				{
 					this->flushBuffer(buffer);
@@ -728,309 +539,227 @@ namespace GFXEngine {
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
 
-			//************************************
-			// Method:    updateBufferRange
-			// FullName:  GFXEngine::Graphics::Renderer::updateBufferRange
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			// Parameter: const T * data
-			// Parameter: size_t offset
-			// Parameter: bool flush
-			//************************************
+			/// <summary>
+			/// Updates a specific range of a buffer with the specified data, allowing for efficient partial updates to the buffer's contents.
+			/// </summary>
+			/// <typeparam name="T">The type of the data elements.</typeparam>
+			/// <param name="buffer">The buffer to update.</param>
+			/// <param name="data">The data to copy into the buffer.</param>
+			/// <param name="offset">The offset within the buffer to start updating.</param>
+			/// <param name="flush">Whether to flush the buffer after updating.</param>
 			template<typename T>
-			void updateBufferRange(const LibGFX::Buffer& buffer, const T* data, size_t offset, bool flush = false) {
+			void updateBufferRange(const LibGFX::Buffer& buffer, const T* data, size_t count, size_t offset, bool flush = false) {
+				VkDeviceSize totalSize = sizeof(T) * count;
+				VkDeviceSize offsetSize = offset * sizeof(T);
+
+				assert(offsetSize + totalSize <= buffer.size);
+
 				void* mappedData;
-				vkMapMemory(m_context->getDevice(), buffer.memory, offset, sizeof(T), 0, &mappedData);
-				memcpy(mappedData, data, sizeof(T));
+				vkMapMemory(m_context->getDevice(), buffer.memory, 0, buffer.size, 0, &mappedData); // Map the entire buffer to ensure we can write to the specified range
+				memcpy(static_cast<char*>(mappedData) + offsetSize, data, totalSize);
 				if (flush) {
 					this->flushBuffer(buffer);
 				}
 				vkUnmapMemory(m_context->getDevice(), buffer.memory);
 			}
 
-			//************************************
-			// Method:    mapBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::mapBuffer
-			// Access:    public 
-			// Returns:   void*
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			//************************************
+			/// <summary>
+			/// Maps a buffer's memory to a CPU-accessible pointer, 
+			/// allowing for direct access to the buffer's contents for reading or writing.
+			/// </summary>
+			/// <param name="buffer"></param>
+			/// <returns></returns>
 			void* mapBuffer(const LibGFX::Buffer& buffer);
 			
-			//************************************
-			// Method:    unmapBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::unmapBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const LibGFX::Buffer & buffer
-			//************************************
+			/// <summary>
+			/// Unmaps a previously mapped buffer's memory, 
+			/// ensuring that any changes made to the buffer's contents are properly synchronized with the GPU.
+			/// </summary>
+			/// <param name="buffer"></param>
 			void unmapBuffer(const LibGFX::Buffer& buffer);
 
-			//************************************
-			// Method:    updateMappedBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::updateMappedBuffer
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: void * mappedData
-			// Parameter: size_t bufferSize
-			// Parameter: const T * data
-			// Parameter: size_t count
-			//************************************
+			/// <summary>
+			/// Updates the contents of a mapped buffer with the specified data, 
+			/// allowing for efficient data transfer to the GPU for rendering operations.
+			/// </summary>
+			/// <typeparam name="T"></typeparam>
+			/// <param name="mappedData"></param>
+			/// <param name="bufferSize"></param>
+			/// <param name="data"></param>
+			/// <param name="count"></param>
 			template<typename T>
 			void updateMappedBuffer(void* mappedData, size_t bufferSize, const T* data, size_t count) {
 				size_t totalSize = sizeof(T) * count;
-				assert(totalSize <= bufferSize && "Buffer update size exceeds buffer size");
+				assert(totalSize <= bufferSize);
 				memcpy(mappedData, data, totalSize);
 			}
 
-			//************************************
-			// Method:    updateMappedBufferRange
-			// FullName:  GFXEngine::Graphics::Renderer::updateMappedBufferRange
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: void * mappedData
-			// Parameter: size_t bufferSize
-			// Parameter: const T * data
-			// Parameter: size_t count
-			// Parameter: size_t elementOffset
-			//************************************
+			/// <summary>
+			/// Updates a specific range of a mapped buffer with the specified data, 
+			/// allowing for efficient partial updates to the buffer's contents.
+			/// </summary>
+			/// <typeparam name="T"></typeparam>
+			/// <param name="mappedData"></param>
+			/// <param name="bufferSize"></param>
+			/// <param name="data"></param>
+			/// <param name="count"></param>
+			/// <param name="elementOffset"></param>
 			template<typename T>
 			void updateMappedBufferRange(void* mappedData, size_t bufferSize, const T* data, size_t count, size_t elementOffset) {
 				size_t byteOffset = elementOffset * sizeof(T);
 				size_t totalSize = sizeof(T) * count;
-				assert(byteOffset + totalSize <= bufferSize, "Buffer update range exceeds buffer size");
+				assert(byteOffset + totalSize <= bufferSize);
 				auto dest = static_cast<char*>(mappedData) + byteOffset;
 				memcpy(dest, data, totalSize);
 			}
 
 		public:
-			//************************************
-			// Method:    getCommandBuffer
-			// FullName:  GFXEngine::Graphics::Renderer::getCommandBuffer
-			// Access:    public 
-			// Returns:   VkCommandBuffer
-			// Qualifier: const
-			// Parameter: uint32_t imageIndex
-			//************************************
+
+			/// <summary>
+			/// Gets the command buffer for the specified image index, 
+			/// allowing for recording rendering commands for that specific frame.
+			/// </summary>
+			/// <param name="imageIndex"></param>
+			/// <returns></returns>
 			VkCommandBuffer getCommandBuffer(uint32_t imageIndex) const { return m_commandBuffers[imageIndex]; }
 			
-			//************************************
-			// Method:    getSwapchainImageCount
-			// FullName:  GFXEngine::Graphics::Renderer::getSwapchainImageCount
-			// Access:    public 
-			// Returns:   std::size_t
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the number of images in the swapchain, allowing for efficient management of frame rendering and presentation.
+			/// </summary>
+			/// <returns></returns>
 			size_t getSwapchainImageCount() const { return m_swapchainInfo.imageViews.size(); }
 			
-			//************************************
-			// Method:    getFramebufferCount
-			// FullName:  GFXEngine::Graphics::Renderer::getFramebufferCount
-			// Access:    public 
-			// Returns:   std::size_t
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the number of framebuffers created for the swapchain, allowing for efficient management of frame rendering and presentation.
+			/// </summary>
+			/// <returns></returns>
 			size_t getFramebufferCount() const { return m_framebuffers.size(); }
 			
-			//************************************
-			// Method:    getScissor
-			// FullName:  GFXEngine::Graphics::Renderer::getScissor
-			// Access:    public 
-			// Returns:   VkRect2D
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the current image index being rendered, allowing for efficient management of frame rendering and presentation.
+			/// </summary>
+			/// <returns></returns>
 			VkRect2D getScissor() const { return m_scissor; }
 			
-			//************************************
-			// Method:    getViewport
-			// FullName:  GFXEngine::Graphics::Renderer::getViewport
-			// Access:    public 
-			// Returns:   VkViewport
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the current viewport being used for rendering, allowing for efficient management of frame rendering and presentation.
+			/// </summary>
+			/// <returns></returns>
 			VkViewport getViewport() const { return m_viewport; }
 			
-			//************************************
-			// Method:    getRenderPass
-			// FullName:  GFXEngine::Graphics::Renderer::getRenderPass
-			// Access:    public 
-			// Returns:   LibGFX::RenderPass&
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the RenderPass used for rendering.
+			/// </summary>
+			/// <returns></returns>
 			LibGFX::RenderPass& getRenderPass() const { return *m_renderPass; }	
 			
-			//************************************
-			// Method:    getOffscreenRenderPass
-			// FullName:  GFXEngine::Graphics::Renderer::getOffscreenRenderPass
-			// Access:    public 
-			// Returns:   LibGFX::RenderPass&
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the OffscreenRenderPass used for offscreen rendering.
+			/// </summary>
+			/// <returns></returns>
 			LibGFX::RenderPass& getOffscreenRenderPass() const { return *m_offscreenRenderPass; }
 			
-			//************************************
-			// Method:    getSwapchainInfo
-			// FullName:  GFXEngine::Graphics::Renderer::getSwapchainInfo
-			// Access:    public 
-			// Returns:   SwapchainInfo&
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Gets the SwapchainInfo containing details about the swapchain, including image views, format, and extent.
+			/// </summary>
+			/// <returns></returns>
 			SwapchainInfo& getSwapchainInfo() { return m_swapchainInfo; }
 			
-			//************************************
-			// Method:    getDepthFormat
-			// FullName:  GFXEngine::Graphics::Renderer::getDepthFormat
-			// Access:    public 
-			// Returns:   VkFormat
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the depth format used for depth buffering, allowing for efficient depth testing and rendering in Vulkan.
+			/// </summary>
+			/// <returns></returns>
 			VkFormat getDepthFormat() const { return m_depthFormat; }
 			
-			//************************************
-			// Method:    getContext
-			// FullName:  GFXEngine::Graphics::Renderer::getContext
-			// Access:    public 
-			// Returns:   LibGFX::VkContext&
-			// Qualifier:
-			//************************************
+			/// <summary>
+			/// Gets the VkContext used for managing Vulkan resources and operations.
+			/// </summary>
+			/// <returns></returns>
 			LibGFX::VkContext& getContext() { return *m_context; }
 			
-			//************************************
-			// Method:    getTextureSampler
-			// FullName:  GFXEngine::Graphics::Renderer::getTextureSampler
-			// Access:    public 
-			// Returns:   VkSampler
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the texture sampler used for sampling textures in shaders, 
+			/// allowing for efficient texture filtering and sampling in Vulkan.
+			/// </summary>
+			/// <returns></returns>
 			VkSampler getTextureSampler() const { return m_textureSampler; }
 			
-			//************************************
-			// Method:    getSamplerLayout
-			// FullName:  GFXEngine::Graphics::Renderer::getSamplerLayout
-			// Access:    public 
-			// Returns:   VkDescriptorSetLayout
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the sampler layout used for binding texture samplers in descriptor sets
+			/// </summary>
+			/// <returns></returns>
 			VkDescriptorSetLayout getSamplerLayout() const { return m_samplerLayout; }
 			
-			//************************************
-			// Method:    getCubemapSamplerLayout
-			// FullName:  GFXEngine::Graphics::Renderer::getCubemapSamplerLayout
-			// Access:    public 
-			// Returns:   VkDescriptorSetLayout
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the cubemap sampler layout used for binding cubemap samplers in descriptor sets
+			/// </summary>
+			/// <returns></returns>
 			VkDescriptorSetLayout getCubemapSamplerLayout() const { return m_cubemapSamplerLayout; }
 			
-			//************************************
-			// Method:    getUniformBufferLayout
-			// FullName:  GFXEngine::Graphics::Renderer::getUniformBufferLayout
-			// Access:    public 
-			// Returns:   VkDescriptorSetLayout
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the uniform buffer layout used for binding uniform buffers in descriptor sets, 
+			/// allowing for efficient resource binding in shaders.
+			/// </summary>
+			/// <returns></returns>
 			VkDescriptorSetLayout getUniformBufferLayout() const { return m_uniformBuffferLayout; }
 			
-			//************************************
-			// Method:    getStorageBufferLayout
-			// FullName:  GFXEngine::Graphics::Renderer::getStorageBufferLayout
-			// Access:    public 
-			// Returns:   VkDescriptorSetLayout
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the storage buffer layout used for binding storage buffers in descriptor sets
+			/// </summary>
+			/// <returns></returns>
 			VkDescriptorSetLayout getStorageBufferLayout() const { return m_storageBufferLayout; }
 			
-			//************************************
-			// Method:    getPBRMaterialLayout
-			// FullName:  GFXEngine::Graphics::Renderer::getPBRMaterialLayout
-			// Access:    public 
-			// Returns:   VkDescriptorSetLayout
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the PBR material layout used for binding PBR material resources in descriptor sets.
+			/// </summary>
+			/// <returns></returns>
 			VkDescriptorSetLayout getPBRMaterialLayout() const { return m_pbrMaterialLayout; }
 			
-			//************************************
-			// Method:    isValidationEnabled
-			// FullName:  GFXEngine::Graphics::Renderer::isValidationEnabled
-			// Access:    public 
-			// Returns:   bool
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Checks if validation layers are enabled for the renderer, allowing for debugging and validation of Vulkan API usage.
+			/// </summary>
+			/// <returns></returns>
 			bool isValidationEnabled() const { return m_enableValidationLayers; }
 			
-			//************************************
-			// Method:    getQueueFamilyIndices
-			// FullName:  GFXEngine::Graphics::Renderer::getQueueFamilyIndices
-			// Access:    public 
-			// Returns:   LibGFX::QueueFamilyIndices
-			// Qualifier: const
-			//************************************
+			/// <summary>
+			/// Gets the queue family indices for the renderer.
+			/// </summary>
+			/// <returns></returns>
 			LibGFX::QueueFamilyIndices getQueueFamilyIndices() const { return m_queueFamilyIndices; }
 
 		public:
-			//************************************
-			// Method:    setValidationEnabled
-			// FullName:  GFXEngine::Graphics::Renderer::setValidationEnabled
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: bool enabled
-			//************************************
+			/// <summary>
+			/// Sets whether validation layers are enabled for the renderer, 
+			/// allowing for debugging and validation of Vulkan API usage.
+			/// </summary>
+			/// <param name="enabled"></param>
 			void setValidationEnabled(bool enabled) { m_enableValidationLayers = enabled; }
 			
-			//************************************
-			// Method:    setViewport
-			// FullName:  GFXEngine::Graphics::Renderer::setViewport
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const VkViewport & viewport
-			//************************************
+			/// <summary>
+			/// Sets the viewport for rendering.
+			/// </summary>
+			/// <param name="viewport"></param>
 			void setViewport(const VkViewport& viewport) { m_viewport = viewport; }
 			
-			//************************************
-			// Method:    setScissor
-			// FullName:  GFXEngine::Graphics::Renderer::setScissor
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const VkRect2D & scissor
-			//************************************
+			/// <summary>
+			/// Sets the scissor rectangle for rendering.
+			/// </summary>
+			/// <param name="scissor"></param>
 			void setScissor(const VkRect2D& scissor) { m_scissor = scissor; }
 
 		public:
-			//************************************
-			// Method:    registerSwapchainCleanupCallback
-			// FullName:  GFXEngine::Graphics::Renderer::registerSwapchainCleanupCallback
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: std::function<void
-			// Parameter: Renderer & 
-			// Parameter: > callback
-			//************************************
+			/// <summary>
+			/// Registers a callback function to be called when the swapchain is cleaned up, allowing for custom resource management during swapchain recreation.
+			/// </summary>
+			/// <param name="callback"></param>
 			void registerSwapchainCleanupCallback(std::function<void(Renderer&)> callback) {
 				m_swapchainCleanupCallbacks.push_back(callback);
 			}
 			
-			//************************************
-			// Method:    registerSwapchainRecreationCallback
-			// FullName:  GFXEngine::Graphics::Renderer::registerSwapchainRecreationCallback
-			// Access:    public 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: std::function<void
-			// Parameter: Renderer &
-			// Parameter: VkViewport
-			// Parameter: VkRect2D
-			// Parameter: > callback
-			//************************************
+			/// <summary>
+			/// Registers a callback function to be called when the swapchain is recreated, allowing for custom resource management during swapchain recreation.
+			/// </summary>
+			/// <param name="callback"></param>
 			void registerSwapchainRecreationCallback(std::function<void(Renderer&, VkViewport, VkRect2D)> callback) {
 				m_swapchainRecreationCallbacks.push_back(callback);
 			}
