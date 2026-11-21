@@ -6,28 +6,13 @@
 #include <filesystem>
 #include <iostream>
 #include "EngineDefinitions.h"
-#include "PipelineBuilder.h"
-#include "PBRPipeline.h"
-#include "UnlitPipeline.h"
-#include "PBRPipelineInst.h"
-#include "UnlitPipelineInst.h"
-#include "EnviromentPipeline.h"
-#include "DebugPipeline.h"
-#include "SpritePipeline.h"
-#include "SolidColorPipeline.h"
 
 using namespace std;
 using namespace GFXEngine::Graphics;
 using namespace GFXEngine::Defintions;
 
-void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
+void Renderer::init(GLFWwindow* window)
 {
-	if (!std::filesystem::exists(shadersDirectory)) {
-		throw std::runtime_error("Shader directory does not exist: " + shadersDirectory);
-	}
-
-	m_shadersDirectory = &shadersDirectory;
-
 	// Create Vulkan context
 	m_context = LibGFX::GFX::createContext(window);
 	m_context->initialize(LibGFX::VkContext::defaultAppInfo(), m_enableValidationLayers);
@@ -123,8 +108,6 @@ void Renderer::init(GLFWwindow* window, const std::string& shadersDirectory)
 		.addBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build(*m_context);
 	layoutBuilder.clear();
-
-	this->createPipelines(shadersDirectory);
 }
 
 void Renderer::drawFrame()
@@ -592,76 +575,6 @@ void Renderer::flushBuffer(const LibGFX::Buffer& buffer)
 	memoryRange.offset = 0;
 	memoryRange.size = buffer.size;
 	vkFlushMappedMemoryRanges(m_context->getDevice(), 1, &memoryRange);
-}
-
-void Renderer::createPipelines(const std::string& shadersDirectory)
-{
-	std::cout << "Creating pipelines with shaders from directory: " << shadersDirectory << std::endl;
-
-	// PBR Geometry Pipeline
-	std::filesystem::path vertPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_vert.spv";
-	std::filesystem::path fragPath = std::filesystem::path(shadersDirectory) / "mesh_pbr_frag.spv";
-	auto pbrPipeline = std::make_unique<PBRPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	pbrPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::GEOMETRY_PIPELINE, std::move(pbrPipeline));
-
-	// Unlit Geometry Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "mesh_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "mesh_frag.spv";
-	auto unlitPipeline = std::make_unique<UnlitPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	unlitPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::GEOMETRY_PIPELINE_UNLIT, std::move(unlitPipeline));
-
-	// Create Instanced Geometry Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_pbr_frag.spv";
-	auto pbrPipelineInst = std::make_unique<PBRPipelineInst>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	pbrPipelineInst->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE, std::move(pbrPipelineInst));
-
-	// Instant Geometry Pipeline Unlit
-	vertPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "mesh_instanced_frag.spv";
-	auto instancedMeshPipelineUnlit = std::make_unique<UnlitPipelineInst>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	instancedMeshPipelineUnlit->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::INSTANCED_GEOMETRY_PIPELINE_UNLIT, std::move(instancedMeshPipelineUnlit));
-
-	// Create Enviroment Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "env_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "env_frag.spv";
-	auto enviromentPipeline = std::make_unique<EnviromentPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	enviromentPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::ENVIRONMENT_PIPELINE, std::move(enviromentPipeline));
-
-	// Debug Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "debug_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "debug_frag.spv";
-	auto debugPipeline = std::make_unique<DebugPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	debugPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::DEBUG_PIPELINE, std::move(debugPipeline));
-
-	// Sprite Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "sprite_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "sprite_frag.spv";
-	auto spritePipeline = std::make_unique<SpritePipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	spritePipeline->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::SPRITE_PIPELINE, std::move(spritePipeline));
-
-	// Solid Color Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "solid_vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "solid_frag.spv";
-	auto solidColorPipeline = std::make_unique<SolidColorPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	solidColorPipeline->build(*this, m_offscreenRenderPass->getRenderPass());
-	this->managePipeline(PipelineType::SOLID_COLOR_PIPELINE, std::move(solidColorPipeline));
-
-	// Create Present Pipeline
-	vertPath = std::filesystem::path(shadersDirectory) / "vert.spv";
-	fragPath = std::filesystem::path(shadersDirectory) / "frag.spv";
-	auto presentPipeline = std::make_unique<PresentPipeline>(RenderShader::fromFiles(vertPath.string(), fragPath.string()));
-	presentPipeline->build(*this, m_renderPass->getRenderPass());
-	this->managePipeline(PipelineType::PRESENT_PIPELINE, std::move(presentPipeline));
-
-	std::cout << "Finished creating pipelines" << std::endl;
 }
 
 void Renderer::managePipeline(unsigned int pipelineId, std::unique_ptr<RenderPipeline> pipeline)

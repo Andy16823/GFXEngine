@@ -88,19 +88,6 @@ namespace GFXEngine {
 			std::vector<std::function<void(Renderer&)>> m_swapchainCleanupCallbacks;
 			std::vector<std::function<void(Renderer&, VkViewport viewport, VkRect2D scissors)>> m_swapchainRecreationCallbacks;
 
-			const std::string* m_shadersDirectory;
-
-		private:
-			//************************************
-			// Method:    createPipelines
-			// FullName:  GFXEngine::Graphics::Renderer::createPipelines
-			// Access:    private 
-			// Returns:   void
-			// Qualifier:
-			// Parameter: const std::string & shadersDirectory
-			//************************************
-			void createPipelines(const std::string& shadersDirectory);
-
 		public:
 			//************************************
 			// Method:    Renderer
@@ -130,7 +117,7 @@ namespace GFXEngine {
 			// Parameter: GLFWwindow * window
 			// Parameter: const std::string & shadersDirectory
 			//************************************
-			void init(GLFWwindow* window, const std::string& shadersDirectory);
+			void init(GLFWwindow* window);
 			
 			//************************************
 			// Method:    recreate
